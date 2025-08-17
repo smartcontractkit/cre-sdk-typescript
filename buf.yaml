@@ -1,0 +1,13 @@
+version: v2
+
+modules:
+  - path: submodules/chainlink-protos/cre
+
+lint:
+  use:
+    - STANDARD
+
+# Breaking change detection
+breaking:
+  use:
+    - FILE

@@ -1,0 +1,30 @@
+# Improved buf.gen.yaml using modern Protobuf-ES
+version: v2
+
+# Managed mode for better field handling
+managed:
+  enabled: true
+  override:
+    # Use string for 64-bit integers (important for WASM compatibility)
+    - field_option: jstype
+      value: JS_STRING
+
+inputs:
+  - directory: submodules/chainlink-protos/cre
+
+plugins:
+  # Modern @bufbuild/protoc-gen-es plugin
+  - local: protoc-gen-es
+    out: src/generated
+    opt:
+      # Generate TypeScript (required for WASM compilation)
+      - target=ts
+
+      # No import extension (modern bundlers handle this)
+      - import_extension=none
+
+      # Generate JSON types for better type safety
+      - json_types=true
+
+      # Keep empty files (useful for consistent imports)
+      - keep_empty_files=false
