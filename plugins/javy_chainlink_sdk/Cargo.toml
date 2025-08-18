@@ -1,0 +1,13 @@
+[package]
+name = "javy_chainlink_sdk"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+javy-plugin-api = "3.1.0"
+javy = "4.0.0"
+serde_json = "1.0"
+base64 = "0.21"
