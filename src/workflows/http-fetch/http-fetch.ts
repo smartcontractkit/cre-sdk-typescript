@@ -52,13 +52,13 @@ const onCronTrigger = async (env: Environment<Config>): Promise<void> => {
 
 // InitWorkflow is the required entry point for a CRE workflow
 // The runner calls this function to initialize the workflow and register its handlers
-const initWorkflow = (config: Config) => {
+const initWorkflow = (env: Environment<Config>) => {
   const cron = new CronCapability();
 
   return [
     Handler(
       // Use the schedule from our config file
-      cron.trigger({ schedule: config.schedule }),
+      cron.trigger({ schedule: env.config?.schedule }),
       onCronTrigger
     ),
   ];
@@ -75,10 +75,9 @@ export async function main(): Promise<void> {
     const executeRequest: ExecuteRequest = getRequest();
     const config = getConfigFromExecuteRequest(executeRequest);
     const configParsed = configSchema.parse(config);
-    const workflow = initWorkflow(configParsed);
-
     const env = buildEnvFromConfig<Config>(configParsed);
 
+    const workflow = initWorkflow(env);
     await handleExecuteRequest(executeRequest, workflow, env);
   } catch (error) {
     console.log("error", JSON.stringify(error, null, 2));
