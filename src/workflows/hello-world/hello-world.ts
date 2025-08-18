@@ -1,12 +1,9 @@
 import { z } from "zod";
 import { prepareRuntime } from "@cre/sdk/utils/prepare-runtime";
-import { Handler } from "@cre/sdk/workflow";
+import { Handler, Runner } from "@cre/sdk/workflow";
 import { CronCapability } from "@cre/generated-sdk/capabilities/scheduler/cron/v1/cron_sdk_gen";
 import type { Environment } from "@cre/sdk/workflow";
-import { getConfigFromExecuteRequest } from "@cre/sdk/utils/get-config";
-import { handleExecuteRequest } from "@cre/sdk/engine/execute";
-import type { ExecuteRequest } from "@cre/generated/sdk/v1alpha/sdk_pb";
-import { getRequest } from "@cre/sdk/utils/get-request";
+import { getConfig } from "@cre/sdk/utils/get-config";
 import { buildEnvFromConfig } from "@cre/sdk/utils/env";
 
 // Config struct defines the parameters that can be passed to the workflow
@@ -42,14 +39,13 @@ export async function main(): Promise<void> {
   prepareRuntime();
   versionV2();
 
-  const executeRequest: ExecuteRequest = getRequest();
-  const config = getConfigFromExecuteRequest(executeRequest);
+  const config = getConfig();
   const configParsed = configSchema.parse(config);
 
   const env = buildEnvFromConfig<Config>(configParsed);
 
-  const workflow = initWorkflow(env);
-  await handleExecuteRequest(executeRequest, workflow, env);
+  const runner = new Runner<Config>(env);
+  await runner.run(initWorkflow);
 }
 
 main();

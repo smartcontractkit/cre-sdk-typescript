@@ -1,6 +1,11 @@
 import type { Message } from "@bufbuild/protobuf";
-import type { Mode } from "@cre/generated/sdk/v1alpha/sdk_pb";
+import type {
+  Mode,
+  CapabilityResponse,
+} from "@cre/generated/sdk/v1alpha/sdk_pb";
 import type { Trigger } from "@cre/sdk/utils/triggers/trigger-interface";
+import { handleExecuteRequest } from "@cre/sdk/engine/execute";
+import { getRequest } from "@cre/sdk/utils/get-request";
 
 export type Logger = {
   log: (message: string) => void;
@@ -44,7 +49,7 @@ export const Handler = <
   fn: HandlerFn<TConfig, TAdapted, TAdapted>
 ): HandlerEntry<TConfig, TOutput, TAdapted> => ({ trigger, fn });
 
-export class Runner<TConfig = unknown> {
+export class Runner<TConfig> {
   constructor(
     private readonly env: Environment<TConfig> = {},
     private readonly rt: Runtime = {}
@@ -54,15 +59,9 @@ export class Runner<TConfig = unknown> {
     initFn: (
       env: Environment<TConfig>
     ) => Promise<Workflow<TConfig>> | Workflow<TConfig>
-  ): Promise<unknown[]> {
-    const wf = await initFn(this.env);
-    const results: unknown[] = [];
-    for (const entry of wf) {
-      const out = entry.trigger.newOutput();
-      const adapted = await entry.trigger.adapt(out);
-      const res = await entry.fn(this.env, this.rt, adapted);
-      results.push(res);
-    }
-    return results;
+  ): Promise<CapabilityResponse | void> {
+    const req = getRequest();
+    const workflow = await initFn(this.env);
+    return await handleExecuteRequest(req, workflow, this.env, this.rt);
   }
 }

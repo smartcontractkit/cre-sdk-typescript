@@ -69,5 +69,4 @@ export const handleExecuteRequest = async <TConfig>(
       await entry.fn(handlerEnv, rt, adapted);
     }
   }
-  return undefined;
 };
