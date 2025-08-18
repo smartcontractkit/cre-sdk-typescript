@@ -4,7 +4,6 @@ import { Handler, Runner } from "@cre/sdk/workflow";
 import { CronCapability } from "@cre/generated-sdk/capabilities/scheduler/cron/v1/cron_sdk_gen";
 import type { Environment } from "@cre/sdk/workflow";
 import { getConfig } from "@cre/sdk/utils/get-config";
-import { buildEnvFromConfig } from "@cre/sdk/utils/env";
 
 // Config struct defines the parameters that can be passed to the workflow
 const configSchema = z.object({
@@ -42,9 +41,7 @@ export async function main(): Promise<void> {
   const config = getConfig();
   const configParsed = configSchema.parse(config);
 
-  const env = buildEnvFromConfig<Config>(configParsed);
-
-  const runner = new Runner<Config>(env);
+  const runner = new Runner<Config>(configParsed);
   await runner.run(initWorkflow);
 }
 

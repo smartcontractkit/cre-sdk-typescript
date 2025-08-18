@@ -6,6 +6,8 @@ import type {
 import type { Trigger } from "@cre/sdk/utils/triggers/trigger-interface";
 import { handleExecuteRequest } from "@cre/sdk/engine/execute";
 import { getRequest } from "@cre/sdk/utils/get-request";
+import { getConfig } from "@cre/sdk/utils/get-config";
+import { buildEnvFromConfig } from "@cre/sdk/utils/env";
 
 export type Logger = {
   log: (message: string) => void;
@@ -50,10 +52,14 @@ export const Handler = <
 ): HandlerEntry<TConfig, TOutput, TAdapted> => ({ trigger, fn });
 
 export class Runner<TConfig> {
+  private readonly env: Environment<TConfig>;
+
   constructor(
-    private readonly env: Environment<TConfig> = {},
+    config: TConfig = getConfig(),
     private readonly rt: Runtime = {}
-  ) {}
+  ) {
+    this.env = buildEnvFromConfig<TConfig>(config);
+  }
 
   async run(
     initFn: (

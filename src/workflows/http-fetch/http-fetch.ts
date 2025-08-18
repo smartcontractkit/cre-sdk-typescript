@@ -14,7 +14,6 @@ import {
 } from "@cre/sdk/utils/values/consensus";
 import { sendResponseValue } from "@cre/sdk/utils/send-response-value";
 import { val } from "@cre/sdk/utils/values/value";
-import { buildEnvFromConfig } from "@cre/sdk/utils/env";
 
 // Config struct defines the parameters that can be passed to the workflow
 const configSchema = z.object({
@@ -72,9 +71,7 @@ export async function main(): Promise<void> {
     const config = getConfig();
     const configParsed = configSchema.parse(config);
 
-    const env = buildEnvFromConfig<Config>(configParsed);
-
-    const runner = new Runner<Config>(env);
+    const runner = new Runner<Config>(configParsed);
     await runner.run(initWorkflow);
   } catch (error) {
     console.log("error", JSON.stringify(error, null, 2));
