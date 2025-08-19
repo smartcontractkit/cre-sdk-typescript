@@ -10,7 +10,7 @@ This project uses Git submodules to include external dependencies. After cloning
 
 ```zsh
 # Clone with submodules
-git clone --recursive https://github.com/ernest-nowacki/cre-ts-sdk.git
+git clone --recursive https://github.com/smartcontractkit/cre-sdk-typescript
 
 # Or if already cloned without submodules
 git submodule update --init --recursive
@@ -43,10 +43,9 @@ cd ../..
 
 If you need to make changes to the submodule, it's recommended to contribute to the original repository, following all the contribution guidelines, and then once the changes are merged, update the submodule to the latest version.
 
-Currently sdk uses two submodules:
+Currently sdk uses submodules:
 
 - chainlink-protos - for protobuf definitions
-- chainlink-common - for extra protobuf definitions for test capabilities
 
 ## Setup
 
