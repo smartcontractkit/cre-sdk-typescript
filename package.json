@@ -27,6 +27,7 @@
   "dependencies": {
     "@bufbuild/protobuf": "2.6.3",
     "@bufbuild/protoc-gen-es": "2.6.3",
+    "@standard-schema/spec": "1.0.0",
     "rxjs": "7.8.2",
     "zod": "3.25.76"
   },
