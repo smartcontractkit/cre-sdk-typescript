@@ -3,7 +3,7 @@
  */
 import { prepareRuntime } from "@cre/sdk/utils/prepare-runtime";
 import { handler, Runner } from "@cre/sdk/workflow";
-import { getConfig } from "@cre/sdk/utils/get-config";
+import { configHandler } from "@cre/sdk/utils/config";
 import { CronCapability } from "@cre/generated-sdk/capabilities/scheduler/cron/v1/cron_sdk_gen";
 import { ClientCapability as HTTPClient } from "@cre/generated-sdk/capabilities/networking/http/v1alpha/client_sdk_gen";
 
@@ -17,7 +17,7 @@ export const cre = {
     CronCapability,
     HTTPClient,
   },
-  getConfig,
+  config: configHandler,
   handler,
-  Runner,
+  newRunner: Runner.newRunner,
 };

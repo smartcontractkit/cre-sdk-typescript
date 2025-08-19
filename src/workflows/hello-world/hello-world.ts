@@ -1,12 +1,9 @@
-import { z } from "zod";
 import { cre, type Environment } from "@cre/sdk/cre";
 
 // Config struct defines the parameters that can be passed to the workflow
-const configSchema = z.object({
-  schedule: z.string(),
-});
-
-type Config = z.infer<typeof configSchema>;
+type Config = {
+  schedule: string;
+};
 
 // onCronTrigger is the callback function that gets executed when the cron trigger fires
 const onCronTrigger = (env: Environment<Config>): void => {
@@ -29,10 +26,7 @@ const initWorkflow = (env: Environment<Config>) => {
 
 // main is the entry point for the workflow
 export async function main() {
-  const config = cre.getConfig();
-  const configParsed = configSchema.parse(config);
-
-  const runner = new cre.Runner<Config>(configParsed);
+  const runner = await cre.newRunner<Config>();
   await runner.run(initWorkflow);
 }
 
