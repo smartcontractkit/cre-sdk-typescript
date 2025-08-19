@@ -28,6 +28,7 @@ export class BasicCapability {
   /** The default execution mode for this capability */
   static readonly DEFAULT_MODE = Mode.DON;
 
+
   constructor(
     private readonly mode: Mode = BasicCapability.DEFAULT_MODE
   ) {}

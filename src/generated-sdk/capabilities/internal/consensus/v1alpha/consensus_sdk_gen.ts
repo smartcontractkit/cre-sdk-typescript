@@ -32,6 +32,7 @@ export class ConsensusCapability {
   /** The default execution mode for this capability */
   static readonly DEFAULT_MODE = Mode.DON;
 
+
   constructor(
     private readonly mode: Mode = ConsensusCapability.DEFAULT_MODE
   ) {}
@@ -46,7 +47,7 @@ export class ConsensusCapability {
       capabilityId: ConsensusCapability.CAPABILITY_ID,
       method: "Simple",
       mode: this.mode,
-      payload,
+      payload
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
@@ -78,7 +79,7 @@ export class ConsensusCapability {
       capabilityId: ConsensusCapability.CAPABILITY_ID,
       method: "Report",
       mode: this.mode,
-      payload,
+      payload
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {

@@ -26,6 +26,7 @@ export class ClientCapability {
   /** The default execution mode for this capability */
   static readonly DEFAULT_MODE = Mode.NODE;
 
+
   constructor(
     private readonly mode: Mode = ClientCapability.DEFAULT_MODE
   ) {}
@@ -40,7 +41,7 @@ export class ClientCapability {
       capabilityId: ClientCapability.CAPABILITY_ID,
       method: "SendRequest",
       mode: this.mode,
-      payload,
+      payload
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {

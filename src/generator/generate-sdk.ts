@@ -127,6 +127,9 @@ export function generateSdk(file: GenFile, outputDir: string) {
 
     const capabilityClassName = `${service.name}Capability`;
 
+    // Check if this is the EVM client for later use
+    const isEvmClient = capOption.capabilityId === "evm@1.0.0";
+
     // Generate methods
     const methods = service.methods
       .map((method) => {
@@ -154,7 +157,12 @@ export function generateSdk(file: GenFile, outputDir: string) {
         }
 
         // Generate action method
-        return generateActionMethod(method, methodName, capabilityClassName);
+        return generateActionMethod(
+          method,
+          methodName,
+          capabilityClassName,
+          isEvmClient
+        );
       })
       .join("\n");
 
@@ -166,6 +174,29 @@ export function generateSdk(file: GenFile, outputDir: string) {
 
     // Determine default mode from metadata: NODE is specifically stated, DON otherwise.
     const defaultMode = capOption.mode === Mode.NODE ? "Mode.NODE" : "Mode.DON";
+
+    // Extract chainSelector support for EVM client
+    let chainSelectorSupport = "";
+    let constructorParams = `private readonly mode: Mode = ${service.name}Capability.DEFAULT_MODE`;
+
+    if (isEvmClient && capOption.labels) {
+      const chainSelectorLabel = capOption.labels.ChainSelector as any;
+      if (
+        chainSelectorLabel?.kind?.case === "uint64Label" &&
+        chainSelectorLabel?.kind?.value?.defaults
+      ) {
+        const defaults = chainSelectorLabel.kind.value.defaults;
+        chainSelectorSupport = `
+  /** Available chain selectors */
+  static readonly SUPPORTED_CHAINS = {
+${Object.entries(defaults)
+  .map(([key, value]) => `    "${key}": ${value}n`)
+  .join(",\n")}
+  } as const;`;
+
+        constructorParams = `private readonly mode: Mode = ${service.name}Capability.DEFAULT_MODE,\n    private readonly chainSelector?: bigint`;
+      }
+    }
 
     // Add JSDoc with metadata information
     const classComment = `
@@ -185,9 +216,10 @@ export class ${capabilityClassName} {
   
   /** The default execution mode for this capability */
   static readonly DEFAULT_MODE = ${defaultMode};
+${chainSelectorSupport}
 
   constructor(
-    private readonly mode: Mode = ${service.name}Capability.DEFAULT_MODE
+    ${constructorParams}
   ) {}
 ${methods}
 }

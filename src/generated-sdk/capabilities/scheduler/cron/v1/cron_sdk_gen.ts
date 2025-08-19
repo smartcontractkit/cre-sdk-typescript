@@ -30,6 +30,7 @@ export class CronCapability {
   /** The default execution mode for this capability */
   static readonly DEFAULT_MODE = Mode.DON;
 
+
   constructor(
     private readonly mode: Mode = CronCapability.DEFAULT_MODE
   ) {}

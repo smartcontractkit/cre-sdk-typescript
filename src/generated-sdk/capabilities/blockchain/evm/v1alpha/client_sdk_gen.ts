@@ -68,8 +68,26 @@ export class ClientCapability {
   /** The default execution mode for this capability */
   static readonly DEFAULT_MODE = Mode.DON;
 
+  /** Available chain selectors */
+  static readonly SUPPORTED_CHAINS = {
+    "avalanche-mainnet": 6433500567565415381n,
+    "avalanche-testnet-fuji": 14767482510784806043n,
+    "binance_smart_chain-mainnet-opbnb-1": 465944652040885897n,
+    "binance_smart_chain-testnet-opbnb-1": 13274425992935471758n,
+    "ethereum-mainnet": 5009297550715157269n,
+    "ethereum-mainnet-arbitrum-1": 4949039107694359620n,
+    "ethereum-mainnet-optimism-1": 3734403246176062136n,
+    "ethereum-testnet-sepolia": 16015286601757825753n,
+    "ethereum-testnet-sepolia-arbitrum-1": 3478487238524512106n,
+    "ethereum-testnet-sepolia-base-1": 10344971235874465080n,
+    "ethereum-testnet-sepolia-optimism-1": 5224473277236331295n,
+    "polygon-mainnet": 4051577828743386545n,
+    "polygon-testnet-amoy": 16281711391670634445n
+  } as const;
+
   constructor(
-    private readonly mode: Mode = ClientCapability.DEFAULT_MODE
+    private readonly mode: Mode = ClientCapability.DEFAULT_MODE,
+    private readonly chainSelector?: bigint
   ) {}
 
   async callContract(input: CallContractRequestJson): Promise<CallContractReply> {
@@ -83,6 +101,7 @@ export class ClientCapability {
       method: "CallContract",
       mode: this.mode,
       payload,
+      chainSelector: this.chainSelector,
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
@@ -115,6 +134,7 @@ export class ClientCapability {
       method: "FilterLogs",
       mode: this.mode,
       payload,
+      chainSelector: this.chainSelector,
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
@@ -147,6 +167,7 @@ export class ClientCapability {
       method: "BalanceAt",
       mode: this.mode,
       payload,
+      chainSelector: this.chainSelector,
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
@@ -179,6 +200,7 @@ export class ClientCapability {
       method: "EstimateGas",
       mode: this.mode,
       payload,
+      chainSelector: this.chainSelector,
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
@@ -211,6 +233,7 @@ export class ClientCapability {
       method: "GetTransactionByHash",
       mode: this.mode,
       payload,
+      chainSelector: this.chainSelector,
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
@@ -243,6 +266,7 @@ export class ClientCapability {
       method: "GetTransactionReceipt",
       mode: this.mode,
       payload,
+      chainSelector: this.chainSelector,
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
@@ -275,6 +299,7 @@ export class ClientCapability {
       method: "HeaderByNumber",
       mode: this.mode,
       payload,
+      chainSelector: this.chainSelector,
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
@@ -307,6 +332,7 @@ export class ClientCapability {
       method: "RegisterLogTracking",
       mode: this.mode,
       payload,
+      chainSelector: this.chainSelector,
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
@@ -339,6 +365,7 @@ export class ClientCapability {
       method: "UnregisterLogTracking",
       mode: this.mode,
       payload,
+      chainSelector: this.chainSelector,
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
@@ -375,6 +402,7 @@ export class ClientCapability {
       method: "WriteReport",
       mode: this.mode,
       payload,
+      chainSelector: this.chainSelector,
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {

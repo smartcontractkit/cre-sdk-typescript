@@ -26,6 +26,7 @@ export class BasicActionCapability {
   /** The default execution mode for this capability */
   static readonly DEFAULT_MODE = Mode.DON;
 
+
   constructor(
     private readonly mode: Mode = BasicActionCapability.DEFAULT_MODE
   ) {}
@@ -40,7 +41,7 @@ export class BasicActionCapability {
       capabilityId: BasicActionCapability.CAPABILITY_ID,
       method: "PerformAction",
       mode: this.mode,
-      payload,
+      payload
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {

@@ -28,6 +28,7 @@ export class HTTPCapability {
   /** The default execution mode for this capability */
   static readonly DEFAULT_MODE = Mode.DON;
 
+
   constructor(
     private readonly mode: Mode = HTTPCapability.DEFAULT_MODE
   ) {}
