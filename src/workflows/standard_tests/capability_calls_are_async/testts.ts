@@ -32,7 +32,8 @@ export async function main() {
   ];
 
   try {
-    await new cre.Runner().run(initFn);
+    const runner = await cre.newRunner();
+    runner.run(initFn);
   } catch (e) {
     errorBoundary(e);
   }
