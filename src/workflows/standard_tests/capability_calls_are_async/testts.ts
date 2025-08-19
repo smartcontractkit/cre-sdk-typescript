@@ -1,7 +1,7 @@
 import { sendResponseValue } from "@cre/sdk/utils/send-response-value";
 import { prepareRuntime } from "@cre/sdk/utils/prepare-runtime";
 import { errorBoundary } from "@cre/sdk/utils/error-boundary";
-import { Handler, Runner } from "@cre/sdk/workflow";
+import { handler, Runner } from "@cre/sdk/workflow";
 import { BasicActionCapability } from "@cre/generated-sdk/capabilities/internal/basicaction/v1/basicaction_sdk_gen";
 import { BasicCapability as BasicTriggerCapability } from "@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen";
 import { val } from "@cre/sdk/utils/values/value";
@@ -27,7 +27,7 @@ export async function main() {
   };
 
   const initFn = async () => [
-    Handler(
+    handler(
       basicTrigger.trigger({ name: "first-trigger", number: 100 }),
       asyncCalls
     ),

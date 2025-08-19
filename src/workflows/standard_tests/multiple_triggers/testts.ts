@@ -1,6 +1,6 @@
 import { prepareRuntime } from "@cre/sdk/utils/prepare-runtime";
 import { errorBoundary } from "@cre/sdk/utils/error-boundary";
-import { Handler } from "@cre/sdk/workflow";
+import { handler } from "@cre/sdk/workflow";
 import { getRequest } from "@cre/sdk/utils/get-request";
 import { handleExecuteRequest } from "@cre/sdk/engine/execute";
 import { type ExecuteRequest } from "@cre/generated/sdk/v1alpha/sdk_pb";
@@ -14,17 +14,17 @@ const buildWorkflow = () => {
   const actionTrigger = new ActionAndTriggerCapability();
 
   return [
-    Handler(
+    handler(
       basicTrigger.trigger({ name: "first-trigger", number: 100 }),
       (_env, _rt, out) =>
         sendResponseValue(val.string(`called 0 with ${out.coolOutput}`))
     ),
-    Handler(
+    handler(
       actionTrigger.trigger({ name: "second-trigger", number: 150 }),
       (_env, _rt, out) =>
         sendResponseValue(val.string(`called 1 with ${out.coolOutput}`))
     ),
-    Handler(
+    handler(
       basicTrigger.trigger({ name: "third-trigger", number: 200 }),
       (_env, _rt, out) =>
         sendResponseValue(val.string(`called 2 with ${out.coolOutput}`))

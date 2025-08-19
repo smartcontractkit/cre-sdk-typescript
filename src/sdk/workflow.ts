@@ -42,7 +42,7 @@ export type Workflow<TConfig = unknown> = ReadonlyArray<
   HandlerEntry<TConfig, any, any>
 >;
 
-export const Handler = <
+export const handler = <
   TOutput extends Message<string>,
   TAdapted = TOutput,
   TConfig = unknown
