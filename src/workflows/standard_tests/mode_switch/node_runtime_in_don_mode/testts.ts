@@ -10,7 +10,7 @@ import {
   observationValue,
 } from "@cre/sdk/utils/values/consensus";
 import { val } from "@cre/sdk/utils/values/value";
-import { Handler } from "@cre/sdk/workflow";
+import { cre } from "@cre/sdk/cre";
 import { handleExecuteRequest } from "@cre/sdk/engine/execute";
 import { getRequest } from "@cre/sdk/utils/get-request";
 import { BasicCapability as BasicTriggerCapability } from "@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen";
@@ -19,9 +19,6 @@ export async function main() {
   console.log(
     `TS workflow: standard test: mode_switch: node_runtime_in_don_mode [${new Date().toISOString()}]`
   );
-
-  prepareRuntime();
-  versionV2();
 
   const basicTrigger = new BasicTriggerCapability();
   const handler = async () => {
@@ -44,7 +41,7 @@ export async function main() {
   try {
     const executeRequest = getRequest();
     await handleExecuteRequest(executeRequest, [
-      Handler(
+      cre.handler(
         basicTrigger.trigger({ name: "first-trigger", number: 100 }),
         handler
       ),

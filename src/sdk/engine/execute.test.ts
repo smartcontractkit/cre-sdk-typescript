@@ -1,6 +1,6 @@
 import { describe, test, expect, mock, beforeEach } from "bun:test";
 import { handleExecuteRequest } from "@cre/sdk/engine/execute";
-import { Handler } from "@cre/sdk/workflow";
+import { handler } from "@cre/sdk/workflow";
 import { create, toBinary, fromBinary } from "@bufbuild/protobuf";
 import {
   ExecuteRequestSchema,
@@ -44,12 +44,12 @@ describe("engine/execute", () => {
     const basic = new BasicTriggerCapability();
     const action = new ActionAndTriggerCapability();
     const workflow = [
-      Handler(basic.trigger({ name: "first-trigger", number: 100 }), () => {}),
-      Handler(
+      handler(basic.trigger({ name: "first-trigger", number: 100 }), () => {}),
+      handler(
         action.trigger({ name: "second-trigger", number: 150 }),
         () => {}
       ),
-      Handler(basic.trigger({ name: "third-trigger", number: 200 }), () => {}),
+      handler(basic.trigger({ name: "third-trigger", number: 200 }), () => {}),
     ];
 
     const req: ExecuteRequest = create(ExecuteRequestSchema, {
@@ -79,21 +79,21 @@ describe("engine/execute", () => {
     const basic = new BasicTriggerCapability();
     const action = new ActionAndTriggerCapability();
     const workflow = [
-      Handler(
+      handler(
         basic.trigger({ name: "first-trigger", number: 100 }),
         (_e, _r, out) => {
           // @ts-ignore
           calls.push(`basic:${out.coolOutput}`);
         }
       ),
-      Handler(
+      handler(
         action.trigger({ name: "second-trigger", number: 150 }),
         (_e, _r, out) => {
           // @ts-ignore
           calls.push(`action:${out.coolOutput}`);
         }
       ),
-      Handler(
+      handler(
         basic.trigger({ name: "third-trigger", number: 200 }),
         (_e, _r, out) => {
           // @ts-ignore
@@ -129,10 +129,10 @@ describe("engine/execute", () => {
     const basic = new BasicTriggerCapability();
     const action = new ActionAndTriggerCapability();
     const workflow = [
-      Handler(basic.trigger({ name: "first-trigger", number: 100 }), () => {
+      handler(basic.trigger({ name: "first-trigger", number: 100 }), () => {
         calls.push("basic");
       }),
-      Handler(action.trigger({ name: "second-trigger", number: 150 }), () => {
+      handler(action.trigger({ name: "second-trigger", number: 150 }), () => {
         calls.push("action");
       }),
     ];
@@ -159,10 +159,10 @@ describe("engine/execute", () => {
     const basic = new BasicTriggerCapability();
     const action = new ActionAndTriggerCapability();
     const workflow = [
-      Handler(basic.trigger({ name: "first-trigger", number: 100 }), () => {
+      handler(basic.trigger({ name: "first-trigger", number: 100 }), () => {
         calls.push("basic");
       }),
-      Handler(action.trigger({ name: "second-trigger", number: 150 }), () => {
+      handler(action.trigger({ name: "second-trigger", number: 150 }), () => {
         calls.push("action");
       }),
     ];
