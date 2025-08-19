@@ -18,11 +18,11 @@ export function generateActionMethod(
   const capabilityIdLogic = hasChainSelector
     ? `
     // Include chainSelector in capability ID for routing when specified
-    const effectiveCapabilityId = this.chainSelector
+    const capabilityId = this.chainSelector
       ? \`\${${capabilityClassName}.CAPABILITY_ID}@chainSelector:\${this.chainSelector}\`
       : ${capabilityClassName}.CAPABILITY_ID;`
     : `
-    const effectiveCapabilityId = ${capabilityClassName}.CAPABILITY_ID;`;
+    const capabilityId = ${capabilityClassName}.CAPABILITY_ID;`;
 
   return `
   async ${methodName}(input: ${method.input.name}Json): Promise<${method.output.name}> {
@@ -32,14 +32,14 @@ export function generateActionMethod(
     };${capabilityIdLogic}
     
     return callCapability({
-      capabilityId: effectiveCapabilityId,
+      capabilityId,
       method: "${method.name}",
       mode: this.mode,
       payload,
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: effectiveCapabilityId,
+          capabilityId: capabilityId,
           method: "${method.name}",
           mode: this.mode,
         });
@@ -47,7 +47,7 @@ export function generateActionMethod(
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: effectiveCapabilityId,
+          capabilityId: capabilityId,
           method: "${method.name}",
           mode: this.mode,
         });
