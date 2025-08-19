@@ -52,7 +52,7 @@ export class ConsensusCapability {
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: capabilityId,
+          capabilityId,
           method: "Simple",
           mode: this.mode,
         });
@@ -60,7 +60,7 @@ export class ConsensusCapability {
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: capabilityId,
+          capabilityId,
           method: "Simple",
           mode: this.mode,
         });
@@ -85,7 +85,7 @@ export class ConsensusCapability {
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: capabilityId,
+          capabilityId,
           method: "Report",
           mode: this.mode,
         });
@@ -93,7 +93,7 @@ export class ConsensusCapability {
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: capabilityId,
+          capabilityId,
           method: "Report",
           mode: this.mode,
         });

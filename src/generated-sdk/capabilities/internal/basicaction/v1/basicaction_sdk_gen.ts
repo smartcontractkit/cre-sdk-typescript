@@ -46,7 +46,7 @@ export class BasicActionCapability {
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: capabilityId,
+          capabilityId,
           method: "PerformAction",
           mode: this.mode,
         });
@@ -54,7 +54,7 @@ export class BasicActionCapability {
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: capabilityId,
+          capabilityId,
           method: "PerformAction",
           mode: this.mode,
         });

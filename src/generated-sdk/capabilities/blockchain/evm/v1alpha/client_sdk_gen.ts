@@ -108,7 +108,7 @@ export class ClientCapability {
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: capabilityId,
+          capabilityId,
           method: "CallContract",
           mode: this.mode,
         });
@@ -116,7 +116,7 @@ export class ClientCapability {
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: capabilityId,
+          capabilityId,
           method: "CallContract",
           mode: this.mode,
         });
@@ -144,7 +144,7 @@ export class ClientCapability {
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: capabilityId,
+          capabilityId,
           method: "FilterLogs",
           mode: this.mode,
         });
@@ -152,7 +152,7 @@ export class ClientCapability {
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: capabilityId,
+          capabilityId,
           method: "FilterLogs",
           mode: this.mode,
         });
@@ -180,7 +180,7 @@ export class ClientCapability {
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: capabilityId,
+          capabilityId,
           method: "BalanceAt",
           mode: this.mode,
         });
@@ -188,7 +188,7 @@ export class ClientCapability {
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: capabilityId,
+          capabilityId,
           method: "BalanceAt",
           mode: this.mode,
         });
@@ -216,7 +216,7 @@ export class ClientCapability {
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: capabilityId,
+          capabilityId,
           method: "EstimateGas",
           mode: this.mode,
         });
@@ -224,7 +224,7 @@ export class ClientCapability {
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: capabilityId,
+          capabilityId,
           method: "EstimateGas",
           mode: this.mode,
         });
@@ -252,7 +252,7 @@ export class ClientCapability {
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: capabilityId,
+          capabilityId,
           method: "GetTransactionByHash",
           mode: this.mode,
         });
@@ -260,7 +260,7 @@ export class ClientCapability {
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: capabilityId,
+          capabilityId,
           method: "GetTransactionByHash",
           mode: this.mode,
         });
@@ -288,7 +288,7 @@ export class ClientCapability {
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: capabilityId,
+          capabilityId,
           method: "GetTransactionReceipt",
           mode: this.mode,
         });
@@ -296,7 +296,7 @@ export class ClientCapability {
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: capabilityId,
+          capabilityId,
           method: "GetTransactionReceipt",
           mode: this.mode,
         });
@@ -324,7 +324,7 @@ export class ClientCapability {
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: capabilityId,
+          capabilityId,
           method: "HeaderByNumber",
           mode: this.mode,
         });
@@ -332,7 +332,7 @@ export class ClientCapability {
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: capabilityId,
+          capabilityId,
           method: "HeaderByNumber",
           mode: this.mode,
         });
@@ -360,7 +360,7 @@ export class ClientCapability {
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: capabilityId,
+          capabilityId,
           method: "RegisterLogTracking",
           mode: this.mode,
         });
@@ -368,7 +368,7 @@ export class ClientCapability {
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: capabilityId,
+          capabilityId,
           method: "RegisterLogTracking",
           mode: this.mode,
         });
@@ -396,7 +396,7 @@ export class ClientCapability {
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: capabilityId,
+          capabilityId,
           method: "UnregisterLogTracking",
           mode: this.mode,
         });
@@ -404,7 +404,7 @@ export class ClientCapability {
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: capabilityId,
+          capabilityId,
           method: "UnregisterLogTracking",
           mode: this.mode,
         });
@@ -436,7 +436,7 @@ export class ClientCapability {
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: capabilityId,
+          capabilityId,
           method: "WriteReport",
           mode: this.mode,
         });
@@ -444,7 +444,7 @@ export class ClientCapability {
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: capabilityId,
+          capabilityId,
           method: "WriteReport",
           mode: this.mode,
         });

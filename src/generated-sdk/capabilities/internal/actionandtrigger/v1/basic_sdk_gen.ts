@@ -52,7 +52,7 @@ export class BasicCapability {
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: capabilityId,
+          capabilityId,
           method: "Action",
           mode: this.mode,
         });
@@ -60,7 +60,7 @@ export class BasicCapability {
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: capabilityId,
+          capabilityId,
           method: "Action",
           mode: this.mode,
         });
