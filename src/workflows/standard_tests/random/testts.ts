@@ -7,7 +7,7 @@ import { sendResponseValue } from "@cre/sdk/utils/send-response-value";
 import { create } from "@bufbuild/protobuf";
 import { BasicActionCapability as NodeActionCapability } from "@cre/generated-sdk/capabilities/internal/nodeaction/v1/basicaction_sdk_gen";
 import { val } from "@cre/sdk/utils/values/value";
-import { handler } from "@cre/sdk/workflow";
+import { cre } from "@cre/sdk/cre";
 import { handleExecuteRequest } from "@cre/sdk/engine/execute";
 import { getRequest } from "@cre/sdk/utils/get-request";
 import { BasicCapability as BasicTriggerCapability } from "@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen";
@@ -21,9 +21,6 @@ export async function main() {
   console.log(
     `TS workflow: standard test: random [${new Date().toISOString()}]`
   );
-
-  prepareRuntime();
-  versionV2();
 
   const basicTrigger = new BasicTriggerCapability();
   const handler = async () => {
@@ -66,7 +63,7 @@ export async function main() {
   };
 
   const workflow = [
-    handler(
+    cre.handler(
       basicTrigger.trigger({ name: "first-trigger", number: 100 }),
       handler
     ),

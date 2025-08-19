@@ -1,7 +1,6 @@
 import { sendResponseValue } from "@cre/sdk/utils/send-response-value";
-import { prepareRuntime } from "@cre/sdk/utils/prepare-runtime";
 import { errorBoundary } from "@cre/sdk/utils/error-boundary";
-import { handler, Runner } from "@cre/sdk/workflow";
+import { cre } from "@cre/sdk/cre";
 import { BasicActionCapability } from "@cre/generated-sdk/capabilities/internal/basicaction/v1/basicaction_sdk_gen";
 import { BasicCapability as BasicTriggerCapability } from "@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen";
 import { val } from "@cre/sdk/utils/values/value";
@@ -11,11 +10,9 @@ export async function main() {
     `TS workflow: standard test: capability calls are async [${new Date().toISOString()}]`
   );
 
-  prepareRuntime();
-
   const basicTrigger = new BasicTriggerCapability();
 
-  const asyncCalls = async (): Promise<string> => {
+  const asyncCalls = async (): Promise<void> => {
     const input1 = { inputThing: true };
     const input2 = { inputThing: false };
     const basicAction = new BasicActionCapability();
@@ -23,20 +20,19 @@ export async function main() {
     const p2 = basicAction.performAction(input2);
     const r2 = await p2;
     const r1 = await p1;
-    return `${r1.adaptedThing}${r2.adaptedThing}`;
+
+    sendResponseValue(val.string(`${r1.adaptedThing}${r2.adaptedThing}`));
   };
 
   const initFn = async () => [
-    handler(
+    cre.handler(
       basicTrigger.trigger({ name: "first-trigger", number: 100 }),
       asyncCalls
     ),
   ];
 
   try {
-    const results = await new Runner().run(initFn);
-    const out = String(results[0] ?? "");
-    sendResponseValue(val.string(out));
+    await new cre.Runner().run(initFn);
   } catch (e) {
     errorBoundary(e);
   }

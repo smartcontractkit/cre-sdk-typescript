@@ -5,7 +5,20 @@ export const getConfigFromExecuteRequest = (executeRequest: ExecuteRequest) => {
   const config = executeRequest.config;
   const configString = Buffer.from(config).toString();
 
-  return JSON.parse(configString);
+  try {
+    return JSON.parse(configString);
+  } catch (e) {
+    if (typeof configString === "string") {
+      return configString;
+    }
+
+    if (e instanceof Error) {
+      console.error(e.message);
+      console.error(e.stack);
+    }
+
+    throw e;
+  }
 };
 
 export const getConfig = () => {
