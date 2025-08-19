@@ -9,9 +9,12 @@ import {
 } from "@cre/sdk/utils/values/consensus";
 import { sendResponseValue } from "@cre/sdk/utils/send-response-value";
 import { val } from "@cre/sdk/utils/values/value";
-import { encodeFunctionData, decodeFunctionResult } from "viem";
+import { encodeFunctionData, decodeFunctionResult, type Hex } from "viem";
+import { bytesToHex } from "@cre/sdk/utils/hex-utils";
 
 // Storage contract ABI - we only need the 'get' function
+// TODO: In production, load ABI from external file or contract metadata
+// following Go SDK patterns for ABI management
 const STORAGE_ABI = [
   {
     inputs: [],
@@ -85,7 +88,7 @@ const onCronTrigger = async (env: Environment<Config>): Promise<void> => {
       data: callData,
     },
     blockNumber: {
-      absVal: "03", // 3 for finalized block in hex string
+      absVal: "03", // 3 for finalized block
       sign: "-1", // negative
     },
   });
@@ -94,9 +97,7 @@ const onCronTrigger = async (env: Environment<Config>): Promise<void> => {
   const decodedResult = decodeFunctionResult({
     abi: STORAGE_ABI,
     functionName: "get",
-    data: `0x${Array.from(contractCall.data)
-      .map((b) => b.toString(16).padStart(2, "0"))
-      .join("")}`,
+    data: bytesToHex(contractCall.data) as Hex,
   });
 
   const onchainValue = decodedResult as bigint;

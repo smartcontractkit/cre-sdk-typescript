@@ -127,8 +127,9 @@ export function generateSdk(file: GenFile, outputDir: string) {
 
     const capabilityClassName = `${service.name}Capability`;
 
-    // Check if this is the EVM client for later use
-    const isEvmClient = capOption.capabilityId === "evm@1.0.0";
+    // Check if this capability supports chainSelector via labels
+    const chainSelectorLabel = capOption.labels?.ChainSelector as any;
+    const hasChainSelector = chainSelectorLabel?.kind?.case === "uint64Label";
 
     // Generate methods
     const methods = service.methods
@@ -161,7 +162,7 @@ export function generateSdk(file: GenFile, outputDir: string) {
           method,
           methodName,
           capabilityClassName,
-          isEvmClient
+          hasChainSelector
         );
       })
       .join("\n");
@@ -175,11 +176,11 @@ export function generateSdk(file: GenFile, outputDir: string) {
     // Determine default mode from metadata: NODE is specifically stated, DON otherwise.
     const defaultMode = capOption.mode === Mode.NODE ? "Mode.NODE" : "Mode.DON";
 
-    // Extract chainSelector support for EVM client
+    // Extract chainSelector support
     let chainSelectorSupport = "";
     let constructorParams = `private readonly mode: Mode = ${service.name}Capability.DEFAULT_MODE`;
 
-    if (isEvmClient && capOption.labels) {
+    if (hasChainSelector && capOption.labels) {
       const chainSelectorLabel = capOption.labels.ChainSelector as any;
       if (
         chainSelectorLabel?.kind?.case === "uint64Label" &&

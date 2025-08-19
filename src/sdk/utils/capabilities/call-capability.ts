@@ -15,7 +15,6 @@ export type CallCapabilityParams = {
     typeUrl: string;
     value: Uint8Array;
   };
-  chainSelector?: bigint;
 };
 
 /**
@@ -30,7 +29,6 @@ export function callCapability({
   method,
   mode = Mode.DON,
   payload,
-  chainSelector,
 }: CallCapabilityParams): Promise<CapabilityResponse> {
   // Guards:
   // - Block DON-mode calls while currently in NODE mode
@@ -38,13 +36,8 @@ export function callCapability({
   if (mode === Mode.DON) runtimeGuards.assertDonSafe();
   if (mode === Mode.NODE) runtimeGuards.assertNodeSafe();
 
-  // For EVM capabilities, include chainSelector in the capability ID for routing
-  const effectiveCapabilityId = chainSelector
-    ? `${capabilityId}@chainSelector:${chainSelector}`
-    : capabilityId;
-
   const callbackId = doRequestAsync({
-    capabilityId: effectiveCapabilityId,
+    capabilityId,
     method,
     mode,
     payload,
@@ -52,7 +45,7 @@ export function callCapability({
 
   return new LazyPromise(async () => {
     return awaitAsyncRequest(callbackId, {
-      capabilityId: effectiveCapabilityId,
+      capabilityId,
       method,
       mode,
     });

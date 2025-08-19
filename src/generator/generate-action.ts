@@ -6,35 +6,40 @@ import type { DescMethod } from "@bufbuild/protobuf";
  * @param method - The method descriptor
  * @param methodName - The camelCase method name
  * @param capabilityClassName - The class name of the capability object
- * @param isEvmClient - Whether this is an EVM client that supports chainSelector
+ * @param hasChainSelector - Whether this capability supports chainSelector routing
  * @returns The generated action method code
  */
 export function generateActionMethod(
   method: DescMethod,
   methodName: string,
   capabilityClassName: string,
-  isEvmClient: boolean = false
+  hasChainSelector: boolean = false
 ): string {
-  const chainSelectorParam = isEvmClient
-    ? ",\n      chainSelector: this.chainSelector,"
-    : "";
+  const capabilityIdLogic = hasChainSelector
+    ? `
+    // Include chainSelector in capability ID for routing when specified
+    const effectiveCapabilityId = this.chainSelector
+      ? \`\${${capabilityClassName}.CAPABILITY_ID}@chainSelector:\${this.chainSelector}\`
+      : ${capabilityClassName}.CAPABILITY_ID;`
+    : `
+    const effectiveCapabilityId = ${capabilityClassName}.CAPABILITY_ID;`;
 
   return `
   async ${methodName}(input: ${method.input.name}Json): Promise<${method.output.name}> {
     const payload = {
       typeUrl: getTypeUrl(${method.input.name}Schema),
       value: toBinary(${method.input.name}Schema, fromJson(${method.input.name}Schema, input)),
-    };
+    };${capabilityIdLogic}
     
     return callCapability({
-      capabilityId: ${capabilityClassName}.CAPABILITY_ID,
+      capabilityId: effectiveCapabilityId,
       method: "${method.name}",
       mode: this.mode,
-      payload${chainSelectorParam}
+      payload,
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: ${capabilityClassName}.CAPABILITY_ID,
+          capabilityId: effectiveCapabilityId,
           method: "${method.name}",
           mode: this.mode,
         });
@@ -42,7 +47,7 @@ export function generateActionMethod(
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: ${capabilityClassName}.CAPABILITY_ID,
+          capabilityId: effectiveCapabilityId,
           method: "${method.name}",
           mode: this.mode,
         });

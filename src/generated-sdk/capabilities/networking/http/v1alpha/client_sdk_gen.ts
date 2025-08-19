@@ -36,16 +36,17 @@ export class ClientCapability {
       typeUrl: getTypeUrl(RequestSchema),
       value: toBinary(RequestSchema, fromJson(RequestSchema, input)),
     };
+    const effectiveCapabilityId = ClientCapability.CAPABILITY_ID;
     
     return callCapability({
-      capabilityId: ClientCapability.CAPABILITY_ID,
+      capabilityId: effectiveCapabilityId,
       method: "SendRequest",
       mode: this.mode,
-      payload
+      payload,
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: ClientCapability.CAPABILITY_ID,
+          capabilityId: effectiveCapabilityId,
           method: "SendRequest",
           mode: this.mode,
         });
@@ -53,7 +54,7 @@ export class ClientCapability {
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: ClientCapability.CAPABILITY_ID,
+          capabilityId: effectiveCapabilityId,
           method: "SendRequest",
           mode: this.mode,
         });

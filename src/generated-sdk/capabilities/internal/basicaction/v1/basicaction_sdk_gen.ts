@@ -36,16 +36,17 @@ export class BasicActionCapability {
       typeUrl: getTypeUrl(InputsSchema),
       value: toBinary(InputsSchema, fromJson(InputsSchema, input)),
     };
+    const effectiveCapabilityId = BasicActionCapability.CAPABILITY_ID;
     
     return callCapability({
-      capabilityId: BasicActionCapability.CAPABILITY_ID,
+      capabilityId: effectiveCapabilityId,
       method: "PerformAction",
       mode: this.mode,
-      payload
+      payload,
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: BasicActionCapability.CAPABILITY_ID,
+          capabilityId: effectiveCapabilityId,
           method: "PerformAction",
           mode: this.mode,
         });
@@ -53,7 +54,7 @@ export class BasicActionCapability {
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: BasicActionCapability.CAPABILITY_ID,
+          capabilityId: effectiveCapabilityId,
           method: "PerformAction",
           mode: this.mode,
         });
