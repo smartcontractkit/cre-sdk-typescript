@@ -22,6 +22,8 @@ import {
  * 
  * Capability ID: cron-trigger@1.0.0
  * Default Mode: Mode.DON
+ * Capability Name: cron-trigger
+ * Capability Version: 1.0.0
  */
 export class CronCapability {
   /** The capability ID for this service */
@@ -29,6 +31,9 @@ export class CronCapability {
   
   /** The default execution mode for this capability */
   static readonly DEFAULT_MODE = Mode.DON;
+
+  static readonly CAPABILITY_NAME = "cron-trigger";
+  static readonly CAPABILITY_VERSION = "1.0.0";
 
 
   constructor(

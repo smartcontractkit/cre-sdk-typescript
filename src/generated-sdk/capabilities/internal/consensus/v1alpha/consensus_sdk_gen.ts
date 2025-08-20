@@ -24,6 +24,8 @@ import {
  * 
  * Capability ID: consensus@1.0.0-alpha
  * Default Mode: Mode.DON
+ * Capability Name: consensus
+ * Capability Version: 1.0.0-alpha
  */
 export class ConsensusCapability {
   /** The capability ID for this service */
@@ -31,6 +33,9 @@ export class ConsensusCapability {
   
   /** The default execution mode for this capability */
   static readonly DEFAULT_MODE = Mode.DON;
+
+  static readonly CAPABILITY_NAME = "consensus";
+  static readonly CAPABILITY_VERSION = "1.0.0-alpha";
 
 
   constructor(

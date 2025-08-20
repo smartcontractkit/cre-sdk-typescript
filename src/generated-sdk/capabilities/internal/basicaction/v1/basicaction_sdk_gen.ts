@@ -18,6 +18,8 @@ import {
  * 
  * Capability ID: basic-test-action@1.0.0
  * Default Mode: Mode.DON
+ * Capability Name: basic-test-action
+ * Capability Version: 1.0.0
  */
 export class BasicActionCapability {
   /** The capability ID for this service */
@@ -25,6 +27,9 @@ export class BasicActionCapability {
   
   /** The default execution mode for this capability */
   static readonly DEFAULT_MODE = Mode.DON;
+
+  static readonly CAPABILITY_NAME = "basic-test-action";
+  static readonly CAPABILITY_VERSION = "1.0.0";
 
 
   constructor(

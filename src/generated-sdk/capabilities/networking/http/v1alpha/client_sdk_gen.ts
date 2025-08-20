@@ -18,6 +18,8 @@ import {
  * 
  * Capability ID: http-actions@1.0.0-alpha
  * Default Mode: Mode.NODE
+ * Capability Name: http-actions
+ * Capability Version: 1.0.0-alpha
  */
 export class ClientCapability {
   /** The capability ID for this service */
@@ -25,6 +27,9 @@ export class ClientCapability {
   
   /** The default execution mode for this capability */
   static readonly DEFAULT_MODE = Mode.NODE;
+
+  static readonly CAPABILITY_NAME = "http-actions";
+  static readonly CAPABILITY_VERSION = "1.0.0-alpha";
 
 
   constructor(

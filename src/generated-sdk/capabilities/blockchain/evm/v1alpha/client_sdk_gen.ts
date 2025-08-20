@@ -60,6 +60,8 @@ import {
  * 
  * Capability ID: evm@1.0.0
  * Default Mode: Mode.DON
+ * Capability Name: evm
+ * Capability Version: 1.0.0
  */
 export class ClientCapability {
   /** The capability ID for this service */
@@ -67,6 +69,9 @@ export class ClientCapability {
   
   /** The default execution mode for this capability */
   static readonly DEFAULT_MODE = Mode.DON;
+
+  static readonly CAPABILITY_NAME = "evm";
+  static readonly CAPABILITY_VERSION = "1.0.0";
 
   /** Available chain selectors */
   static readonly SUPPORTED_CHAINS = {
@@ -97,7 +102,7 @@ export class ClientCapability {
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
-      ? `${ClientCapability.CAPABILITY_ID}@chainSelector:${this.chainSelector}`
+      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
     
     return callCapability({
@@ -133,7 +138,7 @@ export class ClientCapability {
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
-      ? `${ClientCapability.CAPABILITY_ID}@chainSelector:${this.chainSelector}`
+      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
     
     return callCapability({
@@ -169,7 +174,7 @@ export class ClientCapability {
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
-      ? `${ClientCapability.CAPABILITY_ID}@chainSelector:${this.chainSelector}`
+      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
     
     return callCapability({
@@ -205,7 +210,7 @@ export class ClientCapability {
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
-      ? `${ClientCapability.CAPABILITY_ID}@chainSelector:${this.chainSelector}`
+      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
     
     return callCapability({
@@ -241,7 +246,7 @@ export class ClientCapability {
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
-      ? `${ClientCapability.CAPABILITY_ID}@chainSelector:${this.chainSelector}`
+      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
     
     return callCapability({
@@ -277,7 +282,7 @@ export class ClientCapability {
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
-      ? `${ClientCapability.CAPABILITY_ID}@chainSelector:${this.chainSelector}`
+      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
     
     return callCapability({
@@ -313,7 +318,7 @@ export class ClientCapability {
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
-      ? `${ClientCapability.CAPABILITY_ID}@chainSelector:${this.chainSelector}`
+      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
     
     return callCapability({
@@ -349,7 +354,7 @@ export class ClientCapability {
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
-      ? `${ClientCapability.CAPABILITY_ID}@chainSelector:${this.chainSelector}`
+      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
     
     return callCapability({
@@ -385,7 +390,7 @@ export class ClientCapability {
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
-      ? `${ClientCapability.CAPABILITY_ID}@chainSelector:${this.chainSelector}`
+      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
     
     return callCapability({
@@ -425,7 +430,7 @@ export class ClientCapability {
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
-      ? `${ClientCapability.CAPABILITY_ID}@chainSelector:${this.chainSelector}`
+      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
     
     return callCapability({

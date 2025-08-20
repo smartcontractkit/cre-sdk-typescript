@@ -19,7 +19,7 @@ export function generateActionMethod(
     ? `
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
-      ? \`\${${capabilityClassName}.CAPABILITY_ID}@chainSelector:\${this.chainSelector}\`
+      ? \`\${${capabilityClassName}.CAPABILITY_NAME}:ChainSelector:\${this.chainSelector}@\${${capabilityClassName}.CAPABILITY_VERSION}\`
       : ${capabilityClassName}.CAPABILITY_ID;`
     : `
     const capabilityId = ${capabilityClassName}.CAPABILITY_ID;`;

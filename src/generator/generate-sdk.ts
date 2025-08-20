@@ -176,6 +176,9 @@ export function generateSdk(file: GenFile, outputDir: string) {
     // Determine default mode from metadata: NODE is specifically stated, DON otherwise.
     const defaultMode = capOption.mode === Mode.NODE ? "Mode.NODE" : "Mode.DON";
 
+    const [capabilityName, capabilityVersion] =
+      capOption.capabilityId.split("@");
+
     // Extract chainSelector support
     let chainSelectorSupport = "";
     let constructorParams = `private readonly mode: Mode = ${service.name}Capability.DEFAULT_MODE`;
@@ -195,7 +198,7 @@ ${Object.entries(defaults)
   .join(",\n")}
   } as const;`;
 
-        constructorParams = `private readonly mode: Mode = ${service.name}Capability.DEFAULT_MODE,\n    private readonly chainSelector?: bigint`;
+        constructorParams = `${constructorParams},\n    private readonly chainSelector?: bigint`;
       }
     }
 
@@ -206,6 +209,8 @@ ${Object.entries(defaults)
  * 
  * Capability ID: ${capOption.capabilityId}
  * Default Mode: ${defaultMode}
+ * Capability Name: ${capabilityName}
+ * Capability Version: ${capabilityVersion}
  */`;
 
     // Generate the complete file
@@ -217,6 +222,9 @@ export class ${capabilityClassName} {
   
   /** The default execution mode for this capability */
   static readonly DEFAULT_MODE = ${defaultMode};
+
+  static readonly CAPABILITY_NAME = "${capabilityName}";
+  static readonly CAPABILITY_VERSION = "${capabilityVersion}";
 ${chainSelectorSupport}
 
   constructor(
