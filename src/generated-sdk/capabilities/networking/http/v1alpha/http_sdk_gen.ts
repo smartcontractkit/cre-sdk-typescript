@@ -20,6 +20,8 @@ import {
  * 
  * Capability ID: http-trigger@1.0.0-alpha
  * Default Mode: Mode.DON
+ * Capability Name: http-trigger
+ * Capability Version: 1.0.0-alpha
  */
 export class HTTPCapability {
   /** The capability ID for this service */
@@ -27,6 +29,10 @@ export class HTTPCapability {
   
   /** The default execution mode for this capability */
   static readonly DEFAULT_MODE = Mode.DON;
+
+  static readonly CAPABILITY_NAME = "http-trigger";
+  static readonly CAPABILITY_VERSION = "1.0.0-alpha";
+
 
   constructor(
     private readonly mode: Mode = HTTPCapability.DEFAULT_MODE

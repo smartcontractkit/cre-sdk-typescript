@@ -60,6 +60,8 @@ import {
  * 
  * Capability ID: evm@1.0.0
  * Default Mode: Mode.DON
+ * Capability Name: evm
+ * Capability Version: 1.0.0
  */
 export class ClientCapability {
   /** The capability ID for this service */
@@ -68,8 +70,29 @@ export class ClientCapability {
   /** The default execution mode for this capability */
   static readonly DEFAULT_MODE = Mode.DON;
 
+  static readonly CAPABILITY_NAME = "evm";
+  static readonly CAPABILITY_VERSION = "1.0.0";
+
+  /** Available chain selectors */
+  static readonly SUPPORTED_CHAINS = {
+    "avalanche-mainnet": 6433500567565415381n,
+    "avalanche-testnet-fuji": 14767482510784806043n,
+    "binance_smart_chain-mainnet-opbnb-1": 465944652040885897n,
+    "binance_smart_chain-testnet-opbnb-1": 13274425992935471758n,
+    "ethereum-mainnet": 5009297550715157269n,
+    "ethereum-mainnet-arbitrum-1": 4949039107694359620n,
+    "ethereum-mainnet-optimism-1": 3734403246176062136n,
+    "ethereum-testnet-sepolia": 16015286601757825753n,
+    "ethereum-testnet-sepolia-arbitrum-1": 3478487238524512106n,
+    "ethereum-testnet-sepolia-base-1": 10344971235874465080n,
+    "ethereum-testnet-sepolia-optimism-1": 5224473277236331295n,
+    "polygon-mainnet": 4051577828743386545n,
+    "polygon-testnet-amoy": 16281711391670634445n
+  } as const;
+
   constructor(
-    private readonly mode: Mode = ClientCapability.DEFAULT_MODE
+    private readonly mode: Mode = ClientCapability.DEFAULT_MODE,
+    private readonly chainSelector?: bigint
   ) {}
 
   async callContract(input: CallContractRequestJson): Promise<CallContractReply> {
@@ -77,16 +100,20 @@ export class ClientCapability {
       typeUrl: getTypeUrl(CallContractRequestSchema),
       value: toBinary(CallContractRequestSchema, fromJson(CallContractRequestSchema, input)),
     };
+    // Include chainSelector in capability ID for routing when specified
+    const capabilityId = this.chainSelector
+      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+      : ClientCapability.CAPABILITY_ID;
     
     return callCapability({
-      capabilityId: ClientCapability.CAPABILITY_ID,
+      capabilityId,
       method: "CallContract",
       mode: this.mode,
       payload,
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: ClientCapability.CAPABILITY_ID,
+          capabilityId,
           method: "CallContract",
           mode: this.mode,
         });
@@ -94,7 +121,7 @@ export class ClientCapability {
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: ClientCapability.CAPABILITY_ID,
+          capabilityId,
           method: "CallContract",
           mode: this.mode,
         });
@@ -109,16 +136,20 @@ export class ClientCapability {
       typeUrl: getTypeUrl(FilterLogsRequestSchema),
       value: toBinary(FilterLogsRequestSchema, fromJson(FilterLogsRequestSchema, input)),
     };
+    // Include chainSelector in capability ID for routing when specified
+    const capabilityId = this.chainSelector
+      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+      : ClientCapability.CAPABILITY_ID;
     
     return callCapability({
-      capabilityId: ClientCapability.CAPABILITY_ID,
+      capabilityId,
       method: "FilterLogs",
       mode: this.mode,
       payload,
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: ClientCapability.CAPABILITY_ID,
+          capabilityId,
           method: "FilterLogs",
           mode: this.mode,
         });
@@ -126,7 +157,7 @@ export class ClientCapability {
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: ClientCapability.CAPABILITY_ID,
+          capabilityId,
           method: "FilterLogs",
           mode: this.mode,
         });
@@ -141,16 +172,20 @@ export class ClientCapability {
       typeUrl: getTypeUrl(BalanceAtRequestSchema),
       value: toBinary(BalanceAtRequestSchema, fromJson(BalanceAtRequestSchema, input)),
     };
+    // Include chainSelector in capability ID for routing when specified
+    const capabilityId = this.chainSelector
+      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+      : ClientCapability.CAPABILITY_ID;
     
     return callCapability({
-      capabilityId: ClientCapability.CAPABILITY_ID,
+      capabilityId,
       method: "BalanceAt",
       mode: this.mode,
       payload,
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: ClientCapability.CAPABILITY_ID,
+          capabilityId,
           method: "BalanceAt",
           mode: this.mode,
         });
@@ -158,7 +193,7 @@ export class ClientCapability {
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: ClientCapability.CAPABILITY_ID,
+          capabilityId,
           method: "BalanceAt",
           mode: this.mode,
         });
@@ -173,16 +208,20 @@ export class ClientCapability {
       typeUrl: getTypeUrl(EstimateGasRequestSchema),
       value: toBinary(EstimateGasRequestSchema, fromJson(EstimateGasRequestSchema, input)),
     };
+    // Include chainSelector in capability ID for routing when specified
+    const capabilityId = this.chainSelector
+      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+      : ClientCapability.CAPABILITY_ID;
     
     return callCapability({
-      capabilityId: ClientCapability.CAPABILITY_ID,
+      capabilityId,
       method: "EstimateGas",
       mode: this.mode,
       payload,
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: ClientCapability.CAPABILITY_ID,
+          capabilityId,
           method: "EstimateGas",
           mode: this.mode,
         });
@@ -190,7 +229,7 @@ export class ClientCapability {
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: ClientCapability.CAPABILITY_ID,
+          capabilityId,
           method: "EstimateGas",
           mode: this.mode,
         });
@@ -205,16 +244,20 @@ export class ClientCapability {
       typeUrl: getTypeUrl(GetTransactionByHashRequestSchema),
       value: toBinary(GetTransactionByHashRequestSchema, fromJson(GetTransactionByHashRequestSchema, input)),
     };
+    // Include chainSelector in capability ID for routing when specified
+    const capabilityId = this.chainSelector
+      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+      : ClientCapability.CAPABILITY_ID;
     
     return callCapability({
-      capabilityId: ClientCapability.CAPABILITY_ID,
+      capabilityId,
       method: "GetTransactionByHash",
       mode: this.mode,
       payload,
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: ClientCapability.CAPABILITY_ID,
+          capabilityId,
           method: "GetTransactionByHash",
           mode: this.mode,
         });
@@ -222,7 +265,7 @@ export class ClientCapability {
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: ClientCapability.CAPABILITY_ID,
+          capabilityId,
           method: "GetTransactionByHash",
           mode: this.mode,
         });
@@ -237,16 +280,20 @@ export class ClientCapability {
       typeUrl: getTypeUrl(GetTransactionReceiptRequestSchema),
       value: toBinary(GetTransactionReceiptRequestSchema, fromJson(GetTransactionReceiptRequestSchema, input)),
     };
+    // Include chainSelector in capability ID for routing when specified
+    const capabilityId = this.chainSelector
+      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+      : ClientCapability.CAPABILITY_ID;
     
     return callCapability({
-      capabilityId: ClientCapability.CAPABILITY_ID,
+      capabilityId,
       method: "GetTransactionReceipt",
       mode: this.mode,
       payload,
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: ClientCapability.CAPABILITY_ID,
+          capabilityId,
           method: "GetTransactionReceipt",
           mode: this.mode,
         });
@@ -254,7 +301,7 @@ export class ClientCapability {
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: ClientCapability.CAPABILITY_ID,
+          capabilityId,
           method: "GetTransactionReceipt",
           mode: this.mode,
         });
@@ -269,16 +316,20 @@ export class ClientCapability {
       typeUrl: getTypeUrl(HeaderByNumberRequestSchema),
       value: toBinary(HeaderByNumberRequestSchema, fromJson(HeaderByNumberRequestSchema, input)),
     };
+    // Include chainSelector in capability ID for routing when specified
+    const capabilityId = this.chainSelector
+      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+      : ClientCapability.CAPABILITY_ID;
     
     return callCapability({
-      capabilityId: ClientCapability.CAPABILITY_ID,
+      capabilityId,
       method: "HeaderByNumber",
       mode: this.mode,
       payload,
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: ClientCapability.CAPABILITY_ID,
+          capabilityId,
           method: "HeaderByNumber",
           mode: this.mode,
         });
@@ -286,7 +337,7 @@ export class ClientCapability {
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: ClientCapability.CAPABILITY_ID,
+          capabilityId,
           method: "HeaderByNumber",
           mode: this.mode,
         });
@@ -301,16 +352,20 @@ export class ClientCapability {
       typeUrl: getTypeUrl(RegisterLogTrackingRequestSchema),
       value: toBinary(RegisterLogTrackingRequestSchema, fromJson(RegisterLogTrackingRequestSchema, input)),
     };
+    // Include chainSelector in capability ID for routing when specified
+    const capabilityId = this.chainSelector
+      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+      : ClientCapability.CAPABILITY_ID;
     
     return callCapability({
-      capabilityId: ClientCapability.CAPABILITY_ID,
+      capabilityId,
       method: "RegisterLogTracking",
       mode: this.mode,
       payload,
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: ClientCapability.CAPABILITY_ID,
+          capabilityId,
           method: "RegisterLogTracking",
           mode: this.mode,
         });
@@ -318,7 +373,7 @@ export class ClientCapability {
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: ClientCapability.CAPABILITY_ID,
+          capabilityId,
           method: "RegisterLogTracking",
           mode: this.mode,
         });
@@ -333,16 +388,20 @@ export class ClientCapability {
       typeUrl: getTypeUrl(UnregisterLogTrackingRequestSchema),
       value: toBinary(UnregisterLogTrackingRequestSchema, fromJson(UnregisterLogTrackingRequestSchema, input)),
     };
+    // Include chainSelector in capability ID for routing when specified
+    const capabilityId = this.chainSelector
+      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+      : ClientCapability.CAPABILITY_ID;
     
     return callCapability({
-      capabilityId: ClientCapability.CAPABILITY_ID,
+      capabilityId,
       method: "UnregisterLogTracking",
       mode: this.mode,
       payload,
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: ClientCapability.CAPABILITY_ID,
+          capabilityId,
           method: "UnregisterLogTracking",
           mode: this.mode,
         });
@@ -350,7 +409,7 @@ export class ClientCapability {
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: ClientCapability.CAPABILITY_ID,
+          capabilityId,
           method: "UnregisterLogTracking",
           mode: this.mode,
         });
@@ -369,16 +428,20 @@ export class ClientCapability {
       typeUrl: getTypeUrl(WriteReportRequestSchema),
       value: toBinary(WriteReportRequestSchema, fromJson(WriteReportRequestSchema, input)),
     };
+    // Include chainSelector in capability ID for routing when specified
+    const capabilityId = this.chainSelector
+      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+      : ClientCapability.CAPABILITY_ID;
     
     return callCapability({
-      capabilityId: ClientCapability.CAPABILITY_ID,
+      capabilityId,
       method: "WriteReport",
       mode: this.mode,
       payload,
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: ClientCapability.CAPABILITY_ID,
+          capabilityId,
           method: "WriteReport",
           mode: this.mode,
         });
@@ -386,7 +449,7 @@ export class ClientCapability {
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: ClientCapability.CAPABILITY_ID,
+          capabilityId,
           method: "WriteReport",
           mode: this.mode,
         });

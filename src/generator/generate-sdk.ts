@@ -127,6 +127,10 @@ export function generateSdk(file: GenFile, outputDir: string) {
 
     const capabilityClassName = `${service.name}Capability`;
 
+    // Check if this capability supports chainSelector via labels
+    const chainSelectorLabel = capOption.labels?.ChainSelector as any;
+    const hasChainSelector = chainSelectorLabel?.kind?.case === "uint64Label";
+
     // Generate methods
     const methods = service.methods
       .map((method) => {
@@ -154,7 +158,12 @@ export function generateSdk(file: GenFile, outputDir: string) {
         }
 
         // Generate action method
-        return generateActionMethod(method, methodName, capabilityClassName);
+        return generateActionMethod(
+          method,
+          methodName,
+          capabilityClassName,
+          hasChainSelector
+        );
       })
       .join("\n");
 
@@ -167,6 +176,32 @@ export function generateSdk(file: GenFile, outputDir: string) {
     // Determine default mode from metadata: NODE is specifically stated, DON otherwise.
     const defaultMode = capOption.mode === Mode.NODE ? "Mode.NODE" : "Mode.DON";
 
+    const [capabilityName, capabilityVersion] =
+      capOption.capabilityId.split("@");
+
+    // Extract chainSelector support
+    let chainSelectorSupport = "";
+    let constructorParams = `private readonly mode: Mode = ${service.name}Capability.DEFAULT_MODE`;
+
+    if (hasChainSelector && capOption.labels) {
+      const chainSelectorLabel = capOption.labels.ChainSelector as any;
+      if (
+        chainSelectorLabel?.kind?.case === "uint64Label" &&
+        chainSelectorLabel?.kind?.value?.defaults
+      ) {
+        const defaults = chainSelectorLabel.kind.value.defaults;
+        chainSelectorSupport = `
+  /** Available chain selectors */
+  static readonly SUPPORTED_CHAINS = {
+${Object.entries(defaults)
+  .map(([key, value]) => `    "${key}": ${value}n`)
+  .join(",\n")}
+  } as const;`;
+
+        constructorParams = `${constructorParams},\n    private readonly chainSelector?: bigint`;
+      }
+    }
+
     // Add JSDoc with metadata information
     const classComment = `
 /**
@@ -174,6 +209,8 @@ export function generateSdk(file: GenFile, outputDir: string) {
  * 
  * Capability ID: ${capOption.capabilityId}
  * Default Mode: ${defaultMode}
+ * Capability Name: ${capabilityName}
+ * Capability Version: ${capabilityVersion}
  */`;
 
     // Generate the complete file
@@ -186,8 +223,12 @@ export class ${capabilityClassName} {
   /** The default execution mode for this capability */
   static readonly DEFAULT_MODE = ${defaultMode};
 
+  static readonly CAPABILITY_NAME = "${capabilityName}";
+  static readonly CAPABILITY_VERSION = "${capabilityVersion}";
+${chainSelectorSupport}
+
   constructor(
-    private readonly mode: Mode = ${service.name}Capability.DEFAULT_MODE
+    ${constructorParams}
   ) {}
 ${methods}
 }

@@ -18,6 +18,8 @@ import {
  * 
  * Capability ID: basic-test-node-action@1.0.0
  * Default Mode: Mode.NODE
+ * Capability Name: basic-test-node-action
+ * Capability Version: 1.0.0
  */
 export class BasicActionCapability {
   /** The capability ID for this service */
@@ -25,6 +27,10 @@ export class BasicActionCapability {
   
   /** The default execution mode for this capability */
   static readonly DEFAULT_MODE = Mode.NODE;
+
+  static readonly CAPABILITY_NAME = "basic-test-node-action";
+  static readonly CAPABILITY_VERSION = "1.0.0";
+
 
   constructor(
     private readonly mode: Mode = BasicActionCapability.DEFAULT_MODE
@@ -35,16 +41,17 @@ export class BasicActionCapability {
       typeUrl: getTypeUrl(NodeInputsSchema),
       value: toBinary(NodeInputsSchema, fromJson(NodeInputsSchema, input)),
     };
+    const capabilityId = BasicActionCapability.CAPABILITY_ID;
     
     return callCapability({
-      capabilityId: BasicActionCapability.CAPABILITY_ID,
+      capabilityId,
       method: "PerformAction",
       mode: this.mode,
       payload,
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: BasicActionCapability.CAPABILITY_ID,
+          capabilityId,
           method: "PerformAction",
           mode: this.mode,
         });
@@ -52,7 +59,7 @@ export class BasicActionCapability {
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: BasicActionCapability.CAPABILITY_ID,
+          capabilityId,
           method: "PerformAction",
           mode: this.mode,
         });

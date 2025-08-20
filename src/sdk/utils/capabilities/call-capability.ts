@@ -35,9 +35,19 @@ export function callCapability({
   // - Block NODE-mode calls while currently in DON mode
   if (mode === Mode.DON) runtimeGuards.assertDonSafe();
   if (mode === Mode.NODE) runtimeGuards.assertNodeSafe();
-  const callbackId = doRequestAsync({ capabilityId, method, mode, payload });
+
+  const callbackId = doRequestAsync({
+    capabilityId,
+    method,
+    mode,
+    payload,
+  });
 
   return new LazyPromise(async () => {
-    return awaitAsyncRequest(callbackId, { capabilityId, method, mode });
+    return awaitAsyncRequest(callbackId, {
+      capabilityId,
+      method,
+      mode,
+    });
   });
 }

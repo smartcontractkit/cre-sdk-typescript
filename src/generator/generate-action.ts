@@ -6,29 +6,40 @@ import type { DescMethod } from "@bufbuild/protobuf";
  * @param method - The method descriptor
  * @param methodName - The camelCase method name
  * @param capabilityClassName - The class name of the capability object
+ * @param hasChainSelector - Whether this capability supports chainSelector routing
  * @returns The generated action method code
  */
 export function generateActionMethod(
   method: DescMethod,
   methodName: string,
-  capabilityClassName: string
+  capabilityClassName: string,
+  hasChainSelector: boolean = false
 ): string {
+  const capabilityIdLogic = hasChainSelector
+    ? `
+    // Include chainSelector in capability ID for routing when specified
+    const capabilityId = this.chainSelector
+      ? \`\${${capabilityClassName}.CAPABILITY_NAME}:ChainSelector:\${this.chainSelector}@\${${capabilityClassName}.CAPABILITY_VERSION}\`
+      : ${capabilityClassName}.CAPABILITY_ID;`
+    : `
+    const capabilityId = ${capabilityClassName}.CAPABILITY_ID;`;
+
   return `
   async ${methodName}(input: ${method.input.name}Json): Promise<${method.output.name}> {
     const payload = {
       typeUrl: getTypeUrl(${method.input.name}Schema),
       value: toBinary(${method.input.name}Schema, fromJson(${method.input.name}Schema, input)),
-    };
+    };${capabilityIdLogic}
     
     return callCapability({
-      capabilityId: ${capabilityClassName}.CAPABILITY_ID,
+      capabilityId,
       method: "${method.name}",
       mode: this.mode,
       payload,
     }).then((capabilityResponse: CapabilityResponse) => {
       if (capabilityResponse.response.case === "error") {
         throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId: ${capabilityClassName}.CAPABILITY_ID,
+          capabilityId,
           method: "${method.name}",
           mode: this.mode,
         });
@@ -36,7 +47,7 @@ export function generateActionMethod(
 
       if (capabilityResponse.response.case !== "payload") {
         throw new CapabilityError("No payload in response", {
-          capabilityId: ${capabilityClassName}.CAPABILITY_ID,
+          capabilityId,
           method: "${method.name}",
           mode: this.mode,
         });
