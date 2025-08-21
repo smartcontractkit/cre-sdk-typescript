@@ -43,7 +43,7 @@ export async function main() {
   try {
     const executeRequest: ExecuteRequest = getRequest();
     const workflow = buildWorkflow();
-    await handleExecuteRequest(executeRequest, workflow);
+    await handleExecuteRequest(executeRequest, workflow, { config: {} });
   } catch (e) {
     errorBoundary(e);
   }

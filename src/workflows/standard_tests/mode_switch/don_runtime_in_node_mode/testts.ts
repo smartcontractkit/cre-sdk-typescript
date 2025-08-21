@@ -49,12 +49,16 @@ export async function main() {
 
   try {
     const executeRequest = getRequest();
-    await handleExecuteRequest(executeRequest, [
-      cre.handler(
-        basicTrigger.trigger({ name: "first-trigger", number: 100 }),
-        handler
-      ),
-    ]);
+    await handleExecuteRequest(
+      executeRequest,
+      [
+        cre.handler(
+          basicTrigger.trigger({ name: "first-trigger", number: 100 }),
+          handler
+        ),
+      ],
+      { config: {} }
+    );
   } catch (e) {
     errorBoundary(e);
   }

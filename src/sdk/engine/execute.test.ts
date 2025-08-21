@@ -58,7 +58,7 @@ describe("engine/execute", () => {
       maxResponseSize: "0",
     });
 
-    await handleExecuteRequest(req, workflow);
+    await handleExecuteRequest(req, workflow, { config: {} });
 
     expect(subs[0]).toContain(
       "basic-test-trigger@1.0.0:Trigger:type.googleapis.com/capabilities.internal.basictrigger.v1.Config"
@@ -119,7 +119,7 @@ describe("engine/execute", () => {
       maxResponseSize: "0",
     });
 
-    await handleExecuteRequest(req, workflow);
+    await handleExecuteRequest(req, workflow, { config: {} });
 
     expect(calls).toEqual(["action:different"]);
   });
@@ -150,7 +150,7 @@ describe("engine/execute", () => {
       maxResponseSize: "0",
     });
 
-    await handleExecuteRequest(req, workflow);
+    await handleExecuteRequest(req, workflow, { config: {} });
     expect(calls).toEqual([]);
   });
 
@@ -181,7 +181,7 @@ describe("engine/execute", () => {
       maxResponseSize: "0",
     });
 
-    await handleExecuteRequest(req, workflow);
+    await handleExecuteRequest(req, workflow, { config: {} });
     expect(calls).toEqual([]);
   });
 });

@@ -15,7 +15,7 @@ import { buildEnvFromExecuteRequest } from "@cre/sdk/utils/env";
 export const handleExecuteRequest = async <TConfig>(
   req: ExecuteRequest,
   workflow: Workflow<TConfig>,
-  env: Environment<TConfig> = {},
+  env: Environment<TConfig>,
   rt: Runtime = {}
 ): Promise<CapabilityResponse | void> => {
   if (req.request.case === "subscribe") {

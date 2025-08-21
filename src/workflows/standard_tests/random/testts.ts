@@ -71,7 +71,7 @@ export async function main() {
 
   try {
     const executeRequest = getRequest();
-    await handleExecuteRequest(executeRequest, workflow);
+    await handleExecuteRequest(executeRequest, workflow, { config: {} });
   } catch (e) {
     errorBoundary(e);
   }

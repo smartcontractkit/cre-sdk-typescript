@@ -1,7 +1,5 @@
 import { z } from "zod";
 import { cre, type Environment } from "@cre/sdk/cre";
-import { runInNodeMode } from "@cre/sdk/runtime/run-in-node-mode";
-import { sendResponseValue } from "@cre/sdk/utils/send-response-value";
 
 // Config struct defines the parameters that can be passed to the workflow
 const configSchema = z.object({
@@ -13,17 +11,11 @@ type Config = z.infer<typeof configSchema>;
 
 // onCronTrigger is the callback function that gets executed when the cron trigger fires
 const onCronTrigger = async (env: Environment<Config>): Promise<void> => {
-  env.logger?.log("Hello, Calculator! Workflow triggered.");
-
-  const aggregatedValue = await runInNodeMode(async () => {
-    const http = new cre.capabilities.HTTPClient();
-    const resp = await http.sendRequest({
-      url: env.config?.apiUrl,
-      method: "GET",
+  const aggregatedValue = await cre.runInNodeMode(async () => {
+    const response = await cre.utils.fetch({
+      url: env.config!.apiUrl,
     });
-
-    const bodyStr = new TextDecoder().decode(resp.body);
-    const num = Number.parseFloat(bodyStr.trim());
+    const num = Number.parseFloat(response.body.trim());
 
     return cre.utils.consensus.getAggregatedValue(
       cre.utils.val.float64(num),
@@ -31,7 +23,7 @@ const onCronTrigger = async (env: Environment<Config>): Promise<void> => {
     );
   });
 
-  sendResponseValue(cre.utils.val.mapValue({ Result: aggregatedValue }));
+  cre.sendResponseValue(cre.utils.val.mapValue({ Result: aggregatedValue }));
 };
 
 // InitWorkflow is the required entry point for a CRE workflow
