@@ -17,12 +17,26 @@ import {
 } from "@cre/generated/values/v1/values_pb";
 
 // int64 bounds
-const INT64_MIN = -(2n ** 63n);
-const INT64_MAX = 2n ** 63n - 1n;
+const INT64_MIN = -(2n ** 63n); // -9,223,372,036,854,775,808
+const INT64_MAX = 2n ** 63n - 1n; // 9,223,372,036,854,775,807
 
 const toUint8Array = (input: Uint8Array | ArrayBuffer): Uint8Array =>
   input instanceof Uint8Array ? input : new Uint8Array(input);
 
+/**
+ * Converts a bigint to a byte array using big-endian byte order.
+ * Big-endian means the most significant byte comes first in the array.
+ *
+ * @param abs - The absolute value of the bigint to convert (should be non-negative)
+ * @returns A Uint8Array representing the bigint in big-endian byte order
+ *
+ * @example
+ * ```typescript
+ * bigintToBytesBE(0n)     // returns new Uint8Array()
+ * bigintToBytesBE(255n)   // returns new Uint8Array([0xFF])
+ * bigintToBytesBE(0x1234n) // returns new Uint8Array([0x12, 0x34])
+ * ```
+ */
 const bigintToBytesBE = (abs: bigint): Uint8Array => {
   if (abs === 0n) return new Uint8Array();
   let hex = abs.toString(16);
@@ -35,7 +49,13 @@ const bigintToBytesBE = (abs: bigint): Uint8Array => {
   return out;
 };
 
-const jsBigIntToProtoBigInt = (v: bigint): ProtoBigInt => {
+/**
+ * Converts a JavaScript Native bigint to a protobuf BigInt message.
+ *
+ * @param v - The bigint to convert
+ * @returns A protobuf BigInt message
+ */
+const bigIntToProtoBigInt = (v: bigint): ProtoBigInt => {
   const sign = v === 0n ? 0n : v < 0n ? -1n : 1n;
   const abs = v < 0n ? -v : v;
   return create(BigIntSchema, {
@@ -103,7 +123,7 @@ const wrapInternal = (v: unknown): Value => {
         });
       }
       return create(ValueSchema, {
-        value: { case: "bigintValue", value: jsBigIntToProtoBigInt(v) },
+        value: { case: "bigintValue", value: bigIntToProtoBigInt(v) },
       });
     }
     case "number": {
@@ -161,7 +181,7 @@ export const val = {
     create(ValueSchema, { value: { case: "float64Value", value: n } }),
   bigint: (n: bigint): Value =>
     create(ValueSchema, {
-      value: { case: "bigintValue", value: jsBigIntToProtoBigInt(n) },
+      value: { case: "bigintValue", value: bigIntToProtoBigInt(n) },
     }),
   time: (d: Date | number | string): Value =>
     create(ValueSchema, {
@@ -202,7 +222,7 @@ export const val = {
     const digits = intPart + fracPart || "0";
     const coeff = BigInt((signStr === "-" ? "-" : "") + digits);
     const decimal: ProtoDecimal = create(DecimalSchema, {
-      coefficient: jsBigIntToProtoBigInt(coeff),
+      coefficient: bigIntToProtoBigInt(coeff),
       exponent: exp,
     });
     return create(ValueSchema, {

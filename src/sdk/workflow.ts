@@ -14,7 +14,7 @@ export type Logger = {
 };
 
 export type Environment<TConfig = unknown> = {
-  config?: TConfig;
+  config: TConfig;
   mode?: Mode;
   logger?: Logger;
 };

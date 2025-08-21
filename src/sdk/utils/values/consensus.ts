@@ -8,6 +8,7 @@ import {
   AggregationType,
   ConsensusDescriptorSchema,
   FieldsMapSchema,
+  SimpleConsensusInputsSchema,
 } from "@cre/generated/sdk/v1alpha/sdk_pb";
 
 export const consensusDescriptorMedian = create(ConsensusDescriptorSchema, {
@@ -80,6 +81,7 @@ export type ObservationValueCase = Extract<
   SimpleConsensusInputs["observation"],
   { case: "value" }
 >;
+
 export type ObservationErrorCase = Extract<
   SimpleConsensusInputs["observation"],
   { case: "error" }
@@ -94,3 +96,58 @@ export const observationError = (message: string): ObservationErrorCase => ({
   case: "error",
   value: message,
 });
+
+/**
+ * Creates consensus inputs for oracle network data aggregation.
+ *
+ * This function prepares an individual observation for distributed consensus
+ * among multiple oracle nodes. Each consensus strategy aggregates observations
+ * differently to produce a single trusted result.
+ *
+ * @param value - The observation value from this oracle node
+ * @param consensus - The consensus mechanism to use for aggregation:
+ *   - `"median"` - Takes middle value when sorted (ideal for numerical data, like prices)
+ *   - `"identical"` - Requires all nodes to report exact same value (for critical boolean/status data)
+ *   - `"commonPrefix"` - Finds longest shared beginning of strings (useful for URLs/addresses)
+ *   - `"commonSuffix"` - Finds longest shared ending of strings
+ * @returns SimpleConsensusInputs object containing the observation and consensus descriptor
+ *
+ * @example
+ * ```typescript
+ * // Price feed - use median to resist outliers
+ * const priceInput = getAggregatedValue(val.float64(1850.50), "median");
+ *
+ * // System status - require exact consensus
+ * const statusInput = getAggregatedValue(val.bool(true), "identical");
+ *
+ * // API endpoint - find common base URL
+ * const urlInput = getAggregatedValue(val.string("https://api.example.com/v1/data"), "commonPrefix");
+ * ```
+ */
+export const getAggregatedValue = (
+  value: Value,
+  consensus: "median" | "identical" | "commonPrefix" | "commonSuffix"
+) => {
+  let aggregation: ConsensusDescriptor;
+  switch (consensus) {
+    case "median":
+      aggregation = consensusDescriptorMedian;
+      break;
+    case "identical":
+      aggregation = consensusDescriptorIdentical;
+      break;
+    case "commonPrefix":
+      aggregation = consensusDescriptorCommonPrefix;
+      break;
+    case "commonSuffix":
+      aggregation = consensusDescriptorCommonSuffix;
+      break;
+    default:
+      throw new Error(`Unknown consensus type: ${consensus}`);
+  }
+
+  return create(SimpleConsensusInputsSchema, {
+    observation: observationValue(value),
+    descriptors: aggregation,
+  });
+};

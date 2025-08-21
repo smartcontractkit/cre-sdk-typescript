@@ -1,14 +1,5 @@
 import { z } from "zod";
 import { cre, type Environment } from "@cre/sdk/cre";
-import { runInNodeMode } from "@cre/sdk/runtime/run-in-node-mode";
-import { SimpleConsensusInputsSchema } from "@cre/generated/sdk/v1alpha/sdk_pb";
-import { create } from "@bufbuild/protobuf";
-import {
-  consensusDescriptorMedian,
-  observationValue,
-} from "@cre/sdk/utils/values/consensus";
-import { sendResponseValue } from "@cre/sdk/utils/send-response-value";
-import { val } from "@cre/sdk/utils/values/value";
 
 // Config struct defines the parameters that can be passed to the workflow
 const configSchema = z.object({
@@ -18,27 +9,28 @@ const configSchema = z.object({
 
 type Config = z.infer<typeof configSchema>;
 
-// onCronTrigger is the callback function that gets executed when the cron trigger fires
-const onCronTrigger = async (env: Environment<Config>): Promise<void> => {
-  env.logger?.log("Hello, Calculator! Workflow triggered.");
+// This is where you fetch your offchain data
+const fetchMathResult = async (config: Config) => {
+  const response = await cre.utils.fetch({
+    url: config.apiUrl,
+  });
+  return Number.parseFloat(response.body.trim());
+};
 
-  const aggregatedValue = await runInNodeMode(async () => {
-    const http = new cre.capabilities.HTTPClient();
-    const resp = await http.sendRequest({
-      url: env.config?.apiUrl,
-      method: "GET",
-    });
-
-    const bodyStr = new TextDecoder().decode(resp.body);
-    const num = Number.parseFloat(bodyStr.trim());
-
-    return create(SimpleConsensusInputsSchema, {
-      observation: observationValue(val.float64(num)),
-      descriptors: consensusDescriptorMedian,
-    });
+// This is how you guide nodes how to agree on a result
+const fetchAggregatedResult = async (config: Config) =>
+  cre.runInNodeMode(async () => {
+    const result = await fetchMathResult(config);
+    return cre.utils.consensus.getAggregatedValue(
+      cre.utils.val.float64(result),
+      "median"
+    );
   });
 
-  sendResponseValue(val.mapValue({ Result: aggregatedValue }));
+// This is your handler which will perform the desired action
+const onCronTrigger = async (env: Environment<Config>) => {
+  const aggregatedValue = await fetchAggregatedResult(env.config);
+  cre.sendResponseValue(cre.utils.val.mapValue({ Result: aggregatedValue }));
 };
 
 // InitWorkflow is the required entry point for a CRE workflow
