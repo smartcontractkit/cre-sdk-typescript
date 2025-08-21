@@ -11,6 +11,16 @@ import {
   SimpleConsensusInputsSchema,
 } from "@cre/generated/sdk/v1alpha/sdk_pb";
 
+export { AggregationType } from "@cre/generated/sdk/v1alpha/sdk_pb";
+
+const consensusAggregators = [
+  "median",
+  "identical",
+  "commonPrefix",
+  "commonSuffix",
+] as const;
+export type ConsenusAggregator = (typeof consensusAggregators)[number];
+
 export const consensusDescriptorMedian = create(ConsensusDescriptorSchema, {
   descriptor: {
     case: "aggregation",
@@ -44,6 +54,13 @@ export const consensusDescriptorCommonSuffix = create(
     },
   }
 );
+
+const consensusAggregatorsMap = {
+  median: consensusDescriptorMedian,
+  identical: consensusDescriptorIdentical,
+  commonPrefix: consensusDescriptorCommonPrefix,
+  commonSuffix: consensusDescriptorCommonSuffix,
+} as const;
 
 export const createConsensusDescriptorAggregation = (
   aggregation: AggregationType
@@ -126,28 +143,9 @@ export const observationError = (message: string): ObservationErrorCase => ({
  */
 export const getAggregatedValue = (
   value: Value,
-  consensus: "median" | "identical" | "commonPrefix" | "commonSuffix"
-) => {
-  let aggregation: ConsensusDescriptor;
-  switch (consensus) {
-    case "median":
-      aggregation = consensusDescriptorMedian;
-      break;
-    case "identical":
-      aggregation = consensusDescriptorIdentical;
-      break;
-    case "commonPrefix":
-      aggregation = consensusDescriptorCommonPrefix;
-      break;
-    case "commonSuffix":
-      aggregation = consensusDescriptorCommonSuffix;
-      break;
-    default:
-      throw new Error(`Unknown consensus type: ${consensus}`);
-  }
-
-  return create(SimpleConsensusInputsSchema, {
+  consensus: ConsenusAggregator
+) =>
+  create(SimpleConsensusInputsSchema, {
     observation: observationValue(value),
-    descriptors: aggregation,
+    descriptors: consensusAggregatorsMap[consensus],
   });
-};

@@ -164,6 +164,18 @@ const wrapInternal = (v: unknown): Value => {
   throw new Error("unsupported object instance");
 };
 
+export type SupportedValueTypes =
+  | "string"
+  | "bool"
+  | "bytes"
+  | "int64"
+  | "float64"
+  | "bigint"
+  | "time"
+  | "list"
+  | "map"
+  | "decimal";
+
 export const val = {
   string: (s: string): Value =>
     create(ValueSchema, { value: { case: "stringValue", value: s } }),
@@ -230,7 +242,7 @@ export const val = {
     });
   },
   from: (v: unknown): Value => wrapInternal(v),
-};
+} as const;
 
 export type { Value };
 
