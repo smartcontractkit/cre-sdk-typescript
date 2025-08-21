@@ -4,9 +4,12 @@
 import { prepareRuntime } from "@cre/sdk/utils/prepare-runtime";
 import { handler, Runner } from "@cre/sdk/workflow";
 import { configHandler } from "@cre/sdk/utils/config";
+import { runInNodeMode } from "@cre/sdk/runtime/run-in-node-mode";
 import { CronCapability } from "@cre/generated-sdk/capabilities/scheduler/cron/v1/cron_sdk_gen";
 import { ClientCapability as EVMClient } from "@cre/generated-sdk/capabilities/blockchain/evm/v1alpha/client_sdk_gen";
 import { ClientCapability as HTTPClient } from "@cre/generated-sdk/capabilities/networking/http/v1alpha/client_sdk_gen";
+import { val } from "@cre/sdk/utils/values/value";
+import { getAggregatedValue } from "@cre/sdk/utils/values/consensus";
 
 export type { Environment } from "@cre/sdk/workflow";
 
@@ -22,4 +25,11 @@ export const cre = {
   config: configHandler,
   handler,
   newRunner: Runner.newRunner,
+  runInNodeMode,
+  utils: {
+    val,
+    consensus: {
+      getAggregatedValue,
+    },
+  },
 };

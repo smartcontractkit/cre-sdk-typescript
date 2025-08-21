@@ -2,7 +2,7 @@
  * Hex conversion utilities for blockchain data
  *
  * Note: BigInt utilities are available in @cre/sdk/utils/values/value
- * Use val.bigint() or jsBigIntToProtoBigInt() for BigInt conversions
+ * Use val.bigint() or bigIntToProtoBigInt() for BigInt conversions
  */
 
 /**

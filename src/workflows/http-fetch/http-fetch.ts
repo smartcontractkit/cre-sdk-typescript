@@ -1,14 +1,7 @@
 import { z } from "zod";
 import { cre, type Environment } from "@cre/sdk/cre";
 import { runInNodeMode } from "@cre/sdk/runtime/run-in-node-mode";
-import { SimpleConsensusInputsSchema } from "@cre/generated/sdk/v1alpha/sdk_pb";
-import { create } from "@bufbuild/protobuf";
-import {
-  consensusDescriptorMedian,
-  observationValue,
-} from "@cre/sdk/utils/values/consensus";
 import { sendResponseValue } from "@cre/sdk/utils/send-response-value";
-import { val } from "@cre/sdk/utils/values/value";
 
 // Config struct defines the parameters that can be passed to the workflow
 const configSchema = z.object({
@@ -32,13 +25,13 @@ const onCronTrigger = async (env: Environment<Config>): Promise<void> => {
     const bodyStr = new TextDecoder().decode(resp.body);
     const num = Number.parseFloat(bodyStr.trim());
 
-    return create(SimpleConsensusInputsSchema, {
-      observation: observationValue(val.float64(num)),
-      descriptors: consensusDescriptorMedian,
-    });
+    return cre.utils.consensus.getAggregatedValue(
+      cre.utils.val.float64(num),
+      "median"
+    );
   });
 
-  sendResponseValue(val.mapValue({ Result: aggregatedValue }));
+  sendResponseValue(cre.utils.val.mapValue({ Result: aggregatedValue }));
 };
 
 // InitWorkflow is the required entry point for a CRE workflow
