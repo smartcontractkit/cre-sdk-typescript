@@ -213,11 +213,6 @@ const onCronTrigger = async (env: Environment<Config>): Promise<void> => {
   env.logger?.log("Final calculated result");
 
   // Step 4: Write to the calculator consumer
-  const writeData = encodeFunctionData({
-    abi: CALCULATOR_CONSUMER_ABI,
-    functionName: "onReport",
-    args: [toHex(finalResult), toHex(finalResult)],
-  });
 
   const txHash = await updateCalculatorResult(
     env,
@@ -227,9 +222,16 @@ const onCronTrigger = async (env: Environment<Config>): Promise<void> => {
     finalResult
   );
 
+  if (!txHash) {
+    throw new Error("Failed to write report");
+  }
+
   sendResponseValue(
     val.mapValue({
+      OffchainValue: val.bigint(offchainBigInt),
+      OnchainValue: val.bigint(onchainValue),
       FinalResult: val.bigint(finalResult),
+      TxHash: val.string(txHash.toString()),
     })
   );
 };
