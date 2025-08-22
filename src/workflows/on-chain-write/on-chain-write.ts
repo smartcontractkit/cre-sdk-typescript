@@ -40,49 +40,6 @@ const configSchema = z.object({
 
 type Config = z.infer<typeof configSchema>;
 
-// // updateCalculatorResult handles the logic for writing data to the CalculatorConsumer contract.
-// func updateCalculatorResult(env *sdk.Environment[*Config], runtime sdk.Runtime, evmConfig EvmConfig, offchainValue *big.Int, onchainValue *big.Int, finalResult *big.Int) (string, error) {
-// 	env.Logger.Info("Updating calculator result", "consumerAddress", evmConfig.CalculatorConsumerAddress)
-// ​
-// 	evmClient := &evm.Client{
-// 		ChainSelector: evmConfig.ChainSelector,
-// 	}
-// ​
-// 	// Create a contract binding instance pointed at the CalculatorConsumer address.
-// 	consumerContract, err := calculator_consumer.NewCalculatorConsumer(evmClient, common.HexToAddress(evmConfig.CalculatorConsumerAddress).Bytes(), nil)
-// 	if err != nil {
-// 		return "", fmt.Errorf("failed to create consumer contract instance: %w", err)
-// 	}
-// ​
-// 	gasConfig := &evm.GasConfig{
-// 		GasLimit: evmConfig.GasLimit,
-// 	}
-// ​
-// 	env.Logger.Info("Writing report to consumer contract", "offchainValue", offchainValue, "onchainValue", onchainValue, "finalResult", finalResult)
-// 	// Call the `WriteReport` method on the binding. This sends a secure report to the consumer.
-// 	writeReportPromise, err := consumerContract.WriteReportCalculatorConsumerCalculatorResult(runtime, calculator_consumer.CalculatorConsumerCalculatorResult{
-// 		OffchainValue: offchainValue,
-// 		OnchainValue:  onchainValue,
-// 		FinalResult:   finalResult,
-// 	}, gasConfig)
-// ​
-// 	if err != nil {
-// 		env.Logger.Error("WriteReport failed", "error", err)
-// 		return "", fmt.Errorf("failed to write report: %w", err)
-// 	}
-// ​
-// 	env.Logger.Info("Waiting for write report response")
-// 	resp, err := writeReportPromise.Await()
-// 	if err != nil {
-// 		env.Logger.Error("WriteReport await failed", "error", err)
-// 		return "", fmt.Errorf("failed to await write report: %w", err)
-// 	}
-// 	env.Logger.Info("Write report to consumer succeeded", "response", resp)
-// 	txHash := fmt.Sprintf("0x%x", resp.TxHash)
-// 	env.Logger.Info("Write report transaction succeeded", "txHash", txHash)
-// 	return txHash, nil
-// }
-
 async function updateCalculatorResult(
   env: Environment<Config>,
   evmConfig: Config["evms"][number],
@@ -96,7 +53,7 @@ async function updateCalculatorResult(
   );
 
   // Encode the contract call data for the 'onReport' function
-  const callData2 = encodeFunctionData({
+  const dryRunCallData = encodeFunctionData({
     abi: CALCULATOR_CONSUMER_ABI,
     functionName: "isResultAnomalous",
     args: [
@@ -108,25 +65,35 @@ async function updateCalculatorResult(
     ],
   });
 
-  // Encode the contract call data for the 'get' function
-  const callData = encodeFunctionData({
-    abi: CALCULATOR_CONSUMER_ABI,
-    functionName: "onReport",
-    // The `metadata` (first) parameter is unused here but is required by the IReceiver interface.
-    args: [toHex("0x"), callData2],
-  });
-
   // dry run the call to ensure the value is not anomalous
   const dryRunCall = await evmClient.callContract({
     call: {
       from: "0x0000000000000000000000000000000000000000", // zero address for view calls
       to: evmConfig.calculatorConsumerAddress,
-      data: callData,
+      data: dryRunCallData,
     },
     blockNumber: {
       absVal: "03", // 3 for finalized block
       sign: "-1", // negative
     },
+  });
+
+  const dryRunResponse = decodeFunctionResult({
+    abi: CALCULATOR_CONSUMER_ABI,
+    functionName: "isResultAnomalous",
+    data: bytesToHex(dryRunCall.data) as Hex,
+  });
+
+  if (dryRunResponse) {
+    throw new Error("Result is anomalous");
+  }
+
+  // Encode the contract call data for the 'get' function
+  const callData = encodeFunctionData({
+    abi: CALCULATOR_CONSUMER_ABI,
+    functionName: "onReport",
+    // The `metadata` (first) parameter is unused here but is required by the IReceiver interface.
+    args: [toHex("0x"), dryRunCallData],
   });
 
   const resp = await evmClient.writeReport({
