@@ -7,6 +7,8 @@ export const main = async () => {
   const workflowJSFiles = fg.sync("dist/workflows/**/*.js");
 
   for (const jsFile of workflowJSFiles) {
+    if (jsFile.includes("abi")) continue;
+
     const wasmFile = jsFile.replace(/\.js$/, ".wasm");
 
     console.log(`\n\n🔨 Building WASM for: ${jsFile}`);
