@@ -16,6 +16,7 @@ import {
   observationValue,
 } from "@cre/sdk/utils/values/consensus";
 import { runInNodeMode } from "@cre/sdk/runtime/run-in-node-mode";
+import { emptyConfig, basicRuntime } from "@cre/sdk/testhelpers/mocks";
 
 export async function main() {
   console.log(
@@ -71,7 +72,12 @@ export async function main() {
 
   try {
     const executeRequest = getRequest();
-    await handleExecuteRequest(executeRequest, workflow, { config: {} });
+    await handleExecuteRequest(
+      executeRequest,
+      workflow,
+      emptyConfig,
+      basicRuntime
+    );
   } catch (e) {
     errorBoundary(e);
   }

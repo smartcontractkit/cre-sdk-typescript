@@ -7,7 +7,6 @@ import { ValueSchema } from "@cre/generated/values/v1/values_pb";
 import { create, toJson } from "@bufbuild/protobuf";
 import { BasicActionCapability } from "@cre/generated-sdk/capabilities/internal/basicaction/v1/basicaction_sdk_gen";
 import { BasicActionCapability as NodeActionCapability } from "@cre/generated-sdk/capabilities/internal/nodeaction/v1/basicaction_sdk_gen";
-import { ConsensusCapability } from "@cre/generated-sdk/capabilities/internal/consensus/v1alpha/consensus_sdk_gen";
 import {
   consensusFieldsFrom,
   observationValue,
@@ -18,6 +17,7 @@ import { handleExecuteRequest } from "@cre/sdk/engine/execute";
 import { getRequest } from "@cre/sdk/utils/get-request";
 import { BasicCapability as BasicTriggerCapability } from "@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen";
 import { runInNodeMode } from "@cre/sdk/runtime/run-in-node-mode";
+import { basicRuntime, emptyConfig } from "@cre/sdk/testhelpers/mocks";
 
 export async function main() {
   console.log(
@@ -74,7 +74,8 @@ export async function main() {
           handler
         ),
       ],
-      { config: {} }
+      emptyConfig,
+      basicRuntime
     );
   } catch (e) {
     errorBoundary(e);
