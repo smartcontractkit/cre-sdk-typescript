@@ -1,12 +1,5 @@
 import { z } from "zod";
-import { cre, type Environment } from "@cre/sdk/cre";
-import { runInNodeMode } from "@cre/sdk/runtime/run-in-node-mode";
-import { SimpleConsensusInputsSchema } from "@cre/generated/sdk/v1alpha/sdk_pb";
-import { create } from "@bufbuild/protobuf";
-import {
-  consensusDescriptorMedian,
-  observationValue,
-} from "@cre/sdk/utils/values/consensus";
+import { cre } from "@cre/sdk/cre";
 import { sendResponseValue } from "@cre/sdk/utils/send-response-value";
 import { val } from "@cre/sdk/utils/values/value";
 import {
@@ -18,8 +11,9 @@ import {
 } from "viem";
 import { bytesToHex } from "@cre/sdk/utils/hex-utils";
 import { CALCULATOR_CONSUMER_ABI, STORAGE_ABI } from "./abi";
-import type { Runtime } from "@cre/sdk/workflow";
-import { capability } from "@cre/generated/tools/generator/v1alpha/cre_metadata_pb";
+import type { Runtime } from "@cre/sdk/runtime";
+import { useMedianConsensus } from "@cre/sdk/utils/values/consensus-hooks";
+
 // Storage contract ABI - we only need the 'get' function
 // TODO: In production, load ABI from external file or contract metadata
 // following Go SDK patterns for ABI management
@@ -41,7 +35,7 @@ const configSchema = z.object({
 type Config = z.infer<typeof configSchema>;
 
 async function updateCalculatorResult(
-  env: Environment<Config>,
+  config: Config,
   evmConfig: Config["evms"][number],
   offchainValue: bigint,
   onchainValue: bigint,
@@ -106,35 +100,31 @@ async function updateCalculatorResult(
   return resp.txHash;
 }
 
-// onCronTrigger is the callback function that gets executed when the cron trigger fires
-const onCronTrigger = async (env: Environment<Config>): Promise<void> => {
-  env.logger?.log("Hello, Calculator! Workflow triggered.");
+const fetchMathResult = useMedianConsensus(async (config: Config) => {
+  const response = await cre.utils.fetch({
+    url: config.apiUrl,
+  });
+  return Number.parseFloat(response.body.trim());
+}, "float64");
 
-  if (!env.config?.evms || env.config.evms.length === 0) {
+// onCronTrigger is the callback function that gets executed when the cron trigger fires
+const onCronTrigger = async (
+  config: Config,
+  runtime: Runtime
+): Promise<void> => {
+  runtime.logger.log("Hello, Calculator! Workflow triggered.");
+
+  if (!config.evms?.length) {
     throw new Error("No EVM configuration provided");
   }
 
   // Step 1: Fetch offchain data using consensus (from Part 2)
-  const offchainValue = await runInNodeMode(async () => {
-    const http = new cre.capabilities.HTTPClient();
-    const resp = await http.sendRequest({
-      url: env.config?.apiUrl,
-      method: "GET",
-    });
+  const offchainValue = await fetchMathResult(config);
 
-    const bodyStr = new TextDecoder().decode(resp.body);
-    const num = Number.parseFloat(bodyStr.trim());
-
-    return create(SimpleConsensusInputsSchema, {
-      observation: observationValue(val.float64(num)),
-      descriptors: consensusDescriptorMedian,
-    });
-  });
-
-  env.logger?.log("Successfully fetched offchain value");
+  runtime.logger.log("Successfully fetched offchain value");
 
   // Get the first EVM configuration from the list
-  const evmConfig = env.config.evms[0];
+  const evmConfig = config.evms[0];
 
   // Step 2: Read onchain data using the EVM client with chainSelector
   const evmClient = new cre.capabilities.EVMClient(
@@ -168,7 +158,7 @@ const onCronTrigger = async (env: Environment<Config>): Promise<void> => {
   });
 
   const onchainValue = decodedResult as bigint;
-  env.logger?.log("Successfully read onchain value");
+  runtime.logger.log("Successfully read onchain value");
 
   // Step 3: Combine the results - convert offchain float to bigint and add
   const offchainFloat =
@@ -177,12 +167,12 @@ const onCronTrigger = async (env: Environment<Config>): Promise<void> => {
   const offchainBigInt = BigInt(Math.floor(offchainFloat));
   const finalResult = onchainValue + offchainBigInt;
 
-  env.logger?.log("Final calculated result");
+  runtime.logger.log("Final calculated result");
 
   // Step 4: Write to the calculator consumer
 
   const txHash = await updateCalculatorResult(
-    env,
+    config,
     evmConfig,
     offchainBigInt,
     onchainValue,
@@ -205,13 +195,13 @@ const onCronTrigger = async (env: Environment<Config>): Promise<void> => {
 
 // InitWorkflow is the required entry point for a CRE workflow
 // The runner calls this function to initialize the workflow and register its handlers
-const initWorkflow = (env: Environment<Config>) => {
+const initWorkflow = (config: Config) => {
   const cron = new cre.capabilities.CronCapability();
 
   return [
     cre.handler(
       // Use the schedule from our config file
-      cron.trigger({ schedule: env.config?.schedule }),
+      cron.trigger({ schedule: config.schedule }),
       onCronTrigger
     ),
   ];
