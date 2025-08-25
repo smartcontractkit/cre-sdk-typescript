@@ -8,15 +8,17 @@ import {
   ExecutionResultSchema,
 } from "@cre/generated/sdk/v1alpha/sdk_pb";
 import { fromBinary, create, toBinary } from "@bufbuild/protobuf";
-import type { Workflow, Environment, Runtime } from "@cre/sdk/workflow";
+import type { Workflow } from "@cre/sdk/workflow";
 import { getTypeUrl } from "@cre/sdk/utils/typeurl";
-import { buildEnvFromExecuteRequest } from "@cre/sdk/utils/env";
+import { buildEnvFromExecuteRequest } from "@cre/sdk/environment";
+import type { Environment } from "@cre/sdk/environment";
+import type { Runtime } from "@cre/sdk/runtime";
 
 export const handleExecuteRequest = async <TConfig>(
   req: ExecuteRequest,
   workflow: Workflow<TConfig>,
   env: Environment<TConfig>,
-  rt: Runtime = {}
+  runtime: Runtime
 ): Promise<CapabilityResponse | void> => {
   if (req.request.case === "subscribe") {
     // Build TriggerSubscriptionRequest from the workflow entries
@@ -66,7 +68,7 @@ export const handleExecuteRequest = async <TConfig>(
       const adapted = await entry.trigger.adapt(decoded);
       const handlerEnv: Environment<TConfig> =
         env || buildEnvFromExecuteRequest<TConfig>(req);
-      await entry.fn(handlerEnv, rt, adapted);
+      await entry.fn(handlerEnv, runtime, adapted);
     }
   }
 };

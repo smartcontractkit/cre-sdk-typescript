@@ -9,6 +9,7 @@ import { handler } from "@cre/sdk/workflow";
 import { handleExecuteRequest } from "@cre/sdk/engine/execute";
 import { getRequest } from "@cre/sdk/utils/get-request";
 import { BasicCapability as BasicTriggerCapability } from "@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen";
+import { emptyEnv, basicRuntime } from "@cre/sdk/testhelpers/mocks";
 
 export async function main() {
   console.log(
@@ -31,7 +32,12 @@ export async function main() {
 
   try {
     const executeRequest = getRequest();
-    await handleExecuteRequest(executeRequest, workflow, { config: {} });
+    await handleExecuteRequest(
+      executeRequest,
+      workflow,
+      emptyEnv,
+      basicRuntime
+    );
   } catch (e) {
     if (e instanceof SecretsError) {
       sendErrorWrapped(e.message);

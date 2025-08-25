@@ -1,4 +1,5 @@
 import { cre, type Environment } from "@cre/sdk/cre";
+import type { Runtime } from "@cre/sdk/runtime";
 
 // Config struct defines the parameters that can be passed to the workflow
 type Config = {
@@ -6,8 +7,8 @@ type Config = {
 };
 
 // onCronTrigger is the callback function that gets executed when the cron trigger fires
-const onCronTrigger = (env: Environment<Config>): void => {
-  env.logger?.log("Hello, Calculator! Workflow triggered.");
+const onCronTrigger = (env: Environment<Config>, runtime: Runtime): void => {
+  runtime.logger.log("Hello, Calculator! Workflow triggered.");
 };
 
 // InitWorkflow is the required entry point for a CRE workflow

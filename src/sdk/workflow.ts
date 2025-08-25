@@ -1,32 +1,16 @@
 import type { Message } from "@bufbuild/protobuf";
-import type {
-  Mode,
-  CapabilityResponse,
-} from "@cre/generated/sdk/v1alpha/sdk_pb";
+import type { CapabilityResponse } from "@cre/generated/sdk/v1alpha/sdk_pb";
 import type { Trigger } from "@cre/sdk/utils/triggers/trigger-interface";
 import { handleExecuteRequest } from "@cre/sdk/engine/execute";
 import { getRequest } from "@cre/sdk/utils/get-request";
 import { configHandler, type ConfigHandlerParams } from "@cre/sdk/utils/config";
-import { buildEnvFromConfig } from "@cre/sdk/utils/env";
+import { buildEnvFromConfig, type Environment } from "@cre/sdk/environment";
+import { runtime, type Runtime } from "@cre/sdk/runtime";
 
-export type Logger = {
-  log: (message: string) => void;
-};
-
-export type Environment<TConfig = unknown> = {
-  config: TConfig;
-  mode?: Mode;
-  logger?: Logger;
-};
-
-export type Runtime = {
-  // Reserved for future runtime operations (e.g., generateReport)
-};
-
-export type HandlerFn<TConfig, TOutput, TAdapted> = (
+export type HandlerFn<TConfig, TPayload> = (
   env: Environment<TConfig>,
-  rt: Runtime,
-  output: TAdapted
+  runtime: Runtime,
+  output: TPayload
 ) => Promise<unknown> | unknown;
 
 export interface HandlerEntry<
@@ -35,7 +19,7 @@ export interface HandlerEntry<
   TAdapted = TOutput
 > {
   trigger: Trigger<TOutput, TAdapted>;
-  fn: HandlerFn<TConfig, TAdapted, TAdapted>;
+  fn: HandlerFn<TConfig, TAdapted>;
 }
 
 export type Workflow<TConfig = unknown> = ReadonlyArray<
@@ -48,14 +32,16 @@ export const handler = <
   TConfig = unknown
 >(
   trigger: Trigger<TOutput, TAdapted>,
-  fn: HandlerFn<TConfig, TAdapted, TAdapted>
+  fn: HandlerFn<TConfig, TAdapted>
 ): HandlerEntry<TConfig, TOutput, TAdapted> => ({ trigger, fn });
 
 export class Runner<TConfig> {
   private readonly env: Environment<TConfig>;
+  private readonly runtime: Runtime;
 
-  private constructor(config: TConfig, private readonly rt: Runtime = {}) {
+  private constructor(config: TConfig) {
     this.env = buildEnvFromConfig<TConfig>(config);
+    this.runtime = runtime;
   }
 
   static async newRunner<T>(
@@ -63,7 +49,7 @@ export class Runner<TConfig> {
   ): Promise<Runner<T>> {
     const config = await configHandler<T>(configHandlerParams);
 
-    return new Runner<T>(config, {});
+    return new Runner<T>(config);
   }
 
   async run(
@@ -73,6 +59,6 @@ export class Runner<TConfig> {
   ): Promise<CapabilityResponse | void> {
     const req = getRequest();
     const workflow = await initFn(this.env);
-    return await handleExecuteRequest(req, workflow, this.env, this.rt);
+    return await handleExecuteRequest(req, workflow, this.env, this.runtime);
   }
 }

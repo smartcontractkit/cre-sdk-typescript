@@ -11,6 +11,8 @@ import { sendResponseValue } from "@cre/sdk/utils/send-response-value";
 import { val } from "@cre/sdk/utils/values/value";
 import { encodeFunctionData, decodeFunctionResult, type Hex } from "viem";
 import { bytesToHex } from "@cre/sdk/utils/hex-utils";
+import type { Runtime } from "@cre/sdk/runtime";
+import { useMedianConsensus } from "@cre/sdk/utils/values/consensus-hooks";
 
 // Storage contract ABI - we only need the 'get' function
 // TODO: In production, load ABI from external file or contract metadata
@@ -39,32 +41,28 @@ const configSchema = z.object({
 
 type Config = z.infer<typeof configSchema>;
 
-// onCronTrigger is the callback function that gets executed when the cron trigger fires
-const onCronTrigger = async (env: Environment<Config>): Promise<void> => {
-  env.logger?.log("Hello, Calculator! Workflow triggered.");
+const fetchMathResult = useMedianConsensus(async (config: Config) => {
+  const response = await cre.utils.fetch({
+    url: config.apiUrl,
+  });
+  return Number.parseFloat(response.body.trim());
+}, "float64");
 
-  if (!env.config?.evms || env.config.evms.length === 0) {
+// onCronTrigger is the callback function that gets executed when the cron trigger fires
+const onCronTrigger = async (
+  env: Environment<Config>,
+  runtime: Runtime
+): Promise<void> => {
+  runtime.logger.log("Hello, Calculator! Workflow triggered.");
+
+  if (!env.config.evms?.length) {
     throw new Error("No EVM configuration provided");
   }
 
   // Step 1: Fetch offchain data using consensus (from Part 2)
-  const offchainValue = await runInNodeMode(async () => {
-    const http = new cre.capabilities.HTTPClient();
-    const resp = await http.sendRequest({
-      url: env.config?.apiUrl,
-      method: "GET",
-    });
+  const offchainValue = await fetchMathResult(env.config);
 
-    const bodyStr = new TextDecoder().decode(resp.body);
-    const num = Number.parseFloat(bodyStr.trim());
-
-    return create(SimpleConsensusInputsSchema, {
-      observation: observationValue(val.float64(num)),
-      descriptors: consensusDescriptorMedian,
-    });
-  });
-
-  env.logger?.log("Successfully fetched offchain value");
+  runtime.logger.log("Successfully fetched offchain value");
 
   // Get the first EVM configuration from the list
   const evmConfig = env.config.evms[0];
@@ -101,7 +99,7 @@ const onCronTrigger = async (env: Environment<Config>): Promise<void> => {
   });
 
   const onchainValue = decodedResult as bigint;
-  env.logger?.log("Successfully read onchain value");
+  runtime.logger.log("Successfully read onchain value");
 
   // Step 3: Combine the results - convert offchain float to bigint and add
   const offchainFloat =
@@ -110,7 +108,7 @@ const onCronTrigger = async (env: Environment<Config>): Promise<void> => {
   const offchainBigInt = BigInt(Math.floor(offchainFloat));
   const finalResult = onchainValue + offchainBigInt;
 
-  env.logger?.log("Final calculated result");
+  runtime.logger.log("Final calculated result");
 
   sendResponseValue(
     val.mapValue({

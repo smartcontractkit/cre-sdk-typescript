@@ -13,7 +13,7 @@ import { getAggregatedValue } from "@cre/sdk/utils/values/consensus";
 import { creFetch } from "@cre/sdk/utils/capabilities/http/fetch";
 import { sendResponseValue } from "@cre/sdk/utils/send-response-value";
 
-export type { Environment } from "@cre/sdk/workflow";
+export type { Environment } from "@cre/sdk/environment";
 
 prepareRuntime();
 versionV2();
