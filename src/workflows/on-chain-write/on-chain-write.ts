@@ -32,8 +32,8 @@ const configSchema = z.object({
     z.object({
       storageAddress: z.string(),
       calculatorConsumerAddress: z.string(),
-      chainSelector: z.number(),
-      gasLimit: z.number(),
+      chainSelector: z.string(),
+      gasLimit: z.string(),
     })
   ),
 });
