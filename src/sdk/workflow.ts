@@ -4,11 +4,10 @@ import type { Trigger } from "@cre/sdk/utils/triggers/trigger-interface";
 import { handleExecuteRequest } from "@cre/sdk/engine/execute";
 import { getRequest } from "@cre/sdk/utils/get-request";
 import { configHandler, type ConfigHandlerParams } from "@cre/sdk/utils/config";
-import { buildEnvFromConfig, type Environment } from "@cre/sdk/environment";
 import { runtime, type Runtime } from "@cre/sdk/runtime";
 
 export type HandlerFn<TConfig, TPayload> = (
-  env: Environment<TConfig>,
+  config: TConfig,
   runtime: Runtime,
   output: TPayload
 ) => Promise<unknown> | unknown;
@@ -36,11 +35,11 @@ export const handler = <
 ): HandlerEntry<TConfig, TOutput, TAdapted> => ({ trigger, fn });
 
 export class Runner<TConfig> {
-  private readonly env: Environment<TConfig>;
+  private readonly config: TConfig;
   private readonly runtime: Runtime;
 
   private constructor(config: TConfig) {
-    this.env = buildEnvFromConfig<TConfig>(config);
+    this.config = config;
     this.runtime = runtime;
   }
 
@@ -53,12 +52,10 @@ export class Runner<TConfig> {
   }
 
   async run(
-    initFn: (
-      env: Environment<TConfig>
-    ) => Promise<Workflow<TConfig>> | Workflow<TConfig>
+    initFn: (config: TConfig) => Promise<Workflow<TConfig>> | Workflow<TConfig>
   ): Promise<CapabilityResponse | void> {
     const req = getRequest();
-    const workflow = await initFn(this.env);
-    return await handleExecuteRequest(req, workflow, this.env, this.runtime);
+    const workflow = await initFn(this.config);
+    return await handleExecuteRequest(req, workflow, this.config, this.runtime);
   }
 }

@@ -10,14 +10,12 @@ import {
 import { fromBinary, create, toBinary } from "@bufbuild/protobuf";
 import type { Workflow } from "@cre/sdk/workflow";
 import { getTypeUrl } from "@cre/sdk/utils/typeurl";
-import { buildEnvFromExecuteRequest } from "@cre/sdk/environment";
-import type { Environment } from "@cre/sdk/environment";
 import type { Runtime } from "@cre/sdk/runtime";
 
 export const handleExecuteRequest = async <TConfig>(
   req: ExecuteRequest,
   workflow: Workflow<TConfig>,
-  env: Environment<TConfig>,
+  config: TConfig,
   runtime: Runtime
 ): Promise<CapabilityResponse | void> => {
   if (req.request.case === "subscribe") {
@@ -66,8 +64,10 @@ export const handleExecuteRequest = async <TConfig>(
        * */
       const decoded = fromBinary(schema, payloadAny.value);
       const adapted = await entry.trigger.adapt(decoded);
-      const handlerEnv: Environment<TConfig> =
-        env || buildEnvFromExecuteRequest<TConfig>(req);
+
+      // By default config is a JSON string, send as bytes
+      const handlerEnv: TConfig =
+        config || JSON.parse(Buffer.from(req.config).toString());
       await entry.fn(handlerEnv, runtime, adapted);
     }
   }

@@ -1,12 +1,5 @@
 import { z } from "zod";
-import { cre, type Environment } from "@cre/sdk/cre";
-import { runInNodeMode } from "@cre/sdk/runtime/run-in-node-mode";
-import { SimpleConsensusInputsSchema } from "@cre/generated/sdk/v1alpha/sdk_pb";
-import { create } from "@bufbuild/protobuf";
-import {
-  consensusDescriptorMedian,
-  observationValue,
-} from "@cre/sdk/utils/values/consensus";
+import { cre } from "@cre/sdk/cre";
 import { sendResponseValue } from "@cre/sdk/utils/send-response-value";
 import { val } from "@cre/sdk/utils/values/value";
 import { encodeFunctionData, decodeFunctionResult, type Hex } from "viem";
@@ -27,7 +20,6 @@ const STORAGE_ABI = [
   },
 ] as const;
 
-// Config struct defines the parameters that can be passed to the workflow
 const configSchema = z.object({
   schedule: z.string(),
   apiUrl: z.string(),
@@ -48,24 +40,23 @@ const fetchMathResult = useMedianConsensus(async (config: Config) => {
   return Number.parseFloat(response.body.trim());
 }, "float64");
 
-// onCronTrigger is the callback function that gets executed when the cron trigger fires
 const onCronTrigger = async (
-  env: Environment<Config>,
+  config: Config,
   runtime: Runtime
 ): Promise<void> => {
   runtime.logger.log("Hello, Calculator! Workflow triggered.");
 
-  if (!env.config.evms?.length) {
+  if (!config.evms?.length) {
     throw new Error("No EVM configuration provided");
   }
 
   // Step 1: Fetch offchain data using consensus (from Part 2)
-  const offchainValue = await fetchMathResult(env.config);
+  const offchainValue = await fetchMathResult(config);
 
   runtime.logger.log("Successfully fetched offchain value");
 
   // Get the first EVM configuration from the list
-  const evmConfig = env.config.evms[0];
+  const evmConfig = config.evms[0];
 
   // Step 2: Read onchain data using the EVM client with chainSelector
   const evmClient = new cre.capabilities.EVMClient(
@@ -117,30 +108,19 @@ const onCronTrigger = async (
   );
 };
 
-// InitWorkflow is the required entry point for a CRE workflow
-// The runner calls this function to initialize the workflow and register its handlers
-const initWorkflow = (env: Environment<Config>) => {
+const initWorkflow = (config: Config) => {
   const cron = new cre.capabilities.CronCapability();
 
   return [
-    cre.handler(
-      // Use the schedule from our config file
-      cron.trigger({ schedule: env.config?.schedule }),
-      onCronTrigger
-    ),
+    cre.handler(cron.trigger({ schedule: config.schedule }), onCronTrigger),
   ];
 };
 
-// main is the entry point for the workflow
 export async function main() {
-  try {
-    const runner = await cre.newRunner<Config>({
-      configSchema: configSchema,
-    });
-    await runner.run(initWorkflow);
-  } catch (error) {
-    console.log("error", JSON.stringify(error, null, 2));
-  }
+  const runner = await cre.newRunner<Config>({
+    configSchema: configSchema,
+  });
+  await runner.run(initWorkflow);
 }
 
 main();

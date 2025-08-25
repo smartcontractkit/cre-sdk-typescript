@@ -8,7 +8,7 @@ import { BasicCapability as BasicTriggerCapability } from "@cre/generated-sdk/ca
 import { BasicCapability as ActionAndTriggerCapability } from "@cre/generated-sdk/capabilities/internal/actionandtrigger/v1/basic_sdk_gen";
 import { sendResponseValue } from "@cre/sdk/utils/send-response-value";
 import { val } from "@cre/sdk/utils/values/value";
-import { basicRuntime, emptyEnv } from "@cre/sdk/testhelpers/mocks";
+import { emptyConfig, basicRuntime } from "@cre/sdk/testhelpers/mocks";
 
 const buildWorkflow = () => {
   const basicTrigger = new BasicTriggerCapability();
@@ -47,7 +47,7 @@ export async function main() {
     await handleExecuteRequest(
       executeRequest,
       workflow,
-      emptyEnv,
+      emptyConfig,
       basicRuntime
     );
   } catch (e) {

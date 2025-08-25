@@ -13,7 +13,7 @@ import { BasicCapability as ActionAndTriggerCapability } from "@cre/generated-sd
 import { TriggerEventSchema as ActionTriggerEventSchema } from "@cre/generated/capabilities/internal/actionandtrigger/v1/action_and_trigger_pb";
 import { OutputsSchema as BasicTriggerOutputsSchema } from "@cre/generated/capabilities/internal/basictrigger/v1/basic_trigger_pb";
 import { getTypeUrl } from "@cre/sdk/utils/typeurl";
-import { emptyEnv, basicRuntime } from "@cre/sdk/testhelpers/mocks";
+import { emptyConfig, basicRuntime } from "@cre/sdk/testhelpers/mocks";
 
 const decodeExecutionResult = (b64: string) =>
   fromBinary(ExecutionResultSchema, Buffer.from(b64, "base64"));
@@ -59,7 +59,7 @@ describe("engine/execute", () => {
       maxResponseSize: "0",
     });
 
-    await handleExecuteRequest(req, workflow, emptyEnv, basicRuntime);
+    await handleExecuteRequest(req, workflow, emptyConfig, basicRuntime);
 
     expect(subs[0]).toContain(
       "basic-test-trigger@1.0.0:Trigger:type.googleapis.com/capabilities.internal.basictrigger.v1.Config"
@@ -120,7 +120,7 @@ describe("engine/execute", () => {
       maxResponseSize: "0",
     });
 
-    await handleExecuteRequest(req, workflow, emptyEnv, basicRuntime);
+    await handleExecuteRequest(req, workflow, emptyConfig, basicRuntime);
 
     expect(calls).toEqual(["action:different"]);
   });
@@ -151,7 +151,7 @@ describe("engine/execute", () => {
       maxResponseSize: "0",
     });
 
-    await handleExecuteRequest(req, workflow, emptyEnv, basicRuntime);
+    await handleExecuteRequest(req, workflow, emptyConfig, basicRuntime);
     expect(calls).toEqual([]);
   });
 
@@ -182,7 +182,7 @@ describe("engine/execute", () => {
       maxResponseSize: "0",
     });
 
-    await handleExecuteRequest(req, workflow, emptyEnv, basicRuntime);
+    await handleExecuteRequest(req, workflow, emptyConfig, basicRuntime);
     expect(calls).toEqual([]);
   });
 });
