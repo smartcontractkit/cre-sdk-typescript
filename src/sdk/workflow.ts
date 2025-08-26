@@ -6,19 +6,19 @@ import { getRequest } from "@cre/sdk/utils/get-request";
 import { configHandler, type ConfigHandlerParams } from "@cre/sdk/utils/config";
 import { runtime, type Runtime } from "@cre/sdk/runtime";
 
-export type HandlerFn<TConfig, TPayload> = (
+export type HandlerFn<TConfig, TTriggerOutput> = (
   config: TConfig,
   runtime: Runtime,
-  output: TPayload
+  triggerOutput: TTriggerOutput
 ) => Promise<unknown> | unknown;
 
 export interface HandlerEntry<
   TConfig = unknown,
-  TOutput extends Message<string> = Message<string>,
-  TAdapted = TOutput
+  TRawTriggerOutput extends Message<string> = Message<string>,
+  TTriggerOutput = TRawTriggerOutput
 > {
-  trigger: Trigger<TOutput, TAdapted>;
-  fn: HandlerFn<TConfig, TAdapted>;
+  trigger: Trigger<TRawTriggerOutput, TTriggerOutput>;
+  fn: HandlerFn<TConfig, TTriggerOutput>;
 }
 
 export type Workflow<TConfig = unknown> = ReadonlyArray<
@@ -26,13 +26,16 @@ export type Workflow<TConfig = unknown> = ReadonlyArray<
 >;
 
 export const handler = <
-  TOutput extends Message<string>,
-  TAdapted = TOutput,
+  TRawTriggerOutput extends Message<string>,
+  TTriggerOutput = TRawTriggerOutput,
   TConfig = unknown
 >(
-  trigger: Trigger<TOutput, TAdapted>,
-  fn: HandlerFn<TConfig, TAdapted>
-): HandlerEntry<TConfig, TOutput, TAdapted> => ({ trigger, fn });
+  trigger: Trigger<TRawTriggerOutput, TTriggerOutput>,
+  fn: HandlerFn<TConfig, TTriggerOutput>
+): HandlerEntry<TConfig, TRawTriggerOutput, TTriggerOutput> => ({
+  trigger,
+  fn,
+});
 
 export class Runner<TConfig> {
   private readonly config: TConfig;
