@@ -50,7 +50,7 @@ export class CronCapability {
 /**
  * Trigger implementation for Trigger
  */
-class CronTrigger extends BaseTriggerImpl<ConfigJson, Payload> {
+class CronTrigger extends BaseTriggerImpl<ConfigJson, Payload, Payload> {
   constructor(
     mode: Mode,
     config: ConfigJson,
@@ -85,18 +85,18 @@ class CronTrigger extends BaseTriggerImpl<ConfigJson, Payload> {
   }
 
   /**
-   * Transform the trigger output - override this method if needed
-   * Default implementation returns the output unchanged
+   * Transform the raw trigger output - override this method if needed
+   * Default implementation returns the raw output unchanged
    */
-  adapt(output: Payload): Payload {
-    return output;
+  adapt(rawOutput: Payload): Payload {
+    return rawOutput;
   }
 }
 
 /**
  * Trigger implementation for LegacyTrigger
  */
-class CronLegacyTrigger extends BaseTriggerImpl<ConfigJson, LegacyPayload> {
+class CronLegacyTrigger extends BaseTriggerImpl<ConfigJson, LegacyPayload, LegacyPayload> {
   constructor(
     mode: Mode,
     config: ConfigJson,
@@ -131,10 +131,10 @@ class CronLegacyTrigger extends BaseTriggerImpl<ConfigJson, LegacyPayload> {
   }
 
   /**
-   * Transform the trigger output - override this method if needed
-   * Default implementation returns the output unchanged
+   * Transform the raw trigger output - override this method if needed
+   * Default implementation returns the raw output unchanged
    */
-  adapt(output: LegacyPayload): LegacyPayload {
-    return output;
+  adapt(rawOutput: LegacyPayload): LegacyPayload {
+    return rawOutput;
   }
 }

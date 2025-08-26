@@ -41,7 +41,7 @@ export function generateTriggerClass(
 /**
  * Trigger implementation for ${method.name}
  */
-class ${triggerClassName} extends BaseTriggerImpl<${method.input.name}Json, ${method.output.name}> {
+class ${triggerClassName} extends BaseTriggerImpl<${method.input.name}Json, ${method.output.name}, ${method.output.name}> {
   constructor(
     mode: Mode,
     config: ${method.input.name}Json,
@@ -76,11 +76,11 @@ class ${triggerClassName} extends BaseTriggerImpl<${method.input.name}Json, ${me
   }
 
   /**
-   * Transform the trigger output - override this method if needed
-   * Default implementation returns the output unchanged
+   * Transform the raw trigger output - override this method if needed
+   * Default implementation returns the raw output unchanged
    */
-  adapt(output: ${method.output.name}): ${method.output.name} {
-    return output;
+  adapt(rawOutput: ${method.output.name}): ${method.output.name} {
+    return rawOutput;
   }
 }`;
 }

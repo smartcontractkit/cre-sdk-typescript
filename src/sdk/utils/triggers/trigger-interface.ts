@@ -16,10 +16,10 @@ export interface BaseTrigger<TRawTriggerOutput extends Message<string>> {
   /** The method name for this trigger */
   method(): string;
 
-  /** Create a new instance of the output type */
+  /** Create a new instance of the raw output type */
   newOutput(): TRawTriggerOutput;
 
-  /** Access the output schema for decoding */
+  /** Access the raw output schema for decoding */
   outputSchema(): GenMessage<TRawTriggerOutput>;
 
   /** Get the configuration as an Any type for protobuf serialization */
@@ -36,8 +36,8 @@ export interface Trigger<
   TRawTriggerOutput extends Message<string>,
   TTriggerOutput = TRawTriggerOutput
 > extends BaseTrigger<TRawTriggerOutput> {
-  /** Transform the trigger output to the adapted type */
-  adapt(output: TRawTriggerOutput): TTriggerOutput | Promise<TTriggerOutput>;
+  /** Transform the raw trigger output to the adapted type */
+  adapt(rawOutput: TRawTriggerOutput): TTriggerOutput | Promise<TTriggerOutput>;
 }
 
 /**
@@ -60,12 +60,14 @@ export abstract class BaseTriggerImpl<
   abstract configAsAny(): Any;
 
   /**
-   * Default adapt implementation - returns output unchanged
-   * Override this method to transform the output
+   * Default adapt implementation - returns raw output unchanged
+   * Override this method to transform the raw output to your desired type
    */
-  adapt(output: TRawTriggerOutput): TTriggerOutput | Promise<TTriggerOutput> {
-    // Type assertion is safe here as TAdapted defaults to TOutput
+  adapt(
+    rawOutput: TRawTriggerOutput
+  ): TTriggerOutput | Promise<TTriggerOutput> {
+    // Type assertion is safe here as TTriggerOutput defaults to TRawTriggerOutput
     // when not explicitly specified
-    return output as unknown as TTriggerOutput;
+    return rawOutput as unknown as TTriggerOutput;
   }
 }

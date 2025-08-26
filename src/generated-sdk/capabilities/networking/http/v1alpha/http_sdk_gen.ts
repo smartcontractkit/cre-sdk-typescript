@@ -46,7 +46,7 @@ export class HTTPCapability {
 /**
  * Trigger implementation for Trigger
  */
-class HTTPTrigger extends BaseTriggerImpl<ConfigJson, Payload> {
+class HTTPTrigger extends BaseTriggerImpl<ConfigJson, Payload, Payload> {
   constructor(
     mode: Mode,
     config: ConfigJson,
@@ -81,10 +81,10 @@ class HTTPTrigger extends BaseTriggerImpl<ConfigJson, Payload> {
   }
 
   /**
-   * Transform the trigger output - override this method if needed
-   * Default implementation returns the output unchanged
+   * Transform the raw trigger output - override this method if needed
+   * Default implementation returns the raw output unchanged
    */
-  adapt(output: Payload): Payload {
-    return output;
+  adapt(rawOutput: Payload): Payload {
+    return rawOutput;
   }
 }

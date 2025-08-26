@@ -463,7 +463,7 @@ export class ClientCapability {
 /**
  * Trigger implementation for LogTrigger
  */
-class ClientLogTrigger extends BaseTriggerImpl<FilterLogTriggerRequestJson, Log> {
+class ClientLogTrigger extends BaseTriggerImpl<FilterLogTriggerRequestJson, Log, Log> {
   constructor(
     mode: Mode,
     config: FilterLogTriggerRequestJson,
@@ -498,10 +498,10 @@ class ClientLogTrigger extends BaseTriggerImpl<FilterLogTriggerRequestJson, Log>
   }
 
   /**
-   * Transform the trigger output - override this method if needed
-   * Default implementation returns the output unchanged
+   * Transform the raw trigger output - override this method if needed
+   * Default implementation returns the raw output unchanged
    */
-  adapt(output: Log): Log {
-    return output;
+  adapt(rawOutput: Log): Log {
+    return rawOutput;
   }
 }
