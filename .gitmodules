@@ -1,4 +1,3 @@
 [submodule "submodules/chainlink-protos"]
 	path = submodules/chainlink-protos
 	url = https://github.com/smartcontractkit/chainlink-protos.git
-
