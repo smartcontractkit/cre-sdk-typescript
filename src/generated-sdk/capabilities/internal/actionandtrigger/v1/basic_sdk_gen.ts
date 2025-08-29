@@ -83,7 +83,7 @@ export class BasicCapability {
 /**
  * Trigger implementation for Trigger
  */
-class BasicTrigger extends BaseTriggerImpl<ConfigJson, TriggerEvent> {
+class BasicTrigger extends BaseTriggerImpl<ConfigJson, TriggerEvent, TriggerEvent> {
   constructor(
     mode: Mode,
     config: ConfigJson,
@@ -118,10 +118,10 @@ class BasicTrigger extends BaseTriggerImpl<ConfigJson, TriggerEvent> {
   }
 
   /**
-   * Transform the trigger output - override this method if needed
-   * Default implementation returns the output unchanged
+   * Transform the raw trigger output - override this method if needed
+   * Default implementation returns the raw output unchanged
    */
-  adapt(output: TriggerEvent): TriggerEvent {
-    return output;
+  adapt(rawOutput: TriggerEvent): TriggerEvent {
+    return rawOutput;
   }
 }

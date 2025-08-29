@@ -9,18 +9,18 @@ import type { GenMessage } from "@bufbuild/protobuf/codegenv2";
  * Triggers are server-streaming RPC methods that emit events
  * to the workflow runtime.
  */
-export interface BaseTrigger<TOutput extends Message<string>> {
+export interface BaseTrigger<TRawTriggerOutput extends Message<string>> {
   /** The capability ID for this trigger */
   capabilityId(): string;
 
   /** The method name for this trigger */
   method(): string;
 
-  /** Create a new instance of the output type */
-  newOutput(): TOutput;
+  /** Create a new instance of the raw output type */
+  newOutput(): TRawTriggerOutput;
 
-  /** Access the output schema for decoding */
-  outputSchema(): GenMessage<TOutput>;
+  /** Access the raw output schema for decoding */
+  outputSchema(): GenMessage<TRawTriggerOutput>;
 
   /** Get the configuration as an Any type for protobuf serialization */
   configAsAny(): Any;
@@ -32,10 +32,12 @@ export interface BaseTrigger<TOutput extends Message<string>> {
  * The adapt method allows transformation of the raw protobuf output
  * to a more convenient type for the workflow.
  */
-export interface Trigger<TOutput extends Message<string>, TAdapted = TOutput>
-  extends BaseTrigger<TOutput> {
-  /** Transform the trigger output to the adapted type */
-  adapt(output: TOutput): TAdapted | Promise<TAdapted>;
+export interface Trigger<
+  TRawTriggerOutput extends Message<string>,
+  TTriggerOutput = TRawTriggerOutput
+> extends BaseTrigger<TRawTriggerOutput> {
+  /** Transform the raw trigger output to the adapted type */
+  adapt(rawOutput: TRawTriggerOutput): TTriggerOutput | Promise<TTriggerOutput>;
 }
 
 /**
@@ -43,27 +45,29 @@ export interface Trigger<TOutput extends Message<string>, TAdapted = TOutput>
  */
 export abstract class BaseTriggerImpl<
   TConfig,
-  TOutput extends Message<string>,
-  TAdapted = TOutput
-> implements Trigger<TOutput, TAdapted>
+  TRawTriggerOutput extends Message<string>,
+  TTriggerOutput = TRawTriggerOutput
+> implements Trigger<TRawTriggerOutput, TTriggerOutput>
 {
   constructor(public readonly mode: Mode, public readonly config: TConfig) {}
 
   abstract capabilityId(): string;
   abstract method(): string;
-  abstract newOutput(): TOutput;
-  abstract outputSchema(): GenMessage<TOutput>;
+  abstract newOutput(): TRawTriggerOutput;
+  abstract outputSchema(): GenMessage<TRawTriggerOutput>;
 
   /** Go naming parity */
   abstract configAsAny(): Any;
 
   /**
-   * Default adapt implementation - returns output unchanged
-   * Override this method to transform the output
+   * Default adapt implementation - returns raw output unchanged
+   * Override this method to transform the raw output to your desired type
    */
-  adapt(output: TOutput): TAdapted | Promise<TAdapted> {
-    // Type assertion is safe here as TAdapted defaults to TOutput
+  adapt(
+    rawOutput: TRawTriggerOutput
+  ): TTriggerOutput | Promise<TTriggerOutput> {
+    // Type assertion is safe here as TTriggerOutput defaults to TRawTriggerOutput
     // when not explicitly specified
-    return output as unknown as TAdapted;
+    return rawOutput as unknown as TTriggerOutput;
   }
 }

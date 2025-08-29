@@ -7,6 +7,7 @@ type Config = {
 
 const onCronTrigger = (_: Config, runtime: Runtime): void => {
   runtime.logger.log("Hello, Calculator! Workflow triggered.");
+  cre.sendResponseValue(cre.utils.val.string("Hello, Calculator!"));
 };
 
 const initWorkflow = (config: Config) => {
