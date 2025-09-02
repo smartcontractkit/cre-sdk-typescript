@@ -21,7 +21,7 @@ const cacheSettingsSchema = z
   .optional();
 
 const creFetchRequestSchema = z.object({
-  url: z.string().url("Must provide a valid URL"),
+  url: z.string().startsWith("http"),
   method: httpMethodSchema.optional().default("GET"),
   headers: z.record(z.string()).optional(),
   body: z.string().optional(),
