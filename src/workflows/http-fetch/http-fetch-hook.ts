@@ -9,7 +9,7 @@ const configSchema = z.object({
 
 type Config = z.infer<typeof configSchema>;
 
-const fetchMathResult = async (config: Config) => {
+const fetchMathResult = useMedianConsensus(async (config: Config) => {
   try {
     const response = await cre.utils.fetch({
       url: config.apiUrl,
@@ -19,19 +19,7 @@ const fetchMathResult = async (config: Config) => {
     console.log("fetch error", error);
     return 0;
   }
-};
-
-// const fetchMathResult = useMedianConsensus(async (config: Config) => {
-//   try {
-//     const response = await cre.utils.fetch({
-//       url: config.apiUrl,
-//     });
-//     return Number.parseFloat(response.body.trim());
-//   } catch (error) {
-//     console.log("fetch error", error);
-//     return 0;
-//   }
-// }, "float64");
+}, "float64");
 
 const onCronTrigger = async (config: Config) => {
   const aggregatedValue = await fetchMathResult(config);
