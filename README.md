@@ -68,6 +68,8 @@ To build everything you need in one shot:
 bun build:all
 ```
 
+If this fails you may need to check your output and potentially run `"rustup target add wasm32-wasip1`.  
+
 To build just the Chainlink SDK Javy plugin:
 
 ```zsh
