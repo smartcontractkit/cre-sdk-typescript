@@ -24,3 +24,28 @@ export class DonModeError extends Error {
     }
   }
 }
+
+export class NodeModeError extends Error {
+  public name: string;
+  public capabilityId?: string;
+  public method?: string;
+  public mode?: Mode;
+
+  constructor(
+    message = "cannot use Node Runtime inside DON mode",
+    options?: {
+      capabilityId?: string;
+      method?: string;
+      mode?: Mode;
+    }
+  ) {
+    super(message);
+    this.name = "NodeModeError";
+
+    if (options) {
+      this.capabilityId = options.capabilityId;
+      this.method = options.method;
+      this.mode = options.mode;
+    }
+  }
+}

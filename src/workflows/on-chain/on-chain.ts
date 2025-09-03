@@ -72,7 +72,7 @@ const onCronTrigger = async (
 
   const contractCall = await evmClient.callContract({
     call: {
-      from: "0x0000000000000000000000000000000000000000", // zero address for view calls
+      from: "0x0000000000000000000000000000000000000000", // zero address for view calls -- this should be a byte array
       to: evmConfig.storageAddress,
       data: callData,
     },

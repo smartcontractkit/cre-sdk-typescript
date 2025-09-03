@@ -50,14 +50,11 @@ import {
   type WriteReportReply,
   type WriteReportRequestJson,
 } from "@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb";
-import {
-  EmptySchema,
-  type Empty,
-} from "@bufbuild/protobuf/wkt";
+import { EmptySchema, type Empty } from "@bufbuild/protobuf/wkt";
 
 /**
  * Client Capability
- * 
+ *
  * Capability ID: evm@1.0.0
  * Default Mode: Mode.DON
  * Capability Name: evm
@@ -66,7 +63,7 @@ import {
 export class ClientCapability {
   /** The capability ID for this service */
   static readonly CAPABILITY_ID = "evm@1.0.0";
-  
+
   /** The default execution mode for this capability */
   static readonly DEFAULT_MODE = Mode.DON;
 
@@ -87,7 +84,7 @@ export class ClientCapability {
     "ethereum-testnet-sepolia-base-1": 10344971235874465080n,
     "ethereum-testnet-sepolia-optimism-1": 5224473277236331295n,
     "polygon-mainnet": 4051577828743386545n,
-    "polygon-testnet-amoy": 16281711391670634445n
+    "polygon-testnet-amoy": 16281711391670634445n,
   } as const;
 
   constructor(
@@ -95,16 +92,22 @@ export class ClientCapability {
     private readonly chainSelector?: bigint
   ) {}
 
-  async callContract(input: CallContractRequestJson): Promise<CallContractReply> {
+  async callContract(
+    input: CallContractRequestJson
+  ): Promise<CallContractReply> {
+    // TODO: need to use determinism here, need to wrap with Proto Any
     const payload = {
       typeUrl: getTypeUrl(CallContractRequestSchema),
-      value: toBinary(CallContractRequestSchema, fromJson(CallContractRequestSchema, input)),
+      value: toBinary(
+        CallContractRequestSchema,
+        fromJson(CallContractRequestSchema, input)
+      ),
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
       ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
-    
+
     return callCapability({
       capabilityId,
       method: "CallContract",
@@ -127,20 +130,26 @@ export class ClientCapability {
         });
       }
 
-      return fromBinary(CallContractReplySchema, capabilityResponse.response.value.value);
+      return fromBinary(
+        CallContractReplySchema,
+        capabilityResponse.response.value.value
+      );
     });
   }
 
   async filterLogs(input: FilterLogsRequestJson): Promise<FilterLogsReply> {
     const payload = {
       typeUrl: getTypeUrl(FilterLogsRequestSchema),
-      value: toBinary(FilterLogsRequestSchema, fromJson(FilterLogsRequestSchema, input)),
+      value: toBinary(
+        FilterLogsRequestSchema,
+        fromJson(FilterLogsRequestSchema, input)
+      ),
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
       ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
-    
+
     return callCapability({
       capabilityId,
       method: "FilterLogs",
@@ -163,20 +172,26 @@ export class ClientCapability {
         });
       }
 
-      return fromBinary(FilterLogsReplySchema, capabilityResponse.response.value.value);
+      return fromBinary(
+        FilterLogsReplySchema,
+        capabilityResponse.response.value.value
+      );
     });
   }
 
   async balanceAt(input: BalanceAtRequestJson): Promise<BalanceAtReply> {
     const payload = {
       typeUrl: getTypeUrl(BalanceAtRequestSchema),
-      value: toBinary(BalanceAtRequestSchema, fromJson(BalanceAtRequestSchema, input)),
+      value: toBinary(
+        BalanceAtRequestSchema,
+        fromJson(BalanceAtRequestSchema, input)
+      ),
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
       ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
-    
+
     return callCapability({
       capabilityId,
       method: "BalanceAt",
@@ -199,20 +214,26 @@ export class ClientCapability {
         });
       }
 
-      return fromBinary(BalanceAtReplySchema, capabilityResponse.response.value.value);
+      return fromBinary(
+        BalanceAtReplySchema,
+        capabilityResponse.response.value.value
+      );
     });
   }
 
   async estimateGas(input: EstimateGasRequestJson): Promise<EstimateGasReply> {
     const payload = {
       typeUrl: getTypeUrl(EstimateGasRequestSchema),
-      value: toBinary(EstimateGasRequestSchema, fromJson(EstimateGasRequestSchema, input)),
+      value: toBinary(
+        EstimateGasRequestSchema,
+        fromJson(EstimateGasRequestSchema, input)
+      ),
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
       ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
-    
+
     return callCapability({
       capabilityId,
       method: "EstimateGas",
@@ -235,20 +256,28 @@ export class ClientCapability {
         });
       }
 
-      return fromBinary(EstimateGasReplySchema, capabilityResponse.response.value.value);
+      return fromBinary(
+        EstimateGasReplySchema,
+        capabilityResponse.response.value.value
+      );
     });
   }
 
-  async getTransactionByHash(input: GetTransactionByHashRequestJson): Promise<GetTransactionByHashReply> {
+  async getTransactionByHash(
+    input: GetTransactionByHashRequestJson
+  ): Promise<GetTransactionByHashReply> {
     const payload = {
       typeUrl: getTypeUrl(GetTransactionByHashRequestSchema),
-      value: toBinary(GetTransactionByHashRequestSchema, fromJson(GetTransactionByHashRequestSchema, input)),
+      value: toBinary(
+        GetTransactionByHashRequestSchema,
+        fromJson(GetTransactionByHashRequestSchema, input)
+      ),
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
       ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
-    
+
     return callCapability({
       capabilityId,
       method: "GetTransactionByHash",
@@ -271,20 +300,28 @@ export class ClientCapability {
         });
       }
 
-      return fromBinary(GetTransactionByHashReplySchema, capabilityResponse.response.value.value);
+      return fromBinary(
+        GetTransactionByHashReplySchema,
+        capabilityResponse.response.value.value
+      );
     });
   }
 
-  async getTransactionReceipt(input: GetTransactionReceiptRequestJson): Promise<GetTransactionReceiptReply> {
+  async getTransactionReceipt(
+    input: GetTransactionReceiptRequestJson
+  ): Promise<GetTransactionReceiptReply> {
     const payload = {
       typeUrl: getTypeUrl(GetTransactionReceiptRequestSchema),
-      value: toBinary(GetTransactionReceiptRequestSchema, fromJson(GetTransactionReceiptRequestSchema, input)),
+      value: toBinary(
+        GetTransactionReceiptRequestSchema,
+        fromJson(GetTransactionReceiptRequestSchema, input)
+      ),
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
       ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
-    
+
     return callCapability({
       capabilityId,
       method: "GetTransactionReceipt",
@@ -307,20 +344,28 @@ export class ClientCapability {
         });
       }
 
-      return fromBinary(GetTransactionReceiptReplySchema, capabilityResponse.response.value.value);
+      return fromBinary(
+        GetTransactionReceiptReplySchema,
+        capabilityResponse.response.value.value
+      );
     });
   }
 
-  async headerByNumber(input: HeaderByNumberRequestJson): Promise<HeaderByNumberReply> {
+  async headerByNumber(
+    input: HeaderByNumberRequestJson
+  ): Promise<HeaderByNumberReply> {
     const payload = {
       typeUrl: getTypeUrl(HeaderByNumberRequestSchema),
-      value: toBinary(HeaderByNumberRequestSchema, fromJson(HeaderByNumberRequestSchema, input)),
+      value: toBinary(
+        HeaderByNumberRequestSchema,
+        fromJson(HeaderByNumberRequestSchema, input)
+      ),
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
       ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
-    
+
     return callCapability({
       capabilityId,
       method: "HeaderByNumber",
@@ -343,20 +388,28 @@ export class ClientCapability {
         });
       }
 
-      return fromBinary(HeaderByNumberReplySchema, capabilityResponse.response.value.value);
+      return fromBinary(
+        HeaderByNumberReplySchema,
+        capabilityResponse.response.value.value
+      );
     });
   }
 
-  async registerLogTracking(input: RegisterLogTrackingRequestJson): Promise<Empty> {
+  async registerLogTracking(
+    input: RegisterLogTrackingRequestJson
+  ): Promise<Empty> {
     const payload = {
       typeUrl: getTypeUrl(RegisterLogTrackingRequestSchema),
-      value: toBinary(RegisterLogTrackingRequestSchema, fromJson(RegisterLogTrackingRequestSchema, input)),
+      value: toBinary(
+        RegisterLogTrackingRequestSchema,
+        fromJson(RegisterLogTrackingRequestSchema, input)
+      ),
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
       ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
-    
+
     return callCapability({
       capabilityId,
       method: "RegisterLogTracking",
@@ -383,16 +436,21 @@ export class ClientCapability {
     });
   }
 
-  async unregisterLogTracking(input: UnregisterLogTrackingRequestJson): Promise<Empty> {
+  async unregisterLogTracking(
+    input: UnregisterLogTrackingRequestJson
+  ): Promise<Empty> {
     const payload = {
       typeUrl: getTypeUrl(UnregisterLogTrackingRequestSchema),
-      value: toBinary(UnregisterLogTrackingRequestSchema, fromJson(UnregisterLogTrackingRequestSchema, input)),
+      value: toBinary(
+        UnregisterLogTrackingRequestSchema,
+        fromJson(UnregisterLogTrackingRequestSchema, input)
+      ),
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
       ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
-    
+
     return callCapability({
       capabilityId,
       method: "UnregisterLogTracking",
@@ -420,19 +478,27 @@ export class ClientCapability {
   }
 
   logTrigger(config: FilterLogTriggerRequestJson): ClientLogTrigger {
-    return new ClientLogTrigger(this.mode, config, ClientCapability.CAPABILITY_ID, "LogTrigger");
+    return new ClientLogTrigger(
+      this.mode,
+      config,
+      ClientCapability.CAPABILITY_ID,
+      "LogTrigger"
+    );
   }
 
   async writeReport(input: WriteReportRequestJson): Promise<WriteReportReply> {
     const payload = {
       typeUrl: getTypeUrl(WriteReportRequestSchema),
-      value: toBinary(WriteReportRequestSchema, fromJson(WriteReportRequestSchema, input)),
+      value: toBinary(
+        WriteReportRequestSchema,
+        fromJson(WriteReportRequestSchema, input)
+      ),
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
       ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
-    
+
     return callCapability({
       capabilityId,
       method: "WriteReport",
@@ -455,7 +521,10 @@ export class ClientCapability {
         });
       }
 
-      return fromBinary(WriteReportReplySchema, capabilityResponse.response.value.value);
+      return fromBinary(
+        WriteReportReplySchema,
+        capabilityResponse.response.value.value
+      );
     });
   }
 }
@@ -463,7 +532,11 @@ export class ClientCapability {
 /**
  * Trigger implementation for LogTrigger
  */
-class ClientLogTrigger extends BaseTriggerImpl<FilterLogTriggerRequestJson, Log, Log> {
+class ClientLogTrigger extends BaseTriggerImpl<
+  FilterLogTriggerRequestJson,
+  Log,
+  Log
+> {
   constructor(
     mode: Mode,
     config: FilterLogTriggerRequestJson,
