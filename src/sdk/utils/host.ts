@@ -54,11 +54,15 @@ export const runtimeGuards = (() => {
   };
 
   const assertDonSafe = () => {
-    if (donModeGuardError) throw donModeGuardError;
+    if (donModeGuardError) {
+      throw donModeGuardError;
+    }
   };
 
   const assertNodeSafe = () => {
-    if (nodeModeGuardError) throw nodeModeGuardError;
+    if (nodeModeGuardError) {
+      throw nodeModeGuardError;
+    }
   };
 
   const getMode = () => currentMode;

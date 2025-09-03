@@ -26,7 +26,7 @@ const configSchema = z.object({
   evms: z.array(
     z.object({
       storageAddress: z.string(),
-      chainSelector: z.number(),
+      chainSelector: z.string(),
     })
   ),
 });
@@ -117,10 +117,14 @@ const initWorkflow = (config: Config) => {
 };
 
 export async function main() {
-  const runner = await cre.newRunner<Config>({
-    configSchema: configSchema,
-  });
-  await runner.run(initWorkflow);
+  try {
+    const runner = await cre.newRunner<Config>({
+      configSchema: configSchema,
+    });
+    await runner.run(initWorkflow);
+  } catch (error) {
+    console.log("error", error);
+  }
 }
 
 main();

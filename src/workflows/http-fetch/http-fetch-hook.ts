@@ -10,10 +10,15 @@ const configSchema = z.object({
 type Config = z.infer<typeof configSchema>;
 
 const fetchMathResult = useMedianConsensus(async (config: Config) => {
-  const response = await cre.utils.fetch({
-    url: config.apiUrl,
-  });
-  return Number.parseFloat(response.body.trim());
+  try {
+    const response = await cre.utils.fetch({
+      url: config.apiUrl,
+    });
+    return Number.parseFloat(response.body.trim());
+  } catch (error) {
+    console.log("fetch error", error);
+    return 0;
+  }
 }, "float64");
 
 const onCronTrigger = async (config: Config) => {
@@ -23,7 +28,6 @@ const onCronTrigger = async (config: Config) => {
 
 const initWorkflow = (config: Config) => {
   const cron = new cre.capabilities.CronCapability();
-
   return [
     cre.handler(cron.trigger({ schedule: config.schedule }), onCronTrigger),
   ];

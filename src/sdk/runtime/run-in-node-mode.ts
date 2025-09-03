@@ -6,7 +6,7 @@ import {
   type SimpleConsensusInputsJson,
 } from "@cre/generated/sdk/v1alpha/sdk_pb";
 import { ConsensusCapability } from "@cre/generated-sdk/capabilities/internal/consensus/v1alpha/consensus_sdk_gen";
-import { host, runtimeGuards } from "@cre/sdk/utils/host";
+import { host } from "@cre/sdk/utils/host";
 import type { Value } from "@cre/generated/values/v1/values_pb";
 
 type Inputs = SimpleConsensusInputs | SimpleConsensusInputsJson;

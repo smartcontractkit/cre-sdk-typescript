@@ -3,7 +3,7 @@ import { sendResponseValue } from "@cre/sdk/utils/send-response-value";
 import { sendErrorWrapped } from "@cre/sdk/testhelpers/send-error-wrapped";
 import { SecretsError } from "@cre/sdk/utils/secrets-error";
 import { errorBoundary } from "@cre/sdk/utils/error-boundary";
-import { getSecret } from "@cre/sdk/utils/get-secret";
+import { getSecret } from "@cre/sdk/utils/secrets/get-secret";
 import { val } from "@cre/sdk/utils/values/value";
 import { handler } from "@cre/sdk/workflow";
 import { handleExecuteRequest } from "@cre/sdk/engine/execute";
