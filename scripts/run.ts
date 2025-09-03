@@ -8,6 +8,7 @@ const availableScripts = [
   "build-single-workflow-js",
   "compile-single-workflow-to-wasm",
   "build-single-workflow",
+  "generate-bindings",
 ];
 
 const main = async () => {

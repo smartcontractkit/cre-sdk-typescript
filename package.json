@@ -22,12 +22,14 @@
     "proto:generate": "bunx @bufbuild/buf generate",
     "proto:lint": "bunx @bufbuild/buf lint",
     "proto:format": "bunx @bufbuild/buf format --write",
-    "test": "bun test"
+    "test": "bun test",
+    "parse-abi": "bun scripts/run.ts generate-bindings"
   },
   "dependencies": {
     "@bufbuild/protobuf": "2.6.3",
     "@bufbuild/protoc-gen-es": "2.6.3",
     "@standard-schema/spec": "1.0.0",
+    "abitype": "^1.0.9",
     "rxjs": "7.8.2",
     "viem": "2.34.0",
     "zod": "3.25.76"

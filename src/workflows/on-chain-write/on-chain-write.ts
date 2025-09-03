@@ -11,7 +11,7 @@ import {
 } from "viem";
 import { bytesToHex } from "@cre/sdk/utils/hex-utils";
 import { CALCULATOR_CONSUMER_ABI, STORAGE_ABI } from "./abi";
-import type { Runtime } from "@cre/sdk/runtime";
+import { runtime, type Runtime } from "@cre/sdk/runtime";
 import { useMedianConsensus } from "@cre/sdk/utils/values/consensus-hooks";
 
 // Storage contract ABI - we only need the 'get' function

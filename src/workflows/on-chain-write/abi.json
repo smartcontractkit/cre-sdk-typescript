@@ -1,0 +1,32 @@
+[
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "offchainValue",
+            "type": "uint256"
+          },
+          {
+            "internalType": "int256",
+            "name": "onchainValue",
+            "type": "int256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "finalResult",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct CalculatorConsumer.CalculatorResult",
+        "name": "_prospectiveResult",
+        "type": "tuple"
+      }
+    ],
+    "name": "isResultAnomalous",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
