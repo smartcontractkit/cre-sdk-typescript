@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { cre } from "@cre/sdk/cre";
+import { type NodeRuntime } from "@cre/sdk/runtime/runtime";
 
 const configSchema = z.object({
   schedule: z.string(),
@@ -16,7 +17,7 @@ const fetchMathResult = async (config: Config) => {
 };
 
 const fetchAggregatedResult = async (config: Config) =>
-  cre.runInNodeMode(async () => {
+  cre.runInNodeMode(async (_nodeRuntime: NodeRuntime) => {
     const result = await fetchMathResult(config);
     return cre.utils.consensus.getAggregatedValue(
       cre.utils.val.float64(result),

@@ -1,6 +1,7 @@
 import { Mode } from "@cre/generated/sdk/v1alpha/sdk_pb";
 import { logger } from "@cre/sdk/logger";
-import type { Runtime, NodeRuntime } from "@cre/sdk/runtime/runtime";
+import type { Runtime } from "@cre/sdk/runtime/runtime";
+import { getSecret } from "../utils/secrets/get-secret";
 
 export const emptyConfig = {};
 
@@ -13,4 +14,5 @@ export const basicRuntime: Runtime = {
   switchModes: (() => {
     return basicRuntime;
   }) as any,
+  getSecret,
 };
