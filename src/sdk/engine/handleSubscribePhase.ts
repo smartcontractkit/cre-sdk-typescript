@@ -8,7 +8,7 @@ import {
   ExecutionResultSchema,
 } from "@cre/generated/sdk/v1alpha/sdk_pb";
 import type { Workflow } from "@cre/sdk/workflow";
-import { host } from "@cre/sdk/utils/host";
+import { hostBindings } from "@cre/sdk/runtime/host-bindings";
 
 export const handleSubscribePhase = <TConfig>(
   req: ExecuteRequest,
@@ -35,5 +35,5 @@ export const handleSubscribePhase = <TConfig>(
   });
 
   const encoded = toBinary(ExecutionResultSchema, execResult);
-  host.sendResponse(Buffer.from(encoded).toString("base64"));
+  hostBindings.sendResponse(Buffer.from(encoded).toString("base64"));
 };

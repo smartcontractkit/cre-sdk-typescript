@@ -6,7 +6,7 @@ import {
   type SimpleConsensusInputsJson,
 } from "@cre/generated/sdk/v1alpha/sdk_pb";
 import { ConsensusCapability } from "@cre/generated-sdk/capabilities/internal/consensus/v1alpha/consensus_sdk_gen";
-import { host } from "@cre/sdk/utils/host";
+import { type NodeRuntime } from "@cre/sdk/runtime/runtime";
 
 describe("runInNodeMode", () => {
   test("accepts message input and returns Value", async () => {
@@ -63,7 +63,7 @@ describe("runInNodeMode", () => {
   });
 
   test("guards DON calls while in node mode", async () => {
-    // Simulate host.switchModes by touching global function used by host
+    // Simulate switchModes by touching global function used by host
     const origSwitch = (globalThis as any).switchModes;
     (globalThis as any).switchModes = (_m: 0 | 1 | 2) => {};
 
@@ -77,9 +77,9 @@ describe("runInNodeMode", () => {
 
     let threw = false;
     try {
-      await runInNodeMode(async () => {
+      await runInNodeMode(async (nodeRuntime: NodeRuntime) => {
         // During builder, we are in NODE mode, performing a DON call should throw
-        expect(() => host.log(""));
+        expect(() => nodeRuntime.logger.log(""));
         return create(SimpleConsensusInputsSchema);
       });
     } catch (_e) {

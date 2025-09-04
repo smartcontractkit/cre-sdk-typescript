@@ -5,7 +5,7 @@ import {
   type CapabilityResponse,
 } from "@cre/generated/sdk/v1alpha/sdk_pb";
 import { LazyPromise } from "@cre/sdk/utils/lazy-promise";
-import { runtimeGuards } from "@cre/sdk/utils/host";
+import { runtimeGuards } from "@cre/sdk/runtime/runtime";
 
 export type CallCapabilityParams = {
   capabilityId: string;
