@@ -11,8 +11,8 @@ import { hostBindings } from "@cre/sdk/runtime/host-bindings";
  */
 export const runtimeGuards = (() => {
   let currentMode: Mode = Mode.DON;
-  let donModeGuardError: Error | null = null;
-  let nodeModeGuardError: Error | null = null;
+  let donModeGuardError: DonModeError | null = null;
+  let nodeModeGuardError: NodeModeError | null = new NodeModeError();
 
   const setMode = (mode: Mode) => {
     currentMode = mode;
@@ -50,38 +50,46 @@ export const runtimeGuards = (() => {
 export type BaseRuntime<M extends Mode = Mode> = {
   logger: Logger;
   mode: M;
-  switchModes(mode: Mode.DON | Mode.NODE): Runtime | NodeRuntime;
+  assertDonSafe(): asserts this is Runtime;
+  assertNodeSafe(): asserts this is NodeRuntime;
 };
 
 export type Runtime = BaseRuntime<Mode.DON> & {
   isNodeRuntime: false;
-  assertDonSafe(): asserts this is Runtime;
+  switchModes(mode: Mode.NODE): NodeRuntime;
+  switchModes(mode: Mode.DON): Runtime;
 };
 
 export type NodeRuntime = BaseRuntime<Mode.NODE> & {
   isNodeRuntime: true;
-  assertNodeSafe(): asserts this is NodeRuntime;
+  switchModes(mode: Mode.NODE): NodeRuntime;
+  switchModes(mode: Mode.DON): Runtime;
 };
 
-export const isNodeRuntime = (rt: Runtime | NodeRuntime): rt is NodeRuntime =>
-  rt.isNodeRuntime === true;
-export const isDonRuntime = (rt: Runtime | NodeRuntime): rt is Runtime =>
-  rt.isNodeRuntime === false;
+// Shared implementation for mode switching
+function switchModes(mode: Mode.NODE): NodeRuntime;
+function switchModes(mode: Mode.DON): Runtime;
+function switchModes(mode: Mode): Runtime | NodeRuntime;
+function switchModes(mode: Mode): Runtime | NodeRuntime {
+  // Changing to the same mode should be a noop, we make sure to actually call switching logic if it's different mode
+  if (mode !== runtimeGuards.getMode()) {
+    hostBindings.switchModes(mode);
+    runtimeGuards.setMode(mode);
+  }
+
+  return mode === Mode.NODE ? nodeRuntime : runtime;
+}
 
 export const runtime: Runtime = {
   mode: Mode.DON,
   isNodeRuntime: false,
   logger,
-  assertDonSafe: runtimeGuards.assertDonSafe,
-  switchModes: (mode: Mode) => {
-    hostBindings.switchModes(mode);
-    runtimeGuards.setMode(mode);
-
-    if (mode === Mode.NODE) {
-      return nodeRuntime;
-    }
-
-    return runtime;
+  switchModes,
+  assertDonSafe: function (): asserts this is Runtime {
+    runtimeGuards.assertDonSafe();
+  },
+  assertNodeSafe: function (): asserts this is NodeRuntime {
+    runtimeGuards.assertNodeSafe();
   },
 };
 
@@ -89,15 +97,11 @@ export const nodeRuntime: NodeRuntime = {
   mode: Mode.NODE,
   isNodeRuntime: true,
   logger,
-  assertNodeSafe: runtimeGuards.assertNodeSafe,
-  switchModes: (mode: Mode) => {
-    hostBindings.switchModes(mode);
-    runtimeGuards.setMode(mode);
-
-    if (mode === Mode.DON) {
-      return runtime;
-    }
-
-    return nodeRuntime;
+  switchModes,
+  assertNodeSafe: function (): asserts this is NodeRuntime {
+    runtimeGuards.assertNodeSafe();
+  },
+  assertDonSafe: function (): asserts this is Runtime {
+    runtimeGuards.assertDonSafe();
   },
 };
