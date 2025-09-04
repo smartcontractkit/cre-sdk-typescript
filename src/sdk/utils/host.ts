@@ -1,32 +1,26 @@
 import { Mode } from "@cre/generated/sdk/v1alpha/sdk_pb";
-
-// TODO: zod validation can be setup before running the workflows
-// Making sure the hosts functions are exposed and this code will be removed
-type GlobalHostFunctionsMap = {
-  switchModes: (mode: Mode) => void;
-  log: (message: string) => void;
-  sendResponse: (response: string) => number;
-  randomSeed: (mode: Mode.DON | Mode.NODE) => number;
-  versionV2: () => void;
-  callCapability: (request: string) => number;
-  awaitCapabilities: (awaitRequest: string, maxResponseLen: number) => string;
-  getSecrets: (request: string, maxResponseLen: number) => number;
-  awaitSecrets: (awaitRequest: string, maxResponseLen: number) => string;
-  getWasiArgs: () => string;
-};
-
-const g = globalThis as unknown as Partial<GlobalHostFunctionsMap>;
+import { hostBindings } from "../runtime/host-bindings";
 
 export const host = {
   switchModes: (mode: Mode): void => {
-    g.switchModes?.(mode);
+    hostBindings.switchModes(mode);
     runtimeGuards.setMode(mode);
   },
-  log: (message: string): void => g.log?.(String(message)),
+  log: (message: string): void => hostBindings.log(String(message)),
   sendResponse: (payloadBase64: string): number =>
-    g.sendResponse ? g.sendResponse(payloadBase64) : -1,
+    hostBindings.sendResponse(payloadBase64),
   randomSeed: (mode: Mode.DON | Mode.NODE = Mode.DON): number =>
-    g.randomSeed ? g.randomSeed(mode) : 0,
+    hostBindings.randomSeed(mode),
+  versionV2: (): void => hostBindings.versionV2(),
+  callCapability: (request: string): number =>
+    hostBindings.callCapability(request),
+  awaitCapabilities: (awaitRequest: string, maxResponseLen: number): string =>
+    hostBindings.awaitCapabilities(awaitRequest, maxResponseLen),
+  getSecrets: (request: string, maxResponseLen: number): number =>
+    hostBindings.getSecrets(request, maxResponseLen),
+  awaitSecrets: (awaitRequest: string, maxResponseLen: number): string =>
+    hostBindings.awaitSecrets(awaitRequest, maxResponseLen),
+  getWasiArgs: (): string => hostBindings.getWasiArgs(),
 };
 
 // Simple runtime guard state
