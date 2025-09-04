@@ -16,7 +16,7 @@ const fetchMathResult = async (config: Config) => {
 };
 
 const fetchAggregatedResult = async (config: Config) =>
-  cre.runInNodeMode(async () => {
+  cre.runInNodeMode(async (nodeRuntime) => {
     const result = await fetchMathResult(config);
     return cre.utils.consensus.getAggregatedValue(
       cre.utils.val.float64(result),

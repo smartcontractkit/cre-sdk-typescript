@@ -6,8 +6,8 @@ import {
   type SimpleConsensusInputsJson,
 } from "@cre/generated/sdk/v1alpha/sdk_pb";
 import { ConsensusCapability } from "@cre/generated-sdk/capabilities/internal/consensus/v1alpha/consensus_sdk_gen";
-import { host } from "@cre/sdk/utils/host";
 import type { Value } from "@cre/generated/values/v1/values_pb";
+import type { NodeRuntime, Runtime } from "../runtime";
 
 type Inputs = SimpleConsensusInputs | SimpleConsensusInputsJson;
 
@@ -49,16 +49,17 @@ const toInputsJson = (input: Inputs): SimpleConsensusInputsJson => {
  * Ensures mode is switched back to DON even if errors occur.
  */
 export const runInNodeMode = async (
-  buildConsensusInputs: () => Promise<Inputs> | Inputs
+  buildConsensusInputs: (nodeRuntime: NodeRuntime) => Promise<Inputs> | Inputs,
+  runtime: Runtime
 ): Promise<Value> => {
-  host.switchModes(Mode.NODE);
+  runtime.switchModes(Mode.NODE);
   let consensusInputJson: SimpleConsensusInputsJson;
   try {
-    const consensusInput = await buildConsensusInputs();
+    const consensusInput = await buildConsensusInputs(nodeRuntime);
     consensusInputJson = toInputsJson(consensusInput);
   } finally {
     // Always restore DON mode before invoking consensus
-    host.switchModes(Mode.DON);
+    runtime.switchModes(Mode.DON);
   }
 
   const consensus = new ConsensusCapability();

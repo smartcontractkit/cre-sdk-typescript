@@ -1,6 +1,7 @@
 import { Mode } from "@cre/generated/sdk/v1alpha/sdk_pb";
 import { logger, type Logger } from "@cre/sdk/logger";
 import { DonModeError, NodeModeError } from "@cre/sdk/runtime/errors";
+import { hostBindings } from "./runtime/host-bindings";
 
 /**
  * Runtime guards are not actually causing / throwing errors.
@@ -46,28 +47,57 @@ export const runtimeGuards = (() => {
   return { setMode, assertDonSafe, assertNodeSafe, getMode };
 })();
 
-export type BaseRuntime = {
+export type BaseRuntime<M extends Mode = Mode> = {
   logger: Logger;
-  getMode: () => Mode;
-  setMode: (mode: Mode) => void;
+  mode: M;
+  switchModes(mode: Mode.DON | Mode.NODE): Runtime | NodeRuntime;
 };
 
-export type Runtime = BaseRuntime & {
+export type Runtime = BaseRuntime<Mode.DON> & {
   isNodeRuntime: false;
-  assertDonSafe: () => void;
+  assertDonSafe(): asserts this is Runtime;
 };
 
-export type NodeRuntime = BaseRuntime & {
+export type NodeRuntime = BaseRuntime<Mode.NODE> & {
   isNodeRuntime: true;
-  assertNodeSafe: () => void;
+  assertNodeSafe(): asserts this is NodeRuntime;
 };
 
-export const runtime: BaseRuntime = {
+export const isNodeRuntime = (rt: Runtime | NodeRuntime): rt is NodeRuntime =>
+  rt.isNodeRuntime === true;
+export const isDonRuntime = (rt: Runtime | NodeRuntime): rt is Runtime =>
+  rt.isNodeRuntime === false;
+
+export const runtime: Runtime = {
+  mode: Mode.DON,
+  isNodeRuntime: false,
   logger,
-  setMode: runtimeGuards.setMode,
-  getMode: runtimeGuards.getMode,
-  switchModes: (mode: Mode): void => {
-    g.switchModes?.(mode);
+  assertDonSafe: runtimeGuards.assertDonSafe,
+  switchModes: (mode: Mode) => {
+    hostBindings.switchModes(mode);
     runtimeGuards.setMode(mode);
+
+    if (mode === Mode.NODE) {
+      return nodeRuntime;
+    }
+
+    return runtime;
+  },
+};
+
+export const nodeRuntime: NodeRuntime = {
+  mode: Mode.NODE,
+  isNodeRuntime: true,
+  logger,
+  assertNodeSafe: runtimeGuards.assertNodeSafe,
+  switchModes: (mode: Mode) => {
+    hostBindings.switchModes(mode);
+    runtimeGuards.setMode(mode);
+
+    if (mode === Mode.DON) {
+      return runtime;
+    }
+
+    return nodeRuntime;
   },
 };
