@@ -18,7 +18,7 @@ WORKFLOW_NAME=$1
 cd "$(dirname "$0")/.."
 
 # Source WASM file path
-SOURCE_WASM="dist/workflows/standard_tests/${WORKFLOW_NAME}/testts.wasm"
+SOURCE_WASM="dist/workflows/standard_tests/${WORKFLOW_NAME}/test.wasm"
 
 # Check if source file exists
 if [ ! -f "$SOURCE_WASM" ]; then

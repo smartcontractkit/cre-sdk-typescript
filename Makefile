@@ -13,4 +13,4 @@ standard_tests:
 	echo "Running standard tests"; \
 	$$abs_dir/host.test -test.v -test.run ^TestStandard \
 	-path=dist/workflows/standard_tests \
-	-test.skip="TestStandardModeSwitch|TestStandardCapabilityCallsAreAsync|TestStandardSecretsFailInNodeMode"
+	-test.skip="TestStandardCapabilityCallsAreAsync|TestStandardSecretsFailInNodeMode|TestStandardModeSwitch/successful_mode_switch"
