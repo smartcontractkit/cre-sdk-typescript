@@ -15,7 +15,7 @@ import {
 
 /**
  * Client Capability
- * 
+ *
  * Capability ID: http-actions@1.0.0-alpha
  * Default Mode: Mode.NODE
  * Capability Name: http-actions
@@ -24,17 +24,14 @@ import {
 export class ClientCapability {
   /** The capability ID for this service */
   static readonly CAPABILITY_ID = "http-actions@1.0.0-alpha";
-  
+
   /** The default execution mode for this capability */
   static readonly DEFAULT_MODE = Mode.NODE;
 
   static readonly CAPABILITY_NAME = "http-actions";
   static readonly CAPABILITY_VERSION = "1.0.0-alpha";
 
-
-  constructor(
-    private readonly mode: Mode = ClientCapability.DEFAULT_MODE
-  ) {}
+  constructor(private readonly mode: Mode = ClientCapability.DEFAULT_MODE) {}
 
   async sendRequest(input: RequestJson): Promise<Response> {
     const payload = {
@@ -42,7 +39,7 @@ export class ClientCapability {
       value: toBinary(RequestSchema, fromJson(RequestSchema, input)),
     };
     const capabilityId = ClientCapability.CAPABILITY_ID;
-    
+
     return callCapability({
       capabilityId,
       method: "SendRequest",
@@ -65,7 +62,10 @@ export class ClientCapability {
         });
       }
 
-      return fromBinary(ResponseSchema, capabilityResponse.response.value.value);
+      return fromBinary(
+        ResponseSchema,
+        capabilityResponse.response.value.value
+      );
     });
   }
 }
