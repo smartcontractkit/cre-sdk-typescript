@@ -2,6 +2,7 @@ import { Mode } from "@cre/generated/sdk/v1alpha/sdk_pb";
 import { logger, type Logger } from "@cre/sdk/logger";
 import { DonModeError, NodeModeError } from "@cre/sdk/runtime/errors";
 import { hostBindings } from "@cre/sdk/runtime/host-bindings";
+import { getSecret } from "@cre/sdk/utils/secrets/get-secret";
 
 /**
  * Runtime guards are not actually causing / throwing errors.
@@ -58,6 +59,7 @@ export type Runtime = BaseRuntime<Mode.DON> & {
   isNodeRuntime: false;
   switchModes(mode: Mode.NODE): NodeRuntime;
   switchModes(mode: Mode.DON): Runtime;
+  getSecret(id: string): Promise<any>;
 };
 
 export type NodeRuntime = BaseRuntime<Mode.NODE> & {
@@ -91,6 +93,7 @@ export const runtime: Runtime = {
   assertNodeSafe: function (): asserts this is NodeRuntime {
     runtimeGuards.assertNodeSafe();
   },
+  getSecret,
 };
 
 export const nodeRuntime: NodeRuntime = {

@@ -63,4 +63,13 @@ describe("Handling runtime in TS SDK", () => {
     const rt: Runtime = nodeRuntime.switchModes(Mode.DON);
     expect(() => rt.assertNodeSafe()).toThrow(NodeModeError);
   });
+
+  test("getSecret is only available in DON mode", () => {
+    // Casting to any because typescript itself is not letting us do this
+    const nodeRuntime: any = runtime.switchModes(Mode.NODE);
+    expect(nodeRuntime.getSecret).toBeUndefined();
+
+    const rt: Runtime = nodeRuntime.switchModes(Mode.DON);
+    expect(rt.getSecret).toBeDefined();
+  });
 });
