@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { cre } from "@cre/sdk/cre";
 import { useMedianConsensus } from "@cre/sdk/utils/values/consensus-hooks";
+import { withErrorBoundary } from "@cre/sdk/utils/error-boundary";
 
 const configSchema = z.object({
   schedule: z.string(),
@@ -40,4 +41,4 @@ export async function main() {
   await runner.run(initWorkflow);
 }
 
-main();
+withErrorBoundary(main);

@@ -17,22 +17,17 @@ const fetchMathResult = async (config: Config) => {
   return Number.parseFloat(response.body.trim());
 };
 
-// const fetchAggregatedResult = async (config: Config) =>
-//   cre.runInNodeMode(async (_nodeRuntime: NodeRuntime) => {
-//     const result = await fetchMathResult(config);
-//     return cre.utils.consensus.getAggregatedValue(
-//       cre.utils.val.float64(result),
-//       "median"
-//     );
-//   });
+const fetchAggregatedResult = async (config: Config) =>
+  cre.runInNodeMode(async (_nodeRuntime: NodeRuntime) => {
+    const result = await fetchMathResult(config);
+    return cre.utils.consensus.getAggregatedValue(
+      cre.utils.val.float64(result),
+      "median"
+    );
+  });
 
 const onCronTrigger = async (config: Config) => {
-  const result = await fetchMathResult(config);
-  const aggregatedValue = cre.utils.consensus.getAggregatedValue(
-    cre.utils.val.float64(result),
-    "median"
-  );
-  // const aggregatedValue = await fetchAggregatedResult(config);
+  const aggregatedValue = await fetchAggregatedResult(config);
   cre.sendResponseValue(cre.utils.val.mapValue({ Result: aggregatedValue }));
 };
 
