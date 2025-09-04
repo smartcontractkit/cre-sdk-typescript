@@ -3,7 +3,7 @@ import type {
   CapabilityResponse,
 } from "@cre/generated/sdk/v1alpha/sdk_pb";
 import type { Workflow } from "@cre/sdk/workflow";
-import type { Runtime } from "@cre/sdk/runtime";
+import type { Runtime } from "@cre/sdk/runtime/runtime";
 import { handleSubscribePhase } from "./handleSubscribePhase";
 import { handleExecutionPhase } from "./handleExecutionPhase";
 

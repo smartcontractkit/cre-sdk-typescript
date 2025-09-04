@@ -4,7 +4,7 @@ import type { Trigger } from "@cre/sdk/utils/triggers/trigger-interface";
 import { handleExecuteRequest } from "@cre/sdk/engine/execute";
 import { getRequest } from "@cre/sdk/utils/get-request";
 import { configHandler, type ConfigHandlerParams } from "@cre/sdk/utils/config";
-import { runtime, type Runtime } from "@cre/sdk/runtime";
+import { runtime, type Runtime } from "@cre/sdk/runtime/runtime";
 
 export type HandlerFn<TConfig, TTriggerOutput> = (
   config: TConfig,
