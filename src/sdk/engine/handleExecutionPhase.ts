@@ -5,7 +5,7 @@ import type {
 import { fromBinary } from "@bufbuild/protobuf";
 import type { Workflow } from "@cre/sdk/workflow";
 import { getTypeUrl } from "@cre/sdk/utils/typeurl";
-import type { Runtime } from "@cre/sdk/runtime";
+import type { Runtime } from "@cre/sdk/runtime/runtime";
 
 export const handleExecutionPhase = async <TConfig>(
   req: ExecuteRequest,

@@ -4,7 +4,7 @@ import { sendResponseValue } from "@cre/sdk/utils/send-response-value";
 import { val } from "@cre/sdk/utils/values/value";
 import { encodeFunctionData, decodeFunctionResult, type Hex } from "viem";
 import { bytesToHex } from "@cre/sdk/utils/hex-utils";
-import type { Runtime } from "@cre/sdk/runtime";
+import type { Runtime } from "@cre/sdk/runtime/runtime";
 import { useMedianConsensus } from "@cre/sdk/utils/values/consensus-hooks";
 
 // Storage contract ABI - we only need the 'get' function

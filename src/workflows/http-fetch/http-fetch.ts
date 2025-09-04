@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { cre } from "@cre/sdk/cre";
+import { type NodeRuntime } from "@cre/sdk/runtime/runtime";
+import { withErrorBoundary } from "@cre/sdk/utils/error-boundary";
 
 const configSchema = z.object({
   schedule: z.string(),
@@ -16,7 +18,7 @@ const fetchMathResult = async (config: Config) => {
 };
 
 const fetchAggregatedResult = async (config: Config) =>
-  cre.runInNodeMode(async () => {
+  cre.runInNodeMode(async (_nodeRuntime: NodeRuntime) => {
     const result = await fetchMathResult(config);
     return cre.utils.consensus.getAggregatedValue(
       cre.utils.val.float64(result),
@@ -39,9 +41,9 @@ const initWorkflow = (config: Config) => {
 
 export async function main() {
   const runner = await cre.newRunner<Config>({
-    configSchema: configSchema,
+    configSchema,
   });
   await runner.run(initWorkflow);
 }
 
-main();
+withErrorBoundary(main);

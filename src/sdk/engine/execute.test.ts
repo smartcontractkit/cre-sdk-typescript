@@ -1,5 +1,4 @@
-import { describe, test, expect, mock, beforeEach } from "bun:test";
-import { handleExecuteRequest } from "@cre/sdk/engine/execute";
+import { describe, test, expect, mock } from "bun:test";
 import { handler } from "@cre/sdk/workflow";
 import { create, toBinary, fromBinary } from "@bufbuild/protobuf";
 import {
@@ -15,20 +14,40 @@ import { OutputsSchema as BasicTriggerOutputsSchema } from "@cre/generated/capab
 import { getTypeUrl } from "@cre/sdk/utils/typeurl";
 import { emptyConfig, basicRuntime } from "@cre/sdk/testhelpers/mocks";
 
+// Mock the hostBindings module before importing handleExecuteRequest
+const mockSendResponse = mock((_response: string) => 0);
+const mockHostBindings = {
+  sendResponse: mockSendResponse,
+  switchModes: mock((_mode: 0 | 1 | 2) => {}),
+  log: mock((_message: string) => {}),
+  callCapability: mock((_request: string) => 1),
+  awaitCapabilities: mock((_awaitRequest: string, _maxResponseLen: number) =>
+    btoa("mock_await_capabilities_response")
+  ),
+  getSecrets: mock((_request: string, _maxResponseLen: number) => 1),
+  awaitSecrets: mock((_awaitRequest: string, _maxResponseLen: number) =>
+    btoa("mock_await_secrets_response")
+  ),
+  versionV2: mock(() => {}),
+  randomSeed: mock((_mode: 1 | 2) => Math.random()),
+  getWasiArgs: mock(() => '["mock.wasm", ""]'),
+};
+
+// Mock the module
+mock.module("@cre/sdk/runtime/host-bindings", () => ({
+  hostBindings: mockHostBindings,
+}));
+
+import { handleExecuteRequest } from "@cre/sdk/engine/execute";
+
 const decodeExecutionResult = (b64: string) =>
   fromBinary(ExecutionResultSchema, Buffer.from(b64, "base64"));
 
 describe("engine/execute", () => {
-  let originalSendResponse: typeof globalThis.sendResponse;
-
-  beforeEach(() => {
-    originalSendResponse = globalThis.sendResponse;
-  });
-
   test("subscribe returns TriggerSubscriptionRequest wrapped in ExecutionResult", async () => {
     const subs: string[] = [];
     // mock sendResponse to capture base64 payload
-    globalThis.sendResponse = mock((resp: string) => {
+    mockSendResponse.mockImplementation((resp: string) => {
       const exec = decodeExecutionResult(resp);
       const ts =
         exec.result.case === "triggerSubscriptions"
@@ -71,7 +90,7 @@ describe("engine/execute", () => {
       "basic-test-trigger@1.0.0:Trigger:type.googleapis.com/capabilities.internal.basictrigger.v1.Config"
     );
 
-    globalThis.sendResponse = originalSendResponse;
+    mockSendResponse.mockRestore();
   });
 
   test("trigger routes by id and decodes payload for correct handler", async () => {

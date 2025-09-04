@@ -18,6 +18,7 @@ import { getRequest } from "@cre/sdk/utils/get-request";
 import { BasicCapability as BasicTriggerCapability } from "@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen";
 import { runInNodeMode } from "@cre/sdk/runtime/run-in-node-mode";
 import { basicRuntime, emptyConfig } from "@cre/sdk/testhelpers/mocks";
+import { type NodeRuntime } from "@cre/sdk/runtime/runtime";
 
 export async function main() {
   console.log(
@@ -33,23 +34,25 @@ export async function main() {
     const basicActionCapability = new BasicActionCapability();
     const donResponse = await basicActionCapability.performAction(donInput);
 
-    const consensusOutput = await runInNodeMode(async () => {
-      Date.now();
-      const nodeActionCapability = new NodeActionCapability();
-      const nodeResponse = await nodeActionCapability.performAction({
-        inputThing: true,
-      });
-      const consensusInput = create(SimpleConsensusInputsSchema, {
-        observation: observationValue(
-          val.mapValue({ OutputThing: val.int64(nodeResponse.outputThing) })
-        ),
-        descriptors: consensusFieldsFrom({
-          OutputThing: AggregationType.MEDIAN,
-        }),
-        default: val.mapValue({ OutputThing: val.int64(123) }),
-      });
-      return consensusInput;
-    });
+    const consensusOutput = await runInNodeMode(
+      async (_nodeRuntime: NodeRuntime) => {
+        Date.now();
+        const nodeActionCapability = new NodeActionCapability();
+        const nodeResponse = await nodeActionCapability.performAction({
+          inputThing: true,
+        });
+        const consensusInput = create(SimpleConsensusInputsSchema, {
+          observation: observationValue(
+            val.mapValue({ OutputThing: val.int64(nodeResponse.outputThing) })
+          ),
+          descriptors: consensusFieldsFrom({
+            OutputThing: AggregationType.MEDIAN,
+          }),
+          default: val.mapValue({ OutputThing: val.int64(123) }),
+        });
+        return consensusInput;
+      }
+    );
 
     Date.now();
     const outputJson = toJson(ValueSchema, consensusOutput);

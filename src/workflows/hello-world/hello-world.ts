@@ -1,5 +1,5 @@
 import { cre } from "@cre/sdk/cre";
-import type { Runtime } from "@cre/sdk/runtime";
+import type { Runtime } from "@cre/sdk/runtime/runtime";
 
 type Config = {
   schedule: string;

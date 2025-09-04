@@ -17,6 +17,7 @@ import {
 } from "@cre/sdk/utils/values/consensus";
 import { runInNodeMode } from "@cre/sdk/runtime/run-in-node-mode";
 import { emptyConfig, basicRuntime } from "@cre/sdk/testhelpers/mocks";
+import { type NodeRuntime } from "@cre/sdk/runtime/runtime";
 
 export async function main() {
   console.log(
@@ -29,7 +30,7 @@ export async function main() {
     const donRandomNumber = new Rand(donSeed);
     let total = donRandomNumber.Uint64();
 
-    await runInNodeMode(async () => {
+    await runInNodeMode(async (_nodeRuntime: NodeRuntime) => {
       const nodeSeed = BigInt(randomSeed(Mode.NODE));
       const nodeRandomNumber = new Rand(nodeSeed);
 
