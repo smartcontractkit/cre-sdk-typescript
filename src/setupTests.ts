@@ -1,15 +1,17 @@
 import { mock, beforeEach } from "bun:test";
 
 // Mock CRE globals
-globalThis.callCapability = mock((_request: string) => 1);
+globalThis.callCapability = mock((_request: Uint8Array) => 1);
 globalThis.awaitCapabilities = mock(
-  (_awaitRequest: string, _maxResponseLen: number) =>
-    btoa("mock_await_cabilities_response")
+  (_awaitRequest: Uint8Array, _maxResponseLen: number) =>
+    new Uint8Array(Buffer.from("mock_await_cabilities_response", "utf8"))
 );
-globalThis.getSecrets = mock((_request: string, _maxResponseLen: number) => 1);
+globalThis.getSecrets = mock(
+  (_request: Uint8Array, _maxResponseLen: number) => 1
+);
 globalThis.awaitSecrets = mock(
-  (_awaitRequest: string, _maxResponseLen: number) =>
-    btoa("mock_await_secrets_response")
+  (_awaitRequest: Uint8Array, _maxResponseLen: number) =>
+    new Uint8Array(Buffer.from("mock_await_secrets_response", "utf8"))
 );
 globalThis.log = mock((message: string) => console.log(message));
 globalThis.sendResponse = mock((_response: Uint8Array) => 0);
