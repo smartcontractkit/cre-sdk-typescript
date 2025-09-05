@@ -45,13 +45,13 @@ describe('val helpers', () => {
 	test('int64 from number', () => {
 		const v = val.int64(42)
 		expect(v.value.case).toBe('int64Value')
-		expect(v.value.value).toBe('42')
+		expect(v.value.value).toBe(42n)
 	})
 
 	test('int64 from bigint within range', () => {
 		const v = val.int64(123n)
 		expect(v.value.case).toBe('int64Value')
-		expect(v.value.value).toBe('123')
+		expect(v.value.value).toBe(123n)
 	})
 
 	test('int64 throws on non-integer number', () => {
@@ -65,10 +65,47 @@ describe('val helpers', () => {
 		expect(() => val.int64(tooBig)).toThrow()
 	})
 
-	test('int64 accepts string passthrough', () => {
+	test('int64 underflow throws (number)', () => {
+		// larger than int64 max
+		const tooSmall = Number(-(2n ** 64n))
+		expect(Number.isFinite(tooSmall)).toBe(true)
+		expect(() => val.int64(tooSmall)).toThrow()
+	})
+
+	test('int64 from string ', () => {
 		const v = val.int64('-42')
 		expect(v.value.case).toBe('int64Value')
-		expect(v.value.value).toBe('-42')
+		expect(v.value.value).toBe(-42n)
+	})
+
+	test('uint64 from bigint within range', () => {
+		const v = val.uint64(123n)
+		expect(v.value.case).toBe('uint64Value')
+		expect(v.value.value).toBe(123n)
+	})
+
+	test('uint64 throws on non-integer number', () => {
+		expect(() => val.uint64(1.5)).toThrow()
+	})
+
+	test('uint64 overflow throws (number)', () => {
+		// larger than uint64 max
+		const tooBig = Number(2n ** 64n)
+		expect(Number.isFinite(tooBig)).toBe(true)
+		expect(() => val.uint64(tooBig)).toThrow()
+	})
+
+	test('uint64 underflow throws (number)', () => {
+		// larger than uint64 max
+		const tooSmall = Number(-1)
+		expect(Number.isFinite(tooSmall)).toBe(true)
+		expect(() => val.uint64(tooSmall)).toThrow()
+	})
+
+	test('uint64 from string ', () => {
+		const v = val.uint64('42')
+		expect(v.value.case).toBe('uint64Value')
+		expect(v.value.value).toBe(42n)
 	})
 
 	test('float64', () => {
@@ -91,18 +128,12 @@ describe('val helpers', () => {
 		const v = val.bigint(big)
 		expect(v.value.case).toBe('bigintValue')
 		const pb = ensureCase(v, 'bigintValue').value as {
-			sign: string
+			sign: bigint
 			absVal: Uint8Array
 		}
-		expect(pb.sign).toBe('-1')
+		expect(pb.sign).toBe(-1n)
 		const abs = bytesToBigIntBE(pb.absVal)
 		expect(abs).toBe(-big)
-	})
-
-	test('bigint uses int64 when safe', () => {
-		const v = val.from(99n)
-		expect(v.value.case).toBe('int64Value')
-		expect(v.value.value).toBe('99')
 	})
 
 	test('from(number) outside int64 becomes float64', () => {
@@ -130,7 +161,7 @@ describe('val helpers', () => {
 		const v = val.list([1, v1, true])
 		expect(v.value.case).toBe('listValue')
 		const items = ensureCase(v, 'listValue').value.fields as Value[]
-		expect(items[0].value.case).toBe('int64Value')
+		expect(items[0].value.case).toBe('float64Value')
 		expect(items[1].value.case).toBe('stringValue')
 		expect(items[2].value.case).toBe('boolValue')
 	})
@@ -143,10 +174,10 @@ describe('val helpers', () => {
 
 	test('map from raw values and prebuilt values', () => {
 		const v1 = val.float64(1.25)
-		const v = val.mapValue({ a: 1, b: v1, s: 'ok' })
+		const v = val.mapValue({ a: 1n, b: v1, s: 'ok' })
 		expect(v.value.case).toBe('mapValue')
 		const m = ensureCase(v, 'mapValue').value.fields as Record<string, Value>
-		expect(m.a.value.case).toBe('int64Value')
+		expect(m.a.value.case).toBe('bigintValue')
 		expect(m.b.value.case).toBe('float64Value')
 		expect(m.s.value.case).toBe('stringValue')
 	})
@@ -165,7 +196,7 @@ describe('val helpers', () => {
 		const mv = ensureCase(vObj, 'mapValue')
 		const innerList = mv.value.fields.k as Value
 		const list = ensureCase(innerList, 'listValue').value.fields as Value[]
-		expect(list[0].value.case).toBe('int64Value')
+		expect(list[0].value.case).toBe('float64Value')
 		expect(list[1].value.case).toBe('stringValue')
 		expect(list[2].value.case).toBe('boolValue')
 	})
@@ -181,12 +212,12 @@ describe('val helpers', () => {
 		expect(v.value.case).toBe('decimalValue')
 		const d = ensureCase(v, 'decimalValue').value as {
 			exponent: number
-			coefficient?: { sign: string; absVal: Uint8Array }
+			coefficient?: { sign: bigint; absVal: Uint8Array }
 		}
 		expect(d.exponent).toBe(-2)
 		// coefficient should be 1523 (sign + digits)
 		const coeffAbs = bytesToBigIntBE(d.coefficient!.absVal)
-		expect(d.coefficient!.sign).toBe('1')
+		expect(d.coefficient!.sign).toBe(1n)
 		expect(coeffAbs).toBe(1523n)
 	})
 
@@ -194,10 +225,10 @@ describe('val helpers', () => {
 		const v = val.decimal('-123.4500')
 		const d = ensureCase(v, 'decimalValue').value as {
 			exponent: number
-			coefficient?: { sign: string; absVal: Uint8Array }
+			coefficient?: { sign: bigint; absVal: Uint8Array }
 		}
 		expect(d.exponent).toBe(-2)
-		expect(d.coefficient!.sign).toBe('-1')
+		expect(d.coefficient!.sign).toBe(-1n)
 		const coeffAbs = bytesToBigIntBE(d.coefficient!.absVal)
 		expect(coeffAbs).toBe(12345n)
 
