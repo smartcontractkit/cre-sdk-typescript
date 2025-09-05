@@ -28,14 +28,14 @@ export const main = async () => {
     // Single workflow parameter - works as before
     const workflowName = args[0];
     console.info(`🔨 Compiling workflow to WASM: ${workflowName}`);
-    jsFile = `dist/workflows/standard_tests/${workflowName}/testts.js`;
+    jsFile = `dist/workflows/standard_tests/${workflowName}/test.js`;
     buildCommand = `bun run build-single-workflow-js.ts ${workflowName}`;
   } else if (args.length === 2) {
     // Two parameters - first is directory, second is nested workflow
     const directory = args[0];
     const workflowName = args[1];
     console.info(`🔨 Compiling nested workflow to WASM: ${directory}/${workflowName}`);
-    jsFile = `dist/workflows/standard_tests/${directory}/${workflowName}/testts.js`;
+    jsFile = `dist/workflows/standard_tests/${directory}/${workflowName}/test.js`;
     buildCommand = `bun run build-single-workflow-js.ts ${directory} ${workflowName}`;
   } else {
     console.error("❌ Too many arguments provided");

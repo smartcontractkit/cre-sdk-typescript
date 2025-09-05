@@ -24,7 +24,7 @@ echo "📦 Building workflows..."
 bun build:workflows
 
 # Source WASM file path
-SOURCE_WASM="dist/workflows/${WORKFLOW_NAME}/testts.wasm"
+SOURCE_WASM="dist/workflows/${WORKFLOW_NAME}/test.wasm"
 
 # Check if source file exists
 if [ ! -f "$SOURCE_WASM" ]; then
