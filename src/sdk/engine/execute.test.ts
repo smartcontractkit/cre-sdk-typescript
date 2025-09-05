@@ -68,7 +68,7 @@ describe('engine/execute', () => {
 		const req: ExecuteRequest = create(ExecuteRequestSchema, {
 			config: new Uint8Array(),
 			request: { case: 'subscribe', value: create(EmptySchema) },
-			maxResponseSize: '0',
+			maxResponseSize: 0n,
 		})
 
 		await handleExecuteRequest(req, workflow, emptyConfig, basicRuntime)
@@ -118,9 +118,9 @@ describe('engine/execute', () => {
 			config: new Uint8Array(),
 			request: {
 				case: 'trigger',
-				value: { id: '1', payload: payloadAny },
+				value: { id: 1n, payload: payloadAny },
 			},
-			maxResponseSize: '0',
+			maxResponseSize: 0n,
 		})
 
 		await handleExecuteRequest(req, workflow, emptyConfig, basicRuntime)
@@ -150,8 +150,8 @@ describe('engine/execute', () => {
 		}
 		const req: ExecuteRequest = create(ExecuteRequestSchema, {
 			config: new Uint8Array(),
-			request: { case: 'trigger', value: { id: '999', payload: payloadAny } },
-			maxResponseSize: '0',
+			request: { case: 'trigger', value: { id: 999n, payload: payloadAny } },
+			maxResponseSize: 0n,
 		})
 
 		await handleExecuteRequest(req, workflow, emptyConfig, basicRuntime)
@@ -181,8 +181,8 @@ describe('engine/execute', () => {
 		}
 		const req: ExecuteRequest = create(ExecuteRequestSchema, {
 			config: new Uint8Array(),
-			request: { case: 'trigger', value: { id: '1', payload: payloadAny } },
-			maxResponseSize: '0',
+			request: { case: 'trigger', value: { id: 1n, payload: payloadAny } },
+			maxResponseSize: 0n,
 		})
 
 		await handleExecuteRequest(req, workflow, emptyConfig, basicRuntime)

@@ -17,7 +17,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file capabilities/blockchain/evm/v1alpha/client.proto.
  */
 export const file_capabilities_blockchain_evm_v1alpha_client: GenFile = /*@__PURE__*/
-  fileDesc("CjBjYXBhYmlsaXRpZXMvYmxvY2tjaGFpbi9ldm0vdjFhbHBoYS9jbGllbnQucHJvdG8SI2NhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhIh0KC1RvcGljVmFsdWVzEg4KBnZhbHVlcxgBIAMoDCK4AQoXRmlsdGVyTG9nVHJpZ2dlclJlcXVlc3QSEQoJYWRkcmVzc2VzGAEgAygMEkAKBnRvcGljcxgCIAMoCzIwLmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLlRvcGljVmFsdWVzEkgKCmNvbmZpZGVuY2UYAyABKA4yNC5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5Db25maWRlbmNlTGV2ZWwiegoTQ2FsbENvbnRyYWN0UmVxdWVzdBI6CgRjYWxsGAEgASgLMiwuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuQ2FsbE1zZxInCgxibG9ja19udW1iZXIYAiABKAsyES52YWx1ZXMudjEuQmlnSW50IiEKEUNhbGxDb250cmFjdFJlcGx5EgwKBGRhdGEYASABKAwiWwoRRmlsdGVyTG9nc1JlcXVlc3QSRgoMZmlsdGVyX3F1ZXJ5GAEgASgLMjAuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuRmlsdGVyUXVlcnkiSQoPRmlsdGVyTG9nc1JlcGx5EjYKBGxvZ3MYASADKAsyKC5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5Mb2cixwEKA0xvZxIPCgdhZGRyZXNzGAEgASgMEg4KBnRvcGljcxgCIAMoDBIPCgd0eF9oYXNoGAMgASgMEhIKCmJsb2NrX2hhc2gYBCABKAwSDAoEZGF0YRgFIAEoDBIRCglldmVudF9zaWcYBiABKAwSJwoMYmxvY2tfbnVtYmVyGAcgASgLMhEudmFsdWVzLnYxLkJpZ0ludBIQCgh0eF9pbmRleBgIIAEoDRINCgVpbmRleBgJIAEoDRIPCgdyZW1vdmVkGAogASgIIjEKB0NhbGxNc2cSDAoEZnJvbRgBIAEoDBIKCgJ0bxgCIAEoDBIMCgRkYXRhGAMgASgMIr0BCgtGaWx0ZXJRdWVyeRISCgpibG9ja19oYXNoGAEgASgMEiUKCmZyb21fYmxvY2sYAiABKAsyES52YWx1ZXMudjEuQmlnSW50EiMKCHRvX2Jsb2NrGAMgASgLMhEudmFsdWVzLnYxLkJpZ0ludBIRCglhZGRyZXNzZXMYBCADKAwSOwoGdG9waWNzGAUgAygLMisuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuVG9waWNzIhcKBlRvcGljcxINCgV0b3BpYxgBIAMoDCJMChBCYWxhbmNlQXRSZXF1ZXN0Eg8KB2FjY291bnQYASABKAwSJwoMYmxvY2tfbnVtYmVyGAIgASgLMhEudmFsdWVzLnYxLkJpZ0ludCI0Cg5CYWxhbmNlQXRSZXBseRIiCgdiYWxhbmNlGAEgASgLMhEudmFsdWVzLnYxLkJpZ0ludCJPChJFc3RpbWF0ZUdhc1JlcXVlc3QSOQoDbXNnGAEgASgLMiwuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuQ2FsbE1zZyIjChBFc3RpbWF0ZUdhc1JlcGx5Eg8KA2dhcxgBIAEoBEICMAEiKwobR2V0VHJhbnNhY3Rpb25CeUhhc2hSZXF1ZXN0EgwKBGhhc2gYASABKAwiYgoZR2V0VHJhbnNhY3Rpb25CeUhhc2hSZXBseRJFCgt0cmFuc2FjdGlvbhgBIAEoCzIwLmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLlRyYW5zYWN0aW9uIqEBCgtUcmFuc2FjdGlvbhIRCgVub25jZRgBIAEoBEICMAESDwoDZ2FzGAIgASgEQgIwARIKCgJ0bxgDIAEoDBIMCgRkYXRhGAQgASgMEgwKBGhhc2gYBSABKAwSIAoFdmFsdWUYBiABKAsyES52YWx1ZXMudjEuQmlnSW50EiQKCWdhc19wcmljZRgHIAEoCzIRLnZhbHVlcy52MS5CaWdJbnQiLAocR2V0VHJhbnNhY3Rpb25SZWNlaXB0UmVxdWVzdBIMCgRoYXNoGAEgASgMIlsKGkdldFRyYW5zYWN0aW9uUmVjZWlwdFJlcGx5Ej0KB3JlY2VpcHQYASABKAsyLC5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5SZWNlaXB0IpkCCgdSZWNlaXB0EhIKBnN0YXR1cxgBIAEoBEICMAESFAoIZ2FzX3VzZWQYAiABKARCAjABEhQKCHR4X2luZGV4GAMgASgEQgIwARISCgpibG9ja19oYXNoGAQgASgMEjYKBGxvZ3MYBiADKAsyKC5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5Mb2cSDwoHdHhfaGFzaBgHIAEoDBIuChNlZmZlY3RpdmVfZ2FzX3ByaWNlGAggASgLMhEudmFsdWVzLnYxLkJpZ0ludBInCgxibG9ja19udW1iZXIYCSABKAsyES52YWx1ZXMudjEuQmlnSW50EhgKEGNvbnRyYWN0X2FkZHJlc3MYCiABKAwiQAoVSGVhZGVyQnlOdW1iZXJSZXF1ZXN0EicKDGJsb2NrX251bWJlchgBIAEoCzIRLnZhbHVlcy52MS5CaWdJbnQiUgoTSGVhZGVyQnlOdW1iZXJSZXBseRI7CgZoZWFkZXIYASABKAsyKy5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5IZWFkZXIiawoGSGVhZGVyEhUKCXRpbWVzdGFtcBgBIAEoBEICMAESJwoMYmxvY2tfbnVtYmVyGAIgASgLMhEudmFsdWVzLnYxLkJpZ0ludBIMCgRoYXNoGAMgASgMEhMKC3BhcmVudF9oYXNoGAQgASgMIlsKGlJlZ2lzdGVyTG9nVHJhY2tpbmdSZXF1ZXN0Ej0KBmZpbHRlchgBIAEoCzItLmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkxQRmlsdGVyIsIBCghMUEZpbHRlchIZCg1tYXhfbG9nc19rZXB0GAEgASgEQgIwARIaCg5yZXRlbnRpb25fdGltZRgCIAEoA0ICMAESGgoObG9nc19wZXJfYmxvY2sYAyABKARCAjABEgwKBG5hbWUYBCABKAkSEQoJYWRkcmVzc2VzGAUgAygMEhIKCmV2ZW50X3NpZ3MYBiADKAwSDgoGdG9waWMyGAcgAygMEg4KBnRvcGljMxgIIAMoDBIOCgZ0b3BpYzQYCSADKAwiMwocVW5yZWdpc3RlckxvZ1RyYWNraW5nUmVxdWVzdBITCgtmaWx0ZXJfbmFtZRgBIAEoCSKrAQoSV3JpdGVSZXBvcnRSZXF1ZXN0EhAKCHJlY2VpdmVyGAEgASgMEisKBnJlcG9ydBgCIAEoCzIbLnNkay52MWFscGhhLlJlcG9ydFJlc3BvbnNlEkcKCmdhc19jb25maWcYAyABKAsyLi5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5HYXNDb25maWdIAIgBAUINCgtfZ2FzX2NvbmZpZyIiCglHYXNDb25maWcSFQoJZ2FzX2xpbWl0GAEgASgEQgIwASKHAwoQV3JpdGVSZXBvcnRSZXBseRJACgl0eF9zdGF0dXMYASABKA4yLS5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5UeFN0YXR1cxJ1CiJyZWNlaXZlcl9jb250cmFjdF9leGVjdXRpb25fc3RhdHVzGAIgASgOMkQuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuUmVjZWl2ZXJDb250cmFjdEV4ZWN1dGlvblN0YXR1c0gAiAEBEhQKB3R4X2hhc2gYAyABKAxIAYgBARIvCg90cmFuc2FjdGlvbl9mZWUYBCABKAsyES52YWx1ZXMudjEuQmlnSW50SAKIAQESGgoNZXJyb3JfbWVzc2FnZRgFIAEoCUgDiAEBQiUKI19yZWNlaXZlcl9jb250cmFjdF9leGVjdXRpb25fc3RhdHVzQgoKCF90eF9oYXNoQhIKEF90cmFuc2FjdGlvbl9mZWVCEAoOX2Vycm9yX21lc3NhZ2UqaQoPQ29uZmlkZW5jZUxldmVsEhkKFUNPTkZJREVOQ0VfTEVWRUxfU0FGRRAAEhsKF0NPTkZJREVOQ0VfTEVWRUxfTEFURVNUEAESHgoaQ09ORklERU5DRV9MRVZFTF9GSU5BTElaRUQQAiqCAQofUmVjZWl2ZXJDb250cmFjdEV4ZWN1dGlvblN0YXR1cxIuCipSRUNFSVZFUl9DT05UUkFDVF9FWEVDVVRJT05fU1RBVFVTX1NVQ0NFU1MQABIvCitSRUNFSVZFUl9DT05UUkFDVF9FWEVDVVRJT05fU1RBVFVTX1JFVkVSVEVEEAEqTgoIVHhTdGF0dXMSEwoPVFhfU1RBVFVTX0ZBVEFMEAASFgoSVFhfU1RBVFVTX1JFVkVSVEVEEAESFQoRVFhfU1RBVFVTX1NVQ0NFU1MQAjLXDwoGQ2xpZW50EoABCgxDYWxsQ29udHJhY3QSOC5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5DYWxsQ29udHJhY3RSZXF1ZXN0GjYuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuQ2FsbENvbnRyYWN0UmVwbHkSegoKRmlsdGVyTG9ncxI2LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkZpbHRlckxvZ3NSZXF1ZXN0GjQuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuRmlsdGVyTG9nc1JlcGx5EncKCUJhbGFuY2VBdBI1LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkJhbGFuY2VBdFJlcXVlc3QaMy5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5CYWxhbmNlQXRSZXBseRJ9CgtFc3RpbWF0ZUdhcxI3LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkVzdGltYXRlR2FzUmVxdWVzdBo1LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkVzdGltYXRlR2FzUmVwbHkSmAEKFEdldFRyYW5zYWN0aW9uQnlIYXNoEkAuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuR2V0VHJhbnNhY3Rpb25CeUhhc2hSZXF1ZXN0Gj4uY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuR2V0VHJhbnNhY3Rpb25CeUhhc2hSZXBseRKbAQoVR2V0VHJhbnNhY3Rpb25SZWNlaXB0EkEuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuR2V0VHJhbnNhY3Rpb25SZWNlaXB0UmVxdWVzdBo/LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkdldFRyYW5zYWN0aW9uUmVjZWlwdFJlcGx5EoYBCg5IZWFkZXJCeU51bWJlchI6LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkhlYWRlckJ5TnVtYmVyUmVxdWVzdBo4LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkhlYWRlckJ5TnVtYmVyUmVwbHkSbgoTUmVnaXN0ZXJMb2dUcmFja2luZxI/LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLlJlZ2lzdGVyTG9nVHJhY2tpbmdSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EnIKFVVucmVnaXN0ZXJMb2dUcmFja2luZxJBLmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLlVucmVnaXN0ZXJMb2dUcmFja2luZ1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSdgoKTG9nVHJpZ2dlchI8LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkZpbHRlckxvZ1RyaWdnZXJSZXF1ZXN0GiguY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuTG9nMAESfQoLV3JpdGVSZXBvcnQSNy5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5Xcml0ZVJlcG9ydFJlcXVlc3QaNS5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5Xcml0ZVJlcG9ydFJlcGx5GrgEgrUYswQIARIJZXZtQDEuMC4wGqMECg1DaGFpblNlbGVjdG9yEpEEEo4ECh0KEWF2YWxhbmNoZS1tYWlubmV0ENXnisDh1ZikWQojChZhdmFsYW5jaGUtdGVzdG5ldC1mdWppEJv5/JCi46j4zAEKLwojYmluYW5jZV9zbWFydF9jaGFpbi1tYWlubmV0LW9wYm5iLTEQia2P75PG17sGCjAKI2JpbmFuY2Vfc21hcnRfY2hhaW4tdGVzdG5ldC1vcGJuYi0xEI71hZHBg4+cuAEKHAoQZXRoZXJldW0tbWFpbm5ldBCV9vHkz7KmwkUKJwobZXRoZXJldW0tbWFpbm5ldC1hcmJpdHJ1bS0xEMTojc2Om6HXRAonChtldGhlcmV1bS1tYWlubmV0LW9wdGltaXNtLTEQuJWPw/f+0OkzCiUKGGV0aGVyZXVtLXRlc3RuZXQtc2Vwb2xpYRDZteTO/MnuoN4BCi8KI2V0aGVyZXVtLXRlc3RuZXQtc2Vwb2xpYS1hcmJpdHJ1bS0xEOrO7v/qtoSjMAosCh9ldGhlcmV1bS10ZXN0bmV0LXNlcG9saWEtYmFzZS0xELjKue/2kK7IjwEKLwojZXRoZXJldW0tdGVzdG5ldC1zZXBvbGlhLW9wdGltaXNtLTEQn4bFob7Yw8BIChsKD3BvbHlnb24tbWFpbm5ldBCxq+TwmpKGnTgKIQoUcG9seWdvbi10ZXN0bmV0LWFtb3kQzY/W3/HHkPrhAULlAQonY29tLmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhQgtDbGllbnRQcm90b1ABogIDQ0JFqgIjQ2FwYWJpbGl0aWVzLkJsb2NrY2hhaW4uRXZtLlYxYWxwaGHKAiNDYXBhYmlsaXRpZXNcQmxvY2tjaGFpblxFdm1cVjFhbHBoYeICL0NhcGFiaWxpdGllc1xCbG9ja2NoYWluXEV2bVxWMWFscGhhXEdQQk1ldGFkYXRh6gImQ2FwYWJpbGl0aWVzOjpCbG9ja2NoYWluOjpFdm06OlYxYWxwaGFiBnByb3RvMw", [file_google_protobuf_empty, file_sdk_v1alpha_sdk, file_tools_generator_v1alpha_cre_metadata, file_values_v1_values]);
+  fileDesc("CjBjYXBhYmlsaXRpZXMvYmxvY2tjaGFpbi9ldm0vdjFhbHBoYS9jbGllbnQucHJvdG8SI2NhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhIh0KC1RvcGljVmFsdWVzEg4KBnZhbHVlcxgBIAMoDCK4AQoXRmlsdGVyTG9nVHJpZ2dlclJlcXVlc3QSEQoJYWRkcmVzc2VzGAEgAygMEkAKBnRvcGljcxgCIAMoCzIwLmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLlRvcGljVmFsdWVzEkgKCmNvbmZpZGVuY2UYAyABKA4yNC5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5Db25maWRlbmNlTGV2ZWwiegoTQ2FsbENvbnRyYWN0UmVxdWVzdBI6CgRjYWxsGAEgASgLMiwuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuQ2FsbE1zZxInCgxibG9ja19udW1iZXIYAiABKAsyES52YWx1ZXMudjEuQmlnSW50IiEKEUNhbGxDb250cmFjdFJlcGx5EgwKBGRhdGEYASABKAwiWwoRRmlsdGVyTG9nc1JlcXVlc3QSRgoMZmlsdGVyX3F1ZXJ5GAEgASgLMjAuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuRmlsdGVyUXVlcnkiSQoPRmlsdGVyTG9nc1JlcGx5EjYKBGxvZ3MYASADKAsyKC5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5Mb2cixwEKA0xvZxIPCgdhZGRyZXNzGAEgASgMEg4KBnRvcGljcxgCIAMoDBIPCgd0eF9oYXNoGAMgASgMEhIKCmJsb2NrX2hhc2gYBCABKAwSDAoEZGF0YRgFIAEoDBIRCglldmVudF9zaWcYBiABKAwSJwoMYmxvY2tfbnVtYmVyGAcgASgLMhEudmFsdWVzLnYxLkJpZ0ludBIQCgh0eF9pbmRleBgIIAEoDRINCgVpbmRleBgJIAEoDRIPCgdyZW1vdmVkGAogASgIIjEKB0NhbGxNc2cSDAoEZnJvbRgBIAEoDBIKCgJ0bxgCIAEoDBIMCgRkYXRhGAMgASgMIr0BCgtGaWx0ZXJRdWVyeRISCgpibG9ja19oYXNoGAEgASgMEiUKCmZyb21fYmxvY2sYAiABKAsyES52YWx1ZXMudjEuQmlnSW50EiMKCHRvX2Jsb2NrGAMgASgLMhEudmFsdWVzLnYxLkJpZ0ludBIRCglhZGRyZXNzZXMYBCADKAwSOwoGdG9waWNzGAUgAygLMisuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuVG9waWNzIhcKBlRvcGljcxINCgV0b3BpYxgBIAMoDCJMChBCYWxhbmNlQXRSZXF1ZXN0Eg8KB2FjY291bnQYASABKAwSJwoMYmxvY2tfbnVtYmVyGAIgASgLMhEudmFsdWVzLnYxLkJpZ0ludCI0Cg5CYWxhbmNlQXRSZXBseRIiCgdiYWxhbmNlGAEgASgLMhEudmFsdWVzLnYxLkJpZ0ludCJPChJFc3RpbWF0ZUdhc1JlcXVlc3QSOQoDbXNnGAEgASgLMiwuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuQ2FsbE1zZyIjChBFc3RpbWF0ZUdhc1JlcGx5Eg8KA2dhcxgBIAEoBEICMAAiKwobR2V0VHJhbnNhY3Rpb25CeUhhc2hSZXF1ZXN0EgwKBGhhc2gYASABKAwiYgoZR2V0VHJhbnNhY3Rpb25CeUhhc2hSZXBseRJFCgt0cmFuc2FjdGlvbhgBIAEoCzIwLmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLlRyYW5zYWN0aW9uIqEBCgtUcmFuc2FjdGlvbhIRCgVub25jZRgBIAEoBEICMAASDwoDZ2FzGAIgASgEQgIwABIKCgJ0bxgDIAEoDBIMCgRkYXRhGAQgASgMEgwKBGhhc2gYBSABKAwSIAoFdmFsdWUYBiABKAsyES52YWx1ZXMudjEuQmlnSW50EiQKCWdhc19wcmljZRgHIAEoCzIRLnZhbHVlcy52MS5CaWdJbnQiLAocR2V0VHJhbnNhY3Rpb25SZWNlaXB0UmVxdWVzdBIMCgRoYXNoGAEgASgMIlsKGkdldFRyYW5zYWN0aW9uUmVjZWlwdFJlcGx5Ej0KB3JlY2VpcHQYASABKAsyLC5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5SZWNlaXB0IpkCCgdSZWNlaXB0EhIKBnN0YXR1cxgBIAEoBEICMAASFAoIZ2FzX3VzZWQYAiABKARCAjAAEhQKCHR4X2luZGV4GAMgASgEQgIwABISCgpibG9ja19oYXNoGAQgASgMEjYKBGxvZ3MYBiADKAsyKC5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5Mb2cSDwoHdHhfaGFzaBgHIAEoDBIuChNlZmZlY3RpdmVfZ2FzX3ByaWNlGAggASgLMhEudmFsdWVzLnYxLkJpZ0ludBInCgxibG9ja19udW1iZXIYCSABKAsyES52YWx1ZXMudjEuQmlnSW50EhgKEGNvbnRyYWN0X2FkZHJlc3MYCiABKAwiQAoVSGVhZGVyQnlOdW1iZXJSZXF1ZXN0EicKDGJsb2NrX251bWJlchgBIAEoCzIRLnZhbHVlcy52MS5CaWdJbnQiUgoTSGVhZGVyQnlOdW1iZXJSZXBseRI7CgZoZWFkZXIYASABKAsyKy5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5IZWFkZXIiawoGSGVhZGVyEhUKCXRpbWVzdGFtcBgBIAEoBEICMAASJwoMYmxvY2tfbnVtYmVyGAIgASgLMhEudmFsdWVzLnYxLkJpZ0ludBIMCgRoYXNoGAMgASgMEhMKC3BhcmVudF9oYXNoGAQgASgMIlsKGlJlZ2lzdGVyTG9nVHJhY2tpbmdSZXF1ZXN0Ej0KBmZpbHRlchgBIAEoCzItLmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkxQRmlsdGVyIsIBCghMUEZpbHRlchIZCg1tYXhfbG9nc19rZXB0GAEgASgEQgIwABIaCg5yZXRlbnRpb25fdGltZRgCIAEoA0ICMAASGgoObG9nc19wZXJfYmxvY2sYAyABKARCAjAAEgwKBG5hbWUYBCABKAkSEQoJYWRkcmVzc2VzGAUgAygMEhIKCmV2ZW50X3NpZ3MYBiADKAwSDgoGdG9waWMyGAcgAygMEg4KBnRvcGljMxgIIAMoDBIOCgZ0b3BpYzQYCSADKAwiMwocVW5yZWdpc3RlckxvZ1RyYWNraW5nUmVxdWVzdBITCgtmaWx0ZXJfbmFtZRgBIAEoCSKrAQoSV3JpdGVSZXBvcnRSZXF1ZXN0EhAKCHJlY2VpdmVyGAEgASgMEisKBnJlcG9ydBgCIAEoCzIbLnNkay52MWFscGhhLlJlcG9ydFJlc3BvbnNlEkcKCmdhc19jb25maWcYAyABKAsyLi5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5HYXNDb25maWdIAIgBAUINCgtfZ2FzX2NvbmZpZyIiCglHYXNDb25maWcSFQoJZ2FzX2xpbWl0GAEgASgEQgIwACKHAwoQV3JpdGVSZXBvcnRSZXBseRJACgl0eF9zdGF0dXMYASABKA4yLS5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5UeFN0YXR1cxJ1CiJyZWNlaXZlcl9jb250cmFjdF9leGVjdXRpb25fc3RhdHVzGAIgASgOMkQuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuUmVjZWl2ZXJDb250cmFjdEV4ZWN1dGlvblN0YXR1c0gAiAEBEhQKB3R4X2hhc2gYAyABKAxIAYgBARIvCg90cmFuc2FjdGlvbl9mZWUYBCABKAsyES52YWx1ZXMudjEuQmlnSW50SAKIAQESGgoNZXJyb3JfbWVzc2FnZRgFIAEoCUgDiAEBQiUKI19yZWNlaXZlcl9jb250cmFjdF9leGVjdXRpb25fc3RhdHVzQgoKCF90eF9oYXNoQhIKEF90cmFuc2FjdGlvbl9mZWVCEAoOX2Vycm9yX21lc3NhZ2UqaQoPQ29uZmlkZW5jZUxldmVsEhkKFUNPTkZJREVOQ0VfTEVWRUxfU0FGRRAAEhsKF0NPTkZJREVOQ0VfTEVWRUxfTEFURVNUEAESHgoaQ09ORklERU5DRV9MRVZFTF9GSU5BTElaRUQQAiqCAQofUmVjZWl2ZXJDb250cmFjdEV4ZWN1dGlvblN0YXR1cxIuCipSRUNFSVZFUl9DT05UUkFDVF9FWEVDVVRJT05fU1RBVFVTX1NVQ0NFU1MQABIvCitSRUNFSVZFUl9DT05UUkFDVF9FWEVDVVRJT05fU1RBVFVTX1JFVkVSVEVEEAEqTgoIVHhTdGF0dXMSEwoPVFhfU1RBVFVTX0ZBVEFMEAASFgoSVFhfU1RBVFVTX1JFVkVSVEVEEAESFQoRVFhfU1RBVFVTX1NVQ0NFU1MQAjLXDwoGQ2xpZW50EoABCgxDYWxsQ29udHJhY3QSOC5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5DYWxsQ29udHJhY3RSZXF1ZXN0GjYuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuQ2FsbENvbnRyYWN0UmVwbHkSegoKRmlsdGVyTG9ncxI2LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkZpbHRlckxvZ3NSZXF1ZXN0GjQuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuRmlsdGVyTG9nc1JlcGx5EncKCUJhbGFuY2VBdBI1LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkJhbGFuY2VBdFJlcXVlc3QaMy5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5CYWxhbmNlQXRSZXBseRJ9CgtFc3RpbWF0ZUdhcxI3LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkVzdGltYXRlR2FzUmVxdWVzdBo1LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkVzdGltYXRlR2FzUmVwbHkSmAEKFEdldFRyYW5zYWN0aW9uQnlIYXNoEkAuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuR2V0VHJhbnNhY3Rpb25CeUhhc2hSZXF1ZXN0Gj4uY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuR2V0VHJhbnNhY3Rpb25CeUhhc2hSZXBseRKbAQoVR2V0VHJhbnNhY3Rpb25SZWNlaXB0EkEuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuR2V0VHJhbnNhY3Rpb25SZWNlaXB0UmVxdWVzdBo/LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkdldFRyYW5zYWN0aW9uUmVjZWlwdFJlcGx5EoYBCg5IZWFkZXJCeU51bWJlchI6LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkhlYWRlckJ5TnVtYmVyUmVxdWVzdBo4LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkhlYWRlckJ5TnVtYmVyUmVwbHkSbgoTUmVnaXN0ZXJMb2dUcmFja2luZxI/LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLlJlZ2lzdGVyTG9nVHJhY2tpbmdSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EnIKFVVucmVnaXN0ZXJMb2dUcmFja2luZxJBLmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLlVucmVnaXN0ZXJMb2dUcmFja2luZ1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSdgoKTG9nVHJpZ2dlchI8LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkZpbHRlckxvZ1RyaWdnZXJSZXF1ZXN0GiguY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuTG9nMAESfQoLV3JpdGVSZXBvcnQSNy5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5Xcml0ZVJlcG9ydFJlcXVlc3QaNS5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5Xcml0ZVJlcG9ydFJlcGx5GrgEgrUYswQIARIJZXZtQDEuMC4wGqMECg1DaGFpblNlbGVjdG9yEpEEEo4ECh0KEWF2YWxhbmNoZS1tYWlubmV0ENXnisDh1ZikWQojChZhdmFsYW5jaGUtdGVzdG5ldC1mdWppEJv5/JCi46j4zAEKLwojYmluYW5jZV9zbWFydF9jaGFpbi1tYWlubmV0LW9wYm5iLTEQia2P75PG17sGCjAKI2JpbmFuY2Vfc21hcnRfY2hhaW4tdGVzdG5ldC1vcGJuYi0xEI71hZHBg4+cuAEKHAoQZXRoZXJldW0tbWFpbm5ldBCV9vHkz7KmwkUKJwobZXRoZXJldW0tbWFpbm5ldC1hcmJpdHJ1bS0xEMTojc2Om6HXRAonChtldGhlcmV1bS1tYWlubmV0LW9wdGltaXNtLTEQuJWPw/f+0OkzCiUKGGV0aGVyZXVtLXRlc3RuZXQtc2Vwb2xpYRDZteTO/MnuoN4BCi8KI2V0aGVyZXVtLXRlc3RuZXQtc2Vwb2xpYS1hcmJpdHJ1bS0xEOrO7v/qtoSjMAosCh9ldGhlcmV1bS10ZXN0bmV0LXNlcG9saWEtYmFzZS0xELjKue/2kK7IjwEKLwojZXRoZXJldW0tdGVzdG5ldC1zZXBvbGlhLW9wdGltaXNtLTEQn4bFob7Yw8BIChsKD3BvbHlnb24tbWFpbm5ldBCxq+TwmpKGnTgKIQoUcG9seWdvbi10ZXN0bmV0LWFtb3kQzY/W3/HHkPrhAULlAQonY29tLmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhQgtDbGllbnRQcm90b1ABogIDQ0JFqgIjQ2FwYWJpbGl0aWVzLkJsb2NrY2hhaW4uRXZtLlYxYWxwaGHKAiNDYXBhYmlsaXRpZXNcQmxvY2tjaGFpblxFdm1cVjFhbHBoYeICL0NhcGFiaWxpdGllc1xCbG9ja2NoYWluXEV2bVxWMWFscGhhXEdQQk1ldGFkYXRh6gImQ2FwYWJpbGl0aWVzOjpCbG9ja2NoYWluOjpFdm06OlYxYWxwaGFiBnByb3RvMw", [file_google_protobuf_empty, file_sdk_v1alpha_sdk, file_tools_generator_v1alpha_cre_metadata, file_values_v1_values]);
 
 /**
  * @generated from message capabilities.blockchain.evm.v1alpha.TopicValues
@@ -711,9 +711,9 @@ export type EstimateGasReply = Message<"capabilities.blockchain.evm.v1alpha.Esti
   /**
    * estimated amount of gas in gas units, needed for tx execution
    *
-   * @generated from field: uint64 gas = 1 [jstype = JS_STRING];
+   * @generated from field: uint64 gas = 1 [jstype = JS_NORMAL];
    */
-  gas: string;
+  gas: bigint;
 };
 
 /**
@@ -723,7 +723,7 @@ export type EstimateGasReplyJson = {
   /**
    * estimated amount of gas in gas units, needed for tx execution
    *
-   * @generated from field: uint64 gas = 1 [jstype = JS_STRING];
+   * @generated from field: uint64 gas = 1 [jstype = JS_NORMAL];
    */
   gas?: string;
 };
@@ -802,16 +802,16 @@ export type Transaction = Message<"capabilities.blockchain.evm.v1alpha.Transacti
   /**
    * number of txs sent from sender
    *
-   * @generated from field: uint64 nonce = 1 [jstype = JS_STRING];
+   * @generated from field: uint64 nonce = 1 [jstype = JS_NORMAL];
    */
-  nonce: string;
+  nonce: bigint;
 
   /**
    * max gas allowed per execution (in gas units)
    *
-   * @generated from field: uint64 gas = 2 [jstype = JS_STRING];
+   * @generated from field: uint64 gas = 2 [jstype = JS_NORMAL];
    */
-  gas: string;
+  gas: bigint;
 
   /**
    * recipient address in evm address [20]byte fix-sized array format
@@ -858,14 +858,14 @@ export type TransactionJson = {
   /**
    * number of txs sent from sender
    *
-   * @generated from field: uint64 nonce = 1 [jstype = JS_STRING];
+   * @generated from field: uint64 nonce = 1 [jstype = JS_NORMAL];
    */
   nonce?: string;
 
   /**
    * max gas allowed per execution (in gas units)
    *
-   * @generated from field: uint64 gas = 2 [jstype = JS_STRING];
+   * @generated from field: uint64 gas = 2 [jstype = JS_NORMAL];
    */
   gas?: string;
 
@@ -979,23 +979,23 @@ export type Receipt = Message<"capabilities.blockchain.evm.v1alpha.Receipt"> & {
   /**
    * 1 for success 0 for failure
    *
-   * @generated from field: uint64 status = 1 [jstype = JS_STRING];
+   * @generated from field: uint64 status = 1 [jstype = JS_NORMAL];
    */
-  status: string;
+  status: bigint;
 
   /**
    * gas used by this transaction (in gas units)
    *
-   * @generated from field: uint64 gas_used = 2 [jstype = JS_STRING];
+   * @generated from field: uint64 gas_used = 2 [jstype = JS_NORMAL];
    */
-  gasUsed: string;
+  gasUsed: bigint;
 
   /**
    * index of the transaction inside of the block
    *
-   * @generated from field: uint64 tx_index = 3 [jstype = JS_STRING];
+   * @generated from field: uint64 tx_index = 3 [jstype = JS_NORMAL];
    */
-  txIndex: string;
+  txIndex: bigint;
 
   /**
    * block hash containing the transaction
@@ -1049,21 +1049,21 @@ export type ReceiptJson = {
   /**
    * 1 for success 0 for failure
    *
-   * @generated from field: uint64 status = 1 [jstype = JS_STRING];
+   * @generated from field: uint64 status = 1 [jstype = JS_NORMAL];
    */
   status?: string;
 
   /**
    * gas used by this transaction (in gas units)
    *
-   * @generated from field: uint64 gas_used = 2 [jstype = JS_STRING];
+   * @generated from field: uint64 gas_used = 2 [jstype = JS_NORMAL];
    */
   gasUsed?: string;
 
   /**
    * index of the transaction inside of the block
    *
-   * @generated from field: uint64 tx_index = 3 [jstype = JS_STRING];
+   * @generated from field: uint64 tx_index = 3 [jstype = JS_NORMAL];
    */
   txIndex?: string;
 
@@ -1182,9 +1182,9 @@ export type Header = Message<"capabilities.blockchain.evm.v1alpha.Header"> & {
   /**
    * unix timestamp
    *
-   * @generated from field: uint64 timestamp = 1 [jstype = JS_STRING];
+   * @generated from field: uint64 timestamp = 1 [jstype = JS_NORMAL];
    */
-  timestamp: string;
+  timestamp: bigint;
 
   /**
    * @generated from field: values.v1.BigInt block_number = 2;
@@ -1213,7 +1213,7 @@ export type HeaderJson = {
   /**
    * unix timestamp
    *
-   * @generated from field: uint64 timestamp = 1 [jstype = JS_STRING];
+   * @generated from field: uint64 timestamp = 1 [jstype = JS_NORMAL];
    */
   timestamp?: string;
 
@@ -1278,23 +1278,23 @@ export type LPFilter = Message<"capabilities.blockchain.evm.v1alpha.LPFilter"> &
   /**
    * maximum number of logs to retain ( 0 = unlimited )
    *
-   * @generated from field: uint64 max_logs_kept = 1 [jstype = JS_STRING];
+   * @generated from field: uint64 max_logs_kept = 1 [jstype = JS_NORMAL];
    */
-  maxLogsKept: string;
+  maxLogsKept: bigint;
 
   /**
    * maximum amount of time to retain logs in seconds
    *
-   * @generated from field: int64 retention_time = 2 [jstype = JS_STRING];
+   * @generated from field: int64 retention_time = 2 [jstype = JS_NORMAL];
    */
-  retentionTime: string;
+  retentionTime: bigint;
 
   /**
    * rate limit ( maximum # of logs per block, 0 = unlimited )
    *
-   * @generated from field: uint64 logs_per_block = 3 [jstype = JS_STRING];
+   * @generated from field: uint64 logs_per_block = 3 [jstype = JS_NORMAL];
    */
-  logsPerBlock: string;
+  logsPerBlock: bigint;
 
   /**
    * filter name, has to persist for removing filter
@@ -1346,21 +1346,21 @@ export type LPFilterJson = {
   /**
    * maximum number of logs to retain ( 0 = unlimited )
    *
-   * @generated from field: uint64 max_logs_kept = 1 [jstype = JS_STRING];
+   * @generated from field: uint64 max_logs_kept = 1 [jstype = JS_NORMAL];
    */
   maxLogsKept?: string;
 
   /**
    * maximum amount of time to retain logs in seconds
    *
-   * @generated from field: int64 retention_time = 2 [jstype = JS_STRING];
+   * @generated from field: int64 retention_time = 2 [jstype = JS_NORMAL];
    */
   retentionTime?: string;
 
   /**
    * rate limit ( maximum # of logs per block, 0 = unlimited )
    *
-   * @generated from field: uint64 logs_per_block = 3 [jstype = JS_STRING];
+   * @generated from field: uint64 logs_per_block = 3 [jstype = JS_NORMAL];
    */
   logsPerBlock?: string;
 
@@ -1493,9 +1493,9 @@ export const WriteReportRequestSchema: GenMessage<WriteReportRequest, {jsonType:
  */
 export type GasConfig = Message<"capabilities.blockchain.evm.v1alpha.GasConfig"> & {
   /**
-   * @generated from field: uint64 gas_limit = 1 [jstype = JS_STRING];
+   * @generated from field: uint64 gas_limit = 1 [jstype = JS_NORMAL];
    */
-  gasLimit: string;
+  gasLimit: bigint;
 };
 
 /**
@@ -1503,7 +1503,7 @@ export type GasConfig = Message<"capabilities.blockchain.evm.v1alpha.GasConfig">
  */
 export type GasConfigJson = {
   /**
-   * @generated from field: uint64 gas_limit = 1 [jstype = JS_STRING];
+   * @generated from field: uint64 gas_limit = 1 [jstype = JS_NORMAL];
    */
   gasLimit?: string;
 };
