@@ -5,7 +5,7 @@ import {
 } from "@cre/generated/sdk/v1alpha/sdk_pb";
 import { callCapability } from "@cre/sdk/utils/capabilities/call-capability";
 import { CapabilityError } from "@cre/sdk/utils/capabilities/capability-error";
-import { BaseTriggerImpl } from "@cre/sdk/utils/triggers/trigger-interface";
+import { type Trigger } from "@cre/sdk/utils/triggers/trigger-interface";
 import { type Any, AnySchema } from "@bufbuild/protobuf/wkt";
 import { getTypeUrl } from "@cre/sdk/utils/typeurl";
 import {
@@ -83,15 +83,13 @@ export class BasicCapability {
 /**
  * Trigger implementation for Trigger
  */
-class BasicTrigger extends BaseTriggerImpl<ConfigJson, TriggerEvent, TriggerEvent> {
+class BasicTrigger implements Trigger<TriggerEvent, TriggerEvent> {
   constructor(
-    mode: Mode,
-    config: ConfigJson,
+    public readonly mode: Mode,
+    public readonly config: ConfigJson,
     private readonly _capabilityId: string,
     private readonly _method: string
-  ) {
-    super(mode, config);
-  }
+  ) {}
 
   capabilityId(): string {
     return this._capabilityId;
@@ -99,10 +97,6 @@ class BasicTrigger extends BaseTriggerImpl<ConfigJson, TriggerEvent, TriggerEven
 
   method(): string {
     return this._method;
-  }
-
-  newOutput(): TriggerEvent {
-    return create(TriggerEventSchema);
   }
 
   outputSchema() {
