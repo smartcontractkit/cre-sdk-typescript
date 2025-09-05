@@ -35,5 +35,5 @@ export const handleSubscribePhase = <TConfig>(
   });
 
   const encoded = toBinary(ExecutionResultSchema, execResult);
-  hostBindings.sendResponse(Buffer.from(encoded).toString("base64"));
+  hostBindings.sendResponse(encoded);
 };

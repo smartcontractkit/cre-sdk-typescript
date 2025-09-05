@@ -8,6 +8,7 @@ import {
   getLastCallbackId,
   incrementCallbackId,
 } from "@cre/sdk/utils/capabilities/callback-id";
+import { hostBindings } from "@cre/sdk/runtime/host-bindings";
 
 type Params = {
   capabilityId: string;
@@ -38,7 +39,7 @@ export const doRequestAsync = ({
 
   const reqBytes = toBinary(CapabilityRequestSchema, req);
 
-  callCapability(Buffer.from(reqBytes).toString("base64"));
+  hostBindings.callCapability(reqBytes);
 
   return callbackId;
 };

@@ -5,19 +5,69 @@ import { z } from "zod";
 const globalHostBindingsSchema = z.object({
   switchModes: z.function().args(z.nativeEnum(Mode)).returns(z.void()),
   log: z.function().args(z.string()).returns(z.void()),
-  sendResponse: z.function().args(z.string()).returns(z.number()),
+  sendResponse: z
+    .function()
+    .args(
+      z.union([
+        z.instanceof(Uint8Array),
+        z.custom<Uint8Array<ArrayBufferLike>>(),
+      ])
+    )
+    .returns(z.number()),
   randomSeed: z
     .function()
     .args(z.union([z.literal(Mode.DON), z.literal(Mode.NODE)]))
     .returns(z.number()),
   versionV2: z.function().args().returns(z.void()),
-  callCapability: z.function().args(z.string()).returns(z.number()),
+  callCapability: z
+    .function()
+    .args(
+      z.union([
+        z.instanceof(Uint8Array),
+        z.custom<Uint8Array<ArrayBufferLike>>(),
+      ])
+    )
+    .returns(z.number()),
   awaitCapabilities: z
     .function()
-    .args(z.string(), z.number())
-    .returns(z.string()),
-  getSecrets: z.function().args(z.string(), z.number()).returns(z.number()),
-  awaitSecrets: z.function().args(z.string(), z.number()).returns(z.string()),
+    .args(
+      z.union([
+        z.instanceof(Uint8Array),
+        z.custom<Uint8Array<ArrayBufferLike>>(),
+      ]),
+      z.number()
+    )
+    .returns(
+      z.union([
+        z.instanceof(Uint8Array),
+        z.custom<Uint8Array<ArrayBufferLike>>(),
+      ])
+    ),
+  getSecrets: z
+    .function()
+    .args(
+      z.union([
+        z.instanceof(Uint8Array),
+        z.custom<Uint8Array<ArrayBufferLike>>(),
+      ]),
+      z.number()
+    )
+    .returns(z.number()),
+  awaitSecrets: z
+    .function()
+    .args(
+      z.union([
+        z.instanceof(Uint8Array),
+        z.custom<Uint8Array<ArrayBufferLike>>(),
+      ]),
+      z.number()
+    )
+    .returns(
+      z.union([
+        z.instanceof(Uint8Array),
+        z.custom<Uint8Array<ArrayBufferLike>>(),
+      ])
+    ),
   getWasiArgs: z.function().args().returns(z.string()),
 });
 

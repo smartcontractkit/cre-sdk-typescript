@@ -40,14 +40,14 @@ mock.module("@cre/sdk/runtime/host-bindings", () => ({
 
 import { handleExecuteRequest } from "@cre/sdk/engine/execute";
 
-const decodeExecutionResult = (b64: string) =>
-  fromBinary(ExecutionResultSchema, Buffer.from(b64, "base64"));
+const decodeExecutionResult = (result: Uint8Array) =>
+  fromBinary(ExecutionResultSchema, result);
 
 describe("engine/execute", () => {
   test("subscribe returns TriggerSubscriptionRequest wrapped in ExecutionResult", async () => {
     const subs: string[] = [];
-    // mock sendResponse to capture base64 payload
-    mockSendResponse.mockImplementation((resp: string) => {
+    // mock sendResponse to capture the payload
+    mockSendResponse.mockImplementation((resp: Uint8Array) => {
       const exec = decodeExecutionResult(resp);
       const ts =
         exec.result.case === "triggerSubscriptions"

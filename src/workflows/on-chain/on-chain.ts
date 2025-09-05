@@ -2,10 +2,12 @@ import { z } from "zod";
 import { cre } from "@cre/sdk/cre";
 import { sendResponseValue } from "@cre/sdk/utils/send-response-value";
 import { val } from "@cre/sdk/utils/values/value";
-import { encodeFunctionData, decodeFunctionResult, type Hex } from "viem";
+import { encodeFunctionData, decodeFunctionResult, zeroAddress } from "viem";
 import { bytesToHex } from "@cre/sdk/utils/hex-utils";
 import type { Runtime } from "@cre/sdk/runtime/runtime";
 import { useMedianConsensus } from "@cre/sdk/utils/values/consensus-hooks";
+import { hexToBase64 } from "@cre/sdk/utils/hex-utils";
+import { withErrorBoundary } from "@cre/sdk/utils/error-boundary";
 
 // Storage contract ABI - we only need the 'get' function
 // TODO: In production, load ABI from external file or contract metadata
@@ -44,8 +46,6 @@ const onCronTrigger = async (
   config: Config,
   runtime: Runtime
 ): Promise<void> => {
-  runtime.logger.log("Hello, Calculator! Workflow triggered.");
-
   if (!config.evms?.length) {
     throw new Error("No EVM configuration provided");
   }
@@ -72,25 +72,26 @@ const onCronTrigger = async (
 
   const contractCall = await evmClient.callContract({
     call: {
-      from: "0x0000000000000000000000000000000000000000", // zero address for view calls
-      to: evmConfig.storageAddress,
-      data: callData,
+      from: hexToBase64(zeroAddress),
+      to: hexToBase64(evmConfig.storageAddress),
+      data: hexToBase64(callData),
     },
     blockNumber: {
-      absVal: "03", // 3 for finalized block
-      sign: "-1", // negative
+      absVal: Buffer.from([3]).toString("base64"), // 3 for finalized block
+      sign: "-1", // negative for finalized
     },
   });
 
   // Decode the result
-  const decodedResult = decodeFunctionResult({
+  const onchainValue = decodeFunctionResult({
     abi: STORAGE_ABI,
     functionName: "get",
-    data: bytesToHex(contractCall.data) as Hex,
+    data: bytesToHex(contractCall.data),
   });
 
-  const onchainValue = decodedResult as bigint;
-  runtime.logger.log("Successfully read onchain value");
+  runtime.logger.log(
+    `Successfully read onchain value: ${onchainValue.toString()}`
+  );
 
   // Step 3: Combine the results - convert offchain float to bigint and add
   const offchainFloat =
@@ -117,14 +118,10 @@ const initWorkflow = (config: Config) => {
 };
 
 export async function main() {
-  try {
-    const runner = await cre.newRunner<Config>({
-      configSchema: configSchema,
-    });
-    await runner.run(initWorkflow);
-  } catch (error) {
-    console.log("error", error);
-  }
+  const runner = await cre.newRunner<Config>({
+    configSchema: configSchema,
+  });
+  await runner.run(initWorkflow);
 }
 
-main();
+withErrorBoundary(main);

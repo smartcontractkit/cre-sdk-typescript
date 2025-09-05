@@ -4,7 +4,9 @@ use javy_plugin_api::{
     Config,
 };
 
-use javy_plugin_api::javy::quickjs::Error;
+use javy_plugin_api::javy::quickjs::{
+    ArrayBuffer, Ctx, Error, FromJs, TypedArray, Value,
+};
 use std::env;
 use base64::Engine;
 
@@ -14,24 +16,60 @@ unsafe extern "C" {
     // Core capability communication
     fn call_capability(req_ptr: *const u8, req_len: i32) -> i64;
     fn await_capabilities(await_request_ptr: *const u8, await_request_len: i32, response_buffer_ptr: *mut u8, max_response_len: i32) -> i64;
-    
+
     // Secrets management
     fn get_secrets(req_ptr: *const u8, req_len: i32, response_buffer_ptr: *mut u8, max_response_len: i32) -> i64;
     fn await_secrets(await_request_ptr: *const u8, await_request_len: i32, response_buffer_ptr: *mut u8, max_response_len: i32) -> i64;
-    
+
     // Logging and response
     fn log(message_ptr: *const u8, message_len: i32);
     fn send_response(response_ptr: *const u8, response_len: i32) -> i32;
-    
+
     // Mode switching and versioning
     fn switch_modes(mode: i32);
     fn version_v2();
-    
+
     // Random seed generation
     fn random_seed(mode: i32) -> i64;
 }
 
 import_namespace!("javy_chainlink_sdk");
+
+/// Accepts Uint8Array, ArrayBuffer, or Base64 string → bytes
+struct ArgBytes(Vec<u8>);
+
+impl<'js> FromJs<'js> for ArgBytes {
+    fn from_js(ctx: &Ctx<'js>, v: Value<'js>) -> Result<Self, Error> {
+        // Uint8Array<u8>
+        if let Ok(ta) = TypedArray::<u8>::from_js(ctx, v.clone()) {
+            let slice: &[u8] = ta.as_ref();
+            return Ok(ArgBytes(slice.to_vec()));
+        }
+        // ArrayBuffer
+        if let Ok(ab) = ArrayBuffer::from_js(ctx, v.clone()) {
+            if let Some(bytes) = ab.as_bytes() {
+                return Ok(ArgBytes(bytes.to_vec()));
+            } else {
+                return Err(Error::new_into_js("TypeError", "Detached ArrayBuffer"));
+            }
+        }
+        // Base64 string
+        if let Ok(s) = String::from_js(ctx, v) {
+            let decoded = base64::engine::general_purpose::STANDARD
+                .decode(s.as_bytes())
+                .map_err(|_| Error::new_into_js(
+                    "TypeError",
+                    "String input must be Base64 (Uint8Array/ArrayBuffer also allowed)",
+                ))?;
+            return Ok(ArgBytes(decoded));
+        }
+
+        Err(Error::new_into_js(
+            "TypeError",
+            "Expected Uint8Array | ArrayBuffer | Base64 string",
+        ))
+    }
+}
 
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn initialize_runtime() {
@@ -43,223 +81,170 @@ pub unsafe extern "C" fn initialize_runtime() {
 
     javy_plugin_api::initialize_runtime(config, |runtime| {
         runtime.context().with(|ctx| {
-            // Bind JS global: callCapability()
+            // callCapability(data: Uint8Array | ArrayBuffer | Base64 string) -> i64
             ctx.globals()
                 .set(
                     "callCapability",
-                    Func::from(|_ctx: Ctx<'_>, request: String| {
-                        // Decode base64 request to get original binary data
-                        let request_bytes = match base64::engine::general_purpose::STANDARD.decode(&request) {
-                            Ok(bytes) => bytes,
-                            Err(_) => {
-                                // Fallback to UTF-8 for backward compatibility with simple string requests
-                                request.as_bytes().to_vec()
-                            }
-                        };
-                        let request_len = request_bytes.len() as i32;
-                        
-                        let result = unsafe {
-                            call_capability(request_bytes.as_ptr(), request_len)
-                        };
-                        
-                        Ok::<i64, Error>(result)
+                    Func::from(|_ctx: Ctx<'_>, data: ArgBytes| {
+                        let req = data.0;
+                        let rc = unsafe { call_capability(req.as_ptr(), req.len() as i32) };
+                        Ok::<i64, Error>(rc)
                     }),
                 )
                 .unwrap();
 
-            // Bind JS global: awaitCapabilities()
+            // awaitCapabilities(req, maxLen) -> Uint8Array (via IntoJs<Vec<u8>>)
             ctx.globals()
                 .set(
                     "awaitCapabilities",
-                    Func::from(|_ctx: Ctx<'_>, await_request: String, max_response_len: i32| {
-                        // Decode base64 request to get original binary data
-                        let await_request_bytes = match base64::engine::general_purpose::STANDARD.decode(&await_request) {
-                            Ok(bytes) => bytes,
-                            Err(_) => {
-                                // Fallback to UTF-8 for backward compatibility with simple string requests
-                                await_request.as_bytes().to_vec()
-                            }
-                        };
-                        let await_request_len = await_request_bytes.len() as i32;
-                        let mut response_buffer = vec![0u8; max_response_len as usize];
-                        
-                        let bytes_written = unsafe {
+                    Func::from(|_ctx: Ctx<'_>, req: ArgBytes, max_len: i32| {
+                        if max_len < 0 {
+                            return Err(Error::new_into_js("RangeError", "maxLen < 0"));
+                        }
+                        let req_bytes = req.0;
+                        let mut buf = vec![0u8; max_len as usize];
+
+                        let n = unsafe {
                             await_capabilities(
-                                await_request_bytes.as_ptr(),
-                                await_request_len,
-                                response_buffer.as_mut_ptr(),
-                                max_response_len
+                                req_bytes.as_ptr(),
+                                req_bytes.len() as i32,
+                                buf.as_mut_ptr(),
+                                max_len,
                             )
                         };
-                        
-                        if bytes_written < 0 {
+                        if n < 0 {
                             return Err(Error::new_into_js("Error", "await_capabilities failed"));
                         }
-                        
-                        // Convert binary data to base64 string for JS
-                        let response_bytes = response_buffer[..bytes_written as usize].to_vec();
-                        let base64_response = base64::engine::general_purpose::STANDARD.encode(response_bytes);
-                        
-                        Ok(base64_response)
+
+                        let out = &buf[..n as usize];
+                        Ok::<Vec<u8>, Error>(out.to_vec())
                     }),
                 )
                 .unwrap();
 
-            // Bind JS global: getSecrets()
+            // getSecrets(req, maxLen) -> Uint8Array (via IntoJs<Vec<u8>>)
             ctx.globals()
                 .set(
                     "getSecrets",
-                    Func::from(|_ctx: Ctx<'_>, request: String, max_response_len: i32| {
-                        let request_bytes = request.as_bytes();
-                        let request_len = request_bytes.len() as i32;
-                        
-                        let mut response_buffer = vec![0u8; max_response_len as usize];
-                        
-                        let result = unsafe {
+                    Func::from(|_ctx: Ctx<'_>, req: ArgBytes, max_len: i32| {
+                        if max_len < 0 {
+                            return Err(Error::new_into_js("RangeError", "maxLen < 0"));
+                        }
+                        let req_bytes = req.0;
+                        let mut buf = vec![0u8; max_len as usize];
+
+                        let n = unsafe {
                             get_secrets(
-                                request_bytes.as_ptr(),
-                                request_len,
-                                response_buffer.as_mut_ptr(),
-                                max_response_len
+                                req_bytes.as_ptr(),
+                                req_bytes.len() as i32,
+                                buf.as_mut_ptr(),
+                                max_len,
                             )
                         };
-                        
-                        Ok::<i64, Error>(result)
+                        if n < 0 {
+                            return Err(Error::new_into_js("Error", "get_secrets failed"));
+                        }
+
+                        let out = &buf[..n as usize];
+                        Ok::<Vec<u8>, Error>(out.to_vec())
                     }),
                 )
                 .unwrap();
 
-            // Bind JS global: awaitSecrets()
+            // awaitSecrets(req, maxLen) -> Uint8Array (via IntoJs<Vec<u8>>)
             ctx.globals()
                 .set(
                     "awaitSecrets",
-                    Func::from(|_ctx: Ctx<'_>, await_request: String, max_response_len: i32| {
-                        // Decode base64 request to get original binary data
-                        let await_request_bytes = match base64::engine::general_purpose::STANDARD.decode(&await_request) {
-                            Ok(bytes) => bytes,
-                            Err(_) => {
-                                // Fallback to UTF-8 for backward compatibility with simple string requests
-                                await_request.as_bytes().to_vec()
-                            }
-                        };
-                        let await_request_len = await_request_bytes.len() as i32;
-                        
-                        let mut response_buffer = vec![0u8; max_response_len as usize];
-                        
-                        let bytes_written = unsafe {
+                    Func::from(|_ctx: Ctx<'_>, req: ArgBytes, max_len: i32| {
+                        if max_len < 0 {
+                            return Err(Error::new_into_js("RangeError", "maxLen < 0"));
+                        }
+                        let req_bytes = req.0;
+                        let mut buf = vec![0u8; max_len as usize];
+
+                        let n = unsafe {
                             await_secrets(
-                                await_request_bytes.as_ptr(),
-                                await_request_len,
-                                response_buffer.as_mut_ptr(),
-                                max_response_len
+                                req_bytes.as_ptr(),
+                                req_bytes.len() as i32,
+                                buf.as_mut_ptr(),
+                                max_len,
                             )
                         };
-                        
-                        if bytes_written < 0 {
+                        if n < 0 {
                             return Err(Error::new_into_js("Error", "await_secrets failed"));
                         }
-                        
-                        // Convert binary data to base64 string for JS
-                        let response_bytes = response_buffer[..bytes_written as usize].to_vec();
-                        let base64_response = base64::engine::general_purpose::STANDARD.encode(response_bytes);
-                        
-                        Ok(base64_response)
+
+                        let out = &buf[..n as usize];
+                        Ok::<Vec<u8>, Error>(out.to_vec())
                     }),
                 )
                 .unwrap();
 
-            // Bind JS global: log()
+            // log(message: string)
             ctx.globals()
                 .set(
                     "log",
                     Func::from(|message: String| {
-                        let message_bytes = message.as_bytes();
-                        let message_len = message_bytes.len() as i32;
-                        
-                        unsafe {
-                            log(message_bytes.as_ptr(), message_len);
-                        }
+                        let bytes = message.as_bytes();
+                        unsafe { log(bytes.as_ptr(), bytes.len() as i32) };
                     }),
                 )
                 .unwrap();
 
-            // Bind JS global: sendResponse()
+            // sendResponse(data: Uint8Array | ArrayBuffer | Base64 string) -> i32 (exits on rc==0)
             ctx.globals()
                 .set(
                     "sendResponse",
-                    Func::from(|_ctx: Ctx<'_>, response: String| {
-                        // Decode base64 response to get original binary data
-                        let response_bytes = match base64::engine::general_purpose::STANDARD.decode(&response) {
-                            Ok(bytes) => bytes,
-                            Err(_) => {
-                                // Fallback to UTF-8 for backward compatibility with simple string responses
-                                response.as_bytes().to_vec()
-                            }
-                        };
-                        let response_len = response_bytes.len() as i32;
-                        
-                        let result = unsafe {
-                            send_response(response_bytes.as_ptr(), response_len)
-                        };
-
-                        if result == 0 {
-                            // tell WASI to exit(0) → host sees success and returns exec.response
+                    Func::from(|_ctx: Ctx<'_>, data: ArgBytes| {
+                        let bytes = data.0;
+                        let rc = unsafe { send_response(bytes.as_ptr(), bytes.len() as i32) };
+                        if rc == 0 {
                             std::process::exit(0);
                         }
-
-                        // non-zero -> propagate as-is                        
-                        Ok::<i32, Error>(result)
+                        Ok::<i32, Error>(rc)
                     }),
                 )
                 .unwrap();
 
-            // Bind JS global: switchModes()
+            // switchModes(mode: number)
             ctx.globals()
                 .set(
                     "switchModes",
                     Func::from(|mode: i32| {
-                        unsafe {
-                            switch_modes(mode);
-                        }
+                        unsafe { switch_modes(mode) };
                     }),
                 )
                 .unwrap();
 
-            // Bind JS global: versionV2()
+            // versionV2(): void
             ctx.globals()
                 .set(
                     "versionV2",
                     Func::from(|| {
-                        unsafe {
-                            version_v2();
-                        }
+                        unsafe { version_v2() };
                     }),
                 )
                 .unwrap();
 
-            // Bind JS global: randomSeed()
+            // randomSeed(mode: number): number (i64)
             ctx.globals()
                 .set(
                     "randomSeed",
                     Func::from(|mode: i32| {
-                        let result = unsafe {
-                            random_seed(mode)
-                        };
-                        
+                        let result = unsafe { random_seed(mode) };
                         Ok::<i64, Error>(result)
                     }),
                 )
                 .unwrap();
 
-            // Bind JS global: getWasiArgs()
+            // getWasiArgs(): string (JSON array)
             ctx.globals()
                 .set(
                     "getWasiArgs",
                     Func::from(|_ctx: Ctx<'_>| -> Result<String, Error> {
                         let args: Vec<String> = env::args().collect();
                         let args_json = serde_json::to_string(&args)
-                           .map_err(|_| Error::new_into_js("Error", "Failed to serialize args to JSON"))?;
-                        
+                            .map_err(|_| Error::new_into_js("Error", "Failed to serialize args to JSON"))?;
                         Ok(args_json)
                     }),
                 )
