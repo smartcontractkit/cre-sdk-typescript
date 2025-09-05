@@ -7,6 +7,7 @@ import {
   getLastCallbackId,
   incrementCallbackId,
 } from "@cre/sdk/utils/capabilities/callback-id";
+import { hostBindings } from "@cre/sdk/runtime/host-bindings";
 
 export const doGetSecret = (id: string) => {
   const callbackId = getLastCallbackId(Mode.DON);
@@ -17,8 +18,8 @@ export const doGetSecret = (id: string) => {
     callbackId,
   });
 
-  getSecrets(
-    Buffer.from(toBinary(GetSecretsRequestSchema, request)).toString("utf-8"),
+  hostBindings.getSecrets(
+    toBinary(GetSecretsRequestSchema, request),
     1024 * 1024
   );
 

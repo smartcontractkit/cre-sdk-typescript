@@ -15,18 +15,20 @@ import { getTypeUrl } from "@cre/sdk/utils/typeurl";
 import { emptyConfig, basicRuntime } from "@cre/sdk/testhelpers/mocks";
 
 // Mock the hostBindings module before importing handleExecuteRequest
-const mockSendResponse = mock((_response: string) => 0);
+const mockSendResponse = mock((_response: Uint8Array) => 0);
 const mockHostBindings = {
   sendResponse: mockSendResponse,
   switchModes: mock((_mode: 0 | 1 | 2) => {}),
   log: mock((_message: string) => {}),
-  callCapability: mock((_request: string) => 1),
-  awaitCapabilities: mock((_awaitRequest: string, _maxResponseLen: number) =>
-    btoa("mock_await_capabilities_response")
+  callCapability: mock((_request: Uint8Array) => 1),
+  awaitCapabilities: mock(
+    (_awaitRequest: Uint8Array, _maxResponseLen: number) =>
+      new Uint8Array(Buffer.from("mock_await_capabilities_response", "utf8"))
   ),
-  getSecrets: mock((_request: string, _maxResponseLen: number) => 1),
-  awaitSecrets: mock((_awaitRequest: string, _maxResponseLen: number) =>
-    btoa("mock_await_secrets_response")
+  getSecrets: mock((_request: Uint8Array, _maxResponseLen: number) => 1),
+  awaitSecrets: mock(
+    (_awaitRequest: Uint8Array, _maxResponseLen: number) =>
+      new Uint8Array(Buffer.from("mock_await_secrets_response", "utf8"))
   ),
   versionV2: mock(() => {}),
   randomSeed: mock((_mode: 1 | 2) => Math.random()),
