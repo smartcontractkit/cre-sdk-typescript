@@ -18,7 +18,7 @@ standard_tests:
 	-test.skip="$(SKIP_TESTS)"
 
 # Run a single test by name
-# Usage: make standard_test_single TEST=TestStandardCapabilityRegistration
+# Usage: make standard_test_single TEST=TestStandardCapabilityCallsAreAsync
 standard_test_single:
 	@if [ -z "$(TEST)" ]; then \
 		echo "Error: TEST parameter is required. Usage: make standard_test_single TEST=TestName"; \

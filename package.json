@@ -14,7 +14,7 @@
     "build:workflow:single:js": "bun scripts/run.ts build-single-workflow-js",
     "build:workflow:single:wasm": "bun scripts/run.ts compile-single-workflow-to-wasm",
     "build:workflow:single": "bun scripts/run.ts build-single-workflow",
-    "build:all": "bun build.ts",
+    "build:all": "bun typecheck && bun build.ts",
     "javy": "./bin/javy-arm-macos-v5.0.4",
     "javy:linux": "./bin/javy-arm-linux-v5.0.4",
     "start": "bun --watch src/index.ts",
