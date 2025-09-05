@@ -1,11 +1,11 @@
-import { describe, test, expect } from "bun:test";
-import { main } from "../../../workflows/standard_tests/logging/test";
+import { describe, test, expect } from 'bun:test'
+import { main } from '../../../workflows/standard_tests/logging/test'
 
 describe('workflows/standard_tests/logging', () => {
-  test('should run a standard test workflow', async () => {
-    await main();
+	test('should run a standard test workflow', async () => {
+		await main()
 
-    expect(globalThis.log).toHaveBeenCalledWith('log from wasm!');
-    expect(globalThis.log).toHaveBeenCalledTimes(1);
-  });
-});
+		expect(globalThis.log).toHaveBeenCalledWith('log from wasm!')
+		expect(globalThis.log).toHaveBeenCalledTimes(1)
+	})
+})
