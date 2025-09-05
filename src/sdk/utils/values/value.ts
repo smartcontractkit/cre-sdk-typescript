@@ -16,8 +16,9 @@ import {
 } from '@cre/generated/values/v1/values_pb'
 
 // int64 bounds
-const INT64_MIN = -(2n ** 63n) // -9,223,372,036,854,775,808
-const INT64_MAX = 2n ** 63n - 1n // 9,223,372,036,854,775,807
+const INT64_MIN = -(2n ** 63n)
+const INT64_MAX = 2n ** 63n - 1n
+const UINT64_MAX = 2n ** 64n - 1n
 
 const toUint8Array = (input: Uint8Array | ArrayBuffer): Uint8Array =>
 	input instanceof Uint8Array ? input : new Uint8Array(input)
@@ -59,21 +60,46 @@ const bigIntToProtoBigInt = (v: bigint): ProtoBigInt => {
 	const abs = v < 0n ? -v : v
 	return create(BigIntSchema, {
 		absVal: bigintToBytesBE(abs),
-		sign: sign.toString(),
+		sign: sign,
 	})
 }
 
-const toInt64String = (v: number | bigint | string): string => {
-	if (typeof v === 'string') return v // assume valid int64 string
-	if (typeof v === 'bigint') {
-		if (v < INT64_MIN || v > INT64_MAX) throw new Error('int64 overflow')
-		return v.toString()
+const toInt64Bigint = (v: number | bigint | string): bigint => {
+	if (typeof v === 'string') {
+		const bi: bigint = BigInt(v)
+		return toInt64Bigint(bi)
 	}
+	if (typeof v === 'bigint') {
+		if (v > INT64_MAX) throw new Error('int64 overflow')
+		else if (v < INT64_MIN) throw new Error('int64 underflow')
+		return v
+	}
+
 	if (!Number.isFinite(v) || !Number.isInteger(v))
 		throw new Error('int64 requires an integer number')
 	const bi = BigInt(v)
-	if (bi < INT64_MIN || bi > INT64_MAX) throw new Error('int64 overflow')
-	return bi.toString()
+	if (bi > INT64_MAX) throw new Error('int64 overflow')
+	else if (bi < INT64_MIN) throw new Error('int64 underflow')
+	return bi
+}
+
+const toUint64Bigint = (v: number | bigint | string): bigint => {
+	if (typeof v === 'string') {
+		const bi: bigint = BigInt(v)
+		return toUint64Bigint(bi)
+	}
+	if (typeof v === 'bigint') {
+		if (v > UINT64_MAX) throw new Error('uint64 overflow')
+		else if (v < 0n) throw new Error('uint64 underflow')
+		return v
+	}
+
+	if (!Number.isFinite(v) || !Number.isInteger(v))
+		throw new Error('int64 requires an integer number')
+	const bi = BigInt(v)
+	if (bi > UINT64_MAX) throw new Error('uint64 overflow')
+	else if (bi < 0n) throw new Error('iunt64 underflow')
+	return bi
 }
 
 const toTimestamp = (d: Date | number | string): Timestamp => {
@@ -115,24 +141,11 @@ const wrapInternal = (v: unknown): Value => {
 			return create(ValueSchema, { value: { case: 'boolValue', value: v } })
 		case 'bigint': {
 			// prefer int64 when in range, else BigInt proto
-			if (v >= INT64_MIN && v <= INT64_MAX) {
-				return create(ValueSchema, {
-					value: { case: 'int64Value', value: v.toString() },
-				})
-			}
 			return create(ValueSchema, {
 				value: { case: 'bigintValue', value: bigIntToProtoBigInt(v) },
 			})
 		}
 		case 'number': {
-			if (Number.isInteger(v)) {
-				const bi = BigInt(v)
-				if (bi >= INT64_MIN && bi <= INT64_MAX) {
-					return create(ValueSchema, {
-						value: { case: 'int64Value', value: bi.toString() },
-					})
-				}
-			}
 			return create(ValueSchema, { value: { case: 'float64Value', value: v } })
 		}
 		case 'object':
@@ -167,6 +180,7 @@ export type SupportedValueTypes =
 	| 'bool'
 	| 'bytes'
 	| 'int64'
+	| 'uint64'
 	| 'float64'
 	| 'bigint'
 	| 'time'
@@ -183,7 +197,11 @@ export const val = {
 		}),
 	int64: (n: number | bigint | string): Value =>
 		create(ValueSchema, {
-			value: { case: 'int64Value', value: toInt64String(n) },
+			value: { case: 'int64Value', value: toInt64Bigint(n) },
+		}),
+	uint64: (n: number | bigint | string): Value =>
+		create(ValueSchema, {
+			value: { case: 'uint64Value', value: toUint64Bigint(n) },
 		}),
 	float64: (n: number): Value => create(ValueSchema, { value: { case: 'float64Value', value: n } }),
 	bigint: (n: bigint): Value =>

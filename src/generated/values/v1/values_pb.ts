@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file values/v1/values.proto.
  */
 export const file_values_v1_values: GenFile = /*@__PURE__*/
-  fileDesc("ChZ2YWx1ZXMvdjEvdmFsdWVzLnByb3RvEgl2YWx1ZXMudjEigQMKBVZhbHVlEhYKDHN0cmluZ192YWx1ZRgBIAEoCUgAEhQKCmJvb2xfdmFsdWUYAiABKAhIABIVCgtieXRlc192YWx1ZRgDIAEoDEgAEiMKCW1hcF92YWx1ZRgEIAEoCzIOLnZhbHVlcy52MS5NYXBIABIlCgpsaXN0X3ZhbHVlGAUgASgLMg8udmFsdWVzLnYxLkxpc3RIABIrCg1kZWNpbWFsX3ZhbHVlGAYgASgLMhIudmFsdWVzLnYxLkRlY2ltYWxIABIZCgtpbnQ2NF92YWx1ZRgHIAEoA0ICMAFIABIpCgxiaWdpbnRfdmFsdWUYCSABKAsyES52YWx1ZXMudjEuQmlnSW50SAASMAoKdGltZV92YWx1ZRgKIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBIABIXCg1mbG9hdDY0X3ZhbHVlGAsgASgBSAASGgoMdWludDY0X3ZhbHVlGAwgASgEQgIwAUgAQgcKBXZhbHVlSgQICBAJIisKBkJpZ0ludBIPCgdhYnNfdmFsGAEgASgMEhAKBHNpZ24YAiABKANCAjABInIKA01hcBIqCgZmaWVsZHMYASADKAsyGi52YWx1ZXMudjEuTWFwLkZpZWxkc0VudHJ5Gj8KC0ZpZWxkc0VudHJ5EgsKA2tleRgBIAEoCRIfCgV2YWx1ZRgCIAEoCzIQLnZhbHVlcy52MS5WYWx1ZToCOAEiKAoETGlzdBIgCgZmaWVsZHMYAiADKAsyEC52YWx1ZXMudjEuVmFsdWUiQwoHRGVjaW1hbBImCgtjb2VmZmljaWVudBgBIAEoCzIRLnZhbHVlcy52MS5CaWdJbnQSEAoIZXhwb25lbnQYAiABKAVCYQoNY29tLnZhbHVlcy52MUILVmFsdWVzUHJvdG9QAaICA1ZYWKoCCVZhbHVlcy5WMcoCCVZhbHVlc1xWMeICFVZhbHVlc1xWMVxHUEJNZXRhZGF0YeoCClZhbHVlczo6VjFiBnByb3RvMw", [file_google_protobuf_timestamp]);
+  fileDesc("ChZ2YWx1ZXMvdjEvdmFsdWVzLnByb3RvEgl2YWx1ZXMudjEigQMKBVZhbHVlEhYKDHN0cmluZ192YWx1ZRgBIAEoCUgAEhQKCmJvb2xfdmFsdWUYAiABKAhIABIVCgtieXRlc192YWx1ZRgDIAEoDEgAEiMKCW1hcF92YWx1ZRgEIAEoCzIOLnZhbHVlcy52MS5NYXBIABIlCgpsaXN0X3ZhbHVlGAUgASgLMg8udmFsdWVzLnYxLkxpc3RIABIrCg1kZWNpbWFsX3ZhbHVlGAYgASgLMhIudmFsdWVzLnYxLkRlY2ltYWxIABIZCgtpbnQ2NF92YWx1ZRgHIAEoA0ICMABIABIpCgxiaWdpbnRfdmFsdWUYCSABKAsyES52YWx1ZXMudjEuQmlnSW50SAASMAoKdGltZV92YWx1ZRgKIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBIABIXCg1mbG9hdDY0X3ZhbHVlGAsgASgBSAASGgoMdWludDY0X3ZhbHVlGAwgASgEQgIwAEgAQgcKBXZhbHVlSgQICBAJIisKBkJpZ0ludBIPCgdhYnNfdmFsGAEgASgMEhAKBHNpZ24YAiABKANCAjAAInIKA01hcBIqCgZmaWVsZHMYASADKAsyGi52YWx1ZXMudjEuTWFwLkZpZWxkc0VudHJ5Gj8KC0ZpZWxkc0VudHJ5EgsKA2tleRgBIAEoCRIfCgV2YWx1ZRgCIAEoCzIQLnZhbHVlcy52MS5WYWx1ZToCOAEiKAoETGlzdBIgCgZmaWVsZHMYAiADKAsyEC52YWx1ZXMudjEuVmFsdWUiQwoHRGVjaW1hbBImCgtjb2VmZmljaWVudBgBIAEoCzIRLnZhbHVlcy52MS5CaWdJbnQSEAoIZXhwb25lbnQYAiABKAVCYQoNY29tLnZhbHVlcy52MUILVmFsdWVzUHJvdG9QAaICA1ZYWKoCCVZhbHVlcy5WMcoCCVZhbHVlc1xWMeICFVZhbHVlc1xWMVxHUEJNZXRhZGF0YeoCClZhbHVlczo6VjFiBnByb3RvMw", [file_google_protobuf_timestamp]);
 
 /**
  * @generated from message values.v1.Value
@@ -59,9 +59,9 @@ export type Value = Message<"values.v1.Value"> & {
     case: "decimalValue";
   } | {
     /**
-     * @generated from field: int64 int64_value = 7 [jstype = JS_STRING];
+     * @generated from field: int64 int64_value = 7 [jstype = JS_NORMAL];
      */
-    value: string;
+    value: bigint;
     case: "int64Value";
   } | {
     /**
@@ -83,9 +83,9 @@ export type Value = Message<"values.v1.Value"> & {
     case: "float64Value";
   } | {
     /**
-     * @generated from field: uint64 uint64_value = 12 [jstype = JS_STRING];
+     * @generated from field: uint64 uint64_value = 12 [jstype = JS_NORMAL];
      */
-    value: string;
+    value: bigint;
     case: "uint64Value";
   } | { case: undefined; value?: undefined };
 };
@@ -125,7 +125,7 @@ export type ValueJson = {
   decimalValue?: DecimalJson;
 
   /**
-   * @generated from field: int64 int64_value = 7 [jstype = JS_STRING];
+   * @generated from field: int64 int64_value = 7 [jstype = JS_NORMAL];
    */
   int64Value?: string;
 
@@ -145,7 +145,7 @@ export type ValueJson = {
   float64Value?: number | "NaN" | "Infinity" | "-Infinity";
 
   /**
-   * @generated from field: uint64 uint64_value = 12 [jstype = JS_STRING];
+   * @generated from field: uint64 uint64_value = 12 [jstype = JS_NORMAL];
    */
   uint64Value?: string;
 };
@@ -167,9 +167,9 @@ export type BigInt = Message<"values.v1.BigInt"> & {
   absVal: Uint8Array;
 
   /**
-   * @generated from field: int64 sign = 2 [jstype = JS_STRING];
+   * @generated from field: int64 sign = 2 [jstype = JS_NORMAL];
    */
-  sign: string;
+  sign: bigint;
 };
 
 /**
@@ -182,7 +182,7 @@ export type BigIntJson = {
   absVal?: string;
 
   /**
-   * @generated from field: int64 sign = 2 [jstype = JS_STRING];
+   * @generated from field: int64 sign = 2 [jstype = JS_NORMAL];
    */
   sign?: string;
 };
