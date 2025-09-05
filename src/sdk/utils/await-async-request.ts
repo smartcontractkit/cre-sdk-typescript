@@ -6,6 +6,7 @@ import {
 import { create, toBinary, fromBinary } from "@bufbuild/protobuf";
 import { CapabilityError } from "@cre/sdk/utils/capabilities/capability-error";
 import { Mode } from "@cre/generated/sdk/v1alpha/sdk_pb";
+import { hostBindings } from "@cre/sdk/runtime/host-bindings";
 
 type Params = {
   capabilityId: string;
@@ -29,9 +30,20 @@ export async function awaitAsyncRequest(
     awaitRequest
   );
 
-  const response = awaitCapabilities(awaitRequestBytes, 1024 * 1024);
+  const response = hostBindings.awaitCapabilities(
+    awaitRequestBytes,
+    1024 * 1024
+  );
 
-  const awaitResponse = fromBinary(AwaitCapabilitiesResponseSchema, response);
+  // Convert array of numbers to Uint8Array if needed
+  const responseBytes = Array.isArray(response)
+    ? new Uint8Array(response)
+    : response;
+
+  const awaitResponse = fromBinary(
+    AwaitCapabilitiesResponseSchema,
+    responseBytes
+  );
   const capabilityResponse = awaitResponse.responses[callbackId];
 
   if (!capabilityResponse) {

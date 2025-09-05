@@ -3,7 +3,6 @@ import {
   AwaitSecretsResponseSchema,
 } from "@cre/generated/sdk/v1alpha/sdk_pb";
 import { create, toBinary, fromBinary } from "@bufbuild/protobuf";
-import { errorBoundary } from "@cre/sdk/utils/error-boundary";
 import { SecretsError } from "@cre/sdk/utils/secrets-error";
 
 export const awaitAsyncSecret = async (callbackId: number) => {
@@ -20,8 +19,13 @@ export const awaitAsyncSecret = async (callbackId: number) => {
 
   const response = awaitSecrets(awaitSecretRequestBytes, 1024 * 1024);
 
+  // Convert array of numbers to Uint8Array if needed
+  const responseBytes = Array.isArray(response)
+    ? new Uint8Array(response)
+    : response;
+
   // Decode as AwaitSecretsResponse first
-  const awaitResponse = fromBinary(AwaitSecretsResponseSchema, response);
+  const awaitResponse = fromBinary(AwaitSecretsResponseSchema, responseBytes);
 
   // Get the specific secretId response for our callback ID
   const secretResponses = awaitResponse.responses[callbackId];
