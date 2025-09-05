@@ -38,15 +38,13 @@ export function generateTriggerClass(method: DescMethod, className: string): str
 /**
  * Trigger implementation for ${method.name}
  */
-class ${triggerClassName} extends BaseTriggerImpl<${method.input.name}Json, ${method.output.name}, ${method.output.name}> {
+class ${triggerClassName} implements Trigger<${method.output.name}, ${method.output.name}> {
   constructor(
-    mode: Mode,
-    config: ${method.input.name}Json,
+    public readonly mode: Mode,
+    public readonly config: ${method.input.name}Json,
     private readonly _capabilityId: string,
     private readonly _method: string
-  ) {
-    super(mode, config);
-  }
+  ) {}
 
   capabilityId(): string {
     return this._capabilityId;
@@ -54,10 +52,6 @@ class ${triggerClassName} extends BaseTriggerImpl<${method.input.name}Json, ${me
 
   method(): string {
     return this._method;
-  }
-
-  newOutput(): ${method.output.name} {
-    return create(${method.output.name}Schema);
   }
 
   outputSchema() {

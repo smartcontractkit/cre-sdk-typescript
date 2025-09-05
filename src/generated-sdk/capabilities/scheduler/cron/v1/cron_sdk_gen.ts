@@ -5,7 +5,7 @@ import {
 } from "@cre/generated/sdk/v1alpha/sdk_pb";
 import { callCapability } from "@cre/sdk/utils/capabilities/call-capability";
 import { CapabilityError } from "@cre/sdk/utils/capabilities/capability-error";
-import { BaseTriggerImpl } from "@cre/sdk/utils/triggers/trigger-interface";
+import {type Trigger } from "@cre/sdk/utils/triggers/trigger-interface";
 import { type Any, AnySchema } from "@bufbuild/protobuf/wkt";
 import { getTypeUrl } from "@cre/sdk/utils/typeurl";
 import {
@@ -43,22 +43,18 @@ export class CronCapability {
   trigger(config: ConfigJson): CronTrigger {
     return new CronTrigger(this.mode, config, CronCapability.CAPABILITY_ID, "Trigger");
   }
-
-  // Method legacyTrigger is mapped to untyped API
 }
 
 /**
  * Trigger implementation for Trigger
  */
-class CronTrigger extends BaseTriggerImpl<ConfigJson, Payload, Payload> {
+class CronTrigger implements Trigger<Payload, Payload> {
   constructor(
-    mode: Mode,
-    config: ConfigJson,
+    public readonly mode: Mode,
+    public readonly config: ConfigJson,
     private readonly _capabilityId: string,
     private readonly _method: string
-  ) {
-    super(mode, config);
-  }
+  ) {}
 
   capabilityId(): string {
     return this._capabilityId;
@@ -66,10 +62,6 @@ class CronTrigger extends BaseTriggerImpl<ConfigJson, Payload, Payload> {
 
   method(): string {
     return this._method;
-  }
-
-  newOutput(): Payload {
-    return create(PayloadSchema);
   }
 
   outputSchema() {
@@ -89,52 +81,6 @@ class CronTrigger extends BaseTriggerImpl<ConfigJson, Payload, Payload> {
    * Default implementation returns the raw output unchanged
    */
   adapt(rawOutput: Payload): Payload {
-    return rawOutput;
-  }
-}
-
-/**
- * Trigger implementation for LegacyTrigger
- */
-class CronLegacyTrigger extends BaseTriggerImpl<ConfigJson, LegacyPayload, LegacyPayload> {
-  constructor(
-    mode: Mode,
-    config: ConfigJson,
-    private readonly _capabilityId: string,
-    private readonly _method: string
-  ) {
-    super(mode, config);
-  }
-
-  capabilityId(): string {
-    return this._capabilityId;
-  }
-
-  method(): string {
-    return this._method;
-  }
-
-  newOutput(): LegacyPayload {
-    return create(LegacyPayloadSchema);
-  }
-
-  outputSchema() {
-    return LegacyPayloadSchema;
-  }
-
-  configAsAny(): Any {
-    const configMessage = fromJson(ConfigSchema, this.config);
-    return create(AnySchema, {
-      typeUrl: getTypeUrl(ConfigSchema),
-      value: toBinary(ConfigSchema, configMessage),
-    });
-  }
-
-  /**
-   * Transform the raw trigger output - override this method if needed
-   * Default implementation returns the raw output unchanged
-   */
-  adapt(rawOutput: LegacyPayload): LegacyPayload {
     return rawOutput;
   }
 }
