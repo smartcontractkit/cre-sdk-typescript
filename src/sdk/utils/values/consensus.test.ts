@@ -11,6 +11,7 @@ import {
   consensusFieldsFrom,
   observationValue,
   observationError,
+  getAggregatedValue,
 } from "./consensus";
 import { val } from "./value";
 
@@ -86,6 +87,41 @@ describe("consensus helpers", () => {
     expect(getAggregation(innerFields.Score!)).toBe(AggregationType.MEDIAN);
   });
 
+  test("consensusFieldsFrom with mixed data types and aggregation strategies", () => {
+    const d = consensusFieldsFrom({
+      Foo: AggregationType.MEDIAN,
+      Bar: AggregationType.IDENTICAL,
+      Baz: AggregationType.COMMON_PREFIX,
+    });
+    expect(isFieldsMap(d)).toBe(true);
+    const map =
+      d.descriptor.case === "fieldsMap" ? d.descriptor.value.fields : {};
+    expect(Object.keys(map)).toEqual(["Foo", "Bar", "Baz"]);
+    expect(getAggregation(map.Foo!)).toBe(AggregationType.MEDIAN);
+    expect(getAggregation(map.Bar!)).toBe(AggregationType.IDENTICAL);
+    expect(getAggregation(map.Baz!)).toBe(AggregationType.COMMON_PREFIX);
+  });
+
+  test("consensusFieldsFrom with numeric enum values", () => {
+    const d = consensusFieldsFrom({
+      Foo: AggregationType.MEDIAN,
+      Bar: AggregationType.IDENTICAL,
+    });
+    expect(isFieldsMap(d)).toBe(true);
+    const map =
+      d.descriptor.case === "fieldsMap" ? d.descriptor.value.fields : {};
+    expect(getAggregation(map.Foo!)).toBe(AggregationType.MEDIAN);
+    expect(getAggregation(map.Bar!)).toBe(AggregationType.IDENTICAL);
+  });
+
+  test("consensusFieldsFrom with empty object", () => {
+    const d = consensusFieldsFrom({});
+    expect(isFieldsMap(d)).toBe(true);
+    const map =
+      d.descriptor.case === "fieldsMap" ? d.descriptor.value.fields : {};
+    expect(Object.keys(map)).toEqual([]);
+  });
+
   test("observation helpers", () => {
     const ov = observationValue(val.string("ok"));
     expect(ov.case).toBe("value");
@@ -94,5 +130,22 @@ describe("consensus helpers", () => {
     const oe = observationError("boom");
     expect(oe.case).toBe("error");
     expect(oe.value).toBe("boom");
+  });
+
+  test("getAggregatedValue with different consensus strategies", () => {
+    const priceInput = getAggregatedValue(val.float64(1850.5), "median");
+    expect(priceInput.observation.case).toBe("value");
+    expect(priceInput.descriptors).toBe(consensusDescriptorMedian);
+
+    const statusInput = getAggregatedValue(val.bool(true), "identical");
+    expect(statusInput.observation.case).toBe("value");
+    expect(statusInput.descriptors).toBe(consensusDescriptorIdentical);
+
+    const urlInput = getAggregatedValue(
+      val.string("https://api.example.com/v1/data"),
+      "commonPrefix"
+    );
+    expect(urlInput.observation.case).toBe("value");
+    expect(urlInput.descriptors).toBe(consensusDescriptorCommonPrefix);
   });
 });
