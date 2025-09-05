@@ -93,7 +93,7 @@ export function generateSdk(file: GenFile, outputDir: string) {
 
 		// Add trigger imports if needed
 		if (hasTriggers) {
-			imports.add(`import { BaseTriggerImpl } from "@cre/sdk/utils/triggers/trigger-interface";`)
+			imports.add(`import {type Trigger } from "@cre/sdk/utils/triggers/trigger-interface";`)
 			imports.add(`import { type Any, AnySchema } from "@bufbuild/protobuf/wkt";`)
 		}
 
@@ -114,21 +114,19 @@ export function generateSdk(file: GenFile, outputDir: string) {
 		const chainSelectorLabel = capOption.labels?.ChainSelector as any
 		const hasChainSelector = chainSelectorLabel?.kind?.case === 'uint64Label'
 
+		// Skip legacy methods
+		const serviceMethods = service.methods.filter((method) => {
+			const methodMeta = method.proto.options
+				? getExtension(method.proto.options, methodOption)
+				: null
+
+			return !methodMeta?.mapToUntypedApi
+		})
+
 		// Generate methods
-		const methods = service.methods
+		const methods = serviceMethods
 			.map((method) => {
 				const methodName = lowerCaseFirstLetter(method.name)
-
-				// Check for method-specific options
-				const methodMeta = method.proto.options
-					? getExtension(method.proto.options, methodOption)
-					: null
-
-				// Skip methods that map to untyped API if configured
-				if (methodMeta?.mapToUntypedApi) {
-					return `
-  // Method ${methodName} is mapped to untyped API`
-				}
 
 				// Check if this is a streaming method (trigger)
 				if (method.methodKind === 'server_streaming') {
@@ -141,7 +139,7 @@ export function generateSdk(file: GenFile, outputDir: string) {
 			.join('\n')
 
 		// Generate trigger classes
-		const triggerClasses = service.methods
+		const triggerClasses = serviceMethods
 			.filter((method) => method.methodKind === 'server_streaming')
 			.map((method) => generateTriggerClass(method, service.name))
 			.join('\n')
