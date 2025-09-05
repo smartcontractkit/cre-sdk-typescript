@@ -1,5 +1,5 @@
-import { describe, test, expect, mock } from "bun:test";
-import { main } from "../../../workflows/standard_tests/logging/testts";
+import { describe, test, expect } from "bun:test";
+import { main } from "../../../workflows/standard_tests/logging/test";
 
 describe('workflows/standard_tests/logging', () => {
   test('should run a standard test workflow', async () => {

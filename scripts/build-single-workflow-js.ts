@@ -23,14 +23,14 @@ export const main = async () => {
     // Single workflow parameter - works as before
     const workflowName = args[0];
     console.info(`Building workflow: ${workflowName}`);
-    pattern = `src/workflows/standard_tests/${workflowName}/testts.ts`;
+    pattern = `src/workflows/standard_tests/${workflowName}/test.ts`;
     outputPath = `dist/workflows/standard_tests/${workflowName}`;
   } else if (args.length === 2) {
     // Two parameters - first is directory, second is nested workflow
     const directory = args[0];
     const workflowName = args[1];
     console.info(`Building nested workflow: ${directory}/${workflowName}`);
-    pattern = `src/workflows/standard_tests/${directory}/${workflowName}/testts.ts`;
+    pattern = `src/workflows/standard_tests/${directory}/${workflowName}/test.ts`;
     outputPath = `dist/workflows/standard_tests/${directory}/${workflowName}`;
   } else {
     console.error("❌ Too many arguments provided");
@@ -59,7 +59,7 @@ export const main = async () => {
     format: "esm",
   });
 
-  const targetJsFile = `${outputPath}/testts.js`;
+  const targetJsFile = `${outputPath}/test.js`;
 
   if (!existsSync(targetJsFile)) {
     console.error(`❌ Expected file not found: ${targetJsFile}`);
