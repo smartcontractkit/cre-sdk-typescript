@@ -5,7 +5,7 @@ import { z } from "zod";
 const globalHostBindingsSchema = z.object({
   switchModes: z.function().args(z.nativeEnum(Mode)).returns(z.void()),
   log: z.function().args(z.string()).returns(z.void()),
-  sendResponse: z.function().args(z.string()).returns(z.number()),
+  sendResponse: z.function().args(z.any()).returns(z.number()),
   randomSeed: z
     .function()
     .args(z.union([z.literal(Mode.DON), z.literal(Mode.NODE)]))
