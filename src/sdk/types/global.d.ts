@@ -7,37 +7,40 @@
 declare global {
   /**
    * Initiates an asynchronous capability call
-   * @param request - Base64-encoded protobuf request
+   * @param request - protobuf request as bytes
    * @returns Callback ID for the async operation
    */
-  function callCapability(request: string): number;
+  function callCapability(request: Uint8Array): number;
 
   /**
    * Awaits completion of async capability calls
-   * @param awaitRequest - Base64-encoded await request
+   * @param awaitRequest - protobuf await request as bytes
    * @param maxResponseLen - Maximum response size in bytes
-   * @returns Base64-encoded response
+   * @returns response as bytes
    */
   function awaitCapabilities(
-    awaitRequest: string,
+    awaitRequest: Uint8Array,
     maxResponseLen: number
-  ): string;
+  ): Uint8Array;
 
   /**
    * Gets secrets asynchronously
-   * @param request - Base64-encoded secret request
+   * @param request - protobuf secret request as bytes
    * @param maxResponseLen - Maximum response size in bytes
    * @returns Callback ID for the async operation
    */
-  function getSecrets(request: string, maxResponseLen: number): number;
+  function getSecrets(request: Uint8Array, maxResponseLen: number): number;
 
   /**
    * Awaits completion of async secret requests
-   * @param awaitRequest - Base64-encoded await request
+   * @param awaitRequest - protobuf await secret request as bytes
    * @param maxResponseLen - Maximum response size in bytes
-   * @returns Base64-encoded response
+   * @returns response as bytes
    */
-  function awaitSecrets(awaitRequest: string, maxResponseLen: number): string;
+  function awaitSecrets(
+    awaitRequest: Uint8Array,
+    maxResponseLen: number
+  ): Uint8Array;
 
   /**
    * Logs a message to the host runtime

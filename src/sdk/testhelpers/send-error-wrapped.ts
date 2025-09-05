@@ -18,5 +18,5 @@ export const sendErrorWrapped = (error: string | Error): void => {
   const encoded = toBinary(ExecutionResultSchema, execResult);
 
   // Send the result
-  sendResponse(Buffer.from(encoded).toString("base64"));
+  sendResponse(encoded);
 };
