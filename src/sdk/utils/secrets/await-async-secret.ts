@@ -18,16 +18,10 @@ export const awaitAsyncSecret = async (callbackId: number) => {
     awaitSecretRequest
   );
 
-  const awaitSecretRequestString = Buffer.from(
-    awaitSecretRequestBytes
-  ).toString("base64");
-
-  const response = awaitSecrets(awaitSecretRequestString, 1024 * 1024);
-
-  const bytes = Buffer.from(response, "base64");
+  const response = awaitSecrets(awaitSecretRequestBytes, 1024 * 1024);
 
   // Decode as AwaitSecretsResponse first
-  const awaitResponse = fromBinary(AwaitSecretsResponseSchema, bytes);
+  const awaitResponse = fromBinary(AwaitSecretsResponseSchema, response);
 
   // Get the specific secretId response for our callback ID
   const secretResponses = awaitResponse.responses[callbackId];

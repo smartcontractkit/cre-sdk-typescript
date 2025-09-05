@@ -38,7 +38,7 @@ export const doRequestAsync = ({
 
   const reqBytes = toBinary(CapabilityRequestSchema, req);
 
-  callCapability(Buffer.from(reqBytes).toString("base64"));
+  callCapability(reqBytes);
 
   return callbackId;
 };

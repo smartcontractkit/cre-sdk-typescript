@@ -29,13 +29,9 @@ export async function awaitAsyncRequest(
     awaitRequest
   );
 
-  // Convert to base64 string for the host function
-  const awaitRequestString = Buffer.from(awaitRequestBytes).toString("base64");
-  const response = awaitCapabilities(awaitRequestString, 1024 * 1024);
+  const response = awaitCapabilities(awaitRequestBytes, 1024 * 1024);
 
-  const bytes = Buffer.from(response, "base64");
-
-  const awaitResponse = fromBinary(AwaitCapabilitiesResponseSchema, bytes);
+  const awaitResponse = fromBinary(AwaitCapabilitiesResponseSchema, response);
   const capabilityResponse = awaitResponse.responses[callbackId];
 
   if (!capabilityResponse) {
