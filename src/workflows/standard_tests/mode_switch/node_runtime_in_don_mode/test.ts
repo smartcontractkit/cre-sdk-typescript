@@ -2,7 +2,7 @@ import { prepareRuntime } from '@cre/sdk/utils/prepare-runtime'
 import { errorBoundary } from '@cre/sdk/utils/error-boundary'
 import { Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { SimpleConsensusInputsSchema } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import { sendErrorWrapped } from '@cre/sdk/testhelpers/send-error-wrapped'
+import { sendError } from '@cre/sdk/utils/send-error'
 import { create, toJson } from '@bufbuild/protobuf'
 import { ConsensusCapability } from '@cre/generated-sdk/capabilities/internal/consensus/v1alpha/consensus_sdk_gen'
 import { consensusDescriptorIdentical, observationValue } from '@cre/sdk/utils/values/consensus'
@@ -31,7 +31,7 @@ export async function main() {
 		await consensusCapability.simple(toJson(SimpleConsensusInputsSchema, consensusInput))
 
 		switchModes(Mode.DON)
-		sendErrorWrapped('cannot use NodeRuntime outside RunInNodeMode')
+		sendError('cannot use NodeRuntime outside RunInNodeMode')
 	}
 
 	try {

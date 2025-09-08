@@ -1,13 +1,21 @@
-import { sendErrorWrapped } from '@cre/sdk/testhelpers/send-error-wrapped'
-import { prepareRuntime } from '@cre/sdk/utils/prepare-runtime'
+import { cre } from '@cre/sdk/cre'
+import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
 
-export async function main() {
-	console.log(`TS workflow: standard test: errors [${new Date().toISOString()}]`)
-
-	prepareRuntime()
-	versionV2()
-
-	sendErrorWrapped(new Error('workflow execution failure'))
+const simulateWorkflowFailure = () => {
+	cre.sendError(new Error('workflow execution failure'))
 }
 
-main()
+const initWorkflow = () => {
+	const basicTrigger = new BasicTriggerCapability()
+
+	return [cre.handler(basicTrigger.trigger({}), simulateWorkflowFailure)]
+}
+
+export async function main() {
+	console.log(`TS workflow: standard test: logging [${new Date().toISOString()}]`)
+
+	const runner = await cre.newRunner()
+	await runner.run(initWorkflow)
+}
+
+cre.withErrorBoundary(main)

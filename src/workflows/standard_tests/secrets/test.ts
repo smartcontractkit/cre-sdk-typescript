@@ -1,6 +1,6 @@
 import { prepareRuntime } from '@cre/sdk/utils/prepare-runtime'
 import { sendResponseValue } from '@cre/sdk/utils/send-response-value'
-import { sendErrorWrapped } from '@cre/sdk/testhelpers/send-error-wrapped'
+import { sendError } from '@cre/sdk/utils/send-error'
 import { SecretsError } from '@cre/sdk/utils/secrets-error'
 import { errorBoundary } from '@cre/sdk/utils/error-boundary'
 import { getSecret } from '@cre/sdk/utils/secrets/get-secret'
@@ -30,7 +30,7 @@ export async function main() {
 		await handleExecuteRequest(executeRequest, workflow, emptyConfig, basicRuntime)
 	} catch (e) {
 		if (e instanceof SecretsError) {
-			sendErrorWrapped(e.message)
+			sendError(e.message)
 		} else {
 			errorBoundary(e)
 		}
