@@ -9,20 +9,22 @@ import { SimpleConsensusInputsSchema } from '@cre/generated/sdk/v1alpha/sdk_pb'
 type Config = any
 
 const secretAccessInNodeMode = async (_config: Config, runtime: Runtime) => {
-	cre.runInNodeMode(async (_nodeRuntime: NodeRuntime) => {
-		try {
-			await runtime.getSecret('anything')
-		} catch {
-			// We expect this to fail as we're in Node Mode now, therefore ignore errors
-		}
+	try {
+		await cre.runInNodeMode(async (_nodeRuntime: NodeRuntime) => {
+			try {
+				await runtime.getSecret('anything')
+			} catch {
+				// This is expected to fail due to Don Mode guards, ignore error
+			}
 
-		return create(SimpleConsensusInputsSchema, {
-			observation: observationError('cannot use Runtime inside RunInNodeMode'),
-			descriptors: consensusDescriptorIdentical,
+			return create(SimpleConsensusInputsSchema, {
+				observation: observationError('cannot use Runtime inside RunInNodeMode'),
+				descriptors: consensusDescriptorIdentical,
+			})
 		})
-	})
-
-	cre.sendError(new Error('cannot use Runtime inside RunInNodeMode'))
+	} catch {
+		cre.sendError('cannot use Runtime inside RunInNodeMode')
+	}
 }
 
 const initWorkflow = () => {
