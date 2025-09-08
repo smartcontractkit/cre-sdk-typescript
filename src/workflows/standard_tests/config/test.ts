@@ -1,6 +1,5 @@
 import { cre } from '@cre/sdk/cre'
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
-import { withErrorBoundary } from '@cre/sdk/utils/error-boundary'
 
 type Config = 'config'
 
@@ -21,4 +20,4 @@ export async function main() {
 	await runner.run(initWorkflow)
 }
 
-withErrorBoundary(main)
+cre.withErrorBoundary(main)
