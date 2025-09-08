@@ -4,8 +4,4 @@
  * @returns The stringified object
  */
 export const safeJsonStringify = (obj: any): string =>
-  JSON.stringify(
-    obj,
-    (_, value) => (typeof value === "bigint" ? value.toString() : value),
-    2
-  );
+	JSON.stringify(obj, (_, value) => (typeof value === 'bigint' ? value.toString() : value), 2)
