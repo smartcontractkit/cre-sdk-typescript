@@ -14,7 +14,7 @@ const initWorkflow = () => {
 }
 
 export async function main() {
-	console.log(`TS workflow: standard test: logging [${new Date().toISOString()}]`)
+	console.log(`TS workflow: standard test: config [${new Date().toISOString()}]`)
 
 	const runner = await cre.newRunner<Config>()
 	await runner.run(initWorkflow)

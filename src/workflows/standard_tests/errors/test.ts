@@ -12,7 +12,7 @@ const initWorkflow = () => {
 }
 
 export async function main() {
-	console.log(`TS workflow: standard test: logging [${new Date().toISOString()}]`)
+	console.log(`TS workflow: standard test: errors [${new Date().toISOString()}]`)
 
 	const runner = await cre.newRunner()
 	await runner.run(initWorkflow)
