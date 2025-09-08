@@ -1,45 +1,57 @@
-import { prepareRuntime } from '@cre/sdk/utils/prepare-runtime'
-import { errorBoundary } from '@cre/sdk/utils/error-boundary'
-import { handler } from '@cre/sdk/workflow'
-import { getRequest } from '@cre/sdk/utils/get-request'
-import { handleExecuteRequest } from '@cre/sdk/engine/execute'
-import { type ExecuteRequest } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
-import { BasicCapability as ActionAndTriggerCapability } from '@cre/generated-sdk/capabilities/internal/actionandtrigger/v1/basic_sdk_gen'
-import { sendResponseValue } from '@cre/sdk/utils/send-response-value'
-import { val } from '@cre/sdk/utils/values/value'
-import { emptyConfig, basicRuntime } from '@cre/sdk/testhelpers/mocks'
+import { BasicCapability as BasicTriggerCapability } from "@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen";
+import { BasicCapability as ActionAndTriggerCapability } from "@cre/generated-sdk/capabilities/internal/actionandtrigger/v1/basic_sdk_gen";
+import { type Outputs } from "@cre/generated/capabilities/internal/basictrigger/v1/basic_trigger_pb";
+import { type TriggerEvent } from "@cre/generated/capabilities/internal/actionandtrigger/v1/action_and_trigger_pb";
+import { cre, type Runtime } from "@cre/sdk/cre";
 
-const buildWorkflow = () => {
-	const basicTrigger = new BasicTriggerCapability()
-	const actionTrigger = new ActionAndTriggerCapability()
+// Doesn't matter for this test
+type Config = any;
 
-	return [
-		handler(basicTrigger.trigger({ name: 'first-trigger', number: 100 }), (_env, _rt, out) =>
-			sendResponseValue(val.string(`called 0 with ${out.coolOutput}`)),
-		),
-		handler(actionTrigger.trigger({ name: 'second-trigger', number: 150 }), (_env, _rt, out) =>
-			sendResponseValue(val.string(`called 1 with ${out.coolOutput}`)),
-		),
-		handler(basicTrigger.trigger({ name: 'third-trigger', number: 200 }), (_env, _rt, out) =>
-			sendResponseValue(val.string(`called 2 with ${out.coolOutput}`)),
-		),
-	]
-}
+const doLog0 = (_config: Config, _runtime: Runtime, output: Outputs) => {
+  cre.sendResponseValue(
+    cre.utils.val.string(`called 0 with ${output.coolOutput}`)
+  );
+};
+
+const doLog1 = (_config: Config, _runtime: Runtime, output: TriggerEvent) => {
+  cre.sendResponseValue(
+    cre.utils.val.string(`called 1 with ${output.coolOutput}`)
+  );
+};
+
+const doLog2 = (_config: Config, _runtime: Runtime, output: Outputs) => {
+  cre.sendResponseValue(
+    cre.utils.val.string(`called 2 with ${output.coolOutput}`)
+  );
+};
+
+const initWorkflow = () => {
+  const basicTrigger = new BasicTriggerCapability();
+  const actionTrigger = new ActionAndTriggerCapability();
+
+  return [
+    cre.handler(
+      basicTrigger.trigger({ name: "first-trigger", number: 100 }),
+      doLog0
+    ),
+    cre.handler(
+      actionTrigger.trigger({ name: "second-trigger", number: 150 }),
+      doLog1
+    ),
+    cre.handler(
+      basicTrigger.trigger({ name: "third-trigger", number: 200 }),
+      doLog2
+    ),
+  ];
+};
 
 export async function main() {
-	console.log(`TS workflow: standard test: multiple_triggers [${new Date().toISOString()}]`)
+  console.log(
+    `TS workflow: standard test: logging [${new Date().toISOString()}]`
+  );
 
-	prepareRuntime()
-	versionV2()
-
-	try {
-		const executeRequest: ExecuteRequest = getRequest()
-		const workflow = buildWorkflow()
-		await handleExecuteRequest(executeRequest, workflow, emptyConfig, basicRuntime)
-	} catch (e) {
-		errorBoundary(e)
-	}
+  const runner = await cre.newRunner<Config>();
+  await runner.run(initWorkflow);
 }
 
-main()
+cre.withErrorBoundary(main);
