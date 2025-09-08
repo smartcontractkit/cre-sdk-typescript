@@ -15,7 +15,7 @@ import { sendResponseValue } from '@cre/sdk/utils/send-response-value'
 import { withErrorBoundary } from '@cre/sdk/utils/error-boundary'
 import { sendError } from '@cre/sdk/utils/send-error'
 
-export type { Runtime } from '@cre/sdk/runtime/runtime'
+export type { Runtime, NodeRuntime } from '@cre/sdk/runtime/runtime'
 
 prepareRuntime()
 versionV2()

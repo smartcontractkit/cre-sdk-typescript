@@ -14,7 +14,5 @@ export const doGetSecret = (id: string) => {
 
 	const result = hostBindings.getSecrets(toBinary(GetSecretsRequestSchema, request), 1024 * 1024)
 
-	console.log('debug secrets response', result)
-
 	return callbackId
 }

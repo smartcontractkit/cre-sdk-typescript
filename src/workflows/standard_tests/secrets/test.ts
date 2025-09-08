@@ -24,7 +24,7 @@ const handleSecret = async (_config: Config, runtime: Runtime) => {
 const initWorkflow = () => {
 	const basicTrigger = new BasicTriggerCapability()
 
-	return [cre.handler(basicTrigger.trigger({ name: 'first-trigger', number: 100 }), handleSecret)]
+	return [cre.handler(basicTrigger.trigger({}), handleSecret)]
 }
 
 export async function main() {
