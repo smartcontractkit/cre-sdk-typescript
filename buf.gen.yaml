@@ -5,9 +5,8 @@ version: v2
 managed:
   enabled: true
   override:
-    # Use string for 64-bit integers (important for WASM compatibility)
     - field_option: jstype
-      value: JS_STRING
+      value: JS_NORMAL
 
 inputs:
   - directory: submodules/chainlink-protos/cre

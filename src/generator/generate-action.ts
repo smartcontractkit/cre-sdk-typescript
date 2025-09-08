@@ -1,4 +1,4 @@
-import type { DescMethod } from "@bufbuild/protobuf";
+import type { DescMethod } from '@bufbuild/protobuf'
 
 /**
  * Generates the action method implementation for a capability
@@ -10,21 +10,21 @@ import type { DescMethod } from "@bufbuild/protobuf";
  * @returns The generated action method code
  */
 export function generateActionMethod(
-  method: DescMethod,
-  methodName: string,
-  capabilityClassName: string,
-  hasChainSelector: boolean = false
+	method: DescMethod,
+	methodName: string,
+	capabilityClassName: string,
+	hasChainSelector: boolean = false,
 ): string {
-  const capabilityIdLogic = hasChainSelector
-    ? `
+	const capabilityIdLogic = hasChainSelector
+		? `
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
       ? \`\${${capabilityClassName}.CAPABILITY_NAME}:ChainSelector:\${this.chainSelector}@\${${capabilityClassName}.CAPABILITY_VERSION}\`
       : ${capabilityClassName}.CAPABILITY_ID;`
-    : `
-    const capabilityId = ${capabilityClassName}.CAPABILITY_ID;`;
+		: `
+    const capabilityId = ${capabilityClassName}.CAPABILITY_ID;`
 
-  return `
+	return `
   async ${methodName}(input: ${method.input.name}Json): Promise<${method.output.name}> {
     const payload = {
       typeUrl: getTypeUrl(${method.input.name}Schema),
@@ -55,5 +55,5 @@ export function generateActionMethod(
 
       return fromBinary(${method.output.name}Schema, capabilityResponse.response.value.value);
     });
-  }`;
+  }`
 }
