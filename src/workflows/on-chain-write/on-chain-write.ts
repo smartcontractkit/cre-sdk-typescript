@@ -110,7 +110,7 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 	const dryRunCall = await evmClient.callContract({
 		call: {
 			from: hexToBase64(zeroAddress),
-			to: hexToBase64(evmConfig.storageAddress),
+			to: hexToBase64(evmConfig.calculatorConsumerAddress),
 			data: hexToBase64(dryRunCallData),
 		},
 		blockNumber: {
