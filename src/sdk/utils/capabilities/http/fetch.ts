@@ -1,54 +1,45 @@
-import { z } from "zod";
-import { cre } from "@cre/sdk/cre";
+import { z } from 'zod'
+import { cre } from '@cre/sdk/cre'
 
 const httpMethodSchema = z.enum([
-  "GET",
-  "POST",
-  "PUT",
-  "DELETE",
-  "PATCH",
-  "HEAD",
-  "OPTIONS",
-  "TRACE",
-  "CONNECT",
-]);
+	'GET',
+	'POST',
+	'PUT',
+	'DELETE',
+	'PATCH',
+	'HEAD',
+	'OPTIONS',
+	'TRACE',
+	'CONNECT',
+])
 
 const cacheSettingsSchema = z
-  .object({
-    readFromCache: z.boolean().optional(),
-    maxAgeMs: z.number().int().optional(),
-  })
-  .optional();
+	.object({
+		readFromCache: z.boolean().optional(),
+		maxAgeMs: z.number().int().optional(),
+	})
+	.optional()
 
 const creFetchRequestSchema = z.object({
-  url: z.string().startsWith("http"),
-  method: httpMethodSchema.optional().default("GET"),
-  headers: z.record(z.string()).optional(),
-  body: z.string().optional(),
-  timeoutMs: z.number().int().positive().optional(),
-  cacheSettings: cacheSettingsSchema,
-});
+	url: z.string().startsWith('http'),
+	method: httpMethodSchema.optional().default('GET'),
+	headers: z.record(z.string()).optional(),
+	body: z.string().optional(),
+	timeoutMs: z.number().int().positive().optional(),
+	cacheSettings: cacheSettingsSchema,
+})
 
 export type CreFetchRequest = {
-  url: string;
-  method?:
-    | "GET"
-    | "POST"
-    | "PUT"
-    | "DELETE"
-    | "PATCH"
-    | "HEAD"
-    | "OPTIONS"
-    | "TRACE"
-    | "CONNECT";
-  headers?: Record<string, string>;
-  body?: string;
-  timeoutMs?: number;
-  cacheSettings?: {
-    readFromCache?: boolean;
-    maxAgeMs?: number;
-  };
-};
+	url: string
+	method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'HEAD' | 'OPTIONS' | 'TRACE' | 'CONNECT'
+	headers?: Record<string, string>
+	body?: string
+	timeoutMs?: number
+	cacheSettings?: {
+		readFromCache?: boolean
+		maxAgeMs?: number
+	}
+}
 
 /**
  * Enhanced HTTP fetch utility with validation and sensible defaults.
@@ -77,14 +68,14 @@ export type CreFetchRequest = {
  * ```
  */
 export const creFetch = async (input: CreFetchRequest) => {
-  const validatedInput = creFetchRequestSchema.parse(input);
-  const httpClient = new cre.capabilities.HTTPClient();
+	const validatedInput = creFetchRequestSchema.parse(input)
+	const httpClient = new cre.capabilities.HTTPClient()
 
-  const resp = await httpClient.sendRequest(validatedInput);
+	const resp = await httpClient.sendRequest(validatedInput)
 
-  return {
-    statusCode: resp.statusCode,
-    headers: resp.headers,
-    body: new TextDecoder().decode(resp.body),
-  };
-};
+	return {
+		statusCode: resp.statusCode,
+		headers: resp.headers,
+		body: new TextDecoder().decode(resp.body),
+	}
+}
