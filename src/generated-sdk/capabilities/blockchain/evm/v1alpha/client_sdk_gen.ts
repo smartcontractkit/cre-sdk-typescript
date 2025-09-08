@@ -5,7 +5,7 @@ import {
 } from "@cre/generated/sdk/v1alpha/sdk_pb";
 import { callCapability } from "@cre/sdk/utils/capabilities/call-capability";
 import { CapabilityError } from "@cre/sdk/utils/capabilities/capability-error";
-import { BaseTriggerImpl } from "@cre/sdk/utils/triggers/trigger-interface";
+import { type Trigger } from "@cre/sdk/utils/triggers/trigger-interface";
 import { type Any, AnySchema } from "@bufbuild/protobuf/wkt";
 import { getTypeUrl } from "@cre/sdk/utils/typeurl";
 import {
@@ -463,15 +463,13 @@ export class ClientCapability {
 /**
  * Trigger implementation for LogTrigger
  */
-class ClientLogTrigger extends BaseTriggerImpl<FilterLogTriggerRequestJson, Log, Log> {
+class ClientLogTrigger implements Trigger<Log, Log> {
   constructor(
-    mode: Mode,
-    config: FilterLogTriggerRequestJson,
+    public readonly mode: Mode,
+    public readonly config: FilterLogTriggerRequestJson,
     private readonly _capabilityId: string,
     private readonly _method: string
-  ) {
-    super(mode, config);
-  }
+  ) {}
 
   capabilityId(): string {
     return this._capabilityId;
@@ -479,10 +477,6 @@ class ClientLogTrigger extends BaseTriggerImpl<FilterLogTriggerRequestJson, Log,
 
   method(): string {
     return this._method;
-  }
-
-  newOutput(): Log {
-    return create(LogSchema);
   }
 
   outputSchema() {
