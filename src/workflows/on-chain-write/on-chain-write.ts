@@ -131,8 +131,6 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 		throw new Error('Result is anomalous')
 	}
 
-	runtime.logger.log('Result is not anomalous')
-
 	// Encode the contract call data for the 'get' function
 	const writeCallData = encodeFunctionData({
 		abi: CALCULATOR_CONSUMER_ABI,
