@@ -1,24 +1,18 @@
-import { z } from 'zod'
 import { cre } from '@cre/sdk/cre'
-import { sendResponseValue } from '@cre/sdk/utils/send-response-value'
-import { val } from '@cre/sdk/utils/values/value'
-import {
-	encodeFunctionData,
-	decodeFunctionResult,
-	type Hex,
-	toHex,
-	encodeAbiParameters,
-} from 'viem'
-import { bytesToHex } from '@cre/sdk/utils/hex-utils'
-import { CALCULATOR_CONSUMER_ABI, STORAGE_ABI } from './abi'
 import type { Runtime } from '@cre/sdk/runtime/runtime'
+import { withErrorBoundary } from '@cre/sdk/utils/error-boundary'
+import { bytesToHex, hexToBase64 } from '@cre/sdk/utils/hex-utils'
+import { sendResponseValue } from '@cre/sdk/utils/send-response-value'
 import { useMedianConsensus } from '@cre/sdk/utils/values/consensus-hooks'
+import { val } from '@cre/sdk/utils/values/value'
+import { decodeFunctionResult, encodeFunctionData, type Hex, toHex, zeroAddress } from 'viem'
+import { z } from 'zod'
 
 // Storage contract ABI - we only need the 'get' function
 // TODO: In production, load ABI from external file or contract metadata
 // following Go SDK patterns for ABI management
+import { CALCULATOR_CONSUMER_ABI, STORAGE_ABI } from './abi'
 
-// Config struct defines the parameters that can be passed to the workflow
 const configSchema = z.object({
 	schedule: z.string(),
 	apiUrl: z.string(),
@@ -34,72 +28,6 @@ const configSchema = z.object({
 
 type Config = z.infer<typeof configSchema>
 
-async function updateCalculatorResult(
-	config: Config,
-	evmConfig: Config['evms'][number],
-	offchainValue: bigint,
-	onchainValue: bigint,
-	finalResult: bigint,
-) {
-	const evmClient = new cre.capabilities.EVMClient(
-		undefined, // use default mode
-		BigInt(evmConfig.chainSelector), // pass chainSelector as BigInt
-	)
-
-	// Encode the contract call data for the 'onReport' function
-	const dryRunCallData = encodeFunctionData({
-		abi: CALCULATOR_CONSUMER_ABI,
-		functionName: 'isResultAnomalous',
-		args: [
-			{
-				offchainValue: offchainValue,
-				onchainValue: onchainValue,
-				finalResult: finalResult,
-			},
-		],
-	})
-
-	// dry run the call to ensure the value is not anomalous
-	const dryRunCall = await evmClient.callContract({
-		call: {
-			from: '0x0000000000000000000000000000000000000000', // zero address for view calls
-			to: evmConfig.calculatorConsumerAddress,
-			data: dryRunCallData,
-		},
-		blockNumber: {
-			absVal: '03', // 3 for finalized block
-			sign: '-1', // negative
-		},
-	})
-
-	const dryRunResponse = decodeFunctionResult({
-		abi: CALCULATOR_CONSUMER_ABI,
-		functionName: 'isResultAnomalous',
-		data: bytesToHex(dryRunCall.data) as Hex,
-	})
-
-	if (dryRunResponse) {
-		throw new Error('Result is anomalous')
-	}
-
-	// Encode the contract call data for the 'get' function
-	const callData = encodeFunctionData({
-		abi: CALCULATOR_CONSUMER_ABI,
-		functionName: 'onReport',
-		// The `metadata` (first) parameter is unused here but is required by the IReceiver interface.
-		args: [toHex('0x'), dryRunCallData],
-	})
-
-	const resp = await evmClient.writeReport({
-		receiver: evmConfig.calculatorConsumerAddress,
-		report: {
-			rawReport: callData,
-		},
-	})
-
-	return resp.txHash
-}
-
 const fetchMathResult = useMedianConsensus(async (config: Config) => {
 	const response = await cre.utils.fetch({
 		url: config.apiUrl,
@@ -107,10 +35,7 @@ const fetchMathResult = useMedianConsensus(async (config: Config) => {
 	return Number.parseFloat(response.body.trim())
 }, 'float64')
 
-// onCronTrigger is the callback function that gets executed when the cron trigger fires
 const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> => {
-	runtime.logger.log('Hello, Calculator! Workflow triggered.')
-
 	if (!config.evms?.length) {
 		throw new Error('No EVM configuration provided')
 	}
@@ -137,25 +62,24 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 
 	const contractCall = await evmClient.callContract({
 		call: {
-			from: '0x0000000000000000000000000000000000000000', // zero address for view calls
-			to: evmConfig.storageAddress,
-			data: callData,
+			from: hexToBase64(zeroAddress),
+			to: hexToBase64(evmConfig.storageAddress),
+			data: hexToBase64(callData),
 		},
 		blockNumber: {
-			absVal: '03', // 3 for finalized block
-			sign: '-1', // negative
+			absVal: Buffer.from([3]).toString('base64'), // 3 for finalized block
+			sign: '-1', // negative for finalized
 		},
 	})
 
 	// Decode the result
-	const decodedResult = decodeFunctionResult({
+	const onchainValue = decodeFunctionResult({
 		abi: STORAGE_ABI,
 		functionName: 'get',
-		data: bytesToHex(contractCall.data) as Hex,
+		data: bytesToHex(contractCall.data),
 	})
 
-	const onchainValue = decodedResult as bigint
-	runtime.logger.log('Successfully read onchain value')
+	runtime.logger.log(`Successfully read onchain value: ${onchainValue.toString()}`)
 
 	// Step 3: Combine the results - convert offchain float to bigint and add
 	const offchainFloat = offchainValue.value.case === 'float64Value' ? offchainValue.value.value : 0
@@ -165,15 +89,64 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 
 	runtime.logger.log('Final calculated result')
 
-	// Step 4: Write to the calculator consumer
+	runtime.logger.log('Updating calculator result...')
 
-	const txHash = await updateCalculatorResult(
-		config,
-		evmConfig,
-		offchainBigInt,
-		onchainValue,
-		finalResult,
-	)
+	// Encode the contract call data for the 'onReport' function
+	const dryRunCallData = encodeFunctionData({
+		abi: CALCULATOR_CONSUMER_ABI,
+		functionName: 'isResultAnomalous',
+		args: [
+			{
+				offchainValue: offchainBigInt,
+				onchainValue: onchainValue,
+				finalResult: finalResult,
+			},
+		],
+	})
+
+	runtime.logger.log('Dry running call to ensure the value is not anomalous...')
+
+	// dry run the call to ensure the value is not anomalous
+	const dryRunCall = await evmClient.callContract({
+		call: {
+			from: hexToBase64(zeroAddress),
+			to: hexToBase64(evmConfig.calculatorConsumerAddress),
+			data: hexToBase64(dryRunCallData),
+		},
+		blockNumber: {
+			absVal: Buffer.from([3]).toString('base64'), // 3 for finalized block
+			sign: '-1', // negative for finalized
+		},
+	})
+
+	const dryRunResponse = decodeFunctionResult({
+		abi: CALCULATOR_CONSUMER_ABI,
+		functionName: 'isResultAnomalous',
+		data: bytesToHex(dryRunCall.data) as Hex,
+	})
+
+	runtime.logger.log(`Dry run response: ${dryRunResponse ? 'Anomalous' : 'Not anomalous'}`)
+
+	if (dryRunResponse) {
+		throw new Error('Result is anomalous')
+	}
+
+	// Encode the contract call data for the 'get' function
+	const writeCallData = encodeFunctionData({
+		abi: CALCULATOR_CONSUMER_ABI,
+		functionName: 'onReport',
+		// The `metadata` (first) parameter is unused here but is required by the IReceiver interface.
+		args: [toHex('0x'), dryRunCallData],
+	})
+
+	const resp = await evmClient.writeReport({
+		receiver: evmConfig.calculatorConsumerAddress,
+		report: {
+			rawReport: writeCallData,
+		},
+	})
+
+	const txHash = resp.txHash
 
 	if (!txHash) {
 		throw new Error('Failed to write report')
@@ -189,30 +162,17 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 	)
 }
 
-// InitWorkflow is the required entry point for a CRE workflow
-// The runner calls this function to initialize the workflow and register its handlers
 const initWorkflow = (config: Config) => {
 	const cron = new cre.capabilities.CronCapability()
 
-	return [
-		cre.handler(
-			// Use the schedule from our config file
-			cron.trigger({ schedule: config.schedule }),
-			onCronTrigger,
-		),
-	]
+	return [cre.handler(cron.trigger({ schedule: config.schedule }), onCronTrigger)]
 }
 
-// main is the entry point for the workflow
 export async function main() {
-	try {
-		const runner = await cre.newRunner<Config>({
-			configSchema: configSchema,
-		})
-		await runner.run(initWorkflow)
-	} catch (error) {
-		console.log('error', JSON.stringify(error, null, 2))
-	}
+	const runner = await cre.newRunner<Config>({
+		configSchema: configSchema,
+	})
+	await runner.run(initWorkflow)
 }
 
-main()
+withErrorBoundary(main)
