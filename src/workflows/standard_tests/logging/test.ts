@@ -6,10 +6,10 @@ type Config = "config";
 
 const doLog = (config: Config, runtime: Runtime) => {
   runtime.logger.log("log from wasm!");
-  cre.sendResponseValue(cre.utils.val.string(config));
+  cre.sendResponseValue(cre.utils.val.bytes(Buffer.from(config)));
 };
 
-const initWorkflow = (config: Config) => {
+const initWorkflow = () => {
   const basicTrigger = new BasicTriggerCapability();
 
   return [cre.handler(basicTrigger.trigger({}), doLog)];
