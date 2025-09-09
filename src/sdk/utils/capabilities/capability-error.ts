@@ -1,10 +1,7 @@
-import { Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
-
 export class CapabilityError extends Error {
 	public name: string
 	public capabilityId?: string
 	public method?: string
-	public mode?: Mode
 	public callbackId?: number
 
 	constructor(
@@ -12,7 +9,6 @@ export class CapabilityError extends Error {
 		options?: {
 			capabilityId?: string
 			method?: string
-			mode?: Mode
 			callbackId?: number
 		},
 	) {
@@ -22,7 +18,6 @@ export class CapabilityError extends Error {
 		if (options) {
 			this.capabilityId = options.capabilityId
 			this.method = options.method
-			this.mode = options.mode
 			this.callbackId = options.callbackId
 		}
 	}

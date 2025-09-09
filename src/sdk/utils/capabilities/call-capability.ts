@@ -1,18 +1,9 @@
-import { doRequestAsync } from '@cre/sdk/utils/do-request-async'
+import { doRequestAsync } from '@cre/sdk/runtime/wasm/do-request-async'
 import { awaitAsyncRequest } from '@cre/sdk/utils/await-async-request'
 import { Mode, type CapabilityResponse } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { LazyPromise } from '@cre/sdk/utils/lazy-promise'
 import { runtimeGuards } from '@cre/sdk/runtime/runtime'
-
-export type CallCapabilityParams = {
-	capabilityId: string
-	method: string
-	mode: Mode
-	payload: {
-		typeUrl: string
-		value: Uint8Array
-	}
-}
+import { create, toBinary, fromBinary } from '@bufbuild/protobuf'
 
 /**
  * Calls a capability asynchronously and returns a promise for the response.

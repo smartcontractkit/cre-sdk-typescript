@@ -5,7 +5,7 @@ import {
 	ExecutionResultSchema,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import type { Workflow } from '@cre/sdk/workflow'
-import { hostBindings } from '@cre/sdk/runtime/host-bindings'
+import { hostBindings } from '@cre/sdk/runtime/wasm/host-bindings'
 
 export const handleSubscribePhase = <TConfig>(req: ExecuteRequest, workflow: Workflow<TConfig>) => {
 	if (req.request.case !== 'subscribe') {
