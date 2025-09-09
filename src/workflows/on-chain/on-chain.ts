@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { cre } from '@cre/sdk/cre'
 import { sendResponseValue } from '@cre/sdk/utils/send-response-value'
-import { val } from '@cre/sdk/utils/values/value'
+import { Value } from '@cre/sdk/utils/values/value'
 import { encodeFunctionData, decodeFunctionResult, zeroAddress } from 'viem'
 import { bytesToHex } from '@cre/sdk/utils/hex-utils'
 import type { Runtime } from '@cre/sdk/runtime/runtime'
@@ -85,8 +85,8 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 	const finalResult = onchainValue + offchainBigInt
 
 	sendResponseValue(
-		val.mapValue({
-			FinalResult: val.bigint(finalResult),
+		new Value({
+			FinalResult: finalResult,
 		}),
 	)
 }

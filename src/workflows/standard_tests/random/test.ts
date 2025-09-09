@@ -5,8 +5,8 @@ import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/ca
 import { AggregationType, Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { SimpleConsensusInputsSchema } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { BasicActionCapability as NodeActionCapability } from '@cre/generated-sdk/capabilities/internal/nodeaction/v1/basicaction_sdk_gen'
-// TODO: does this belong in CRE?
 import { consensusFieldsFrom, observationValue } from '@cre/sdk/utils/values/consensus'
+import { Value } from '@cre/sdk/utils/values/value'
 
 const configSchema = z.object({ config: z.string() })
 type Config = z.infer<typeof configSchema>
@@ -29,16 +29,16 @@ const randHandler = async (_config: Config, runtime: Runtime) => {
 
 		const consensusInput = create(SimpleConsensusInputsSchema, {
 			observation: observationValue(
-				cre.utils.val.mapValue({
-					OutputThing: cre.utils.val.int64(nodeResponse.outputThing),
+				new Value({
+					OutputThing: Value.int64(nodeResponse.outputThing),
 				}),
 			),
 			descriptors: consensusFieldsFrom({
 				OutputThing: AggregationType.MEDIAN,
 			}),
-			default: cre.utils.val.mapValue({
-				OutputThing: cre.utils.val.int64(123),
-			}),
+			default: new Value({
+				OutputThing: Value.int64(123),
+			}).proto,
 		})
 
 		return consensusInput
@@ -46,7 +46,7 @@ const randHandler = async (_config: Config, runtime: Runtime) => {
 
 	total += donRandomNumber
 
-	cre.sendResponseValue(cre.utils.val.bigint(total))
+	cre.sendResponseValue(new Value(total))
 }
 
 const initWorkflow = () => {

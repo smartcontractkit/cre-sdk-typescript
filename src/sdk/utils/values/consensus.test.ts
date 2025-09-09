@@ -13,7 +13,7 @@ import {
 	observationError,
 	getAggregatedValue,
 } from './consensus'
-import { val } from './value'
+import { Value } from './value'
 
 const getAggregation = (d: ConsensusDescriptor): AggregationType | undefined =>
 	d.descriptor.case === 'aggregation' ? d.descriptor.value : undefined
@@ -101,7 +101,7 @@ describe('consensus helpers', () => {
 	})
 
 	test('observation helpers', () => {
-		const ov = observationValue(val.string('ok'))
+		const ov = observationValue(new Value('ok'))
 		expect(ov.case).toBe('value')
 		expect(ov.value.value.case).toBe('stringValue')
 
@@ -111,16 +111,16 @@ describe('consensus helpers', () => {
 	})
 
 	test('getAggregatedValue with different consensus strategies', () => {
-		const priceInput = getAggregatedValue(val.float64(1850.5), 'median')
+		const priceInput = getAggregatedValue(new Value(1850.5), 'median')
 		expect(priceInput.observation.case).toBe('value')
 		expect(priceInput.descriptors).toBe(consensusDescriptorMedian)
 
-		const statusInput = getAggregatedValue(val.bool(true), 'identical')
+		const statusInput = getAggregatedValue(new Value(true), 'identical')
 		expect(statusInput.observation.case).toBe('value')
 		expect(statusInput.descriptors).toBe(consensusDescriptorIdentical)
 
 		const urlInput = getAggregatedValue(
-			val.string('https://api.example.com/v1/data'),
+			new Value('https://api.example.com/v1/data'),
 			'commonPrefix',
 		)
 		expect(urlInput.observation.case).toBe('value')

@@ -8,6 +8,7 @@ import { consensusFieldsFrom, observationValue } from '@cre/sdk/utils/values/con
 import { type NodeRuntime } from '@cre/sdk/runtime/runtime'
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
 import { cre, type Runtime } from '@cre/sdk/cre'
+import { Value } from '@cre/sdk/utils/values/value'
 
 // Doesn't matter for this test
 type Config = any
@@ -26,16 +27,16 @@ const handler = async (_config: Config, runtime: Runtime) => {
 
 		return create(SimpleConsensusInputsSchema, {
 			observation: observationValue(
-				cre.utils.val.mapValue({
-					OutputThing: cre.utils.val.int64(nodeResponse.outputThing),
+				new Value({
+					OutputThing: Value.int64(nodeResponse.outputThing),
 				}),
 			),
 			descriptors: consensusFieldsFrom({
 				OutputThing: AggregationType.MEDIAN,
 			}),
-			default: cre.utils.val.mapValue({
-				OutputThing: cre.utils.val.int64(123),
-			}),
+			default: new Value({
+				OutputThing: Value.int64(123),
+			}).proto,
 		})
 	})
 
@@ -50,7 +51,7 @@ const handler = async (_config: Config, runtime: Runtime) => {
 	const outputJson = toJson(ValueSchema, consensusOutput)
 
 	cre.sendResponseValue(
-		cre.utils.val.string(
+		new Value(
 			`${donResponse.adaptedThing}${outputJson?.mapValue?.fields?.OutputThing?.int64Value}`,
 		),
 	)
