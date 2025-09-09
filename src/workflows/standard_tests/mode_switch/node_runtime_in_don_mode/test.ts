@@ -1,6 +1,6 @@
 import { Mode } from "@cre/generated/sdk/v1alpha/sdk_pb";
 import { SimpleConsensusInputsSchema } from "@cre/generated/sdk/v1alpha/sdk_pb";
-import { create, toJson } from "@bufbuild/protobuf";
+import { create, fromJson, toBinary, toJson } from "@bufbuild/protobuf";
 import { ConsensusCapability } from "@cre/generated-sdk/capabilities/internal/consensus/v1alpha/consensus_sdk_gen";
 import {
   consensusDescriptorIdentical,
@@ -9,6 +9,8 @@ import {
 import { BasicCapability as BasicTriggerCapability } from "@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen";
 import { cre, type Runtime } from "@cre/sdk/cre";
 import { CapabilityError } from "@cre/sdk/utils/capabilities/capability-error";
+import { dangerouslyCallCapability } from "@cre/sdk/testhelpers/dangerously-call-capability";
+import { getTypeUrl } from "@cre/sdk/utils/typeurl";
 
 // Doesn't matter for this test
 type Config = any;
@@ -26,10 +28,21 @@ const handler = async (_config: Config, runtime: Runtime) => {
     // We're forcing it here just for test purposes.
     // Normally, if we don't force the wrong mode, the runtime guards would prevent call to `callCapability` in the first place.
     // Because test expectation is to callCapability and verify error output, we need to "trick" the guards.
-    const consensusCapability = new ConsensusCapability(Mode.DON);
-    await consensusCapability.simple(
-      toJson(SimpleConsensusInputsSchema, consensusInput)
-    );
+    await dangerouslyCallCapability({
+      capabilityId: ConsensusCapability.CAPABILITY_ID,
+      method: "simple",
+      mode: Mode.DON,
+      payload: {
+        typeUrl: getTypeUrl(SimpleConsensusInputsSchema),
+        value: toBinary(
+          SimpleConsensusInputsSchema,
+          fromJson(
+            SimpleConsensusInputsSchema,
+            toJson(SimpleConsensusInputsSchema, consensusInput)
+          )
+        ),
+      },
+    });
   } catch (e) {
     if (e instanceof CapabilityError) {
       cre.sendError("cannot use NodeRuntime outside RunInNodeMode");
