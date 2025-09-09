@@ -3,6 +3,8 @@ import { logger, type Logger } from '@cre/sdk/logger'
 import { DonModeError, NodeModeError } from '@cre/sdk/runtime/errors'
 import { hostBindings } from '@cre/sdk/runtime/host-bindings'
 import { getSecret } from '@cre/sdk/utils/secrets/get-secret'
+import { Rand } from '@cre/sdk/utils/random/random'
+import { getRand } from '@cre/sdk/utils/random/get-rand'
 
 /**
  * Runtime guards are not actually causing / throwing errors.
@@ -60,12 +62,14 @@ export type Runtime = BaseRuntime<Mode.DON> & {
 	switchModes(mode: Mode.NODE): NodeRuntime
 	switchModes(mode: Mode.DON): Runtime
 	getSecret(id: string): Promise<any>
+	getRand(): Rand
 }
 
 export type NodeRuntime = BaseRuntime<Mode.NODE> & {
 	isNodeRuntime: true
 	switchModes(mode: Mode.NODE): NodeRuntime
 	switchModes(mode: Mode.DON): Runtime
+	getRand(): Rand
 }
 
 // Shared implementation for mode switching
@@ -94,6 +98,7 @@ export const runtime: Runtime = {
 		runtimeGuards.assertNodeSafe()
 	},
 	getSecret,
+	getRand: () => getRand(Mode.DON),
 }
 
 export const nodeRuntime: NodeRuntime = {
@@ -107,4 +112,5 @@ export const nodeRuntime: NodeRuntime = {
 	assertDonSafe: function (): asserts this is Runtime {
 		runtimeGuards.assertDonSafe()
 	},
+	getRand: () => getRand(Mode.NODE),
 }

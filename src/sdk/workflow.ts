@@ -46,7 +46,6 @@ export class Runner<TConfig> {
 
 	static async newRunner<T>(configHandlerParams: ConfigHandlerParams = {}): Promise<Runner<T>> {
 		const config = await configHandler<T>(configHandlerParams)
-
 		return new Runner<T>(config)
 	}
 
@@ -55,6 +54,7 @@ export class Runner<TConfig> {
 	): Promise<CapabilityResponse | void> {
 		const req = getRequest()
 		const workflow = await initFn(this.config)
+
 		return await handleExecuteRequest(req, workflow, this.config, this.runtime)
 	}
 }
