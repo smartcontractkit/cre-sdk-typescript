@@ -9,18 +9,8 @@ import { useMedianConsensus } from '@cre/sdk/utils/values/consensus-hooks'
 import { hexToBase64 } from '@cre/sdk/utils/hex-utils'
 import { withErrorBoundary } from '@cre/sdk/utils/error-boundary'
 
-// Storage contract ABI - we only need the 'get' function
 // TODO: In production, load ABI from external file or contract metadata
-// following Go SDK patterns for ABI management
-const STORAGE_ABI = [
-	{
-		inputs: [],
-		name: 'get',
-		outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-		stateMutability: 'view',
-		type: 'function',
-	},
-] as const
+import { STORAGE_ABI } from './abi'
 
 const configSchema = z.object({
 	schedule: z.string(),
@@ -111,7 +101,7 @@ const initWorkflow = (config: Config) => {
 
 export async function main() {
 	const runner = await cre.newRunner<Config>({
-		configSchema: configSchema,
+		configSchema,
 	})
 	await runner.run(initWorkflow)
 }

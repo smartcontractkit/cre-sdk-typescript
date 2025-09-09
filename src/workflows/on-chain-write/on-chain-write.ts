@@ -8,9 +8,7 @@ import { val } from '@cre/sdk/utils/values/value'
 import { decodeFunctionResult, encodeFunctionData, type Hex, toHex, zeroAddress } from 'viem'
 import { z } from 'zod'
 
-// Storage contract ABI - we only need the 'get' function
 // TODO: In production, load ABI from external file or contract metadata
-// following Go SDK patterns for ABI management
 import { CALCULATOR_CONSUMER_ABI, STORAGE_ABI } from './abi'
 
 const configSchema = z.object({
