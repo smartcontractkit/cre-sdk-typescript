@@ -31,6 +31,7 @@ const globalHostBindingsSchema = z.object({
 		.args(z.union([z.instanceof(Uint8Array), z.custom<Uint8Array<ArrayBufferLike>>()]), z.number())
 		.returns(z.union([z.instanceof(Uint8Array), z.custom<Uint8Array<ArrayBufferLike>>()])),
 	getWasiArgs: z.function().args().returns(z.string()),
+	now: z.function().args().returns(z.number()),
 })
 
 type GlobalHostBindingsMap = z.infer<typeof globalHostBindingsSchema>

@@ -5,6 +5,7 @@ import { hostBindings } from '@cre/sdk/runtime/host-bindings'
 import { getSecret } from '@cre/sdk/utils/secrets/get-secret'
 import { Rand } from '@cre/sdk/utils/random/random'
 import { getRand } from '@cre/sdk/utils/random/get-rand'
+import { getTimeAsDate } from '@cre/sdk/utils/time/get-time'
 
 /**
  * Runtime guards are not actually causing / throwing errors.
@@ -55,6 +56,8 @@ export type BaseRuntime<M extends Mode = Mode> = {
 	mode: M
 	assertDonSafe(): asserts this is Runtime
 	assertNodeSafe(): asserts this is NodeRuntime
+	getRand(): Rand
+	now(): Date
 }
 
 export type Runtime = BaseRuntime<Mode.DON> & {
@@ -62,14 +65,12 @@ export type Runtime = BaseRuntime<Mode.DON> & {
 	switchModes(mode: Mode.NODE): NodeRuntime
 	switchModes(mode: Mode.DON): Runtime
 	getSecret(id: string): Promise<any>
-	getRand(): Rand
 }
 
 export type NodeRuntime = BaseRuntime<Mode.NODE> & {
 	isNodeRuntime: true
 	switchModes(mode: Mode.NODE): NodeRuntime
 	switchModes(mode: Mode.DON): Runtime
-	getRand(): Rand
 }
 
 // Shared implementation for mode switching
@@ -99,6 +100,7 @@ export const runtime: Runtime = {
 	},
 	getSecret,
 	getRand: () => getRand(Mode.DON),
+	now: () => getTimeAsDate(),
 }
 
 export const nodeRuntime: NodeRuntime = {
@@ -113,4 +115,5 @@ export const nodeRuntime: NodeRuntime = {
 		runtimeGuards.assertDonSafe()
 	},
 	getRand: () => getRand(Mode.NODE),
+	now: () => getTimeAsDate(),
 }
