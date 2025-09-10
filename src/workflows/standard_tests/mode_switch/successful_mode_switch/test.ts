@@ -13,8 +13,6 @@ import { cre, type Runtime } from '@cre/sdk/cre'
 type Config = any
 
 const handler = async (_config: Config, runtime: Runtime) => {
-	runtime.now()
-
 	const donInput = { inputThing: true }
 	const basicActionCapability = new BasicActionCapability()
 	const donResponse = await basicActionCapability.performAction(donInput)
@@ -42,6 +40,13 @@ const handler = async (_config: Config, runtime: Runtime) => {
 	})
 
 	runtime.now()
+
+	const nodeRuntime = runtime.switchModes(Mode.NODE)
+	nodeRuntime.now()
+	nodeRuntime.switchModes(Mode.DON)
+
+	runtime.now()
+
 	const outputJson = toJson(ValueSchema, consensusOutput)
 
 	cre.sendResponseValue(
