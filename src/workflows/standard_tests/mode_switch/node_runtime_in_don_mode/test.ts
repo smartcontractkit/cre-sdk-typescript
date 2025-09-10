@@ -1,54 +1,37 @@
-import { Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { SimpleConsensusInputsSchema } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import { create, fromJson, toBinary, toJson } from '@bufbuild/protobuf'
-import { ConsensusCapability } from '@cre/generated-sdk/capabilities/internal/consensus/v1alpha/consensus_sdk_gen'
+import { create } from '@bufbuild/protobuf'
 import { consensusDescriptorIdentical, observationValue } from '@cre/sdk/utils/values/consensus'
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
-import { cre, type Runtime } from '@cre/sdk/cre'
-import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
-import { dangerouslyCallCapability } from '@cre/sdk/testhelpers/dangerously-call-capability'
-import { getTypeUrl } from '@cre/sdk/utils/typeurl'
+import { BasicActionCapability as NodeActionCapability } from '@cre/generated-sdk/capabilities/internal/nodeaction/v1/basicaction_sdk_gen'
+import { cre, type NodeRuntime } from '@cre/sdk/cre'
+import { NodeModeError } from '@cre/sdk/runtime/errors'
 
-// Doesn't matter for this test
-type Config = any
-
-const handler = async (_config: Config, runtime: Runtime) => {
-	let nodeRuntime = runtime.switchModes(Mode.NODE)
-
-	try {
+const handler = async () => {
+	// First, run in node mode and do consensus - this makes the expected CallCapability call
+	await cre.runInNodeMode(async (nodeRuntime: NodeRuntime) => {
 		const consensusInput = create(SimpleConsensusInputsSchema, {
 			observation: observationValue(cre.utils.val.string('hi')),
 			descriptors: consensusDescriptorIdentical,
 		})
 
-		// Note: ConsensusCapability won't work in NODE mode.
-		// We're forcing it here just for test purposes.
-		// Normally, if we don't force the wrong mode, the runtime guards would prevent call to `callCapability` in the first place.
-		// Because test expectation is to callCapability and verify error output, we need to "trick" the guards.
-		await dangerouslyCallCapability({
-			capabilityId: ConsensusCapability.CAPABILITY_ID,
-			method: 'simple',
-			mode: Mode.DON,
-			payload: {
-				typeUrl: getTypeUrl(SimpleConsensusInputsSchema),
-				value: toBinary(
-					SimpleConsensusInputsSchema,
-					fromJson(
-						SimpleConsensusInputsSchema,
-						toJson(SimpleConsensusInputsSchema, consensusInput),
-					),
-				),
-			},
-		})
+		return consensusInput
+	})
+
+	try {
+		// Now we're back in DON mode, try to use a NODE mode capability
+		// This should trigger assertNodeSafe() and throw "cannot use NodeRuntime outside RunInNodeMode"
+		const nodeActionCapability = new NodeActionCapability()
+		await nodeActionCapability.performAction({ inputThing: true })
 	} catch (e) {
-		if (e instanceof CapabilityError) {
+		console.log('error', e)
+		if (e instanceof NodeModeError) {
+			// The runtime guards should catch this and throw the expected error
 			cre.sendError('cannot use NodeRuntime outside RunInNodeMode')
 		} else {
+			// Should still fail the test if something else got broken
 			throw e
 		}
 	}
-
-	nodeRuntime.switchModes(Mode.DON)
 }
 
 const initWorkflow = () => {
