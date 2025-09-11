@@ -1,7 +1,7 @@
-import fg from 'fast-glob'
 import { $ } from 'bun'
-import { mkdir } from 'fs/promises'
+import fg from 'fast-glob'
 import { existsSync } from 'fs'
+import { mkdir } from 'fs/promises'
 
 export const main = async () => {
 	const args = process.argv.slice(3)
@@ -17,7 +17,6 @@ export const main = async () => {
 		process.exit(1)
 	}
 
-	let workflowPath: string
 	let outputPath: string
 	let pattern: string
 
@@ -47,7 +46,7 @@ export const main = async () => {
 		process.exit(1)
 	}
 
-	workflowPath = workflowsSourcePaths[0]
+	const workflowPath = workflowsSourcePaths[0]
 	console.info(`📁 Found: ${workflowPath}`)
 
 	// Ensure the output directory exists
