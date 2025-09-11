@@ -1,0 +1,77 @@
+#!/usr/bin/env node
+
+/**
+ * CRE Build CLI - Command line tool for building CRE workflows
+ */
+
+import { spawn } from 'child_process'
+import { fileURLToPath } from 'url'
+import { dirname, join } from 'path'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
+// Get the package root directory
+const packageRoot = join(__dirname, '..')
+
+const command = process.argv[2]
+const args = process.argv.slice(3)
+
+if (!command) {
+  console.log(`
+CRE Build CLI - Build Chainlink Runtime Environment workflows
+
+Usage:
+  cre-build <command> [options]
+
+Commands:
+  workflow <name>          Build a single workflow to both JS and WASM
+  js                       Build all workflows to JavaScript
+  wasm                     Build all workflows to WebAssembly
+  javy-plugin             Build the Javy SDK plugin
+  javy-sdk                Build Javy with the SDK plugin
+  clean                   Clean build artifacts
+
+Examples:
+  cre-build workflow my-workflow
+  cre-build js
+  cre-build wasm
+  cre-build javy-plugin
+
+For more information, visit: https://github.com/smartcontractkit/cre-sdk-typescript
+`)
+  process.exit(0)
+}
+
+// Map commands to bun scripts
+const commandMap = {
+  'workflow': ['scripts/run.ts', 'build-single-workflow'],
+  'js': ['scripts/run.ts', 'compile-to-js'],
+  'wasm': ['scripts/run.ts', 'compile-to-wasm'],
+  'javy-plugin': ['scripts/run.ts', 'compile-javy-sdk-plugin'],
+  'javy-sdk': ['scripts/run.ts', 'compile-javy-with-sdk-plugin'],
+  'clean': ['scripts/clean.ts']
+}
+
+if (!commandMap[command]) {
+  console.error(`Unknown command: ${command}`)
+  process.exit(1)
+}
+
+const [scriptPath, ...scriptArgs] = commandMap[command]
+const fullArgs = [scriptPath, ...scriptArgs, ...args]
+
+// Execute the bun command
+const child = spawn('bun', fullArgs, {
+  cwd: packageRoot,
+  stdio: 'inherit'
+})
+
+child.on('exit', (code) => {
+  process.exit(code || 0)
+})
+
+child.on('error', (err) => {
+  console.error('Failed to execute command:', err)
+  process.exit(1)
+})

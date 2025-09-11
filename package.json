@@ -1,11 +1,49 @@
 {
-  "name": "cre-sdk-typescript",
-  "module": "src/index.ts",
+  "name": "@chainlink/cre-sdk",
+  "version": "0.1.0",
+  "description": "Chainlink Runtime Environment TypeScript SDK for building workflows",
+  "keywords": ["chainlink", "cre", "workflow", "blockchain", "smart-contracts", "wasm"],
+  "author": "Chainlink Labs",
+  "license": "MIT",
+  "homepage": "https://github.com/smartcontractkit/cre-sdk-typescript",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smartcontractkit/cre-sdk-typescript.git"
+  },
+  "bugs": {
+    "url": "https://github.com/smartcontractkit/cre-sdk-typescript/issues"
+  },
+  "main": "index.js",
+  "module": "index.js",
+  "types": "index.d.ts",
   "type": "module",
+  "bin": {
+    "cre-build": "./bin/cre-build"
+  },
+  "files": [
+    "index.js",
+    "index.js.map", 
+    "index.d.ts",
+    "sdk/**/*",
+    "utils/**/*",
+    "bin/**/*",
+    "wit/**/*",
+    "scripts/**/*",
+    "*.wasm",
+    "README.md",
+    "LICENSE.md"
+  ],
+  "publishConfig": {
+    "directory": "dist"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "biome:check": "biome check --write",
     "biome:format": "biome format --write",
     "biome:lint": "biome lint --write",
+    "build": "bun scripts/build-npm-package.ts",
     "build:javy:plugin": "bun scripts/run.ts compile-javy-sdk-plugin",
     "build:javy:sdk:wasm": "bun scripts/run.ts compile-javy-with-sdk-plugin",
     "build:workflows:wasm": "bun scripts/run.ts compile-to-wasm",
@@ -15,6 +53,10 @@
     "build:workflow:single:wasm": "bun scripts/run.ts compile-single-workflow-to-wasm",
     "build:workflow:single": "bun scripts/run.ts build-single-workflow",
     "build:all": "bun typecheck && bun build.ts",
+    "clean": "bun scripts/run.ts clean",
+    "prepublishOnly": "bun run build",
+    "publish:npm": "cd dist && bun publish",
+    "publish:npm:dry": "cd dist && bun publish --dry-run",
     "javy": "./bin/javy-arm-macos-v5.0.4",
     "javy:linux": "./bin/javy-arm-linux-v5.0.4",
     "start": "bun --watch src/index.ts",

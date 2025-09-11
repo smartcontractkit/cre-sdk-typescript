@@ -1,0 +1,39 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // Enable compilation
+    "noEmit": false,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    
+    // Output settings
+    "outDir": "./dist",
+    "rootDir": "./src",
+    
+    // Module settings for NPM
+    "module": "ESNext",
+    "target": "ES2020",
+    "moduleResolution": "node",
+    
+    // Don't bundle, let consumers bundle
+    "allowImportingTsExtensions": false,
+    "verbatimModuleSyntax": false,
+    
+    // Emit settings
+    "removeComments": false,
+    "preserveConstEnums": true,
+    "declarationDir": "./dist"
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "src/**/*.test.ts",
+    "src/**/*.spec.ts", 
+    "src/workflows/**/*",
+    "src/workflows-tests/**/*",
+    "src/setupTests.ts",
+    "src/test.ts"
+  ]
+}
