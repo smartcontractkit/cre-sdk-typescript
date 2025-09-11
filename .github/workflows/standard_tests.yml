@@ -1,0 +1,11 @@
+name: Standard-tests
+
+on: [pull_request]
+
+jobs: 
+  standard-tests:
+    steps:
+      - name: Install asdf & tools
+        uses: asdf-vm/actions/install@v4
+      - name: Run standard tests
+        run: bun build:all && test:standard
