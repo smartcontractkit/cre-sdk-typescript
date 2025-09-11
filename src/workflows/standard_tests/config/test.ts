@@ -1,11 +1,11 @@
 import { cre } from '@cre/sdk/cre'
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
-import { Value } from '@cre/sdk/utils/values/value'
+import { Value } from '@cre/sdk/utils'
 
 type Config = 'config'
 
 const sendBackConfig = (config: Config) => {
-	cre.sendResponseValue(new Value(Buffer.from(config)))
+	cre.sendResponseValue(Value.from(Buffer.from(config)))
 }
 
 const initWorkflow = () => {

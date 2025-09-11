@@ -39,12 +39,16 @@ export function generateTriggerClass(method: DescMethod, className: string): str
  * Trigger implementation for ${method.name}
  */
 class ${triggerClassName} implements Trigger<${method.output.name}, ${method.output.name}> {
+  public readonly config: ${method.input.name}
   constructor(
     public readonly mode: Mode,
-    public readonly config: ${method.input.name}Json,
+    config: ${method.input.name} | ${method.input.name}Json,
     private readonly _capabilityId: string,
     private readonly _method: string
-  ) {}
+  ) {
+    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+    this.config = (config as any).$typeName ? config as ${method.input.name} : fromJson(${method.input.name}Schema, config as ${method.input.name}Json)
+  }
 
   capabilityId(): string {
     return this._capabilityId;
@@ -59,10 +63,9 @@ class ${triggerClassName} implements Trigger<${method.output.name}, ${method.out
   }
 
   configAsAny(): Any {
-    const configMessage = fromJson(${method.input.name}Schema, this.config);
     return create(AnySchema, {
       typeUrl: getTypeUrl(${method.input.name}Schema),
-      value: toBinary(${method.input.name}Schema, configMessage),
+      value: toBinary(${method.input.name}Schema, this.config),
     });
   }
 

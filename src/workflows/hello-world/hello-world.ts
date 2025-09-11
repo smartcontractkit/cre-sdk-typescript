@@ -1,4 +1,4 @@
-import { Value } from '@cre/sdk/utils/values/value'
+import { Value } from '@cre/sdk/utils'
 import { cre } from '@cre/sdk/cre'
 import type { Runtime } from '@cre/sdk/runtime/runtime'
 import { withErrorBoundary } from '@cre/sdk/utils/error-boundary'
@@ -9,7 +9,7 @@ type Config = {
 
 const onCronTrigger = (_: Config, runtime: Runtime): void => {
 	runtime.logger.log('Hello, Calculator! Workflow triggered.')
-	cre.sendResponseValue(new Value('Hello, Calculator!'))
+	cre.sendResponseValue(Value.from('Hello, Calculator!'))
 }
 
 const initWorkflow = (config: Config) => {

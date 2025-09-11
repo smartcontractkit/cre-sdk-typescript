@@ -7,7 +7,7 @@ export class DonModeError extends Error {
 	public mode?: Mode
 
 	constructor(
-		message = 'cannot use DON Runtime inside Node mode',
+		message = 'cannot use Runtime inside RunInNodeMode',
 		options?: {
 			capabilityId?: string
 			method?: string
@@ -30,9 +30,8 @@ export class NodeModeError extends Error {
 	public capabilityId?: string
 	public method?: string
 	public mode?: Mode
-
 	constructor(
-		message = 'cannot use Node Runtime inside DON mode',
+		message = 'cannot use NodeRuntime outside RunInNodeMode',
 		options?: {
 			capabilityId?: string
 			method?: string

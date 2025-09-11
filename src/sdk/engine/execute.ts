@@ -1,4 +1,4 @@
-import type { ExecuteRequest, CapabilityResponse } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import { type ExecuteRequest, type CapabilityResponse, Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import type { Workflow } from '@cre/sdk/workflow'
 import type { Runtime } from '@cre/sdk/runtime/runtime'
 import { handleSubscribePhase } from './handleSubscribePhase'
@@ -15,6 +15,7 @@ export const handleExecuteRequest = async <TConfig>(
 	}
 
 	if (req.request.case === 'trigger') {
+		runtime.switchModes(Mode.DON)
 		return handleExecutionPhase(req, workflow, config, runtime)
 	}
 }

@@ -2,115 +2,109 @@
 // @generated from file capabilities/networking/http/v1alpha/trigger.proto (package capabilities.networking.http.v1alpha, syntax proto3)
 /* eslint-disable */
 
-import type { GenEnum, GenFile, GenMessage, GenService } from '@bufbuild/protobuf/codegenv2'
-import { enumDesc, fileDesc, messageDesc, serviceDesc } from '@bufbuild/protobuf/codegenv2'
-import { file_tools_generator_v1alpha_cre_metadata } from '../../../../tools/generator/v1alpha/cre_metadata_pb'
-import type { Message } from '@bufbuild/protobuf'
+import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
+import { enumDesc, fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
+import { file_tools_generator_v1alpha_cre_metadata } from "../../../../tools/generator/v1alpha/cre_metadata_pb";
+import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file capabilities/networking/http/v1alpha/trigger.proto.
  */
-export const file_capabilities_networking_http_v1alpha_trigger: GenFile =
-	/*@__PURE__*/
-	fileDesc(
-		'CjJjYXBhYmlsaXRpZXMvbmV0d29ya2luZy9odHRwL3YxYWxwaGEvdHJpZ2dlci5wcm90bxIkY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuaHR0cC52MWFscGhhIlYKBkNvbmZpZxJMCg9hdXRob3JpemVkX2tleXMYASADKAsyMy5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGEuQXV0aG9yaXplZEtleSJaCgdQYXlsb2FkEg0KBWlucHV0GAEgASgMEkAKA2tleRgCIAEoCzIzLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmh0dHAudjFhbHBoYS5BdXRob3JpemVkS2V5ImAKDUF1dGhvcml6ZWRLZXkSOwoEdHlwZRgBIAEoDjItLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmh0dHAudjFhbHBoYS5LZXlUeXBlEhIKCnB1YmxpY19rZXkYAiABKAkqOwoHS2V5VHlwZRIYChRLRVlfVFlQRV9VTlNQRUNJRklFRBAAEhYKEktFWV9UWVBFX0VDRFNBX0VWTRABMpIBCgRIVFRQEmgKB1RyaWdnZXISLC5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGEuQ29uZmlnGi0uY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuaHR0cC52MWFscGhhLlBheWxvYWQwARoggrUYHAgBEhhodHRwLXRyaWdnZXJAMS4wLjAtYWxwaGFC6wEKKGNvbS5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGFCDFRyaWdnZXJQcm90b1ABogIDQ05IqgIkQ2FwYWJpbGl0aWVzLk5ldHdvcmtpbmcuSHR0cC5WMWFscGhhygIkQ2FwYWJpbGl0aWVzXE5ldHdvcmtpbmdcSHR0cFxWMWFscGhh4gIwQ2FwYWJpbGl0aWVzXE5ldHdvcmtpbmdcSHR0cFxWMWFscGhhXEdQQk1ldGFkYXRh6gInQ2FwYWJpbGl0aWVzOjpOZXR3b3JraW5nOjpIdHRwOjpWMWFscGhhYgZwcm90bzM',
-		[file_tools_generator_v1alpha_cre_metadata],
-	)
+export const file_capabilities_networking_http_v1alpha_trigger: GenFile = /*@__PURE__*/
+  fileDesc("CjJjYXBhYmlsaXRpZXMvbmV0d29ya2luZy9odHRwL3YxYWxwaGEvdHJpZ2dlci5wcm90bxIkY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuaHR0cC52MWFscGhhIlYKBkNvbmZpZxJMCg9hdXRob3JpemVkX2tleXMYASADKAsyMy5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGEuQXV0aG9yaXplZEtleSJaCgdQYXlsb2FkEg0KBWlucHV0GAEgASgMEkAKA2tleRgCIAEoCzIzLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmh0dHAudjFhbHBoYS5BdXRob3JpemVkS2V5ImAKDUF1dGhvcml6ZWRLZXkSOwoEdHlwZRgBIAEoDjItLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmh0dHAudjFhbHBoYS5LZXlUeXBlEhIKCnB1YmxpY19rZXkYAiABKAkqOwoHS2V5VHlwZRIYChRLRVlfVFlQRV9VTlNQRUNJRklFRBAAEhYKEktFWV9UWVBFX0VDRFNBX0VWTRABMpIBCgRIVFRQEmgKB1RyaWdnZXISLC5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGEuQ29uZmlnGi0uY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuaHR0cC52MWFscGhhLlBheWxvYWQwARoggrUYHAgBEhhodHRwLXRyaWdnZXJAMS4wLjAtYWxwaGFC6wEKKGNvbS5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGFCDFRyaWdnZXJQcm90b1ABogIDQ05IqgIkQ2FwYWJpbGl0aWVzLk5ldHdvcmtpbmcuSHR0cC5WMWFscGhhygIkQ2FwYWJpbGl0aWVzXE5ldHdvcmtpbmdcSHR0cFxWMWFscGhh4gIwQ2FwYWJpbGl0aWVzXE5ldHdvcmtpbmdcSHR0cFxWMWFscGhhXEdQQk1ldGFkYXRh6gInQ2FwYWJpbGl0aWVzOjpOZXR3b3JraW5nOjpIdHRwOjpWMWFscGhhYgZwcm90bzM", [file_tools_generator_v1alpha_cre_metadata]);
 
 /**
  * @generated from message capabilities.networking.http.v1alpha.Config
  */
-export type Config = Message<'capabilities.networking.http.v1alpha.Config'> & {
-	/**
-	 * Public keys against which the signature of incoming requests are validated
-	 *
-	 * @generated from field: repeated capabilities.networking.http.v1alpha.AuthorizedKey authorized_keys = 1;
-	 */
-	authorizedKeys: AuthorizedKey[]
-}
+export type Config = Message<"capabilities.networking.http.v1alpha.Config"> & {
+  /**
+   * Public keys against which the signature of incoming requests are validated
+   *
+   * @generated from field: repeated capabilities.networking.http.v1alpha.AuthorizedKey authorized_keys = 1;
+   */
+  authorizedKeys: AuthorizedKey[];
+};
 
 /**
  * @generated from message capabilities.networking.http.v1alpha.Config
  */
 export type ConfigJson = {
-	/**
-	 * Public keys against which the signature of incoming requests are validated
-	 *
-	 * @generated from field: repeated capabilities.networking.http.v1alpha.AuthorizedKey authorized_keys = 1;
-	 */
-	authorizedKeys?: AuthorizedKeyJson[]
-}
+  /**
+   * Public keys against which the signature of incoming requests are validated
+   *
+   * @generated from field: repeated capabilities.networking.http.v1alpha.AuthorizedKey authorized_keys = 1;
+   */
+  authorizedKeys?: AuthorizedKeyJson[];
+};
 
 /**
  * Describes the message capabilities.networking.http.v1alpha.Config.
  * Use `create(ConfigSchema)` to create a new message.
  */
-export const ConfigSchema: GenMessage<Config, { jsonType: ConfigJson }> =
-	/*@__PURE__*/
-	messageDesc(file_capabilities_networking_http_v1alpha_trigger, 0)
+export const ConfigSchema: GenMessage<Config, {jsonType: ConfigJson}> = /*@__PURE__*/
+  messageDesc(file_capabilities_networking_http_v1alpha_trigger, 0);
 
 /**
  * @generated from message capabilities.networking.http.v1alpha.Payload
  */
-export type Payload = Message<'capabilities.networking.http.v1alpha.Payload'> & {
-	/**
-	 * JSON input in the HTTP trigger request (as bytes)
-	 *
-	 * @generated from field: bytes input = 1;
-	 */
-	input: Uint8Array
+export type Payload = Message<"capabilities.networking.http.v1alpha.Payload"> & {
+  /**
+   * JSON input in the HTTP trigger request (as bytes)
+   *
+   * @generated from field: bytes input = 1;
+   */
+  input: Uint8Array;
 
-	/**
-	 * Key used to sign the HTTP trigger request
-	 *
-	 * @generated from field: capabilities.networking.http.v1alpha.AuthorizedKey key = 2;
-	 */
-	key?: AuthorizedKey
-}
+  /**
+   * Key used to sign the HTTP trigger request
+   *
+   * @generated from field: capabilities.networking.http.v1alpha.AuthorizedKey key = 2;
+   */
+  key?: AuthorizedKey;
+};
 
 /**
  * @generated from message capabilities.networking.http.v1alpha.Payload
  */
 export type PayloadJson = {
-	/**
-	 * JSON input in the HTTP trigger request (as bytes)
-	 *
-	 * @generated from field: bytes input = 1;
-	 */
-	input?: string
+  /**
+   * JSON input in the HTTP trigger request (as bytes)
+   *
+   * @generated from field: bytes input = 1;
+   */
+  input?: string;
 
-	/**
-	 * Key used to sign the HTTP trigger request
-	 *
-	 * @generated from field: capabilities.networking.http.v1alpha.AuthorizedKey key = 2;
-	 */
-	key?: AuthorizedKeyJson
-}
+  /**
+   * Key used to sign the HTTP trigger request
+   *
+   * @generated from field: capabilities.networking.http.v1alpha.AuthorizedKey key = 2;
+   */
+  key?: AuthorizedKeyJson;
+};
 
 /**
  * Describes the message capabilities.networking.http.v1alpha.Payload.
  * Use `create(PayloadSchema)` to create a new message.
  */
-export const PayloadSchema: GenMessage<Payload, { jsonType: PayloadJson }> =
-	/*@__PURE__*/
-	messageDesc(file_capabilities_networking_http_v1alpha_trigger, 1)
+export const PayloadSchema: GenMessage<Payload, {jsonType: PayloadJson}> = /*@__PURE__*/
+  messageDesc(file_capabilities_networking_http_v1alpha_trigger, 1);
 
 /**
  * Generic and extensible authorized signer abstraction
  *
  * @generated from message capabilities.networking.http.v1alpha.AuthorizedKey
  */
-export type AuthorizedKey = Message<'capabilities.networking.http.v1alpha.AuthorizedKey'> & {
-	/**
-	 * @generated from field: capabilities.networking.http.v1alpha.KeyType type = 1;
-	 */
-	type: KeyType
+export type AuthorizedKey = Message<"capabilities.networking.http.v1alpha.AuthorizedKey"> & {
+  /**
+   * @generated from field: capabilities.networking.http.v1alpha.KeyType type = 1;
+   */
+  type: KeyType;
 
-	/**
-	 * @generated from field: string public_key = 2;
-	 */
-	publicKey: string
-}
+  /**
+   * @generated from field: string public_key = 2;
+   */
+  publicKey: string;
+};
 
 /**
  * Generic and extensible authorized signer abstraction
@@ -118,62 +112,62 @@ export type AuthorizedKey = Message<'capabilities.networking.http.v1alpha.Author
  * @generated from message capabilities.networking.http.v1alpha.AuthorizedKey
  */
 export type AuthorizedKeyJson = {
-	/**
-	 * @generated from field: capabilities.networking.http.v1alpha.KeyType type = 1;
-	 */
-	type?: KeyTypeJson
+  /**
+   * @generated from field: capabilities.networking.http.v1alpha.KeyType type = 1;
+   */
+  type?: KeyTypeJson;
 
-	/**
-	 * @generated from field: string public_key = 2;
-	 */
-	publicKey?: string
-}
+  /**
+   * @generated from field: string public_key = 2;
+   */
+  publicKey?: string;
+};
 
 /**
  * Describes the message capabilities.networking.http.v1alpha.AuthorizedKey.
  * Use `create(AuthorizedKeySchema)` to create a new message.
  */
-export const AuthorizedKeySchema: GenMessage<AuthorizedKey, { jsonType: AuthorizedKeyJson }> =
-	/*@__PURE__*/
-	messageDesc(file_capabilities_networking_http_v1alpha_trigger, 2)
+export const AuthorizedKeySchema: GenMessage<AuthorizedKey, {jsonType: AuthorizedKeyJson}> = /*@__PURE__*/
+  messageDesc(file_capabilities_networking_http_v1alpha_trigger, 2);
 
 /**
  * @generated from enum capabilities.networking.http.v1alpha.KeyType
  */
 export enum KeyType {
-	/**
-	 * @generated from enum value: KEY_TYPE_UNSPECIFIED = 0;
-	 */
-	UNSPECIFIED = 0,
+  /**
+   * @generated from enum value: KEY_TYPE_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
 
-	/**
-	 * @generated from enum value: KEY_TYPE_ECDSA_EVM = 1;
-	 */
-	ECDSA_EVM = 1,
+  /**
+   * @generated from enum value: KEY_TYPE_ECDSA_EVM = 1;
+   */
+  ECDSA_EVM = 1,
 }
 
 /**
  * @generated from enum capabilities.networking.http.v1alpha.KeyType
  */
-export type KeyTypeJson = 'KEY_TYPE_UNSPECIFIED' | 'KEY_TYPE_ECDSA_EVM'
+export type KeyTypeJson = "KEY_TYPE_UNSPECIFIED" | "KEY_TYPE_ECDSA_EVM";
 
 /**
  * Describes the enum capabilities.networking.http.v1alpha.KeyType.
  */
-export const KeyTypeSchema: GenEnum<KeyType, KeyTypeJson> =
-	/*@__PURE__*/
-	enumDesc(file_capabilities_networking_http_v1alpha_trigger, 0)
+export const KeyTypeSchema: GenEnum<KeyType, KeyTypeJson> = /*@__PURE__*/
+  enumDesc(file_capabilities_networking_http_v1alpha_trigger, 0);
 
 /**
  * @generated from service capabilities.networking.http.v1alpha.HTTP
  */
 export const HTTP: GenService<{
-	/**
-	 * @generated from rpc capabilities.networking.http.v1alpha.HTTP.Trigger
-	 */
-	trigger: {
-		methodKind: 'server_streaming'
-		input: typeof ConfigSchema
-		output: typeof PayloadSchema
-	}
-}> = /*@__PURE__*/ serviceDesc(file_capabilities_networking_http_v1alpha_trigger, 0)
+  /**
+   * @generated from rpc capabilities.networking.http.v1alpha.HTTP.Trigger
+   */
+  trigger: {
+    methodKind: "server_streaming";
+    input: typeof ConfigSchema;
+    output: typeof PayloadSchema;
+  },
+}> = /*@__PURE__*/
+  serviceDesc(file_capabilities_networking_http_v1alpha_trigger, 0);
+

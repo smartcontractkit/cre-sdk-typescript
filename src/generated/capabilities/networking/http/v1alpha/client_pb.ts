@@ -2,41 +2,37 @@
 // @generated from file capabilities/networking/http/v1alpha/client.proto (package capabilities.networking.http.v1alpha, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage, GenService } from '@bufbuild/protobuf/codegenv2'
-import { fileDesc, messageDesc, serviceDesc } from '@bufbuild/protobuf/codegenv2'
-import { file_tools_generator_v1alpha_cre_metadata } from '../../../../tools/generator/v1alpha/cre_metadata_pb'
-import type { Message } from '@bufbuild/protobuf'
+import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
+import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
+import { file_tools_generator_v1alpha_cre_metadata } from "../../../../tools/generator/v1alpha/cre_metadata_pb";
+import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file capabilities/networking/http/v1alpha/client.proto.
  */
-export const file_capabilities_networking_http_v1alpha_client: GenFile =
-	/*@__PURE__*/
-	fileDesc(
-		'CjFjYXBhYmlsaXRpZXMvbmV0d29ya2luZy9odHRwL3YxYWxwaGEvY2xpZW50LnByb3RvEiRjYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGEiPAoNQ2FjaGVTZXR0aW5ncxIXCg9yZWFkX2Zyb21fY2FjaGUYASABKAgSEgoKbWF4X2FnZV9tcxgCIAEoBSKSAgoHUmVxdWVzdBILCgN1cmwYASABKAkSDgoGbWV0aG9kGAIgASgJEksKB2hlYWRlcnMYAyADKAsyOi5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGEuUmVxdWVzdC5IZWFkZXJzRW50cnkSDAoEYm9keRgEIAEoDBISCgp0aW1lb3V0X21zGAUgASgFEksKDmNhY2hlX3NldHRpbmdzGAYgASgLMjMuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuaHR0cC52MWFscGhhLkNhY2hlU2V0dGluZ3MaLgoMSGVhZGVyc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEiqwEKCFJlc3BvbnNlEhMKC3N0YXR1c19jb2RlGAEgASgNEkwKB2hlYWRlcnMYAiADKAsyOy5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGEuUmVzcG9uc2UuSGVhZGVyc0VudHJ5EgwKBGJvZHkYAyABKAwaLgoMSGVhZGVyc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEymAEKBkNsaWVudBJsCgtTZW5kUmVxdWVzdBItLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmh0dHAudjFhbHBoYS5SZXF1ZXN0Gi4uY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuaHR0cC52MWFscGhhLlJlc3BvbnNlGiCCtRgcCAISGGh0dHAtYWN0aW9uc0AxLjAuMC1hbHBoYULqAQooY29tLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmh0dHAudjFhbHBoYUILQ2xpZW50UHJvdG9QAaICA0NOSKoCJENhcGFiaWxpdGllcy5OZXR3b3JraW5nLkh0dHAuVjFhbHBoYcoCJENhcGFiaWxpdGllc1xOZXR3b3JraW5nXEh0dHBcVjFhbHBoYeICMENhcGFiaWxpdGllc1xOZXR3b3JraW5nXEh0dHBcVjFhbHBoYVxHUEJNZXRhZGF0YeoCJ0NhcGFiaWxpdGllczo6TmV0d29ya2luZzo6SHR0cDo6VjFhbHBoYWIGcHJvdG8z',
-		[file_tools_generator_v1alpha_cre_metadata],
-	)
+export const file_capabilities_networking_http_v1alpha_client: GenFile = /*@__PURE__*/
+  fileDesc("CjFjYXBhYmlsaXRpZXMvbmV0d29ya2luZy9odHRwL3YxYWxwaGEvY2xpZW50LnByb3RvEiRjYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGEiPAoNQ2FjaGVTZXR0aW5ncxIXCg9yZWFkX2Zyb21fY2FjaGUYASABKAgSEgoKbWF4X2FnZV9tcxgCIAEoBSKSAgoHUmVxdWVzdBILCgN1cmwYASABKAkSDgoGbWV0aG9kGAIgASgJEksKB2hlYWRlcnMYAyADKAsyOi5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGEuUmVxdWVzdC5IZWFkZXJzRW50cnkSDAoEYm9keRgEIAEoDBISCgp0aW1lb3V0X21zGAUgASgFEksKDmNhY2hlX3NldHRpbmdzGAYgASgLMjMuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuaHR0cC52MWFscGhhLkNhY2hlU2V0dGluZ3MaLgoMSGVhZGVyc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEiqwEKCFJlc3BvbnNlEhMKC3N0YXR1c19jb2RlGAEgASgNEkwKB2hlYWRlcnMYAiADKAsyOy5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGEuUmVzcG9uc2UuSGVhZGVyc0VudHJ5EgwKBGJvZHkYAyABKAwaLgoMSGVhZGVyc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEymAEKBkNsaWVudBJsCgtTZW5kUmVxdWVzdBItLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmh0dHAudjFhbHBoYS5SZXF1ZXN0Gi4uY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuaHR0cC52MWFscGhhLlJlc3BvbnNlGiCCtRgcCAISGGh0dHAtYWN0aW9uc0AxLjAuMC1hbHBoYULqAQooY29tLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmh0dHAudjFhbHBoYUILQ2xpZW50UHJvdG9QAaICA0NOSKoCJENhcGFiaWxpdGllcy5OZXR3b3JraW5nLkh0dHAuVjFhbHBoYcoCJENhcGFiaWxpdGllc1xOZXR3b3JraW5nXEh0dHBcVjFhbHBoYeICMENhcGFiaWxpdGllc1xOZXR3b3JraW5nXEh0dHBcVjFhbHBoYVxHUEJNZXRhZGF0YeoCJ0NhcGFiaWxpdGllczo6TmV0d29ya2luZzo6SHR0cDo6VjFhbHBoYWIGcHJvdG8z", [file_tools_generator_v1alpha_cre_metadata]);
 
 /**
  * CacheSettings defines cache control options for outbound HTTP requests.
  *
  * @generated from message capabilities.networking.http.v1alpha.CacheSettings
  */
-export type CacheSettings = Message<'capabilities.networking.http.v1alpha.CacheSettings'> & {
-	/**
-	 * If true, attempt to read a cached response for the request.
-	 *
-	 * @generated from field: bool read_from_cache = 1;
-	 */
-	readFromCache: boolean
+export type CacheSettings = Message<"capabilities.networking.http.v1alpha.CacheSettings"> & {
+  /**
+   * If true, attempt to read a cached response for the request.
+   *
+   * @generated from field: bool read_from_cache = 1;
+   */
+  readFromCache: boolean;
 
-	/**
-	 * Maximum age of a cached response in milliseconds.
-	 *
-	 * @generated from field: int32 max_age_ms = 2;
-	 */
-	maxAgeMs: number
-}
+  /**
+   * Maximum age of a cached response in milliseconds.
+   *
+   * @generated from field: int32 max_age_ms = 2;
+   */
+  maxAgeMs: number;
+};
 
 /**
  * CacheSettings defines cache control options for outbound HTTP requests.
@@ -44,165 +40,164 @@ export type CacheSettings = Message<'capabilities.networking.http.v1alpha.CacheS
  * @generated from message capabilities.networking.http.v1alpha.CacheSettings
  */
 export type CacheSettingsJson = {
-	/**
-	 * If true, attempt to read a cached response for the request.
-	 *
-	 * @generated from field: bool read_from_cache = 1;
-	 */
-	readFromCache?: boolean
+  /**
+   * If true, attempt to read a cached response for the request.
+   *
+   * @generated from field: bool read_from_cache = 1;
+   */
+  readFromCache?: boolean;
 
-	/**
-	 * Maximum age of a cached response in milliseconds.
-	 *
-	 * @generated from field: int32 max_age_ms = 2;
-	 */
-	maxAgeMs?: number
-}
+  /**
+   * Maximum age of a cached response in milliseconds.
+   *
+   * @generated from field: int32 max_age_ms = 2;
+   */
+  maxAgeMs?: number;
+};
 
 /**
  * Describes the message capabilities.networking.http.v1alpha.CacheSettings.
  * Use `create(CacheSettingsSchema)` to create a new message.
  */
-export const CacheSettingsSchema: GenMessage<CacheSettings, { jsonType: CacheSettingsJson }> =
-	/*@__PURE__*/
-	messageDesc(file_capabilities_networking_http_v1alpha_client, 0)
+export const CacheSettingsSchema: GenMessage<CacheSettings, {jsonType: CacheSettingsJson}> = /*@__PURE__*/
+  messageDesc(file_capabilities_networking_http_v1alpha_client, 0);
 
 /**
  * @generated from message capabilities.networking.http.v1alpha.Request
  */
-export type Request = Message<'capabilities.networking.http.v1alpha.Request'> & {
-	/**
-	 * @generated from field: string url = 1;
-	 */
-	url: string
+export type Request = Message<"capabilities.networking.http.v1alpha.Request"> & {
+  /**
+   * @generated from field: string url = 1;
+   */
+  url: string;
 
-	/**
-	 * @generated from field: string method = 2;
-	 */
-	method: string
+  /**
+   * @generated from field: string method = 2;
+   */
+  method: string;
 
-	/**
-	 * @generated from field: map<string, string> headers = 3;
-	 */
-	headers: { [key: string]: string }
+  /**
+   * @generated from field: map<string, string> headers = 3;
+   */
+  headers: { [key: string]: string };
 
-	/**
-	 * @generated from field: bytes body = 4;
-	 */
-	body: Uint8Array
+  /**
+   * @generated from field: bytes body = 4;
+   */
+  body: Uint8Array;
 
-	/**
-	 * @generated from field: int32 timeout_ms = 5;
-	 */
-	timeoutMs: number
+  /**
+   * @generated from field: int32 timeout_ms = 5;
+   */
+  timeoutMs: number;
 
-	/**
-	 * @generated from field: capabilities.networking.http.v1alpha.CacheSettings cache_settings = 6;
-	 */
-	cacheSettings?: CacheSettings
-}
+  /**
+   * @generated from field: capabilities.networking.http.v1alpha.CacheSettings cache_settings = 6;
+   */
+  cacheSettings?: CacheSettings;
+};
 
 /**
  * @generated from message capabilities.networking.http.v1alpha.Request
  */
 export type RequestJson = {
-	/**
-	 * @generated from field: string url = 1;
-	 */
-	url?: string
+  /**
+   * @generated from field: string url = 1;
+   */
+  url?: string;
 
-	/**
-	 * @generated from field: string method = 2;
-	 */
-	method?: string
+  /**
+   * @generated from field: string method = 2;
+   */
+  method?: string;
 
-	/**
-	 * @generated from field: map<string, string> headers = 3;
-	 */
-	headers?: { [key: string]: string }
+  /**
+   * @generated from field: map<string, string> headers = 3;
+   */
+  headers?: { [key: string]: string };
 
-	/**
-	 * @generated from field: bytes body = 4;
-	 */
-	body?: string
+  /**
+   * @generated from field: bytes body = 4;
+   */
+  body?: string;
 
-	/**
-	 * @generated from field: int32 timeout_ms = 5;
-	 */
-	timeoutMs?: number
+  /**
+   * @generated from field: int32 timeout_ms = 5;
+   */
+  timeoutMs?: number;
 
-	/**
-	 * @generated from field: capabilities.networking.http.v1alpha.CacheSettings cache_settings = 6;
-	 */
-	cacheSettings?: CacheSettingsJson
-}
+  /**
+   * @generated from field: capabilities.networking.http.v1alpha.CacheSettings cache_settings = 6;
+   */
+  cacheSettings?: CacheSettingsJson;
+};
 
 /**
  * Describes the message capabilities.networking.http.v1alpha.Request.
  * Use `create(RequestSchema)` to create a new message.
  */
-export const RequestSchema: GenMessage<Request, { jsonType: RequestJson }> =
-	/*@__PURE__*/
-	messageDesc(file_capabilities_networking_http_v1alpha_client, 1)
+export const RequestSchema: GenMessage<Request, {jsonType: RequestJson}> = /*@__PURE__*/
+  messageDesc(file_capabilities_networking_http_v1alpha_client, 1);
 
 /**
  * @generated from message capabilities.networking.http.v1alpha.Response
  */
-export type Response = Message<'capabilities.networking.http.v1alpha.Response'> & {
-	/**
-	 * @generated from field: uint32 status_code = 1;
-	 */
-	statusCode: number
+export type Response = Message<"capabilities.networking.http.v1alpha.Response"> & {
+  /**
+   * @generated from field: uint32 status_code = 1;
+   */
+  statusCode: number;
 
-	/**
-	 * @generated from field: map<string, string> headers = 2;
-	 */
-	headers: { [key: string]: string }
+  /**
+   * @generated from field: map<string, string> headers = 2;
+   */
+  headers: { [key: string]: string };
 
-	/**
-	 * @generated from field: bytes body = 3;
-	 */
-	body: Uint8Array
-}
+  /**
+   * @generated from field: bytes body = 3;
+   */
+  body: Uint8Array;
+};
 
 /**
  * @generated from message capabilities.networking.http.v1alpha.Response
  */
 export type ResponseJson = {
-	/**
-	 * @generated from field: uint32 status_code = 1;
-	 */
-	statusCode?: number
+  /**
+   * @generated from field: uint32 status_code = 1;
+   */
+  statusCode?: number;
 
-	/**
-	 * @generated from field: map<string, string> headers = 2;
-	 */
-	headers?: { [key: string]: string }
+  /**
+   * @generated from field: map<string, string> headers = 2;
+   */
+  headers?: { [key: string]: string };
 
-	/**
-	 * @generated from field: bytes body = 3;
-	 */
-	body?: string
-}
+  /**
+   * @generated from field: bytes body = 3;
+   */
+  body?: string;
+};
 
 /**
  * Describes the message capabilities.networking.http.v1alpha.Response.
  * Use `create(ResponseSchema)` to create a new message.
  */
-export const ResponseSchema: GenMessage<Response, { jsonType: ResponseJson }> =
-	/*@__PURE__*/
-	messageDesc(file_capabilities_networking_http_v1alpha_client, 2)
+export const ResponseSchema: GenMessage<Response, {jsonType: ResponseJson}> = /*@__PURE__*/
+  messageDesc(file_capabilities_networking_http_v1alpha_client, 2);
 
 /**
  * @generated from service capabilities.networking.http.v1alpha.Client
  */
 export const Client: GenService<{
-	/**
-	 * @generated from rpc capabilities.networking.http.v1alpha.Client.SendRequest
-	 */
-	sendRequest: {
-		methodKind: 'unary'
-		input: typeof RequestSchema
-		output: typeof ResponseSchema
-	}
-}> = /*@__PURE__*/ serviceDesc(file_capabilities_networking_http_v1alpha_client, 0)
+  /**
+   * @generated from rpc capabilities.networking.http.v1alpha.Client.SendRequest
+   */
+  sendRequest: {
+    methodKind: "unary";
+    input: typeof RequestSchema;
+    output: typeof ResponseSchema;
+  },
+}> = /*@__PURE__*/
+  serviceDesc(file_capabilities_networking_http_v1alpha_client, 0);
+
