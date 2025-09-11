@@ -1,6 +1,6 @@
 import { SimpleConsensusInputsSchema } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { create } from '@bufbuild/protobuf'
-import { consensusDescriptorIdentical, observationValue } from '@cre/sdk/utils/values/consensus'
+import { consensusDescriptorIdentical, observationValue } from '@cre/sdk/utils/values/consensus_aggregators'
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
 import { BasicActionCapability as NodeActionCapability } from '@cre/generated-sdk/capabilities/internal/nodeaction/v1/basicaction_sdk_gen'
 import { cre, type NodeRuntime } from '@cre/sdk/cre'

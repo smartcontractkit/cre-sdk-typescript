@@ -5,7 +5,7 @@ import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/ca
 import { AggregationType, Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { SimpleConsensusInputsSchema } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { BasicActionCapability as NodeActionCapability } from '@cre/generated-sdk/capabilities/internal/nodeaction/v1/basicaction_sdk_gen'
-import { consensusFieldsFrom, observationValue } from '@cre/sdk/utils/values/consensus'
+import { consensusFieldsFrom, observationValue } from '@cre/sdk/utils/values/consensus_aggregators'
 import { Value } from '@cre/sdk/utils/values/value'
 
 const configSchema = z.object({ config: z.string() })

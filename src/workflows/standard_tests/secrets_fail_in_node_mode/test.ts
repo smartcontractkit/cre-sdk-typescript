@@ -2,7 +2,7 @@ import { create } from '@bufbuild/protobuf'
 import { cre, type Runtime, type NodeRuntime } from '@cre/sdk/cre'
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
 // TODO: is this part of CRE or test utils?
-import { consensusDescriptorIdentical, observationError } from '@cre/sdk/utils/values/consensus'
+import { consensusDescriptorIdentical, observationError } from '@cre/sdk/utils/values/consensus_aggregators'
 import { SimpleConsensusInputsSchema } from '@cre/generated/sdk/v1alpha/sdk_pb'
 
 // Doesn't matter for this test

@@ -24,7 +24,8 @@
     "proto:lint": "bunx @bufbuild/buf lint",
     "proto:format": "bunx @bufbuild/buf format --write",
     "test": "bun test",
-    "test:standard": "./scripts/run-standard-tests.sh"
+    "test:standard": "./scripts/run-standard-tests.sh",
+    "test:types": "tsd"
   },
   "dependencies": {
     "@bufbuild/protobuf": "2.6.3",
@@ -40,6 +41,7 @@
     "@types/bun": "1.2.21",
     "fast-glob": "3.3.3",
     "ts-proto": "2.7.5",
+    "tsd": "^0.33.0",
     "typescript": "5.9.2"
   }
 }
