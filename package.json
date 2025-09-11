@@ -51,6 +51,6 @@
     "fast-glob": "3.3.3",
     "ts-proto": "2.7.5",
     "typescript": "5.9.2",
-    "rimraf": "^6.0.1"
+    "rimraf": "6.0.1"
   }
 }
