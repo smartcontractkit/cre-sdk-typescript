@@ -19,6 +19,8 @@ for platform_config in "${platforms[@]}"; do
   
   # Build the binary
   bun build ./scripts/run.ts --target="$bun_target" --compile --outfile "dist/bin/$platform_arch/bin/cre-build"
+
+  chmod +x "dist/bin/$platform_arch/bin/cre-build"
   
   # Create package.json for this platform
   cat > "dist/bin/$platform_arch/package.json" << EOF

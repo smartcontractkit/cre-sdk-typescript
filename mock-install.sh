@@ -17,9 +17,6 @@ fi
 
 sh build-pkg.sh
 
-sh build-bins.sh
-
-
 # Convert to absolute path
 TARGET_DIR=$(cd "$TARGET_DIR" && pwd)
 
