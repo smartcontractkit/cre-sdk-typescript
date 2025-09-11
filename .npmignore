@@ -1,0 +1,44 @@
+# Source files
+src/
+scripts/
+cre-workflows/
+plugins/
+submodules/
+workflows-tests/
+
+# Config files
+tsconfig.json
+tsconfig.build.json
+biome.json
+buf.gen.yaml
+buf.yaml
+bunfig.toml
+build.ts
+Makefile
+
+# Development files
+node_modules/
+.git/
+.gitignore
+.gitmodules
+bun.lock
+pnpm-lock.yaml
+
+# Test files
+**/*.test.ts
+**/*.test.js
+**/*.spec.ts
+**/*.spec.js
+src/setupTests.ts
+src/test.ts
+
+# Examples and workflows (except the WIT file)
+src/workflows/
+!src/workflows/workflow.wit
+
+# Build artifacts not needed in package
+dist/workflows/
+
+# Documentation that's not needed
+scripts/
+cre-workflows/
