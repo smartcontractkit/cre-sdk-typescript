@@ -1,6 +1,5 @@
 #!/usr/bin/env bun
 import { main as buildSingleWorkflow } from './build-single-workflow'
-import { main as buildSingleWorkflowJs } from './build-single-workflow-js'
 import { main as compileCmd } from './compile-cmd'
 import { main as compileJavySdkPlugin } from './compile-javy-sdk-plugin'
 import { main as compileJavyWithSdkPlugin } from './compile-javy-with-sdk-plugin'
@@ -9,7 +8,6 @@ import { main as compileToJs } from './compile-to-js'
 import { main as compileToWasm } from './compile-to-wasm-cmd'
 
 const availableScripts = {
-	'build-single-workflow-js': buildSingleWorkflowJs,
 	'build-single-workflow': buildSingleWorkflow,
 	'compile-single-workflow-to-wasm': compileSingleWorkflowToWasm,
 	'compile-to-js': compileToJs,
