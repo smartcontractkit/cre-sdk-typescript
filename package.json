@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "biome:check": "biome check --write",
-    "biome:format": "biome format --write",
+    "biome:format": "biome format --write ${BIOME_PATHS:-.}",
     "biome:lint": "biome lint --write",
     "build:javy:plugin": "bun scripts/run.ts compile-javy-sdk-plugin",
     "build:javy:sdk:wasm": "bun scripts/run.ts compile-javy-with-sdk-plugin",
@@ -19,6 +19,7 @@
     "javy:linux": "./bin/javy-arm-linux-v5.0.4",
     "start": "bun --watch src/index.ts",
     "typecheck": "tsc",
+    "build:generate:sdk": "bun proto:generate && bun scripts/generate-sdks.ts && BIOME_PATHS=\"src/generated src/generated-sdk\" bun biome:format",
     "proto:generate": "bunx @bufbuild/buf generate",
     "proto:lint": "bunx @bufbuild/buf lint",
     "proto:format": "bunx @bufbuild/buf format --write",
