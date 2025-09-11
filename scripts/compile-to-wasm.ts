@@ -18,7 +18,8 @@ export const main = async () => {
 		 * -C wit-world=workflow — specifies the WIT world name (world "workflow" which is defined in the .wit file).
 		 * -C plugin=... — uses your custom runtime (bundled javy chainlink sdk plugin)
 		 */
-		await $`bun javy build -C wit=src/workflows/workflow.wit -C wit-world=workflow -C plugin=dist/javy-chainlink-sdk.plugin.wasm ${jsFile} -o ${wasmFile}`
+		// await $`bun javy build -C wit=src/workflows/workflow.wit -C wit-world=workflow -C plugin=dist/javy-chainlink-sdk.plugin.wasm ${jsFile} -o ${wasmFile}`
+		await $`./bin/javy-arm-macos-v5.0.4 build -C wit=src/workflows/workflow.wit -C wit-world=workflow -C plugin=dist/javy-chainlink-sdk.plugin.wasm ${jsFile} -o ${wasmFile}`
 	}
 
 	console.info('Done!')

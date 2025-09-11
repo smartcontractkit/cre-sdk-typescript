@@ -1,4 +1,5 @@
-import { $ } from 'bun'
+import { main as buildSingleWorkflowJs } from './build-single-workflow-js-cmd'
+import { main as compileSingleWorkflowToWasm } from './compile-single-workflow-to-wasm-cmd'
 
 export const main = async () => {
 	const workflowArg = process.argv[3]
@@ -13,11 +14,10 @@ export const main = async () => {
 
 	// Build JS
 	console.info('\n📦 Step 1: Building JS...')
-	await $`bun scripts/run.ts build-single-workflow-js ${workflowArg}`
-
+	await buildSingleWorkflowJs(workflowArg)
 	// Build WASM
 	console.info('\n🔨 Step 2: Compiling to WASM...')
-	await $`bun scripts/run.ts compile-single-workflow-to-wasm ${workflowArg}`
+	await compileSingleWorkflowToWasm(workflowArg)
 
 	console.info(`\n✅ Workflow '${workflowArg}' built successfully!`)
 }

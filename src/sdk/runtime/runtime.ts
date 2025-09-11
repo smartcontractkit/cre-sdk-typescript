@@ -1,5 +1,5 @@
 import { Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import { logger, type Logger } from '@cre/sdk/logger'
+import { type Logger, logger } from '@cre/sdk/logger'
 import { DonModeError, NodeModeError } from '@cre/sdk/runtime/errors'
 import { hostBindings } from '@cre/sdk/runtime/host-bindings'
 import { getSecret } from '@cre/sdk/utils/secrets/get-secret'
@@ -87,10 +87,10 @@ export const runtime: Runtime = {
 	isNodeRuntime: false,
 	logger,
 	switchModes,
-	assertDonSafe: function (): asserts this is Runtime {
+	assertDonSafe: (): asserts this is Runtime => {
 		runtimeGuards.assertDonSafe()
 	},
-	assertNodeSafe: function (): asserts this is NodeRuntime {
+	assertNodeSafe: (): asserts this is NodeRuntime => {
 		runtimeGuards.assertNodeSafe()
 	},
 	getSecret,
@@ -101,10 +101,10 @@ export const nodeRuntime: NodeRuntime = {
 	isNodeRuntime: true,
 	logger,
 	switchModes,
-	assertNodeSafe: function (): asserts this is NodeRuntime {
+	assertNodeSafe: (): asserts this is NodeRuntime => {
 		runtimeGuards.assertNodeSafe()
 	},
-	assertDonSafe: function (): asserts this is Runtime {
+	assertDonSafe: (): asserts this is Runtime => {
 		runtimeGuards.assertDonSafe()
 	},
 }

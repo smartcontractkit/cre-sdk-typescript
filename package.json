@@ -9,6 +9,9 @@
   "include": [
     "bin/**/*"
   ],
+  "bin": {
+    "cre-build": "bin/cre-build"
+  },
   "scripts": {
     "biome:check": "biome check --write",
     "biome:format": "biome format --write",
@@ -31,8 +34,8 @@
     "proto:format": "bunx @bufbuild/buf format --write",
     "test": "bun test",
     "test:standard": "./scripts/run-standard-tests.sh",
-    "build": "bun build --target=node ./src/sdk/index.ts --outfile=dist/index.js && bun run build:declaration && bun run build:cli",
-    "build:cli": "bun build ./scripts/run.ts --target=bun-darwin-arm64 --compile --outfile dist/bin/cre-build && chmod +x dist/bin/cre-build && cp bin/* dist/bin/",
+    "build": "bun build --target=node --entrypoints ./src/sdk/index.ts ./src/sdk/utils/index.ts ./src/sdk/runtime/index.ts --outdir=dist && bun run build:declaration && bun run build:cli",
+    "build:cli": "bun build ./scripts/run.ts --target=bun-darwin-arm64 --compile --outfile dist/bin/cre-build-darwin-arm64 && chmod +x dist/bin/cre-build-darwin-arm64 && cp bin/* dist/bin/",
     "build:declaration": "tsc --emitDeclarationOnly --project tsconfig.types.json",
     "postbuild": "rimraf tsconfig.types.tsbuildinfo && cp package.json dist/package.json"
   },

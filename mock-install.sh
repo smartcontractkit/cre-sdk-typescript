@@ -15,18 +15,22 @@ if [ ! -d "$TARGET_DIR" ]; then
     exit 1
 fi
 
-bun run build
+sh build-pkg.sh
+
+sh build-bins.sh
+
 
 # Convert to absolute path
 TARGET_DIR=$(cd "$TARGET_DIR" && pwd)
 
 echo "Installing CRE SDK to: $TARGET_DIR"
 
-rm -rf "$TARGET_DIR/node_modules/@chainlink/cre-sdk"
+rm -rf "$TARGET_DIR/node_modules/@chainlink"
 
 mkdir -p "$TARGET_DIR/node_modules/@chainlink/cre-sdk"
 
 # Move the dist folder from local development to node_modules
+mv ./dist/bin/darwin-arm64 "$TARGET_DIR/node_modules/@chainlink/cre-ts-darwin-arm64"
 mv ./dist/* "$TARGET_DIR/node_modules/@chainlink/cre-sdk/"
 
 # Create symlinks from cre-sdk/bin to node_modules/.bin
