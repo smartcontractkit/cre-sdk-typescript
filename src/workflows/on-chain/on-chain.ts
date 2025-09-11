@@ -9,18 +9,8 @@ import { useMedianConsensus } from '@cre/sdk/utils/values/consensus-hooks'
 import { hexToBase64 } from '@cre/sdk/utils/hex-utils'
 import { withErrorBoundary } from '@cre/sdk/utils/error-boundary'
 
-// Storage contract ABI - we only need the 'get' function
 // TODO: In production, load ABI from external file or contract metadata
-// following Go SDK patterns for ABI management
-const STORAGE_ABI = [
-	{
-		inputs: [],
-		name: 'get',
-		outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-		stateMutability: 'view',
-		type: 'function',
-	},
-] as const
+import { STORAGE_ABI } from './abi'
 
 const configSchema = z.object({
 	schedule: z.string(),
@@ -50,7 +40,7 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 	// Step 1: Fetch offchain data using consensus (from Part 2)
 	const offchainValue = await fetchMathResult(config)
 
-	runtime.logger.log('Successfully fetched offchain value')
+	runtime.logger.log(`Successfully fetched offchain value: ${offchainValue}`)
 
 	// Get the first EVM configuration from the list
 	const evmConfig = config.evms[0]
@@ -94,8 +84,6 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 	const offchainBigInt = BigInt(Math.floor(offchainFloat))
 	const finalResult = onchainValue + offchainBigInt
 
-	runtime.logger.log('Final calculated result')
-
 	sendResponseValue(
 		val.mapValue({
 			FinalResult: val.bigint(finalResult),
@@ -111,7 +99,7 @@ const initWorkflow = (config: Config) => {
 
 export async function main() {
 	const runner = await cre.newRunner<Config>({
-		configSchema: configSchema,
+		configSchema,
 	})
 	await runner.run(initWorkflow)
 }

@@ -72,6 +72,12 @@ declare global {
 	 * @returns Serialized arguments
 	 */
 	function getWasiArgs(): string
+
+	/**
+	 * Gets the current time from the host runtime
+	 * @returns Unix timestamp in milliseconds
+	 */
+	function now(): number
 }
 
 export {}

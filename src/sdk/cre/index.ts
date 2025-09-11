@@ -12,6 +12,10 @@ import { val } from '@cre/sdk/utils/values/value'
 import { getAggregatedValue } from '@cre/sdk/utils/values/consensus'
 import { creFetch } from '@cre/sdk/utils/capabilities/http/fetch'
 import { sendResponseValue } from '@cre/sdk/utils/send-response-value'
+import { withErrorBoundary } from '@cre/sdk/utils/error-boundary'
+import { sendError } from '@cre/sdk/utils/send-error'
+
+export type { Runtime, NodeRuntime } from '@cre/sdk/runtime/runtime'
 
 prepareRuntime()
 versionV2()
@@ -34,4 +38,6 @@ export const cre = {
 		fetch: creFetch,
 	},
 	sendResponseValue,
+	sendError,
+	withErrorBoundary,
 }

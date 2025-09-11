@@ -1,16 +1,12 @@
-import { cre } from '@cre/sdk/cre'
-import type { Runtime } from '@cre/sdk/runtime/runtime'
+import { cre, type Runtime } from '@cre/sdk/cre'
 import { withErrorBoundary } from '@cre/sdk/utils/error-boundary'
 import { bytesToHex, hexToBase64 } from '@cre/sdk/utils/hex-utils'
 import { sendResponseValue } from '@cre/sdk/utils/send-response-value'
 import { useMedianConsensus } from '@cre/sdk/utils/values/consensus-hooks'
-import { val } from '@cre/sdk/utils/values/value'
-import { decodeFunctionResult, encodeFunctionData, type Hex, toHex, zeroAddress } from 'viem'
+import { decodeFunctionResult, encodeFunctionData, toHex, zeroAddress } from 'viem'
 import { z } from 'zod'
 
-// Storage contract ABI - we only need the 'get' function
 // TODO: In production, load ABI from external file or contract metadata
-// following Go SDK patterns for ABI management
 import { CALCULATOR_CONSUMER_ABI, STORAGE_ABI } from './abi'
 
 const configSchema = z.object({
@@ -122,7 +118,7 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 	const dryRunResponse = decodeFunctionResult({
 		abi: CALCULATOR_CONSUMER_ABI,
 		functionName: 'isResultAnomalous',
-		data: bytesToHex(dryRunCall.data) as Hex,
+		data: bytesToHex(dryRunCall.data),
 	})
 
 	runtime.logger.log(`Dry run response: ${dryRunResponse ? 'Anomalous' : 'Not anomalous'}`)
@@ -153,11 +149,11 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 	}
 
 	sendResponseValue(
-		val.mapValue({
-			OffchainValue: val.bigint(offchainBigInt),
-			OnchainValue: val.bigint(onchainValue),
-			FinalResult: val.bigint(finalResult),
-			TxHash: val.string(txHash.toString()),
+		cre.utils.val.mapValue({
+			OffchainValue: cre.utils.val.bigint(offchainBigInt),
+			OnchainValue: cre.utils.val.bigint(onchainValue),
+			FinalResult: cre.utils.val.bigint(finalResult),
+			TxHash: cre.utils.val.string(txHash.toString()),
 		}),
 	)
 }

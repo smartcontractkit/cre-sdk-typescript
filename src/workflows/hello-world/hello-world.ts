@@ -1,5 +1,6 @@
 import { cre } from '@cre/sdk/cre'
 import type { Runtime } from '@cre/sdk/runtime/runtime'
+import { withErrorBoundary } from '@cre/sdk/utils/error-boundary'
 
 type Config = {
 	schedule: string
@@ -21,4 +22,4 @@ export async function main() {
 	await runner.run(initWorkflow)
 }
 
-main()
+withErrorBoundary(main)

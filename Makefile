@@ -1,7 +1,6 @@
 COMMON_VERSION ?= cre-std-tests@0.4.0
 MODULE := github.com/smartcontractkit/chainlink-common
 TEST_PATTERN ?= ^TestStandard
-SKIP_TESTS ?= TestStandardCapabilityCallsAreAsync|TestStandardSecretsFailInNodeMode|TestStandardModeSwitch/successful_mode_switch
 
 .PHONY: standard_tests standard_test_single
 standard_tests:
@@ -15,7 +14,7 @@ standard_tests:
 	echo "Running standard tests"; \
 	$$abs_dir/host.test -test.v -test.run $(TEST_PATTERN) \
 	-path=dist/workflows/standard_tests \
-	-test.skip="$(SKIP_TESTS)"
+	-test.skip=""
 
 # Run a single test by name
 # Usage: make standard_test_single TEST=TestStandardCapabilityCallsAreAsync
