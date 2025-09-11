@@ -1,7 +1,14 @@
 {
-  "name": "cre-sdk-typescript",
+  "name": "@chainlink/cre-sdk",
   "module": "src/index.ts",
   "type": "module",
+  "files": [
+    "bin/**/*",
+    "*.wasm"
+  ],
+  "include": [
+    "bin/**/*"
+  ],
   "scripts": {
     "biome:check": "biome check --write",
     "biome:format": "biome format --write",
@@ -23,7 +30,11 @@
     "proto:lint": "bunx @bufbuild/buf lint",
     "proto:format": "bunx @bufbuild/buf format --write",
     "test": "bun test",
-    "test:standard": "./scripts/run-standard-tests.sh"
+    "test:standard": "./scripts/run-standard-tests.sh",
+    "build": "bun build --target=node ./src/sdk/index.ts --outfile=dist/index.js && bun run build:declaration && bun run build:cli",
+    "build:cli": "bun build ./scripts/run.ts --target=bun-darwin-arm64 --compile --outfile dist/bin/cre-build && chmod +x dist/bin/cre-build && cp bin/* dist/bin/",
+    "build:declaration": "tsc --emitDeclarationOnly --project tsconfig.types.json",
+    "postbuild": "rimraf tsconfig.types.tsbuildinfo && cp package.json dist/package.json"
   },
   "dependencies": {
     "@bufbuild/protobuf": "2.6.3",
@@ -39,6 +50,7 @@
     "@types/bun": "1.2.21",
     "fast-glob": "3.3.3",
     "ts-proto": "2.7.5",
-    "typescript": "5.9.2"
+    "typescript": "5.9.2",
+    "rimraf": "^6.0.1"
   }
 }

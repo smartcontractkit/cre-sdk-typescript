@@ -1,14 +1,21 @@
 #!/usr/bin/env bun
+import { main as buildSingleWorkflow } from './build-single-workflow'
+import { main as buildSingleWorkflowJs } from './build-single-workflow-js'
+import { main as compileJavySdkPlugin } from './compile-javy-sdk-plugin'
+import { main as compileJavyWithSdkPlugin } from './compile-javy-with-sdk-plugin'
+import { main as compileSingleWorkflowToWasm } from './compile-single-workflow-to-wasm'
+import { main as compileToJs } from './compile-to-js'
+import { main as compileToWasm } from './compile-to-wasm'
 
-const availableScripts = [
-	'compile-javy-sdk-plugin',
-	'compile-javy-with-sdk-plugin',
-	'compile-to-js',
-	'compile-to-wasm',
-	'build-single-workflow-js',
-	'compile-single-workflow-to-wasm',
-	'build-single-workflow',
-]
+const availableScripts = {
+	'build-single-workflow-js': buildSingleWorkflowJs,
+	'build-single-workflow': buildSingleWorkflow,
+	'compile-single-workflow-to-wasm': compileSingleWorkflowToWasm,
+	'compile-to-js': compileToJs,
+	'compile-to-wasm': compileToWasm,
+	'compile-javy-sdk-plugin': compileJavySdkPlugin,
+	'compile-javy-with-sdk-plugin': compileJavyWithSdkPlugin,
+}
 
 const main = async () => {
 	const scriptName = process.argv[2]
@@ -16,22 +23,21 @@ const main = async () => {
 	if (!scriptName) {
 		console.error('Usage: bun run.ts <script-name>')
 		console.error('Available scripts:')
-		availableScripts.forEach((script) => {
+		Object.keys(availableScripts).forEach((script) => {
 			console.error(`  ${script}`)
 		})
 		process.exit(1)
 	}
 
 	try {
-		const scriptPath = `./${scriptName}.ts`
-		const script = await import(scriptPath)
+		const script = availableScripts[scriptName]
 
-		if (typeof script.main === 'function') {
-			await script.main()
-		} else {
-			console.error(`Script ${scriptName} does not export a main function`)
+		if (!script) {
+			console.error(`Script ${scriptName} not found`)
 			process.exit(1)
 		}
+
+		await script()
 	} catch (error) {
 		console.error(`Failed to load script ${scriptName}:`, error)
 		process.exit(1)
