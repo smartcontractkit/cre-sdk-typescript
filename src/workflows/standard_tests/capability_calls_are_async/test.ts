@@ -1,4 +1,5 @@
 import { cre } from '@cre/sdk/cre'
+import { Value } from '@cre/sdk/utils/values/value'
 import { BasicActionCapability } from '@cre/generated-sdk/capabilities/internal/basicaction/v1/basicaction_sdk_gen'
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
 
@@ -16,7 +17,7 @@ const asyncCalls = async () => {
 	const r2 = await p2
 	const r1 = await p1
 
-	cre.sendResponseValue(cre.utils.val.string(`${r1.adaptedThing}${r2.adaptedThing}`))
+	cre.sendResponseValue(new Value(`${r1.adaptedThing}${r2.adaptedThing}`))
 }
 
 const initWorkflow = () => {

@@ -2,6 +2,8 @@ import { z } from 'zod'
 import { cre } from '@cre/sdk/cre'
 import { useMedianConsensus } from '@cre/sdk/utils/values/consensus-hooks'
 import { withErrorBoundary } from '@cre/sdk/utils/error-boundary'
+import { Value } from '@cre/sdk/utils/values/value'
+
 
 const configSchema = z.object({
 	schedule: z.string(),
@@ -24,7 +26,7 @@ const fetchMathResult = useMedianConsensus(async (config: Config) => {
 
 const onCronTrigger = async (config: Config) => {
 	const aggregatedValue = await fetchMathResult(config)
-	cre.sendResponseValue(cre.utils.val.mapValue({ Result: aggregatedValue }))
+	cre.sendResponseValue(new Value({ Result: aggregatedValue }))
 }
 
 const initWorkflow = (config: Config) => {

@@ -5,12 +5,13 @@ import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/ca
 import { BasicActionCapability as NodeActionCapability } from '@cre/generated-sdk/capabilities/internal/nodeaction/v1/basicaction_sdk_gen'
 import { cre, type NodeRuntime } from '@cre/sdk/cre'
 import { NodeModeError } from '@cre/sdk/runtime/errors'
+import { Value } from '@cre/sdk/utils/values/value'
 
 const handler = async () => {
 	// First, run in node mode and do consensus - this makes the expected CallCapability call
 	await cre.runInNodeMode(async (nodeRuntime: NodeRuntime) => {
 		const consensusInput = create(SimpleConsensusInputsSchema, {
-			observation: observationValue(cre.utils.val.string('hi')),
+			observation: observationValue(new Value('hi')),
 			descriptors: consensusDescriptorIdentical,
 		})
 

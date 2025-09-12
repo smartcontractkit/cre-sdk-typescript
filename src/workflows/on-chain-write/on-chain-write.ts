@@ -4,6 +4,7 @@ import { bytesToHex, hexToBase64 } from '@cre/sdk/utils/hex-utils'
 import { sendResponseValue } from '@cre/sdk/utils/send-response-value'
 import { useMedianConsensus } from '@cre/sdk/utils/values/consensus-hooks'
 import { decodeFunctionResult, encodeFunctionData, toHex, zeroAddress } from 'viem'
+import { Value } from '@cre/sdk/utils/values/value'
 import { z } from 'zod'
 
 // TODO: In production, load ABI from external file or contract metadata
@@ -149,11 +150,11 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 	}
 
 	sendResponseValue(
-		cre.utils.val.mapValue({
-			OffchainValue: cre.utils.val.bigint(offchainBigInt),
-			OnchainValue: cre.utils.val.bigint(onchainValue),
-			FinalResult: cre.utils.val.bigint(finalResult),
-			TxHash: cre.utils.val.string(txHash.toString()),
+		new Value({
+			OffchainValue: offchainBigInt,
+			OnchainValue: onchainValue,
+			FinalResult: finalResult,
+			TxHash: txHash.toString(),
 		}),
 	)
 }

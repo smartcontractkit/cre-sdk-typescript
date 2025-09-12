@@ -8,7 +8,6 @@ import { runInNodeMode } from '@cre/sdk/runtime/run-in-node-mode'
 import { CronCapability } from '@cre/generated-sdk/capabilities/scheduler/cron/v1/cron_sdk_gen'
 import { ClientCapability as EVMClient } from '@cre/generated-sdk/capabilities/blockchain/evm/v1alpha/client_sdk_gen'
 import { ClientCapability as HTTPClient } from '@cre/generated-sdk/capabilities/networking/http/v1alpha/client_sdk_gen'
-import { val } from '@cre/sdk/utils/values/value'
 import { getAggregatedValue } from '@cre/sdk/utils/values/consensus'
 import { creFetch } from '@cre/sdk/utils/capabilities/http/fetch'
 import { sendResponseValue } from '@cre/sdk/utils/send-response-value'
@@ -31,7 +30,6 @@ export const cre = {
 	newRunner: Runner.newRunner,
 	runInNodeMode,
 	utils: {
-		val,
 		consensus: {
 			getAggregatedValue,
 		},

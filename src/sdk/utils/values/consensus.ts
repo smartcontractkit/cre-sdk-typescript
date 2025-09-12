@@ -1,6 +1,6 @@
 import { create } from '@bufbuild/protobuf'
 import type { ConsensusDescriptor, SimpleConsensusInputs } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import type { Value } from '@cre/generated/values/v1/values_pb'
+import type { Value } from './value'
 import {
 	AggregationType,
 	ConsensusDescriptorSchema,
@@ -141,7 +141,7 @@ export type ObservationErrorCase = Extract<SimpleConsensusInputs['observation'],
 
 export const observationValue = (value: Value): ObservationValueCase => ({
 	case: 'value',
-	value,
+	value: value.proto,
 })
 
 export const observationError = (message: string): ObservationErrorCase => ({
