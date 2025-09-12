@@ -18,7 +18,7 @@ for platform_config in "${platforms[@]}"; do
   echo "Building for $platform_arch..."
   
   # Build the binary
-  bun build ./scripts/run.ts --target="$bun_target" --compile --outfile "dist/bin/$platform_arch/bin/cre-build"
+  bun build ./cli/run.ts --target="$bun_target" --compile --outfile "dist/bin/$platform_arch/bin/cre-build"
 
   chmod +x "dist/bin/$platform_arch/bin/cre-build"
   
