@@ -4,7 +4,7 @@ import { Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
 // Mock hostBindings before importing runInNodeMode
 export const calls: string[] = []
 export const mockHostBindings = {
-	sendResponse: mock((_response: string) => 0),
+	sendResponse: mock((_response: Uint8Array) => 0),
 	switchModes: mock((mode: Mode) => {
 		calls.push(mode === Mode.NODE ? 'NODE' : mode === Mode.DON ? 'DON' : 'UNSPECIFIED')
 	}),
