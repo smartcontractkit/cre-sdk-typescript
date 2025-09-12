@@ -1,4 +1,5 @@
 import { cre } from '@cre/sdk/cre'
+import { Value } from '@cre/sdk/utils/values/value'
 import { type ConsenusAggregator, getAggregatedValue } from '@cre/sdk/utils/values/consensus'
 import { type SupportedValueTypes } from '@cre/sdk/utils/values/value'
 import { type NodeRuntime } from '@cre/sdk/runtime/runtime'
@@ -38,7 +39,7 @@ export const useConsensus = <
 	return async (...args: TArgs): Promise<any> => {
 		return cre.runInNodeMode(async (_nodeRuntime: NodeRuntime) => {
 			const result = await fn(...args)
-			return getAggregatedValue((result as any)[valueType](result), aggregationType)
+			return getAggregatedValue(new Value(result), aggregationType)
 		})
 	}
 }
