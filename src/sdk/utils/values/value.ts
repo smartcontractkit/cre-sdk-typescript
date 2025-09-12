@@ -33,16 +33,15 @@ export type SupportedValueTypes =
  * Compatible with Zod schemas, Yup validators, and other similar libraries.
  */
 export interface SchemaValidator<T> {
-    parse(value: unknown): T
+	parse(value: unknown): T
 }
 
 /**
  * Options for the unwrapToType function - either use a schema validator OR a factory function, not both.
  */
-export type UnwrapOptions<T> = 
+export type UnwrapOptions<T> =
 	| { schema: SchemaValidator<T>; factory?: never }
 	| { schema?: never; factory: () => T }
-
 
 export class Value {
 	private readonly value: ProtoValue
@@ -55,17 +54,21 @@ export class Value {
 	// int64 craetes a Value wrapping an int64 value.
 	// This can be used to communicate with other languages, as TypeScript doesn't have built-int 64 bit integer types
 	public static int64(n: number | bigint | string): Value {
-		return new Value(create(ValueSchema, {
-			value: { case: 'int64Value', value: Value.toInt64Bigint(n) },
-		}))
+		return new Value(
+			create(ValueSchema, {
+				value: { case: 'int64Value', value: Value.toInt64Bigint(n) },
+			}),
+		)
 	}
 
 	// uint64 craetes a Value wrapping an uint64 value.
 	// This can be used to communicate with other languages, as TypeScript doesn't have built-int 64 bit integer types.
-	public static uint64(n: number | bigint | string): Value{
-		return new Value(create(ValueSchema, {
-			value: { case: 'uint64Value', value: Value.toUint64Bigint(n) },
-		}))
+	public static uint64(n: number | bigint | string): Value {
+		return new Value(
+			create(ValueSchema, {
+				value: { case: 'uint64Value', value: Value.toUint64Bigint(n) },
+			}),
+		)
 	}
 
 	// decimal creates a Value wrapping of a decimal.
@@ -86,12 +89,14 @@ export class Value {
 			coefficient: Value.bigIntToProtoBigInt(coeff),
 			exponent: exp,
 		})
-		
-		return new Value(create(ValueSchema, {
-			value: { case: 'decimalValue', value: decimal },
-		}))
+
+		return new Value(
+			create(ValueSchema, {
+				value: { case: 'decimalValue', value: decimal },
+			}),
+		)
 	}
-	
+
 	constructor(value: any) {
 		if (value instanceof Value) {
 			this.value = value.value
@@ -101,11 +106,11 @@ export class Value {
 			this.value = Value.wrapInternal(value)
 		}
 	}
-	
+
 	get proto(): ProtoValue {
 		return this.value
 	}
-	
+
 	private static toUint8Array(input: Uint8Array | ArrayBuffer): Uint8Array {
 		return input instanceof Uint8Array ? input : new Uint8Array(input)
 	}
@@ -120,7 +125,7 @@ export class Value {
 		if (hex.length % 2 === 1) hex = '0' + hex
 		const len = hex.length / 2
 		const out = new Uint8Array(len)
-		for (let i = 0; i <len; i++) {
+		for (let i = 0; i < len; i++) {
 			out[i] = parseInt(hex.slice(i * 2, i * 2 + 2), 16)
 		}
 		return out
@@ -184,7 +189,7 @@ export class Value {
 	private static isPlainObject(v: unknown): v is Record<string, unknown> {
 		return typeof v === 'object' && v !== null && v.constructor === Object
 	}
-	
+
 	private static isObject(v: unknown): v is Record<string, unknown> {
 		return typeof v === 'object' && v !== null
 	}
@@ -192,7 +197,7 @@ export class Value {
 	private static wrapInternal(v: unknown): ProtoValue {
 		// null/undefined not supported by Value oneof
 		if (v === null || v === undefined) throw new Error('cannot wrap null/undefined into Value')
-		
+
 		if (v instanceof Value) {
 			return v.proto
 		}
@@ -204,12 +209,10 @@ export class Value {
 				value: { case: 'bytesValue', value: Value.toUint8Array(v) },
 			})
 
-		
 		if (v instanceof Date)
 			return create(ValueSchema, {
 				value: { case: 'timeValue', value: Value.toTimestamp(v) },
 			})
-
 
 		switch (typeof v) {
 			case 'string':
@@ -230,7 +233,6 @@ export class Value {
 				throw new Error(`unsupported type: ${typeof v}`)
 		}
 
-
 		if (Array.isArray(v)) {
 			const fields = v.map(Value.wrapInternal)
 			const list: ProtoList = create(ListSchema, { fields })
@@ -245,14 +247,14 @@ export class Value {
 			const map: ProtoMap = create(MapSchema, { fields })
 			return create(ValueSchema, { value: { case: 'mapValue', value: map } })
 		}
-		
+
 		// TODO why?
 		if (Value.isObject(v) && v.constructor !== Object) {
 			// Check for unsupported types specifically
 			if (v instanceof Set || v instanceof Map || v instanceof Int8Array) {
 				throw new Error('unsupported object instance')
 			}
-			
+
 			const fields: Record<string, ProtoValue> = {}
 			for (const [k, vv] of Object.entries(v)) {
 				fields[k] = Value.wrapInternal(vv)
@@ -263,159 +265,162 @@ export class Value {
 
 		throw new Error('unsupported object instance')
 	}
-	
+
 	// Instance methods for unwrapping
 	unwrap(): unknown {
 		return unwrap(this.value)
 	}
-	
-/**
- * Unwraps a Value object into its native JavaScript equivalent and casts it to type T.
- * If the value is null or undefined, throws an exception.
- * 
- * @param options - Either a schema validator or a factory function (but not both)
- * @returns The unwrapped JavaScript value cast to type T
- * @throws Error if value is null, undefined, contains an invalid case, or fails schema validation
- */
- unwrapToType<T>(options?: UnwrapOptions<T>): T {
-    const unwrapped = this.unwrap()
-    
-    if (!options) {
-        return unwrapped as T
-    }
-    
-    // Apply schema validation if provided
-    if (options.schema) {
-        return options.schema.parse(unwrapped)
-    }
-    
-    // Apply factory function if provided (preserves methods)
-    if (options.factory) {
-        const instance = options.factory()
-        
-        // Copy properties from unwrapped to the instance
-        if (typeof unwrapped === 'object' && unwrapped !== null) {
-            // Use Object.assign for more efficient property copying
-            Object.assign(instance as object, unwrapped)
-        } else {
-            // For primitive types, this won't work well
-            throw new Error(`Cannot copy properties from primitive value to object instance. Use a schema instead.`)
-        }
-        
-        return instance
-    }
-    
-    return unwrapped as T
+
+	/**
+	 * Unwraps a Value object into its native JavaScript equivalent and casts it to type T.
+	 * If the value is null or undefined, throws an exception.
+	 *
+	 * @param options - Either a schema validator or a factory function (but not both)
+	 * @returns The unwrapped JavaScript value cast to type T
+	 * @throws Error if value is null, undefined, contains an invalid case, or fails schema validation
+	 */
+	unwrapToType<T>(options?: UnwrapOptions<T>): T {
+		const unwrapped = this.unwrap()
+
+		if (!options) {
+			return unwrapped as T
+		}
+
+		// Apply schema validation if provided
+		if (options.schema) {
+			return options.schema.parse(unwrapped)
+		}
+
+		// Apply factory function if provided (preserves methods)
+		if (options.factory) {
+			const instance = options.factory()
+
+			// Copy properties from unwrapped to the instance
+			if (typeof unwrapped === 'object' && unwrapped !== null) {
+				// Use Object.assign for more efficient property copying
+				Object.assign(instance as object, unwrapped)
+			} else {
+				// For primitive types, this won't work well
+				throw new Error(
+					`Cannot copy properties from primitive value to object instance. Use a schema instead.`,
+				)
+			}
+
+			return instance
+		}
+
+		return unwrapped as T
 	}
 }
-
 
 /**
  * Unwraps a Value object into its native JavaScript equivalent.
  * If the value is null or undefined, throws an exception.
- * 
+ *
  * @param value - The Value object to unwrap
  * @returns The unwrapped JavaScript value
  * @throws Error if value is null, undefined, or contains an invalid case
  */
 function unwrap(value: ProtoValue): unknown {
-    switch (value.value.case) {
-        case "stringValue":
-            return value.value.value
-        case "boolValue":
-            return value.value.value
-        case "bytesValue":
-            return value.value.value
-        case "int64Value":
-            return value.value.value
-        case "uint64Value":
-            return value.value.value
-        case "float64Value":
-            return value.value.value
-        case "bigintValue": {
-            const bigIntValue = value.value.value
-            const absVal = bigIntValue.absVal
-            const sign = bigIntValue.sign
-            
-            // Convert bytes to bigint
-            let result = 0n
-            for (const byte of absVal) {
-                result = (result << 8n) | BigInt(byte)
-            }
-            
-            return sign < 0n ? -result : result
-        }
-        case "timeValue": {
-            return timestampDate(value.value.value)
-        }
-        case "listValue": {
-            const list = value.value.value
-            return list.fields.map(unwrap)
-        }
-        case "mapValue": {
-            const map = value.value.value
-            const result: Record<string, any> = {}
-            for (const [key, val] of Object.entries(map.fields)) {
-                result[key] = unwrap(val)
-            }
-            return result
-        }
-        case "decimalValue": {
-            const decimal = value.value.value
-            const coefficient = decimal.coefficient
-            const exponent = decimal.exponent
-            
-            if (!coefficient) {
-                return "0"
-            }
-            
-            // Convert coefficient to bigint
-            let coeffBigInt: bigint
-            const absVal = coefficient.absVal
-            const sign = coefficient.sign
-            
-            // Convert bytes to bigint
-            let result = 0n
-            for (const byte of absVal) {
-                result = (result << 8n) | BigInt(byte)
-            }
-            
-            coeffBigInt = sign < 0n ? -result : result
-            
-            if (exponent === 0) {
-                return coeffBigInt.toString()
-            }
-            
-            // Handle decimal point placement
-            if (exponent < 0) {
-                const coeffStr = coeffBigInt.toString().replace("-", "")
-                const isNegative = coeffBigInt < 0n
-                const absExp = Math.abs(exponent)
-                
-                if (coeffStr.length <= absExp) {
-                    // Need leading zeros
-                    const zeros = "0".repeat(absExp - coeffStr.length)
-                    const sign = isNegative ? "-" : ""
-                    return `${sign}0.${zeros}${coeffStr}`
-                } else {
-                    // Insert decimal point
-                    const insertPos = coeffStr.length - absExp
-                    const withDecimal = coeffStr.slice(0, insertPos) + "." + coeffStr.slice(insertPos)
-                    const finalValue = isNegative ? "-" + withDecimal : withDecimal
-                    
-                    // Remove any trailing zeros after the decimal point
-                    return finalValue.replace(/\.?0+$/, "")
-                }
-            } else {
-                // Positive exponent (multiply by 10^exponent)
-                return (coeffBigInt * 10n ** BigInt(exponent)).toString()
-            }
-        }
-        default:
-            throw new Error(`Unsupported value type: ${(value.value as any).case}`)
-    }
+	switch (value.value.case) {
+		case 'stringValue':
+			return value.value.value
+		case 'boolValue':
+			return value.value.value
+		case 'bytesValue':
+			return value.value.value
+		case 'int64Value':
+			return value.value.value
+		case 'uint64Value':
+			return value.value.value
+		case 'float64Value':
+			return value.value.value
+		case 'bigintValue': {
+			const bigIntValue = value.value.value
+			const absVal = bigIntValue.absVal
+			const sign = bigIntValue.sign
+
+			// Convert bytes to bigint
+			let result = 0n
+			for (const byte of absVal) {
+				result = (result << 8n) | BigInt(byte)
+			}
+
+			return sign < 0n ? -result : result
+		}
+		case 'timeValue': {
+			return timestampDate(value.value.value)
+		}
+		case 'listValue': {
+			const list = value.value.value
+			return list.fields.map(unwrap)
+		}
+		case 'mapValue': {
+			const map = value.value.value
+			const result: Record<string, any> = {}
+			for (const [key, val] of Object.entries(map.fields)) {
+				result[key] = unwrap(val)
+			}
+			return result
+		}
+		case 'decimalValue': {
+			const decimal = value.value.value
+			const coefficient = decimal.coefficient
+			const exponent = decimal.exponent
+
+			if (!coefficient) {
+				return '0'
+			}
+
+			// Convert coefficient to bigint
+			let coeffBigInt: bigint
+			const absVal = coefficient.absVal
+			const sign = coefficient.sign
+
+			// Convert bytes to bigint
+			let result = 0n
+			for (const byte of absVal) {
+				result = (result << 8n) | BigInt(byte)
+			}
+
+			coeffBigInt = sign < 0n ? -result : result
+
+			if (exponent === 0) {
+				return coeffBigInt.toString()
+			}
+
+			// Handle decimal point placement
+			if (exponent < 0) {
+				const coeffStr = coeffBigInt.toString().replace('-', '')
+				const isNegative = coeffBigInt < 0n
+				const absExp = Math.abs(exponent)
+
+				if (coeffStr.length <= absExp) {
+					// Need leading zeros
+					const zeros = '0'.repeat(absExp - coeffStr.length)
+					const sign = isNegative ? '-' : ''
+					return `${sign}0.${zeros}${coeffStr}`
+				} else {
+					// Insert decimal point
+					const insertPos = coeffStr.length - absExp
+					const withDecimal = coeffStr.slice(0, insertPos) + '.' + coeffStr.slice(insertPos)
+					const finalValue = isNegative ? '-' + withDecimal : withDecimal
+
+					// Remove any trailing zeros after the decimal point
+					return finalValue.replace(/\.?0+$/, '')
+				}
+			} else {
+				// Positive exponent (multiply by 10^exponent)
+				return (coeffBigInt * 10n ** BigInt(exponent)).toString()
+			}
+		}
+		default:
+			throw new Error(`Unsupported value type: ${(value.value as any).case}`)
+	}
 }
 
 function isValueProto(value: any): boolean {
-	return value.$typeName && typeof value.$typeName === 'string' && value.$typeName === 'values.v1.Value'
+	return (
+		value.$typeName && typeof value.$typeName === 'string' && value.$typeName === 'values.v1.Value'
+	)
 }

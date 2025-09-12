@@ -1,5 +1,7 @@
 import { describe, test, expect, beforeEach } from 'bun:test'
 import { Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
+// Mock the host bindings before importing runtime
+import '@cre/sdk/testhelpers/mock-host-bindings'
 import { runtime, runtimeGuards, type NodeRuntime, type Runtime } from './runtime'
 import { DonModeError, NodeModeError } from './errors'
 

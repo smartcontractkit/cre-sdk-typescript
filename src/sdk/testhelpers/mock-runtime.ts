@@ -5,17 +5,13 @@ import { getSecret } from '@cre/sdk/utils/secrets/get-secret'
 import { getRand } from '@cre/sdk/utils/random/get-rand'
 import { getTimeAsDate } from '@cre/sdk/utils/time/get-time'
 
-export const emptyConfig = {}
-
-export const basicRuntime: Runtime = {
+export const mockedRuntime: Runtime = {
 	mode: Mode.DON,
 	logger,
 	isNodeRuntime: false,
 	assertDonSafe: () => {},
 	assertNodeSafe: () => {},
-	switchModes: (() => {
-		return basicRuntime
-	}) as any,
+	switchModes: (() => mockedRuntime) as any,
 	getSecret,
 	getRand: () => getRand(Mode.DON),
 	now: () => getTimeAsDate(),

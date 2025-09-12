@@ -1,38 +1,14 @@
 import { describe, test, expect, mock } from 'bun:test'
 import { create } from '@bufbuild/protobuf'
 import {
+	Mode,
 	SimpleConsensusInputsSchema,
 	type SimpleConsensusInputsJson,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { ConsensusCapability } from '@cre/generated-sdk/capabilities/internal/consensus/v1alpha/consensus_sdk_gen'
+// Mock the host bindings before importing runtime
+import { calls } from '@cre/sdk/testhelpers/mock-host-bindings'
 import { type NodeRuntime } from '@cre/sdk/runtime/runtime'
-
-// Mock hostBindings before importing runInNodeMode
-const calls: string[] = []
-const mockHostBindings = {
-	sendResponse: mock((_response: string) => 0),
-	switchModes: mock((mode: 0 | 1 | 2) => {
-		calls.push(mode === 2 ? 'NODE' : mode === 1 ? 'DON' : 'UNSPECIFIED')
-	}),
-	log: mock((_message: string) => {}),
-	callCapability: mock((_request: string) => 1),
-	awaitCapabilities: mock((_awaitRequest: string, _maxResponseLen: number) =>
-		btoa('mock_await_capabilities_response'),
-	),
-	getSecrets: mock((_request: string, _maxResponseLen: number) => 1),
-	awaitSecrets: mock((_awaitRequest: string, _maxResponseLen: number) =>
-		btoa('mock_await_secrets_response'),
-	),
-	versionV2: mock(() => {}),
-	randomSeed: mock((_mode: 1 | 2) => Math.random()),
-	getWasiArgs: mock(() => '["mock.wasm", ""]'),
-}
-
-// Mock the module
-mock.module('@cre/sdk/runtime/host-bindings', () => ({
-	hostBindings: mockHostBindings,
-}))
-
 import { runInNodeMode } from '@cre/sdk/runtime/run-in-node-mode'
 
 describe('runInNodeMode', () => {
@@ -82,7 +58,7 @@ describe('runInNodeMode', () => {
 	test('guards DON calls while in node mode', async () => {
 		// Simulate switchModes by touching global function used by host
 		const origSwitch = (globalThis as any).switchModes
-		;(globalThis as any).switchModes = (_m: 0 | 1 | 2) => {}
+		;(globalThis as any).switchModes = (_m: Mode) => {}
 
 		// Mock consensus.simple but also try to make a DON call in node mode
 		const origSimple = ConsensusCapability.prototype.simple

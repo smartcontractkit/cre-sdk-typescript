@@ -1,12 +1,14 @@
 import { describe, expect, test } from 'bun:test'
 import type { Value as ProtoValue } from '@cre/generated/values/v1/values_pb'
-import { ValueSchema, BigIntSchema, MapSchema, ListSchema, DecimalSchema } from '@cre/generated/values/v1/values_pb'
+import {
+	ValueSchema,
+	BigIntSchema,
+	MapSchema,
+	ListSchema,
+	DecimalSchema,
+} from '@cre/generated/values/v1/values_pb'
 import { Value } from './value'
-import { 
-	timestampDate, 
-	TimestampSchema,
-	FieldMaskSchema 
-} from '@bufbuild/protobuf/wkt'
+import { timestampDate, TimestampSchema, FieldMaskSchema } from '@bufbuild/protobuf/wkt'
 import { create } from '@bufbuild/protobuf'
 
 const bytesToBigIntBE = (bytes: Uint8Array): bigint => {
@@ -25,18 +27,18 @@ const expectValue = (actual: Value, expected: NonNullable<ProtoValue['value']>) 
 	expect(actual.unwrap()).toEqual(expected.value)
 }
 
-function expectCase<C extends NonNullable<ProtoValue['value']['case']>, V = Extract<NonNullable<ProtoValue['value']>, { case: C }>['value']>(
-  actual: ProtoValue, 
-  expectedCase: C
-): V {
-  expect(actual.value).toBeDefined()
-  expect(actual.value.case).toBe(expectedCase)
-  return actual.value.value as V
+function expectCase<
+	C extends NonNullable<ProtoValue['value']['case']>,
+	V = Extract<NonNullable<ProtoValue['value']>, { case: C }>['value'],
+>(actual: ProtoValue, expectedCase: C): V {
+	expect(actual.value).toBeDefined()
+	expect(actual.value.case).toBe(expectedCase)
+	return actual.value.value as V
 }
 
 describe('val helpers', () => {
 	test('another value', () => {
-		const val = new Value("10")
+		const val = new Value('10')
 		const val2 = new Value(val)
 		expect(val).toEqual(val2)
 	})
@@ -45,148 +47,148 @@ describe('val helpers', () => {
 		const val = new Value(10)
 		const val2 = new Value({ foo: 99, val: val })
 		expectProto(val2.proto, {
-						case: 'mapValue', 
-						value: create(MapSchema, {
-							fields: {
-								'foo': create(ValueSchema, { value: { case: 'float64Value', value: 99 } }),
-								'val': create(ValueSchema, { value: { case: 'float64Value', value: 10 } })
-							}
-						}) 
-				})
+			case: 'mapValue',
+			value: create(MapSchema, {
+				fields: {
+					foo: create(ValueSchema, { value: { case: 'float64Value', value: 99 } }),
+					val: create(ValueSchema, { value: { case: 'float64Value', value: 10 } }),
+				},
+			}),
+		})
 	})
 
 	describe('protos directly', () => {
 		type ValueCase = NonNullable<NonNullable<ProtoValue['value']>['case']>
-		
-		type AllTests = { [K in ValueCase]: {proto: ProtoValue, expected: any} }
+
+		type AllTests = { [K in ValueCase]: { proto: ProtoValue; expected: any } }
 		const allCases: AllTests = {
-			'stringValue': {
+			stringValue: {
 				proto: create(ValueSchema, {
-					value: { case: 'stringValue', value: 'hello' }
+					value: { case: 'stringValue', value: 'hello' },
 				}),
-				expected: 'hello'
+				expected: 'hello',
 			},
-			'boolValue': {
+			boolValue: {
 				proto: create(ValueSchema, {
-					value: { case: 'boolValue', value: true }
+					value: { case: 'boolValue', value: true },
 				}),
-				expected: true
+				expected: true,
 			},
-			'bytesValue': {
+			bytesValue: {
 				proto: create(ValueSchema, {
-					value: { case: 'bytesValue', value: new Uint8Array([1, 2, 3]) }
+					value: { case: 'bytesValue', value: new Uint8Array([1, 2, 3]) },
 				}),
-				expected: new Uint8Array([1, 2, 3])
+				expected: new Uint8Array([1, 2, 3]),
 			},
-			'float64Value': {
+			float64Value: {
 				proto: create(ValueSchema, {
-					value: { case: 'float64Value', value: 3.14159 }
+					value: { case: 'float64Value', value: 3.14159 },
 				}),
-				expected: 3.14159
+				expected: 3.14159,
 			},
-			'int64Value': {
+			int64Value: {
 				proto: create(ValueSchema, {
-					value: { case: 'int64Value', value: 42n }
+					value: { case: 'int64Value', value: 42n },
 				}),
-				expected: 42n
+				expected: 42n,
 			},
-			'uint64Value': {
+			uint64Value: {
 				proto: create(ValueSchema, {
-					value: { case: 'uint64Value', value: 42n }
+					value: { case: 'uint64Value', value: 42n },
 				}),
-				expected: 42n
+				expected: 42n,
 			},
-			'timeValue': {
+			timeValue: {
 				proto: create(ValueSchema, {
-					value: { 
-						case: 'timeValue', 
-						value: create(TimestampSchema, { 
-							seconds: 1700000123n, 
-							nanos: 456000000 
-						}) 
-					}
+					value: {
+						case: 'timeValue',
+						value: create(TimestampSchema, {
+							seconds: 1700000123n,
+							nanos: 456000000,
+						}),
+					},
 				}),
 				expected: new Date(1700000123456),
 			},
-			'bigintValue': {
+			bigintValue: {
 				proto: create(ValueSchema, {
-					value: { 
-						case: 'bigintValue', 
+					value: {
+						case: 'bigintValue',
 						value: create(BigIntSchema, {
 							absVal: new Uint8Array([0x01, 0x23, 0x45, 0x67, 0x89]),
-							sign: 1n
-						}) 
-					}
+							sign: 1n,
+						}),
+					},
 				}),
-				expected: 0x0123456789n
+				expected: 0x0123456789n,
 			},
-			'listValue': {
+			listValue: {
 				proto: create(ValueSchema, {
-					value: { 
-						case: 'listValue', 
+					value: {
+						case: 'listValue',
 						value: create(ListSchema, {
 							fields: [
 								create(ValueSchema, { value: { case: 'stringValue', value: 'item1' } }),
-								create(ValueSchema, { value: { case: 'float64Value', value: 2.5 } })
-							]
-						}) 
-					}
+								create(ValueSchema, { value: { case: 'float64Value', value: 2.5 } }),
+							],
+						}),
+					},
 				}),
-				expected: ['item1', 2.5]
+				expected: ['item1', 2.5],
 			},
-			'mapValue': {
+			mapValue: {
 				proto: create(ValueSchema, {
-					value: { 
-						case: 'mapValue', 
+					value: {
+						case: 'mapValue',
 						value: create(MapSchema, {
 							fields: {
-								'key1': create(ValueSchema, { value: { case: 'stringValue', value: 'value1' } }),
-								'key2': create(ValueSchema, { value: { case: 'float64Value', value: 2.5 } })
-							}
-						}) 
-					}
+								key1: create(ValueSchema, { value: { case: 'stringValue', value: 'value1' } }),
+								key2: create(ValueSchema, { value: { case: 'float64Value', value: 2.5 } }),
+							},
+						}),
+					},
 				}),
-				expected: { key1: 'value1', key2: 2.5 }
+				expected: { key1: 'value1', key2: 2.5 },
 			},
-			'decimalValue': {
+			decimalValue: {
 				proto: create(ValueSchema, {
-					value: { 
-						case: 'decimalValue', 
+					value: {
+						case: 'decimalValue',
 						value: create(DecimalSchema, {
 							coefficient: create(BigIntSchema, {
 								absVal: new Uint8Array([0x04, 0xd2]), // 1234 in big-endian
-								sign: 1n
+								sign: 1n,
 							}),
-							exponent: -2
-						}) 
-					}
+							exponent: -2,
+						}),
+					},
 				}),
-				expected: '12.34'
-			}
+				expected: '12.34',
+			},
 		}
-		
+
 		const possibleCases = Object.keys(allCases) as ValueCase[]
-		possibleCases.forEach(caseType => {
+		possibleCases.forEach((caseType) => {
 			const testCase = allCases[caseType]
 
 			test(`handles ${caseType} correctly`, () => {
 				var val = new Value(testCase.proto)
-				
+
 				expect(val.proto.value).toBeDefined()
 				expect(val.proto.value!.case).toBe(caseType)
-				
+
 				expect(val.unwrap()).toEqual(testCase.expected)
 			})
 		})
 	})
 
 	test('string', () => {
-		expectValue(new Value('hello'), { case: 'stringValue', value: 'hello'})
+		expectValue(new Value('hello'), { case: 'stringValue', value: 'hello' })
 	})
 
 	test('bool', () => {
 		const val = new Value(true)
-		expectValue(new Value(true), { case: 'boolValue', value: true})
+		expectValue(new Value(true), { case: 'boolValue', value: true })
 	})
 
 	test('bytes Uint8Array', () => {
@@ -202,11 +204,11 @@ describe('val helpers', () => {
 	})
 
 	test('int64 from number', () => {
-		expectValue(Value.int64(42), {case: 'int64Value', value: 42n})
+		expectValue(Value.int64(42), { case: 'int64Value', value: 42n })
 	})
 
 	test('int64 from bigint within range', () => {
-		expectValue(Value.int64(123n), {case: 'int64Value', value: 123n})
+		expectValue(Value.int64(123n), { case: 'int64Value', value: 123n })
 	})
 
 	test('int64 throws on non-integer number', () => {
@@ -228,16 +230,15 @@ describe('val helpers', () => {
 	})
 
 	test('int64 from string ', () => {
-		expectValue(Value.int64('-42'), {case: 'int64Value', value: -42n})
+		expectValue(Value.int64('-42'), { case: 'int64Value', value: -42n })
 	})
 
-
 	test('uint64 from number', () => {
-		expectValue(Value.uint64(42), {case: 'uint64Value', value: 42n})
+		expectValue(Value.uint64(42), { case: 'uint64Value', value: 42n })
 	})
 
 	test('uint64 from bigint within range', () => {
-		expectValue(Value.uint64(123n), {case: 'uint64Value', value:123n})
+		expectValue(Value.uint64(123n), { case: 'uint64Value', value: 123n })
 	})
 
 	test('uint64 throws on non-integer number', () => {
@@ -259,13 +260,13 @@ describe('val helpers', () => {
 	})
 
 	test('uint64 from string ', () => {
-		expectValue(Value.uint64('42'), {case: 'uint64Value', value: 42n})
+		expectValue(Value.uint64('42'), { case: 'uint64Value', value: 42n })
 	})
 
 	test('float64', () => {
 		// safe, since the any rounding would occur before the nubmer is a float
 		// this does a copy without math
-		expectValue(new Value(3.14), {case: 'float64Value', value: 3.14})
+		expectValue(new Value(3.14), { case: 'float64Value', value: 3.14 })
 	})
 
 	test('float64 supports NaN and Infinity', () => {
@@ -285,7 +286,7 @@ describe('val helpers', () => {
 	test('bigint encodes sign and abs bytes', () => {
 		const big = -123456789012345678901234567890n
 		const val = new Value(big)
-		
+
 		const pb = expectCase(val.proto, 'bigintValue')
 		expect(pb.sign).toBe(-1n)
 		const abs = bytesToBigIntBE(pb.absVal)
@@ -315,7 +316,7 @@ describe('val helpers', () => {
 		expectProto(protoItems[0], { case: 'float64Value', value: 1 })
 		expectProto(protoItems[1], { case: 'stringValue', value: 'x' })
 		expectProto(protoItems[2], { case: 'boolValue', value: true })
-		
+
 		const unwrapped = val.unwrap()
 		expect(unwrapped).toEqual(items)
 	})
@@ -328,21 +329,21 @@ describe('val helpers', () => {
 	})
 
 	test('map', () => {
-		const inputMap = {d: 1.25, s: 'ok' }
+		const inputMap = { d: 1.25, s: 'ok' }
 		const val = new Value(inputMap)
-		
+
 		const m = expectCase(val.proto, 'mapValue').fields
 
 		expect(Object.keys(m)).toHaveLength(2)
 		expectProto(m['d'], { case: 'float64Value', value: 1.25 })
-		expectProto(m['s'], {case: 'stringValue', value: "ok"})
+		expectProto(m['s'], { case: 'stringValue', value: 'ok' })
 
 		expect(val.unwrap()).toEqual(inputMap)
 	})
 
 	test('map empty', () => {
 		const val = new Value({})
-		
+
 		const m = expectCase(val.proto, 'mapValue').fields
 		expect(Object.keys(m)).toHaveLength(0)
 
@@ -352,25 +353,28 @@ describe('val helpers', () => {
 
 	test('from objec', () => {
 		class Test {
-			constructor(public i: number, public s: string) { }
-			getI() : number {
+			constructor(
+				public i: number,
+				public s: string,
+			) {}
+			getI(): number {
 				return this.i
 			}
 		}
 
-		const inputObject = new Test(123, "abc")
+		const inputObject = new Test(123, 'abc')
 		const val = new Value(inputObject)
 
 		const fields = expectCase(val.proto, 'mapValue').fields
 		expect(Object.keys(fields)).toHaveLength(2)
 		expectProto(fields['i'], { case: 'float64Value', value: 123 })
-		expectProto(fields['s'], { case: 'stringValue', value: "abc" })
-		
+		expectProto(fields['s'], { case: 'stringValue', value: 'abc' })
+
 		const rawUnwrapped = val.unwrap()
-		expect(rawUnwrapped).toEqual({i: 123, s: "abc"})
+		expect(rawUnwrapped).toEqual({ i: 123, s: 'abc' })
 
 		const unwrappedObject = val.unwrapToType<Test>({
-			factory: () => new Test(0, "")
+			factory: () => new Test(0, ''),
 		})
 		expect(unwrappedObject).toEqual(inputObject)
 		expect(unwrappedObject).toBeInstanceOf(Test)
@@ -385,19 +389,19 @@ describe('val helpers', () => {
 				if (typeof value !== 'object' || value === null) {
 					throw new Error('Expected an object')
 				}
-				
+
 				const v = value as any
 				if (typeof v.name !== 'string' || typeof v.age !== 'number') {
 					throw new Error('Invalid person schema')
 				}
-				
+
 				return { name: v.name, age: v.age }
-			}
+			},
 		}
-		
+
 		const person = { name: 'Alice', age: 30 }
 		const val = new Value(person)
-		
+
 		// Test unwrapToType with schema
 		const unwrapped = val.unwrapToType({ schema: personSchema })
 		expect(unwrapped).toEqual(person)
@@ -406,29 +410,32 @@ describe('val helpers', () => {
 
 	test('from object with constructor', () => {
 		class Test {
-			constructor(public i: number, public s: string) { }
-			getI() : number {
+			constructor(
+				public i: number,
+				public s: string,
+			) {}
+			getI(): number {
 				return this.i
 			}
 		}
 
-		const inputObject = new Test(123, "abc")
+		const inputObject = new Test(123, 'abc')
 		const val = new Value(inputObject)
 
 		const fields = expectCase(val.proto, 'mapValue').fields
 		expect(Object.keys(fields)).toHaveLength(2)
 		expectProto(fields['i'], { case: 'float64Value', value: 123 })
-		expectProto(fields['s'], { case: 'stringValue', value: "abc" })
-		
+		expectProto(fields['s'], { case: 'stringValue', value: 'abc' })
+
 		const rawUnwrapped = val.unwrap()
-		expect(rawUnwrapped).toEqual({i: 123, s: "abc"})
+		expect(rawUnwrapped).toEqual({ i: 123, s: 'abc' })
 
 		var factoryCalled = false
 		const unwrappedObject = val.unwrapToType<Test>({
 			factory: () => {
 				factoryCalled = true
-				return new Test(0, "")
-			}
+				return new Test(0, '')
+			},
 		})
 		expect(unwrappedObject).toEqual(inputObject)
 		expect(unwrappedObject).toBeInstanceOf(Test)
@@ -445,21 +452,20 @@ describe('val helpers', () => {
 	test('decimal normalization and structure', () => {
 		const val = Value.decimal('15.2300')
 		const d = expectCase(val.proto, 'decimalValue')
-		
+
 		expect(d.exponent).toBe(-2)
 		// coefficient should be 1523 (sign + digits)
 		const coeffAbs = bytesToBigIntBE(d.coefficient!.absVal)
 		expect(d.coefficient!.sign).toBe(1n)
 		expect(coeffAbs).toBe(1523n)
 
-	
 		const unwrapped = val.unwrap()
 		expect(unwrapped).toEqual('15.23')
 	})
 
 	test('decimal negative and integer only', () => {
 		const val = Value.decimal('-123.4500')
-		
+
 		const d = expectCase(val.proto, 'decimalValue')
 		expect(d.exponent).toBe(-2)
 		expect(d.coefficient!.sign).toBe(-1n)
@@ -494,35 +500,34 @@ describe('val helpers', () => {
 	test('non value protos', () => {
 		// An proto that isn't related to values
 		const fieldMask = create(FieldMaskSchema, {
-			paths: ['user.displayName', 'user.email', 'posts.*.title']
+			paths: ['user.displayName', 'user.email', 'posts.*.title'],
 		})
-		
+
 		const val = new Value(fieldMask)
-		
+
 		const mapValue = expectCase(val.proto, 'mapValue').fields
 		expect(Object.keys(mapValue)).toContain('$typeName')
 		expect(Object.keys(mapValue)).toContain('paths')
-		
+
 		// Check that the typeName was preserved
 		expectProto(mapValue['$typeName'], { case: 'stringValue', value: 'google.protobuf.FieldMask' })
-		
+
 		const pathsList = expectCase(mapValue['paths'], 'listValue').fields
 		expect(pathsList).toHaveLength(3)
 		expectProto(pathsList[0], { case: 'stringValue', value: 'user.displayName' })
 		expectProto(pathsList[1], { case: 'stringValue', value: 'user.email' })
 		expectProto(pathsList[2], { case: 'stringValue', value: 'posts.*.title' })
-		
+
 		// Test unwrap to plain object
 		const unwrapped = val.unwrap() as Record<string, unknown>
 		expect(unwrapped.$typeName).toBe('google.protobuf.FieldMask')
 		expect(Array.isArray(unwrapped.paths)).toBe(true)
 		expect(unwrapped.paths).toEqual(['user.displayName', 'user.email', 'posts.*.title'])
-		
-	
+
 		const directProto = val.unwrapToType({
-			factory: () => create(FieldMaskSchema)
+			factory: () => create(FieldMaskSchema),
 		})
-		
+
 		// Verify this approach also works
 		expect(directProto.$typeName).toBe('google.protobuf.FieldMask')
 		expect(directProto.paths).toEqual(['user.displayName', 'user.email', 'posts.*.title'])
