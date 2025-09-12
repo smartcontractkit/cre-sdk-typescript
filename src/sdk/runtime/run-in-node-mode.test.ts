@@ -1,122 +1,86 @@
-import { describe, test, expect, mock } from "bun:test";
-import { create } from "@bufbuild/protobuf";
+import { describe, test, expect, mock } from 'bun:test'
+import { create } from '@bufbuild/protobuf'
 import {
-  Mode,
-  SimpleConsensusInputsSchema,
-  type SimpleConsensusInputsJson,
-} from "@cre/generated/sdk/v1alpha/sdk_pb";
-import { ConsensusCapability } from "@cre/generated-sdk/capabilities/internal/consensus/v1alpha/consensus_sdk_gen";
-import { type NodeRuntime } from "@cre/sdk/runtime/runtime";
+	Mode,
+	SimpleConsensusInputsSchema,
+	type SimpleConsensusInputsJson,
+} from '@cre/generated/sdk/v1alpha/sdk_pb'
+import { ConsensusCapability } from '@cre/generated-sdk/capabilities/internal/consensus/v1alpha/consensus_sdk_gen'
+// Mock the host bindings before importing runtime
+import { calls } from '@cre/sdk/testhelpers/mock-host-bindings'
+import { type NodeRuntime } from '@cre/sdk/runtime/runtime'
+import { runInNodeMode } from '@cre/sdk/runtime/run-in-node-mode'
 
-// Mock hostBindings before importing runInNodeMode
-const calls: string[] = [];
-const mockHostBindings = {
-  sendResponse: mock((_response: string) => 0),
-  switchModes: mock((mode: Mode) => {
-    calls.push(
-      mode === Mode.NODE ? "NODE" : mode === Mode.DON ? "DON" : "UNSPECIFIED"
-    );
-  }),
-  log: mock((_message: string) => {}),
-  callCapability: mock((_request: string) => 1),
-  awaitCapabilities: mock((_awaitRequest: string, _maxResponseLen: number) =>
-    btoa("mock_await_capabilities_response")
-  ),
-  getSecrets: mock((_request: string, _maxResponseLen: number) => 1),
-  awaitSecrets: mock((_awaitRequest: string, _maxResponseLen: number) =>
-    btoa("mock_await_secrets_response")
-  ),
-  versionV2: mock(() => {}),
-  randomSeed: mock((_mode: Mode.DON | Mode.NODE) => Math.random()),
-  getWasiArgs: mock(() => '["mock.wasm", ""]'),
-  now: mock(() => Date.now()),
-};
+describe('runInNodeMode', () => {
+	test('accepts message input and returns Value', async () => {
+		// spy on consensus.simple
+		const origSimple = ConsensusCapability.prototype.simple
+		ConsensusCapability.prototype.simple = mock(async (_: SimpleConsensusInputsJson) => {
+			return {} as any // a Value; not asserting shape here
+		})
 
-// Mock the module
-mock.module("@cre/sdk/runtime/host-bindings", () => ({
-  hostBindings: mockHostBindings,
-}));
+		const res = await runInNodeMode(() => create(SimpleConsensusInputsSchema))
+		expect(res).toBeDefined()
 
-import { runInNodeMode } from "@cre/sdk/runtime/run-in-node-mode";
+		ConsensusCapability.prototype.simple = origSimple
+	})
 
-describe("runInNodeMode", () => {
-  test("accepts message input and returns Value", async () => {
-    // spy on consensus.simple
-    const origSimple = ConsensusCapability.prototype.simple;
-    ConsensusCapability.prototype.simple = mock(
-      async (_: SimpleConsensusInputsJson) => {
-        return {} as any; // a Value; not asserting shape here
-      }
-    );
+	test('accepts json input and returns Value', async () => {
+		const origSimple = ConsensusCapability.prototype.simple
+		ConsensusCapability.prototype.simple = mock(async (_: SimpleConsensusInputsJson) => {
+			return {} as any
+		})
 
-    const res = await runInNodeMode(() => create(SimpleConsensusInputsSchema));
-    expect(res).toBeDefined();
+		const res = await runInNodeMode(() => ({}) as SimpleConsensusInputsJson)
+		expect(res).toBeDefined()
 
-    ConsensusCapability.prototype.simple = origSimple;
-  });
+		ConsensusCapability.prototype.simple = origSimple
+	})
 
-  test("accepts json input and returns Value", async () => {
-    const origSimple = ConsensusCapability.prototype.simple;
-    ConsensusCapability.prototype.simple = mock(
-      async (_: SimpleConsensusInputsJson) => {
-        return {} as any;
-      }
-    );
+	test('restores DON mode before calling consensus', async () => {
+		// Clear the calls array for this test
+		calls.length = 0
 
-    const res = await runInNodeMode(() => ({} as SimpleConsensusInputsJson));
-    expect(res).toBeDefined();
+		const origSimple = ConsensusCapability.prototype.simple
+		ConsensusCapability.prototype.simple = mock(async (_: SimpleConsensusInputsJson) => {
+			// At this point we expect mode to have been restored to DON
+			calls.push('CONSENSUS_SIMPLE')
+			return {} as any
+		})
 
-    ConsensusCapability.prototype.simple = origSimple;
-  });
+		await runInNodeMode(() => create(SimpleConsensusInputsSchema))
+		expect(calls).toEqual(['NODE', 'DON', 'CONSENSUS_SIMPLE'])
 
-  test("restores DON mode before calling consensus", async () => {
-    // Clear the calls array for this test
-    calls.length = 0;
+		// restore
+		ConsensusCapability.prototype.simple = origSimple
+	})
 
-    const origSimple = ConsensusCapability.prototype.simple;
-    ConsensusCapability.prototype.simple = mock(
-      async (_: SimpleConsensusInputsJson) => {
-        // At this point we expect mode to have been restored to DON
-        calls.push("CONSENSUS_SIMPLE");
-        return {} as any;
-      }
-    );
+	test('guards DON calls while in node mode', async () => {
+		// Simulate switchModes by touching global function used by host
+		const origSwitch = (globalThis as any).switchModes
+		;(globalThis as any).switchModes = (_m: Mode) => {}
 
-    await runInNodeMode(() => create(SimpleConsensusInputsSchema));
-    expect(calls).toEqual(["NODE", "DON", "CONSENSUS_SIMPLE"]);
+		// Mock consensus.simple but also try to make a DON call in node mode
+		const origSimple = ConsensusCapability.prototype.simple
+		ConsensusCapability.prototype.simple = mock(async (_: SimpleConsensusInputsJson) => {
+			return {} as any
+		})
 
-    // restore
-    ConsensusCapability.prototype.simple = origSimple;
-  });
+		let threw = false
+		try {
+			await runInNodeMode(async (nodeRuntime: NodeRuntime) => {
+				// During builder, we are in NODE mode, performing a DON call should throw
+				expect(() => nodeRuntime.logger.log(''))
+				return create(SimpleConsensusInputsSchema)
+			})
+		} catch (_e) {
+			threw = true
+		}
 
-  test("guards DON calls while in node mode", async () => {
-    // Simulate switchModes by touching global function used by host
-    const origSwitch = (globalThis as any).switchModes;
-    (globalThis as any).switchModes = (_m: Mode) => {};
-
-    // Mock consensus.simple but also try to make a DON call in node mode
-    const origSimple = ConsensusCapability.prototype.simple;
-    ConsensusCapability.prototype.simple = mock(
-      async (_: SimpleConsensusInputsJson) => {
-        return {} as any;
-      }
-    );
-
-    let threw = false;
-    try {
-      await runInNodeMode(async (nodeRuntime: NodeRuntime) => {
-        // During builder, we are in NODE mode, performing a DON call should throw
-        expect(() => nodeRuntime.logger.log(""));
-        return create(SimpleConsensusInputsSchema);
-      });
-    } catch (_e) {
-      threw = true;
-    }
-
-    // The guard may not throw on host.log; rely on callCapability guard instead by attempting a DON call
-    // restore
-    ConsensusCapability.prototype.simple = origSimple;
-    (globalThis as any).switchModes = origSwitch;
-    expect(threw).toBeFalse();
-  });
-});
+		// The guard may not throw on host.log; rely on callCapability guard instead by attempting a DON call
+		// restore
+		ConsensusCapability.prototype.simple = origSimple
+		;(globalThis as any).switchModes = origSwitch
+		expect(threw).toBeFalse()
+	})
+})

@@ -54,5 +54,14 @@ const validateGlobalHostBindings = (): GlobalHostBindingsMap => {
 	}
 }
 
-// Initialize validated global functions
-export const hostBindings = validateGlobalHostBindings()
+// Initialize validated global functions (lazy evaluation for testing)
+let _hostBindings: GlobalHostBindingsMap | null = null
+
+export const hostBindings = new Proxy({} as GlobalHostBindingsMap, {
+	get(target, prop) {
+		if (!_hostBindings) {
+			_hostBindings = validateGlobalHostBindings()
+		}
+		return _hostBindings[prop as keyof GlobalHostBindingsMap]
+	},
+})

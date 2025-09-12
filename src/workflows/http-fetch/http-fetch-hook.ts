@@ -4,7 +4,6 @@ import { useMedianConsensus } from '@cre/sdk/utils/values/consensus-hooks'
 import { withErrorBoundary } from '@cre/sdk/utils/error-boundary'
 import { Value } from '@cre/sdk/utils/values/value'
 
-
 const configSchema = z.object({
 	schedule: z.string(),
 	apiUrl: z.string(),
