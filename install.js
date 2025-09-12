@@ -1,7 +1,9 @@
-const fs = require('fs')
-const path = require('path')
-const zlib = require('zlib')
-const https = require('https')
+import fs from 'fs'
+import path from 'path'
+import zlib from 'zlib'
+import https from 'https'
+
+const __dirname = import.meta.dirname;
 
 // Lookup table for all platforms and binary distribution packages
 const BINARY_DISTRIBUTION_PACKAGES = {
