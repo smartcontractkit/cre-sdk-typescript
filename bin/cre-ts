@@ -1,0 +1,35 @@
+#!/usr/bin/env node
+
+import { execFileSync } from 'node:child_process'
+import { join } from 'node:path'
+import { resolve } from 'node:path'
+
+function getBinaryPath() {
+  // Lookup table for all platforms and binary distribution packages
+  const BINARY_DISTRIBUTION_PACKAGES = {
+    'linux-x64': '@chainlink/cre-ts-linux-x64',
+    'linux-arm64': '@chainlink/cre-ts-linux-arm',
+    'darwin-x64': '@chainlink/cre-ts-darwin-x64',
+    'darwin-arm64': '@chainlink/cre-ts-darwin-arm64',
+    'win32-x64': '@chainlink/cre-ts-windows-x64',
+  }
+
+  // Windows binaries end with .exe so we need to special case them.
+  const binaryName = process.platform === 'win32' ? 'cre-build.exe' : 'cre-build'
+
+  // Determine package name for this platform
+  const platformSpecificPackageName =
+    BINARY_DISTRIBUTION_PACKAGES[`${process.platform}-${process.arch}`]
+
+  try {
+    // Resolving will fail if the optionalDependency was not installed
+    return resolve(`node_modules/${platformSpecificPackageName}/bin/${binaryName}`)
+  } catch (e) {
+    return join(__dirname, binaryName)
+  }
+}
+
+
+execFileSync(getBinaryPath(), process.argv.slice(2), {
+  stdio: 'inherit',
+})
