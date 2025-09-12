@@ -20,15 +20,12 @@ export const main = async () => {
 				: './.bin/javy-arm-linux-v5.0.4'
 
 		const javyPath = path.join(process.cwd(), 'node_modules', javyBinary)
-		console.log(`Javy path: ${javyPath}`)
 
 		/**
 		 * -C wit=src/workflows/workflow.wit — points to the WIT file (definition of what will be available for the Host).
 		 * -C wit-world=workflow — specifies the WIT world name (world "workflow" which is defined in the .wit file).
 		 * -C plugin=... — uses your custom runtime (bundled javy chainlink sdk plugin)
 		 */
-		// await $`bun javy build -C wit=src/workflows/workflow.wit -C wit-world=workflow -C plugin=dist/javy-chainlink-sdk.plugin.wasm ${jsFile} -o ${wasmFile}`
-		// await $`./bin/javy-arm-macos-v5.0.4 build -C wit=src/workflows/workflow.wit -C wit-world=workflow -C plugin=dist/javy-chainlink-sdk.plugin.wasm ${jsFile} -o ${wasmFile}`
 
 		execFileSync(
 			javyPath,
