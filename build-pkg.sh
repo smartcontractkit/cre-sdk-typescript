@@ -9,7 +9,6 @@ cp install.js dist/install.js
 
 chmod +x dist/bin/cre-ts
 
-bun tsc --emitDeclarationOnly --project tsconfig.types.json
 bun rimraf tsconfig.types.tsbuildinfo 
 
 cp package.json dist/package.json
