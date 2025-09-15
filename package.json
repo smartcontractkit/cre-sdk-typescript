@@ -33,9 +33,8 @@
 		}
 	},
 	"scripts": {
-		"postinstall": "node ./install.js",
 		"biome:check": "biome check --write",
-		"biome:format": "biome format --write",
+		"biome:format": "biome format --write ${BIOME_PATHS:-.}",
 		"biome:lint": "biome lint --write",
 		"build:javy:plugin": "bun scripts/run.ts compile-javy-sdk-plugin",
 		"build:javy:sdk:wasm": "bun scripts/run.ts compile-javy-with-sdk-plugin",
@@ -50,6 +49,7 @@
 		"javy:linux": "./bin/javy-arm-linux-v5.0.4",
 		"start": "bun --watch src/index.ts",
 		"typecheck": "tsc",
+		"build:generate:sdk": "bun proto:generate && bun scripts/generate-sdks.ts && BIOME_PATHS=\"src/generated src/generated-sdk\" bun biome:format",
 		"proto:generate": "bunx @bufbuild/buf generate",
 		"proto:lint": "bunx @bufbuild/buf lint",
 		"proto:format": "bunx @bufbuild/buf format --write",
@@ -58,7 +58,8 @@
 		"build": "bun build --target=node --entrypoints ./src/sdk/index.ts ./src/sdk/utils/index.ts ./src/sdk/runtime/index.ts --outdir=dist && bun run build:declaration && bun run build:cli",
 		"build:cli": "bun build ./scripts/run.ts --target=bun-darwin-arm64 --compile --outfile dist/bin/cre-build-darwin-arm64 && chmod +x dist/bin/cre-build-darwin-arm64 && cp bin/* dist/bin/",
 		"build:declaration": "tsc --emitDeclarationOnly --project tsconfig.types.json",
-		"postbuild": "rimraf tsconfig.types.tsbuildinfo && cp package.json dist/package.json"
+		"postbuild": "rimraf tsconfig.types.tsbuildinfo && cp package.json dist/package.json",
+		"postinstall": "node ./install.js"
 	},
 	"dependencies": {
 		"@bufbuild/protobuf": "2.6.3",

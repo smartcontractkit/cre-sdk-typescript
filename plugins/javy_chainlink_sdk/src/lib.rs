@@ -31,6 +31,9 @@ unsafe extern "C" {
 
     // Random seed generation
     fn random_seed(mode: i32) -> i64;
+
+    // Getting now time
+    fn now(result_timestamp: *mut u8) -> i32;
 }
 
 import_namespace!("javy_chainlink_sdk");
@@ -246,6 +249,35 @@ pub unsafe extern "C" fn initialize_runtime() {
                         let args_json = serde_json::to_string(&args)
                             .map_err(|_| Error::new_into_js("Error", "Failed to serialize args to JSON"))?;
                         Ok(args_json)
+                    }),
+                )
+                .unwrap();
+
+            // now(): number (Unix timestamp in milliseconds)
+            ctx.globals()
+                .set(
+                    "now",
+                    Func::from(|_ctx: Ctx<'_>| -> Result<f64, Error> {
+                        // Allocate 8-byte buffer for UnixNano timestamp
+                        let mut buffer = vec![0u8; 8];
+                        let rc = unsafe { now(buffer.as_mut_ptr()) };
+                        
+                        if rc != 0 {
+                            return Err(Error::new_into_js(
+                                "Error", 
+                                "now() returned non-zero status"
+                            ));
+                        }
+                        
+                        // Read timestamp as little-endian uint64
+                        let nanoseconds = u64::from_le_bytes([
+                            buffer[0], buffer[1], buffer[2], buffer[3],
+                            buffer[4], buffer[5], buffer[6], buffer[7],
+                        ]);
+                        
+                        // Convert from nanoseconds to milliseconds
+                        let milliseconds = nanoseconds / 1_000_000;
+                        Ok(milliseconds as f64)
                     }),
                 )
                 .unwrap();

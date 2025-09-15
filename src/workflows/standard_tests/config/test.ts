@@ -1,17 +1,24 @@
-import { getRequest } from '@cre/sdk/utils/get-request'
-import { sendResponseValue } from '@cre/sdk/utils/send-response-value'
-import { prepareRuntime } from '@cre/sdk/utils/prepare-runtime'
-import { val } from '@cre/sdk/utils/values/value'
+import { cre } from '@cre/sdk/cre'
+import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
+import { Value } from '@cre/sdk/utils/values/value'
+
+type Config = 'config'
+
+const sendBackConfig = (config: Config) => {
+	cre.sendResponseValue(new Value(Buffer.from(config)))
+}
+
+const initWorkflow = () => {
+	const basicTrigger = new BasicTriggerCapability()
+
+	return [cre.handler(basicTrigger.trigger({}), sendBackConfig)]
+}
 
 export async function main() {
 	console.log(`TS workflow: standard test: config [${new Date().toISOString()}]`)
 
-	prepareRuntime()
-	versionV2()
-
-	const executeRequest = getRequest()
-
-	sendResponseValue(val.bytes(executeRequest.config))
+	const runner = await cre.newRunner<Config>()
+	await runner.run(initWorkflow)
 }
 
-main()
+cre.withErrorBoundary(main)

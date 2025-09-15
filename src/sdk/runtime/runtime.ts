@@ -3,6 +3,9 @@ import { type Logger, logger } from '@cre/sdk/logger'
 import { DonModeError, NodeModeError } from '@cre/sdk/runtime/errors'
 import { hostBindings } from '@cre/sdk/runtime/host-bindings'
 import { getSecret } from '@cre/sdk/utils/secrets/get-secret'
+import { Rand } from '@cre/sdk/utils/random/random'
+import { getRand } from '@cre/sdk/utils/random/get-rand'
+import { getTimeAsDate } from '@cre/sdk/utils/time/get-time'
 
 /**
  * Runtime guards are not actually causing / throwing errors.
@@ -53,6 +56,8 @@ export type BaseRuntime<M extends Mode = Mode> = {
 	mode: M
 	assertDonSafe(): asserts this is Runtime
 	assertNodeSafe(): asserts this is NodeRuntime
+	getRand(): Rand
+	now(): Date
 }
 
 export type Runtime = BaseRuntime<Mode.DON> & {
@@ -94,6 +99,8 @@ export const runtime: Runtime = {
 		runtimeGuards.assertNodeSafe()
 	},
 	getSecret,
+	getRand: () => getRand(Mode.DON),
+	now: () => getTimeAsDate(),
 }
 
 export const nodeRuntime: NodeRuntime = {
@@ -107,4 +114,6 @@ export const nodeRuntime: NodeRuntime = {
 	assertDonSafe: (): asserts this is Runtime => {
 		runtimeGuards.assertDonSafe()
 	},
+	getRand: () => getRand(Mode.NODE),
+	now: () => getTimeAsDate(),
 }

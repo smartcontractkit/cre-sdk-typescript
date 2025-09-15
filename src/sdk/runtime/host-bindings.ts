@@ -25,12 +25,13 @@ const globalHostBindingsSchema = z.object({
 	getSecrets: z
 		.function()
 		.args(z.union([z.instanceof(Uint8Array), z.custom<Uint8Array<ArrayBufferLike>>()]), z.number())
-		.returns(z.number()),
+		.returns(z.any()),
 	awaitSecrets: z
 		.function()
 		.args(z.union([z.instanceof(Uint8Array), z.custom<Uint8Array<ArrayBufferLike>>()]), z.number())
 		.returns(z.union([z.instanceof(Uint8Array), z.custom<Uint8Array<ArrayBufferLike>>()])),
 	getWasiArgs: z.function().args().returns(z.string()),
+	now: z.function().args().returns(z.number()),
 })
 
 type GlobalHostBindingsMap = z.infer<typeof globalHostBindingsSchema>
@@ -53,5 +54,14 @@ const validateGlobalHostBindings = (): GlobalHostBindingsMap => {
 	}
 }
 
-// Initialize validated global functions
-export const hostBindings = validateGlobalHostBindings()
+// Initialize validated global functions (lazy evaluation for testing)
+let _hostBindings: GlobalHostBindingsMap | null = null
+
+export const hostBindings = new Proxy({} as GlobalHostBindingsMap, {
+	get(target, prop) {
+		if (!_hostBindings) {
+			_hostBindings = validateGlobalHostBindings()
+		}
+		return _hostBindings[prop as keyof GlobalHostBindingsMap]
+	},
+})

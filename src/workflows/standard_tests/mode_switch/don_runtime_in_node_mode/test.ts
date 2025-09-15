@@ -1,59 +1,55 @@
-import { prepareRuntime } from '@cre/sdk/utils/prepare-runtime'
-import { errorBoundary } from '@cre/sdk/utils/error-boundary'
 import { Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { SimpleConsensusInputsSchema } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import { sendErrorWrapped } from '@cre/sdk/testhelpers/send-error-wrapped'
 import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
 import { create, toJson } from '@bufbuild/protobuf'
 import { ConsensusCapability } from '@cre/generated-sdk/capabilities/internal/consensus/v1alpha/consensus_sdk_gen'
 import { consensusDescriptorIdentical, observationError } from '@cre/sdk/utils/values/consensus'
-
 import { cre } from '@cre/sdk/cre'
-import { handleExecuteRequest } from '@cre/sdk/engine/execute'
-import { getRequest } from '@cre/sdk/utils/get-request'
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
-import { emptyConfig, basicRuntime } from '@cre/sdk/testhelpers/mocks'
+import { type Runtime } from '@cre/sdk/runtime/runtime'
+
+// Doesn't matter for this test
+type Config = any
+
+const handler = async (_config: Config, runtime: Runtime) => {
+	const nodeRuntime = runtime.switchModes(Mode.NODE)
+
+	const consensusInput = create(SimpleConsensusInputsSchema, {
+		observation: observationError('cannot use Runtime inside RunInNodeMode'),
+		descriptors: consensusDescriptorIdentical,
+	})
+
+	try {
+		// Note: ConsensusCapability won't work in NODE mode.
+		// We're forcing it here just for test purposes.
+		// Normally, if we don't force the wrong mode, the runtime guards would prevent call to `callCapability` in the first place.
+		// Because test expectation is to callCapability and verify error output, we need to "trick" the guards.
+		const consensusCapability = new ConsensusCapability(Mode.NODE)
+		await consensusCapability.simple(toJson(SimpleConsensusInputsSchema, consensusInput))
+	} catch (e) {
+		if (e instanceof CapabilityError) {
+			cre.sendError('cannot use Runtime inside RunInNodeMode')
+		} else {
+			throw e
+		}
+	}
+
+	nodeRuntime.switchModes(Mode.DON)
+}
+
+const initWorkflow = () => {
+	const basicTrigger = new BasicTriggerCapability()
+
+	return [cre.handler(basicTrigger.trigger({}), handler)]
+}
 
 export async function main() {
 	console.log(
-		`TS workflow: standard test: mode_switch: don_runtime_in_node_mode [${new Date().toISOString()}]`,
+		`TS workflow: standard test: mode_switch: successful_mode_switch [${new Date().toISOString()}]`,
 	)
 
-	const basicTrigger = new BasicTriggerCapability()
-	const handler = async () => {
-		switchModes(Mode.NODE)
-
-		const consensusInput = create(SimpleConsensusInputsSchema, {
-			observation: observationError('cannot use Runtime inside RunInNodeMode'),
-			descriptors: consensusDescriptorIdentical,
-		})
-
-		try {
-			const consensusCapability = new ConsensusCapability()
-			await consensusCapability.simple(toJson(SimpleConsensusInputsSchema, consensusInput))
-		} catch (e) {
-			if (e instanceof CapabilityError) {
-				sendErrorWrapped(e.message)
-			} else {
-				throw e
-			}
-		}
-
-		switchModes(Mode.DON)
-		sendErrorWrapped('cannot use Runtime inside RunInNodeMode')
-	}
-
-	try {
-		const executeRequest = getRequest()
-		await handleExecuteRequest(
-			executeRequest,
-			[cre.handler(basicTrigger.trigger({ name: 'first-trigger', number: 100 }), handler)],
-			emptyConfig,
-			basicRuntime,
-		)
-	} catch (e) {
-		errorBoundary(e)
-	}
+	const runner = await cre.newRunner()
+	await runner.run(initWorkflow)
 }
 
-main()
+cre.withErrorBoundary(main)
