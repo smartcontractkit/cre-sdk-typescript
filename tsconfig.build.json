@@ -7,12 +7,13 @@
 		"moduleDetection": "force",
 		"jsx": "react-jsx",
 		"allowJs": true,
+		"outDir": "./dist",
+		"rootDir": "./src",
 
 		// Bundler mode
 		"moduleResolution": "bundler",
-		"allowImportingTsExtensions": true,
 		"verbatimModuleSyntax": true,
-		"noEmit": true,
+		"noEmit": false,
 
 		// Path aliases
 		"baseUrl": ".",
@@ -34,6 +35,7 @@
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true
 	},
-	"include": ["src/**/*", "scripts/generate-sdks.ts"],
+
+	"include": ["src/**/*"],
 	"exclude": ["ai/**/*"]
 }

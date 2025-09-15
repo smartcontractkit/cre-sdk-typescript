@@ -1,13 +1,11 @@
 bun run build:javy:sdk:wasm
 
-bun build --target=node --entrypoints ./src/index.ts --outdir=dist
-bun build --target=node --entrypoints ./src/sdk/index.ts --outdir=dist/sdk
-bun build --target=node --entrypoints ./src/sdk/utils/index.ts --outdir=dist/sdk/utils
-bun build --target=node --entrypoints ./src/sdk/runtime/index.ts --outdir=dist/sdk/runtime
+bun tsc --project tsconfig.build.json
 
 sh build-bins.sh
 
 cp bin/* dist/bin/
+cp install.js dist/install.js
 
 chmod +x dist/bin/cre-ts
 

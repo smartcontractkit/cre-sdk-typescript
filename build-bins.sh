@@ -26,7 +26,7 @@ for platform_config in "${platforms[@]}"; do
   cat > "dist/bin/$platform_arch/package.json" << EOF
 {
   "name": "@chainlink/cre-build-$platform_arch",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "os": ["$os"],
   "cpu": ["$cpu"]
 }
