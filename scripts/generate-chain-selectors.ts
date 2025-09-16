@@ -336,6 +336,162 @@ ${networks
   )
   .join("\n")}
 } as const;
+
+// Optimized Maps for fast lookups by chain selector
+export const mainnetBySelector = new Map<string, NetworkInfo>([
+${mainnetNetworks
+  .map(
+    (network) => `	["${network.chainSelector.selector}", {
+		chainId: "${network.chainId}",
+		chainSelector: {
+			name: "${network.chainSelector.name}",
+			selector: "${network.chainSelector.selector}",
+		},
+		chainFamily: "${network.chainFamily}",
+		networkType: "${network.networkType}",
+	}],`
+  )
+  .join("\n")}
+]);
+
+export const testnetBySelector = new Map<string, NetworkInfo>([
+${testnetNetworks
+  .map(
+    (network) => `	["${network.chainSelector.selector}", {
+		chainId: "${network.chainId}",
+		chainSelector: {
+			name: "${network.chainSelector.name}",
+			selector: "${network.chainSelector.selector}",
+		},
+		chainFamily: "${network.chainFamily}",
+		networkType: "${network.networkType}",
+	}],`
+  )
+  .join("\n")}
+]);
+
+// Optimized Maps for fast lookups by chain selector name
+export const mainnetByName = new Map<string, NetworkInfo>([
+${mainnetNetworks
+  .map(
+    (network) => `	["${network.chainSelector.name}", {
+		chainId: "${network.chainId}",
+		chainSelector: {
+			name: "${network.chainSelector.name}",
+			selector: "${network.chainSelector.selector}",
+		},
+		chainFamily: "${network.chainFamily}",
+		networkType: "${network.networkType}",
+	}],`
+  )
+  .join("\n")}
+]);
+
+export const testnetByName = new Map<string, NetworkInfo>([
+${testnetNetworks
+  .map(
+    (network) => `	["${network.chainSelector.name}", {
+		chainId: "${network.chainId}",
+		chainSelector: {
+			name: "${network.chainSelector.name}",
+			selector: "${network.chainSelector.selector}",
+		},
+		chainFamily: "${network.chainFamily}",
+		networkType: "${network.networkType}",
+	}],`
+  )
+  .join("\n")}
+]);
+
+// Maps by family and network type for chain selector lookups
+export const mainnetBySelectorByFamily = {
+${Object.entries(mainnetByFamily)
+  .map(
+    ([family, networks]) => `	${family}: new Map<string, NetworkInfo>([
+${networks
+  .map(
+    (network) => `		["${network.chainSelector.selector}", {
+			chainId: "${network.chainId}",
+			chainSelector: {
+				name: "${network.chainSelector.name}",
+				selector: "${network.chainSelector.selector}",
+			},
+			chainFamily: "${network.chainFamily}",
+			networkType: "${network.networkType}",
+		}],`
+  )
+  .join("\n")}
+	]),`
+  )
+  .join("\n")}
+} as const;
+
+export const testnetBySelectorByFamily = {
+${Object.entries(testnetByFamily)
+  .map(
+    ([family, networks]) => `	${family}: new Map<string, NetworkInfo>([
+${networks
+  .map(
+    (network) => `		["${network.chainSelector.selector}", {
+			chainId: "${network.chainId}",
+			chainSelector: {
+				name: "${network.chainSelector.name}",
+				selector: "${network.chainSelector.selector}",
+			},
+			chainFamily: "${network.chainFamily}",
+			networkType: "${network.networkType}",
+		}],`
+  )
+  .join("\n")}
+	]),`
+  )
+  .join("\n")}
+} as const;
+
+// Maps by family and network type for name lookups
+export const mainnetByNameByFamily = {
+${Object.entries(mainnetByFamily)
+  .map(
+    ([family, networks]) => `	${family}: new Map<string, NetworkInfo>([
+${networks
+  .map(
+    (network) => `		["${network.chainSelector.name}", {
+			chainId: "${network.chainId}",
+			chainSelector: {
+				name: "${network.chainSelector.name}",
+				selector: "${network.chainSelector.selector}",
+			},
+			chainFamily: "${network.chainFamily}",
+			networkType: "${network.networkType}",
+		}],`
+  )
+  .join("\n")}
+	]),`
+  )
+  .join("\n")}
+} as const;
+
+export const testnetByNameByFamily = {
+${Object.entries(testnetByFamily)
+  .map(
+    ([family, networks]) => `	${family}: new Map<string, NetworkInfo>([
+${networks
+  .map(
+    (network) => `		["${network.chainSelector.name}", {
+			chainId: "${network.chainId}",
+			chainSelector: {
+				name: "${network.chainSelector.name}",
+				selector: "${network.chainSelector.selector}",
+			},
+			chainFamily: "${network.chainFamily}",
+			networkType: "${network.networkType}",
+		}],`
+  )
+  .join("\n")}
+	]),`
+  )
+  .join("\n")}
+} as const;
 `;
 
   writeFileSync("src/generated/networks.ts", content);
