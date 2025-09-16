@@ -178,3 +178,5 @@ plugins/javy_chainlink_sdk/target/
 
 # Standard Test Build
 .tools
+
+pkg
