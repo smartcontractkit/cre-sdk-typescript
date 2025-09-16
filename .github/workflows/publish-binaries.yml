@@ -1,0 +1,207 @@
+name: Publish Binary Packages
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g., 1.0.0)'
+        required: false
+        type: string
+      dry_run:
+        description: 'Run in dry-run mode (do not actually publish)'
+        required: false
+        default: false
+        type: boolean
+      platforms:
+        description: 'Comma-separated list of platforms to publish (e.g., "darwin-arm64,linux-x64" or "all")'
+        required: false
+        default: 'all'
+        type: string
+  push:
+    tags:
+      - 'binaries-v*'
+  release:
+    types: [published]
+    
+env:
+  BUN_VERSION: '1.87.0'
+
+jobs:
+  build-and-publish-binaries:
+    runs-on: ubuntu-latest
+    outputs:
+      selected_platforms: ${{ steps.platforms.outputs.selected_platforms }}
+    permissions:
+      contents: read
+      id-token: write # for npm provenance
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Update platform package versions
+        if: ${{ github.event.inputs.version }}
+        run: |
+          echo "Updating platform package versions to ${{ github.event.inputs.version }}"
+          
+          # Update platform-specific package versions
+          for folder in pkg/cli/*/; do
+            if [ -d "$folder" ] && [ -f "$folder/package.json" ]; then
+              echo "Updating version in $folder"
+              (cd "$folder" && bun pm version ${{ github.event.inputs.version }})
+            fi
+          done
+
+      - name: Build packages
+        run: |
+          echo "Running build-npm-tar.sh..."
+          bash build-npm-tar.sh
+
+      - name: Parse platform selection
+        id: platforms
+        run: |
+          PLATFORMS_INPUT="${{ github.event.inputs.platforms || 'all' }}"
+          
+          if [ "$PLATFORMS_INPUT" = "all" ]; then
+            SELECTED_PLATFORMS="darwin-arm64,darwin-x64,linux-arm64,linux-x64,windows-x64"
+          else
+            SELECTED_PLATFORMS="$PLATFORMS_INPUT"
+          fi
+          
+          echo "selected_platforms=$SELECTED_PLATFORMS" >> $GITHUB_OUTPUT
+          echo "Publishing platforms: $SELECTED_PLATFORMS"
+
+      - name: List generated binary packages
+        run: |
+          echo "Generated binary packages:"
+          ls -la pkg/*cre-build-*.tgz
+
+      - name: Setup npm authentication
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+          echo "registry=https://registry.npmjs.org/" >> ~/.npmrc
+          echo "access=public" >> ~/.npmrc
+
+      - name: Verify npm authentication
+        run: bun pm whoami
+
+      - name: Publish platform-specific packages
+        run: |
+          SELECTED_PLATFORMS="${{ steps.platforms.outputs.selected_platforms }}"
+          IFS=',' read -ra PLATFORM_ARRAY <<< "$SELECTED_PLATFORMS"
+          
+          echo "Publishing packages for platforms: ${PLATFORM_ARRAY[@]}"
+          
+          # Publish selected platform-specific build packages
+          for package in pkg/*cre-build-*.tgz; do
+            if [ -f "$package" ]; then
+              BASENAME=$(basename "$package")
+              
+              # Extract platform from filename (e.g., cre-build-darwin-arm64-0.0.1.tgz -> darwin-arm64)
+              PLATFORM=$(echo "$BASENAME" | sed 's/.*cre-build-\(.*\)-[0-9].*/\1/')
+              
+              # Check if this platform should be published
+              SHOULD_PUBLISH=false
+              for selected_platform in "${PLATFORM_ARRAY[@]}"; do
+                if [ "$PLATFORM" = "$selected_platform" ]; then
+                  SHOULD_PUBLISH=true
+                  break
+                fi
+              done
+              
+              if [ "$SHOULD_PUBLISH" = true ]; then
+                echo "Publishing platform package: $package (platform: $PLATFORM)"
+                if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+                  echo "DRY RUN: Would publish $package"
+                  bun publish "$package" --dry-run --access public
+                else
+                  bun publish "$package" --access public
+                fi
+              else
+                echo "Skipping $package (platform: $PLATFORM not in selection)"
+              fi
+            fi
+          done
+
+      - name: Upload binary packages artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: binary-packages
+          path: pkg/*cre-build-*.tgz
+          retention-days: 30
+
+      - name: Create release summary
+        if: ${{ !github.event.inputs.dry_run }}
+        run: |
+          echo "## 🖥️ Published Binary Packages" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          SELECTED_PLATFORMS="${{ steps.platforms.outputs.selected_platforms }}"
+          IFS=',' read -ra PLATFORM_ARRAY <<< "$SELECTED_PLATFORMS"
+          
+          for package in pkg/*cre-build-*.tgz; do
+            if [ -f "$package" ]; then
+              BASENAME=$(basename "$package")
+              PLATFORM=$(echo "$BASENAME" | sed 's/.*cre-build-\(.*\)-[0-9].*/\1/')
+              
+              # Check if this platform was published
+              for selected_platform in "${PLATFORM_ARRAY[@]}"; do
+                if [ "$PLATFORM" = "$selected_platform" ]; then
+                  PACKAGE_NAME=$(echo "$BASENAME" | sed 's/chainlink-//' | sed 's/.tgz$//' | sed 's/-[0-9].*$//')
+                  echo "- 🖥️ \`@chainlink/$PACKAGE_NAME\` from \`$BASENAME\`" >> $GITHUB_STEP_SUMMARY
+                  break
+                fi
+              done
+            fi
+          done
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Platform-Specific Installation" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+          echo "# Install specific platform binary" >> $GITHUB_STEP_SUMMARY
+          echo "npm install @chainlink/cre-build-darwin-arm64  # for macOS ARM64" >> $GITHUB_STEP_SUMMARY
+          echo "npm install @chainlink/cre-build-linux-x64     # for Linux x64" >> $GITHUB_STEP_SUMMARY
+          echo "# etc..." >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+  verify-binary-packages:
+    needs: build-and-publish-binaries
+    runs-on: ubuntu-latest
+    if: ${{ !github.event.inputs.dry_run }}
+    
+    steps:
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Wait for package propagation
+        run: sleep 60
+
+      - name: Verify published binary packages exist
+        run: |
+          echo "Verifying published binary packages..."
+          
+          SELECTED_PLATFORMS="${{ needs.build-and-publish-binaries.outputs.selected_platforms || 'darwin-arm64,darwin-x64,linux-arm64,linux-x64,windows-x64' }}"
+          IFS=',' read -ra PLATFORM_ARRAY <<< "$SELECTED_PLATFORMS"
+          
+          for platform in "${PLATFORM_ARRAY[@]}"; do
+            echo "Checking @chainlink/cre-build-$platform..."
+            if bun pm view "@chainlink/cre-build-$platform" version >/dev/null 2>&1; then
+              echo "✅ @chainlink/cre-build-$platform exists"
+            else
+              echo "❌ @chainlink/cre-build-$platform not found"
+              exit 1
+            fi
+          done
