@@ -61,6 +61,7 @@ export function generateSdk(file: GenFile, outputDir: string) {
 			const inputPathTypes = typeImports.get(inputPath)!
 			inputPathTypes.add(`${method.input.name}Schema`)
 			inputPathTypes.add(`type ${method.input.name}Json`)
+			inputPathTypes.add(`type ${method.input.name}`)
 
 			// Handle output type
 			const outputFile = method.output.file
@@ -83,7 +84,11 @@ export function generateSdk(file: GenFile, outputDir: string) {
 
 		// Build import statements
 		const imports = new Set<string>()
-		imports.add('import { fromBinary, toBinary, fromJson, create } from "@bufbuild/protobuf";')
+		if (hasTriggers) {
+			imports.add('import { fromBinary, toBinary, fromJson, create } from "@bufbuild/protobuf";')
+		} else {
+			imports.add('import { fromBinary, toBinary, fromJson } from "@bufbuild/protobuf";')
+		}
 		imports.add(`import {
   Mode,
   type CapabilityResponse,

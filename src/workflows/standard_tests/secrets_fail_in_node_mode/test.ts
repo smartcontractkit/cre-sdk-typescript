@@ -1,9 +1,6 @@
-import { create } from '@bufbuild/protobuf'
 import { cre, type Runtime, type NodeRuntime } from '@cre/sdk/cre'
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
-// TODO: is this part of CRE or test utils?
-import { consensusDescriptorIdentical, observationError } from '@cre/sdk/utils/values/consensus'
-import { SimpleConsensusInputsSchema } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import { consensusMedianAggregation } from '@cre/sdk/utils'
 
 // Doesn't matter for this test
 type Config = any
@@ -11,17 +8,8 @@ type Config = any
 const secretAccessInNodeMode = async (_config: Config, runtime: Runtime) => {
 	try {
 		await cre.runInNodeMode(async (_nodeRuntime: NodeRuntime) => {
-			try {
-				await runtime.getSecret('anything')
-			} catch {
-				// This is expected to fail due to Don Mode guards, ignore error
-			}
-
-			return create(SimpleConsensusInputsSchema, {
-				observation: observationError('cannot use Runtime inside RunInNodeMode'),
-				descriptors: consensusDescriptorIdentical,
-			})
-		})
+			return await runtime.getSecret('anything')
+		}, consensusMedianAggregation())()
 	} catch {
 		cre.sendError('cannot use Runtime inside RunInNodeMode')
 	}

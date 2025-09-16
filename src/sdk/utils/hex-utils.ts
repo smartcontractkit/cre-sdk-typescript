@@ -1,7 +1,7 @@
 /**
  * Hex conversion utilities for blockchain data
  *
- * Note: BigInt utilities are available in @cre/sdk/utils/values/value
+ * Note: BigInt utilities are available in @cre/sdk/utils
  * Use val.bigint() or bigIntToProtoBigInt() for BigInt conversions
  */
 import { type Hex } from 'viem'

@@ -1,4 +1,4 @@
-import { Value } from '@cre/sdk/utils/values/value'
+import { Value } from '@cre/sdk/utils'
 import { type ExecutionResult, ExecutionResultSchema } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { create, toBinary } from '@bufbuild/protobuf'
 
@@ -7,7 +7,7 @@ export const sendResponseValue = (value: Value): void => {
 	const execResult: ExecutionResult = create(ExecutionResultSchema, {
 		result: {
 			case: 'value',
-			value: value.proto,
+			value: value.proto(),
 		},
 	})
 

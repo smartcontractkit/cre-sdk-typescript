@@ -1,68 +1,54 @@
-import { toJson } from '@bufbuild/protobuf'
+import { create, toJson } from '@bufbuild/protobuf'
 import {
 	Mode,
 	SimpleConsensusInputsSchema,
-	type SimpleConsensusInputs,
-	type SimpleConsensusInputsJson,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { ConsensusCapability } from '@cre/generated-sdk/capabilities/internal/consensus/v1alpha/consensus_sdk_gen'
-import type { Value } from '@cre/generated/values/v1/values_pb'
 import { runtime, type NodeRuntime } from '@cre/sdk/runtime/runtime'
-
-type Inputs = SimpleConsensusInputs | SimpleConsensusInputsJson
-
-const isMessageInputs = (i: unknown): i is SimpleConsensusInputs => {
-	const anyI = i as any
-	return (
-		anyI &&
-		typeof anyI === 'object' &&
-		'observation' in anyI &&
-		anyI.observation &&
-		typeof anyI.observation === 'object' &&
-		'case' in anyI.observation
-	)
-}
-
-const isJsonInputs = (i: unknown): i is SimpleConsensusInputsJson => {
-	const anyI = i as any
-	if (!anyI || typeof anyI !== 'object') return false
-	if (!('observation' in anyI)) return true
-	const obs = anyI.observation
-	if (obs == null) return true
-	return typeof obs === 'object' && ('value' in obs || 'error' in obs)
-}
-
-const toInputsJson = (input: Inputs): SimpleConsensusInputsJson => {
-	if (isMessageInputs(input)) {
-		return toJson(SimpleConsensusInputsSchema, input)
-	}
-	if (isJsonInputs(input)) {
-		return input
-	}
-	throw new Error(
-		'runInNodeMode: invalid input shape; expected SimpleConsensusInputs message or SimpleConsensusInputsJson',
-	)
-}
+import type { UnwrapOptions, ConsensusAggregation, CreSerializable, PrimitiveTypes } from '../utils'
+import { Value  } from '../utils'
 
 /**
  * Runs the provided builder inside Node mode and returns the consensus result Value.
  * Ensures mode is switched back to DON even if errors occur.
  */
-export const runInNodeMode = async (
-	buildConsensusInputs: (nodeRuntime: NodeRuntime) => Promise<Inputs> | Inputs,
-): Promise<Value> => {
-	const nodeRuntime: NodeRuntime = runtime.switchModes(Mode.NODE)
-	let consensusInputJson: SimpleConsensusInputsJson
-	try {
-		const consensusInput = await buildConsensusInputs(nodeRuntime)
-		consensusInputJson = toInputsJson(consensusInput)
-	} finally {
-		// Always restore DON mode before invoking consensus
-		runtime.switchModes(Mode.DON)
-	}
+/**
+ * Runs the provided builder inside Node mode and returns the consensus result Value.
+ * For primitive types (number, bigint, Date, boolean, string), it will use unwrap()
+ * For complex types, it will use unwrapToType() with the provided options
+ */
+export function runInNodeMode<TArgs extends any[], TOutput>(
+	fn: (nodeRuntime: NodeRuntime, ...args: TArgs) => Promise<TOutput> | TOutput,
+	consesusAggretation: ConsensusAggregation<TOutput, true>,
+	unwrapOptions?: TOutput extends PrimitiveTypes ? never : UnwrapOptions<TOutput>
+): (...args: TArgs) => Promise<TOutput> {
+	return async (...args: TArgs) => {
+		const nodeRuntime: NodeRuntime = runtime.switchModes(Mode.NODE)
 
-	const consensus = new ConsensusCapability()
-	// simple() expects JSON per generated client conventions
-	const result = await consensus.simple(consensusInputJson)
-	return result
+		const consensusInput = create(SimpleConsensusInputsSchema, { descriptors: consesusAggretation.descriptor })
+		if (consesusAggretation.defaultValue) {
+			// This cast is safe, since ConsensusAggregation can only have true its second argument if T extends CreSerializable<TOutput>
+			consensusInput.default = Value.from(consesusAggretation.defaultValue as CreSerializable<TOutput>).proto()
+		}
+
+		try {
+			const observation = await fn(nodeRuntime, ...args)
+			// This cast is safe, since ConsensusAggregation can only have true its second argument if T extends CreSerializable<TOutput>
+			consensusInput.observation = { case: 'value', value: Value.from(observation as CreSerializable<TOutput>).proto()  }
+		
+		} catch (e: any) {
+			consensusInput.observation = { case: 'error', value: e.message || String(e) }
+		} finally {
+			// Always restore DON mode before invoking consensus
+			runtime.switchModes(Mode.DON)
+		}
+
+		const consensus = new ConsensusCapability()
+		const result = await consensus.simple(consensusInput)
+		const wrappedValue = Value.wrap(result)
+		
+		return unwrapOptions 
+			? wrappedValue.unwrapToType(unwrapOptions)
+			: wrappedValue.unwrap() as TOutput
+	}
 }
