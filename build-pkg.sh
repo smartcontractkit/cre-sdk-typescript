@@ -4,6 +4,8 @@ bun tsc --project tsconfig.build.json
 
 sh build-bins.sh
 
+mkdir -p dist/bin
+
 cp bin/* dist/bin/
 cp install.js dist/install.js
 

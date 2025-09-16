@@ -10,6 +10,8 @@ platforms=(
   "bun-windows-x64:windows-x64:win32:x64"
 )
 
+output_dir="pkg/cli"
+
 # Loop through each platform configuration
 for platform_config in "${platforms[@]}"; do
   # Split the configuration string
@@ -18,12 +20,12 @@ for platform_config in "${platforms[@]}"; do
   echo "Building for $platform_arch..."
   
   # Build the binary
-  bun build ./cli/run.ts --target="$bun_target" --compile --outfile "dist/bin/$platform_arch/bin/cre-build"
+  bun build ./cli/run.ts --target="$bun_target" --compile --outfile "$output_dir/$platform_arch/bin/cre-build"
 
-  chmod +x "dist/bin/$platform_arch/bin/cre-build"
+  chmod +x "$output_dir/$platform_arch/bin/cre-build"
   
   # Create package.json for this platform
-  cat > "dist/bin/$platform_arch/package.json" << EOF
+  cat > "$output_dir/$platform_arch/package.json" << EOF
 {
   "name": "@chainlink/cre-build-$platform_arch",
   "version": "0.0.1",
