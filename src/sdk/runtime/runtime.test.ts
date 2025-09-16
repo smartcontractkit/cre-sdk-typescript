@@ -1,68 +1,158 @@
-import { describe, test, expect, beforeEach } from 'bun:test'
-import { Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import { describe, test, expect, mock } from 'bun:test'
+import { create } from '@bufbuild/protobuf'
+import {
+	AggregationType,
+	ConsensusDescriptorSchema,
+	Mode,
+	type SimpleConsensusInputs,
+	type SimpleConsensusInputsJson,
+} from '@cre/generated/sdk/v1alpha/sdk_pb'
+import { ConsensusCapability } from '@cre/generated-sdk/capabilities/internal/consensus/v1alpha/consensus_sdk_gen'
 // Mock the host bindings before importing runtime
-import '@cre/sdk/testhelpers/mock-host-bindings'
-import { runtime, runtimeGuards, type NodeRuntime, type Runtime } from './runtime'
-import { DonModeError, NodeModeError } from './errors'
+import { calls } from '@cre/sdk/testhelpers/mock-host-bindings'
+import { type NodeRuntime } from '@cre/sdk/runtime/runtime'
+import { Value,  consensusIdenticalAggregation, consensusMedianAggregation } from '../utils'
+import type { Value as ProtoValue } from '@cre/generated/values/v1/values_pb'
+import { BasicActionCapability } from '@cre/generated-sdk/capabilities/internal/basicaction/v1/basicaction_sdk_gen'
+import { RuntimeImpl } from './impl/runtime-impl'
 
-describe('Handling runtime in TS SDK', () => {
-	beforeEach(() => {
-		runtimeGuards.setMode(Mode.DON)
+function expectObservation(i: SimpleConsensusInputs): Value {
+	expect(i.observation.case).toEqual('value')
+	return Value.wrap(i.observation.value as ProtoValue)
+}
+
+function expectError(i: SimpleConsensusInputs): string {
+	expect(i.observation.case).toEqual('error')
+	return i.observation.value as string
+}
+
+describe('runInNodeMode', () => {
+	test('successful run', async () => {
+		// Clear the calls array for this test
+		calls.length = 0
+
+		runtime = new RuntimeImpl()
+
+		const anyObservation = 120
+		const anyResult = 123
+		
+		// spy on consensus.simple
+		const origSimple = ConsensusCapability.prototype.simple
+		ConsensusCapability.prototype.simple = mock(async (inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
+			calls.push('CONSENSUS_SIMPLE')
+
+			// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+			expect((inputs as any).$typeName).toBeDefined()
+			const castedInputs = inputs as SimpleConsensusInputs
+			expect(castedInputs.default).toBeUndefined()
+			const actualObservation = expectObservation(castedInputs)
+			expect(Value.from(anyObservation)).toEqual(actualObservation)
+
+			const expectedDescriptor = create(ConsensusDescriptorSchema, {
+				descriptor: {
+					case: 'aggregation',
+					value: AggregationType.MEDIAN
+				}
+			})
+			expect(castedInputs.descriptors).toEqual(expectedDescriptor)
+		
+			return Value.from(anyResult).proto()
+		})
+
+		const res = await runInNodeMode((_: NodeRuntime<) => anyObservation, consensusMedianAggregation())()
+		expect(res).toEqual(anyResult)
+
+		expect(calls).toEqual(['NODE', 'DON', 'CONSENSUS_SIMPLE'])
+		
+		// Restore the original method after the test
+		ConsensusCapability.prototype.simple = origSimple
 	})
 
-	test('runtime should be DON by default', () => {
-		expect(runtime.mode).toBe(Mode.DON)
+	test('local failure with consensus', async () => {
+		// Clear the calls array for this test
+		calls.length = 0
+
+		const anyError = Error("nope")
+		const anyResult = 123
+		
+
+		// spy on consensus.simple
+		const origSimple = ConsensusCapability.prototype.simple
+		ConsensusCapability.prototype.simple = mock(async (inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
+			calls.push('CONSENSUS_SIMPLE')
+
+			// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+			expect((inputs as any).$typeName).toBeDefined()
+			const castedInputs = inputs as SimpleConsensusInputs
+			expect(castedInputs.default).toBeUndefined()
+			const actualError = expectError(castedInputs)
+			expect(anyError.message).toEqual(actualError)
+
+			const expectedDescriptor = create(ConsensusDescriptorSchema, {
+				descriptor: {
+					case: 'aggregation',
+					value: AggregationType.MEDIAN
+				}
+			})
+			expect(castedInputs.descriptors).toEqual(expectedDescriptor)
+		
+			return Value.from(anyResult).proto()
+		})
+
+		const errFn: (_: NodeRuntime) => number = (_: NodeRuntime) => { throw anyError }
+		const res = await runInNodeMode(errFn, consensusMedianAggregation())()
+		expect(res).toEqual(anyResult)
+
+		expect(calls).toEqual(['NODE', 'DON', 'CONSENSUS_SIMPLE'])
+		
+		// Restore the original method after the test
+		ConsensusCapability.prototype.simple = origSimple
 	})
 
-	test('switching modes should work', () => {
-		// Start from DON mode
-		expect(runtime.isNodeRuntime).toBe(false)
+	test('guards DON calls while in node mode, also local and consensus failure', async () => {
+		// Simulate switchModes by touching global function used by host
+		const origSwitch = (globalThis as any).switchModes
+		;(globalThis as any).switchModes = (_m: Mode) => {}
 
-		// Switch to NODE mode and verify it works
-		const nodeRt = runtime.switchModes(Mode.NODE)
-		expect(nodeRt.isNodeRuntime).toBe(true)
-		expect(nodeRt.mode).toBe(Mode.NODE)
+		
+		// spy on consensus.simple
+		const origSimple = ConsensusCapability.prototype.simple
+		ConsensusCapability.prototype.simple = mock(async (inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
+			calls.push('CONSENSUS_SIMPLE')
 
-		// Switch back to DON mode and verify it works
-		const rt = nodeRt.switchModes(Mode.DON)
-		expect(rt.mode).toBe(Mode.DON)
-		expect(rt.isNodeRuntime).toBe(false)
-	})
+			// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+			expect((inputs as any).$typeName).toBeDefined()
+			const castedInputs = inputs as SimpleConsensusInputs
+			expect(castedInputs.default).toBeUndefined()
+			const actualError = expectError(castedInputs)
+			expect(actualError).toContain('cannot use Runtime inside RunInNodeMode.')
 
-	test('switching modes should be noop when already in that mode', () => {
-		// By default we are in DON mode, but we call switchModes to confirm that's a noop
-		let rt = runtime.switchModes(Mode.DON)
-		expect(rt.mode).toBe(Mode.DON)
-		expect(rt.isNodeRuntime).toBe(false)
+			const expectedDescriptor = create(ConsensusDescriptorSchema, {
+				descriptor: {
+					case: 'aggregation',
+					value: AggregationType.IDENTICAL
+				}
+			})
+			expect(castedInputs.descriptors).toEqual(expectedDescriptor)
+		
+			throw Error(actualError)
+		})
+		
+		expect(async () => {
+			await runInNodeMode(async (_: NodeRuntime) => {
+				const ba = new BasicActionCapability()
+				const result = await ba.performAction({ inputThing: true })
+				return result.adaptedThing
+			}, consensusIdenticalAggregation())()
+		}).toThrow(RegExp(".*cannot use Runtime inside RunInNodeMode.*"))
 
-		// // Now actually switch to NODE mode
-		let nodeRuntime = rt.switchModes(Mode.NODE)
-		expect(nodeRuntime.mode).toBe(Mode.NODE)
-		expect(nodeRuntime.isNodeRuntime).toBe(true)
-
-		// And now switch to Node mode again, make sure it's a noop and the runtime is still in NODE mode.
-		nodeRuntime = nodeRuntime.switchModes(Mode.NODE)
-		expect(nodeRuntime.mode).toBe(Mode.NODE)
-		expect(nodeRuntime.isNodeRuntime).toBe(true)
-	})
-
-	test('assertDonSafe should throw an error if called in NODE mode', () => {
-		// DON mode is default so asserting DON safe should not throw an error
-		runtime.assertDonSafe()
-
-		// Switch to NODE mode and assert DON safe should throw an error
-		const nodeRuntime: NodeRuntime = runtime.switchModes(Mode.NODE)
-		expect(() => nodeRuntime.assertDonSafe()).toThrow(DonModeError)
-
-		// Asserting node safe should not throw however
-		nodeRuntime.assertNodeSafe()
-
-		const rt: Runtime = nodeRuntime.switchModes(Mode.DON)
-		expect(() => rt.assertNodeSafe()).toThrow(NodeModeError)
+		// Restore the original method and global after the test
+		ConsensusCapability.prototype.simple = origSimple
+		;(globalThis as any).switchModes = origSwitch
 	})
 
 	test('getSecret is only available in DON mode', () => {
-		// Casting to any because typescript itself is not letting us do this
+		// biome-ignore lint/suspicious/noExplicitAny: casing to any or you can't make the call at all
 		const nodeRuntime: any = runtime.switchModes(Mode.NODE)
 		expect(nodeRuntime.getSecret).toBeUndefined()
 
@@ -70,3 +160,7 @@ describe('Handling runtime in TS SDK', () => {
 		expect(rt.getSecret).toBeDefined()
 	})
 })
+
+describe('call capability', () => {
+	
+}) 
