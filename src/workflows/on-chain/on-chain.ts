@@ -1,26 +1,15 @@
 import { z } from 'zod'
 import { cre } from '@cre/sdk/cre'
 import { sendResponseValue } from '@cre/sdk/utils/send-response-value'
-import { val } from '@cre/sdk/utils/values/value'
+import { Value, consensusMedianAggregation } from '@cre/sdk/utils'
 import { encodeFunctionData, decodeFunctionResult, zeroAddress } from 'viem'
 import { bytesToHex } from '@cre/sdk/utils/hex-utils'
-import type { Runtime } from '@cre/sdk/runtime/runtime'
-import { useMedianConsensus } from '@cre/sdk/utils/values/consensus-hooks'
+import type { NodeRuntime, Runtime } from '@cre/sdk/runtime/runtime'
 import { hexToBase64 } from '@cre/sdk/utils/hex-utils'
 import { withErrorBoundary } from '@cre/sdk/utils/error-boundary'
 
-// Storage contract ABI - we only need the 'get' function
 // TODO: In production, load ABI from external file or contract metadata
-// following Go SDK patterns for ABI management
-const STORAGE_ABI = [
-	{
-		inputs: [],
-		name: 'get',
-		outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-		stateMutability: 'view',
-		type: 'function',
-	},
-] as const
+import { STORAGE_ABI } from './abi'
 
 const configSchema = z.object({
 	schedule: z.string(),
@@ -35,12 +24,12 @@ const configSchema = z.object({
 
 type Config = z.infer<typeof configSchema>
 
-const fetchMathResult = useMedianConsensus(async (config: Config) => {
+async function fetchMathResult(nodeRuntime: NodeRuntime, config: Config): Promise<number> {
 	const response = await cre.utils.fetch({
 		url: config.apiUrl,
 	})
 	return Number.parseFloat(response.body.trim())
-}, 'float64')
+}
 
 const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> => {
 	if (!config.evms?.length) {
@@ -48,9 +37,9 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 	}
 
 	// Step 1: Fetch offchain data using consensus (from Part 2)
-	const offchainValue = await fetchMathResult(config)
+	const offchainValue = await cre.runInNodeMode(fetchMathResult, consensusMedianAggregation())(config)
 
-	runtime.logger.log('Successfully fetched offchain value')
+	runtime.logger.log(`Successfully fetched offchain value: ${offchainValue}`)
 
 	// Get the first EVM configuration from the list
 	const evmConfig = config.evms[0]
@@ -89,16 +78,12 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 	runtime.logger.log(`Successfully read onchain value: ${onchainValue.toString()}`)
 
 	// Step 3: Combine the results - convert offchain float to bigint and add
-	const offchainFloat = offchainValue.value.case === 'float64Value' ? offchainValue.value.value : 0
-
-	const offchainBigInt = BigInt(Math.floor(offchainFloat))
+	const offchainBigInt = BigInt(Math.floor(offchainValue))
 	const finalResult = onchainValue + offchainBigInt
 
-	runtime.logger.log('Final calculated result')
-
 	sendResponseValue(
-		val.mapValue({
-			FinalResult: val.bigint(finalResult),
+		Value.from({
+			FinalResult: finalResult,
 		}),
 	)
 }
@@ -111,7 +96,7 @@ const initWorkflow = (config: Config) => {
 
 export async function main() {
 	const runner = await cre.newRunner<Config>({
-		configSchema: configSchema,
+		configSchema,
 	})
 	await runner.run(initWorkflow)
 }

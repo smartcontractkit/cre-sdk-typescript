@@ -12,35 +12,11 @@ import { BasicCapability as ActionAndTriggerCapability } from '@cre/generated-sd
 import { TriggerEventSchema as ActionTriggerEventSchema } from '@cre/generated/capabilities/internal/actionandtrigger/v1/action_and_trigger_pb'
 import { OutputsSchema as BasicTriggerOutputsSchema } from '@cre/generated/capabilities/internal/basictrigger/v1/basic_trigger_pb'
 import { getTypeUrl } from '@cre/sdk/utils/typeurl'
-import { emptyConfig, basicRuntime } from '@cre/sdk/testhelpers/mocks'
-
-// Mock the hostBindings module before importing handleExecuteRequest
-const mockSendResponse = mock((_response: Uint8Array) => 0)
-const mockHostBindings = {
-	sendResponse: mockSendResponse,
-	switchModes: mock((_mode: 0 | 1 | 2) => {}),
-	log: mock((_message: string) => {}),
-	callCapability: mock((_request: Uint8Array) => 1),
-	awaitCapabilities: mock(
-		(_awaitRequest: Uint8Array, _maxResponseLen: number) =>
-			new Uint8Array(Buffer.from('mock_await_capabilities_response', 'utf8')),
-	),
-	getSecrets: mock((_request: Uint8Array, _maxResponseLen: number) => 1),
-	awaitSecrets: mock(
-		(_awaitRequest: Uint8Array, _maxResponseLen: number) =>
-			new Uint8Array(Buffer.from('mock_await_secrets_response', 'utf8')),
-	),
-	versionV2: mock(() => {}),
-	randomSeed: mock((_mode: 1 | 2) => Math.random()),
-	getWasiArgs: mock(() => '["mock.wasm", ""]'),
-}
-
-// Mock the module
-mock.module('@cre/sdk/runtime/host-bindings', () => ({
-	hostBindings: mockHostBindings,
-}))
-
+import { mockHostBindings } from '@cre/sdk/testhelpers/mock-host-bindings'
+import { mockedRuntime } from '@cre/sdk/testhelpers/mock-runtime'
 import { handleExecuteRequest } from '@cre/sdk/engine/execute'
+
+const emptyConfig = {}
 
 const decodeExecutionResult = (result: Uint8Array) => fromBinary(ExecutionResultSchema, result)
 
@@ -48,7 +24,7 @@ describe('engine/execute', () => {
 	test('subscribe returns TriggerSubscriptionRequest wrapped in ExecutionResult', async () => {
 		const subs: string[] = []
 		// mock sendResponse to capture the payload
-		mockSendResponse.mockImplementation((resp: Uint8Array) => {
+		mockHostBindings.sendResponse.mockImplementation((resp: Uint8Array) => {
 			const exec = decodeExecutionResult(resp)
 			const ts = exec.result.case === 'triggerSubscriptions' ? exec.result.value : undefined
 			expect(ts).toBeDefined()
@@ -71,7 +47,7 @@ describe('engine/execute', () => {
 			maxResponseSize: 0n,
 		})
 
-		await handleExecuteRequest(req, workflow, emptyConfig, basicRuntime)
+		await handleExecuteRequest(req, workflow, emptyConfig, mockedRuntime)
 
 		expect(subs[0]).toContain(
 			'basic-test-trigger@1.0.0:Trigger:type.googleapis.com/capabilities.internal.basictrigger.v1.Config',
@@ -83,7 +59,7 @@ describe('engine/execute', () => {
 			'basic-test-trigger@1.0.0:Trigger:type.googleapis.com/capabilities.internal.basictrigger.v1.Config',
 		)
 
-		mockSendResponse.mockRestore()
+		mockHostBindings.sendResponse.mockRestore()
 	})
 
 	test('trigger routes by id and decodes payload for correct handler', async () => {
@@ -123,7 +99,7 @@ describe('engine/execute', () => {
 			maxResponseSize: 0n,
 		})
 
-		await handleExecuteRequest(req, workflow, emptyConfig, basicRuntime)
+		await handleExecuteRequest(req, workflow, emptyConfig, mockedRuntime)
 
 		expect(calls).toEqual(['action:different'])
 	})
@@ -154,7 +130,7 @@ describe('engine/execute', () => {
 			maxResponseSize: 0n,
 		})
 
-		await handleExecuteRequest(req, workflow, emptyConfig, basicRuntime)
+		await handleExecuteRequest(req, workflow, emptyConfig, mockedRuntime)
 		expect(calls).toEqual([])
 	})
 
@@ -185,7 +161,7 @@ describe('engine/execute', () => {
 			maxResponseSize: 0n,
 		})
 
-		await handleExecuteRequest(req, workflow, emptyConfig, basicRuntime)
+		await handleExecuteRequest(req, workflow, emptyConfig, mockedRuntime)
 		expect(calls).toEqual([])
 	})
 })

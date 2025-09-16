@@ -1,4 +1,4 @@
-import type { Runtime, BaseRuntime, CallCapabilityParams, NodeRuntime, ConsensusAggregation } from '@cre/sdk/runtime/runtime';
+import type { Runtime, BaseRuntime, CallCapabilityParams, NodeRuntime } from '@cre/sdk/runtime/runtime';
 import { 
     type AwaitCapabilitiesRequest, 
     type AwaitCapabilitiesResponse, 
@@ -12,7 +12,6 @@ import {
     GetSecretsRequestSchema,
     AwaitSecretsRequestSchema,
     type Secret,
-    type SimpleConsensusInputs,
     SimpleConsensusInputsSchema
 } from "@cre/generated/sdk/v1alpha/sdk_pb";
 import { type Any } from "@bufbuild/protobuf/wkt";
@@ -22,8 +21,8 @@ import { CapabilityRequestSchema } from "@cre/generated/sdk/v1alpha/sdk_pb";
 import { LazyPromise } from '@cre/sdk/utils/lazy-promise';
 import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error';
 import { DonModeError, NodeModeError, SecretsError } from '../errors';
-import { unknown } from 'zod/v4';
-import { Consensus } from '@cre/generated/capabilities/internal/consensus/v1alpha/consensus_pb';
+import { Value, type ConsensusAggregation, type CreSerializable, type PrimitiveTypes, type UnwrapOptions } from '@cre/sdk/utils';
+import { ConsensusCapability } from '@cre/generated-sdk/capabilities/internal/consensus/v1alpha/consensus_sdk_gen';
 
 export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
     // modeError must only be set from within NodeRuntimeImpl
@@ -31,7 +30,7 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 
     constructor(
         public config: C,
-        protected nextCallId: number,
+        public nextCallId: number,
         protected helpers: RuntimeHelpers,
         protected maxResponseSize: number,
         private mode: Mode) { }
@@ -128,34 +127,46 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
          super(config, nextCallId, helpers, maxResponseSize, Mode.DON)
         }
     
-    runInNodeMode<O>(callback: (nodeRuntime: NodeRuntime<C>) => O, ca: ConsensusAggregation<O>): Promise<O> {
-        const nodeRuntime = new NodeRuntimeImpl(this.config, this.nextNodeCallId, this.helpers, this.maxResponseSize)
-        this.modeError = new DonModeError()
-        this.helpers.switchModes(Mode.NODE)
-        
-        const input = create(SimpleConsensusInputsSchema, {
-            default: ca.default,
-        })
-        try {
-            const result = callback(nodeRuntime)
+    
+    runInNodeMode<TArgs extends any[], TOutput>(
+        fn: (nodeRuntime: NodeRuntime<C>, ...args: TArgs) => Promise<TOutput> | TOutput,
+        consesusAggretation: ConsensusAggregation<TOutput, true>,
+        unwrapOptions?: TOutput extends PrimitiveTypes ? never : UnwrapOptions<TOutput>
+    ): (...args: TArgs) => Promise<TOutput> {
+        return async (...args: TArgs): Promise<TOutput> => {
+            this.modeError = new DonModeError()
+            const nodeRuntime = new NodeRuntimeImpl(this.config, this.nextNodeCallId, this.helpers, this.maxResponseSize)
+            this.helpers.switchModes(Mode.NODE)
+            
+                    const consensusInput = create(SimpleConsensusInputsSchema, { descriptors: consesusAggretation.descriptor })
+                    if (consesusAggretation.defaultValue) {
+                        // This cast is safe, since ConsensusAggregation can only have true its second argument if T extends CreSerializable<TOutput>
+                        consensusInput.default = Value.from(consesusAggretation.defaultValue as CreSerializable<TOutput>).proto()
+                    }
+            
+                    try {
+                        const observation = await fn(nodeRuntime, ...args)
+                        // This cast is safe, since ConsensusAggregation can only have true its second argument if T extends CreSerializable<TOutput>
+                        consensusInput.observation = { case: 'value', value: Value.from(observation as CreSerializable<TOutput>).proto()  }
+                    
+                    } catch (e: any) {
+                        consensusInput.observation = { case: 'error', value: e.message || String(e) }
+                    } finally {
+                        // Always restore DON mode before invoking consensus
+                        this.modeError = undefined
+                        this.nextNodeCallId = nodeRuntime.nextCallId
+                        nodeRuntime.modeError = new NodeModeError()
+                        this.helpers.switchModes(Mode.DON)
+                    }
+            
+                    const consensus = new ConsensusCapability()
+                    const result = await consensus.simple(consensusInput)
+                    const wrappedValue = Value.wrap(result)
+                    
+                    return unwrapOptions 
+                        ? wrappedValue.unwrapToType(unwrapOptions)
+                        : wrappedValue.unwrap() as TOutput
         }
-        const observation = /* TODO */ unknown        
-        this.helpers.switchModes(Mode.DON)
-        nodeRuntime.modeError = new NodeModeError()
-        this.modeError = undefined
-        this.nextNodeCallId = nodeRuntime.getNextCallId()
-        // TODO    
-    /*
-
-	c := &consensus.Consensus{}
-	return cre.Then(c.Simple(d, observation), func(result *valuespb.Value) (values.Value, error) {
-		return values.FromProto(result)
-	})
-
-        */
-
-
-        throw new Error('Method not implemented.');
     }
 
     getSecret(request: SecretRequest): Promise<Secret> {

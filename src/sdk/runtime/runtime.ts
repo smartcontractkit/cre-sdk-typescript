@@ -1,7 +1,7 @@
 import type { Message } from "@bufbuild/protobuf"
 import type { GenMessage } from "@bufbuild/protobuf/codegenv2";
-import type { ConsensusDescriptor } from '@cre/generated/sdk/v1alpha/sdk_pb';
 import type { SecretRequest, Secret } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import type { ConsensusAggregation, PrimitiveTypes, UnwrapOptions } from "@cre/sdk/utils";
 
 
 export type CallCapabilityParams<I extends Message, O extends Message> = {
@@ -21,14 +21,12 @@ export type BaseRuntime<C> = {
 	): Promise<O>
 }
 
-// TODO helpers for consensus aggregation
-export type ConsensusAggregation<T> = {
-	descriptor: ConsensusDescriptor
-	default?: T
-}
-
 export type Runtime<C> = BaseRuntime<C> & {
-	runInNodeMode<O>(callback: (nodeRuntime: NodeRuntime<C>) => O, ca: ConsensusAggregation<O>): Promise<O>
+	runInNodeMode<TArgs extends any[], TOutput>(
+		fn: (nodeRuntime: NodeRuntime<C>, ...args: TArgs) => Promise<TOutput> | TOutput,
+		consensusAggregation: ConsensusAggregation<TOutput, true>,
+		unwrapOptions?: TOutput extends PrimitiveTypes ? never : UnwrapOptions<TOutput>
+	): (...args: TArgs) => Promise<TOutput>
 	getSecret(request: SecretRequest): Promise<Secret>
 }
 

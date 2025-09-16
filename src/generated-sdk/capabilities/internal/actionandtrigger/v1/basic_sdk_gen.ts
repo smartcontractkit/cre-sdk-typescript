@@ -13,7 +13,9 @@ import {
   InputSchema,
   OutputSchema,
   TriggerEventSchema,
+  type Config,
   type ConfigJson,
+  type Input,
   type InputJson,
   type Output,
   type TriggerEvent,
@@ -42,10 +44,12 @@ export class BasicCapability {
     private readonly mode: Mode = BasicCapability.DEFAULT_MODE
   ) {}
 
-  async action(input: InputJson): Promise<Output> {
+  async action(input: Input |  InputJson): Promise<Output> {
+    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+    const value = (input as any).$typeName ? input as Input : fromJson(InputSchema, input as InputJson)
     const payload = {
       typeUrl: getTypeUrl(InputSchema),
-      value: toBinary(InputSchema, fromJson(InputSchema, input)),
+      value: toBinary(InputSchema, value),
     };
     const capabilityId = BasicCapability.CAPABILITY_ID;
     
@@ -84,12 +88,16 @@ export class BasicCapability {
  * Trigger implementation for Trigger
  */
 class BasicTrigger implements Trigger<TriggerEvent, TriggerEvent> {
+  public readonly config: Config
   constructor(
     public readonly mode: Mode,
-    public readonly config: ConfigJson,
+    config: Config | ConfigJson,
     private readonly _capabilityId: string,
     private readonly _method: string
-  ) {}
+  ) {
+    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+    this.config = (config as any).$typeName ? config as Config : fromJson(ConfigSchema, config as ConfigJson)
+  }
 
   capabilityId(): string {
     return this._capabilityId;
@@ -104,10 +112,9 @@ class BasicTrigger implements Trigger<TriggerEvent, TriggerEvent> {
   }
 
   configAsAny(): Any {
-    const configMessage = fromJson(ConfigSchema, this.config);
     return create(AnySchema, {
       typeUrl: getTypeUrl(ConfigSchema),
-      value: toBinary(ConfigSchema, configMessage),
+      value: toBinary(ConfigSchema, this.config),
     });
   }
 

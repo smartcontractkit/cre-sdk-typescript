@@ -1,4 +1,4 @@
-import { fromBinary, toBinary, fromJson, create } from "@bufbuild/protobuf";
+import { fromBinary, toBinary, fromJson } from "@bufbuild/protobuf";
 import {
   Mode,
   type CapabilityResponse,
@@ -9,6 +9,7 @@ import { getTypeUrl } from "@cre/sdk/utils/typeurl";
 import {
   RequestSchema,
   ResponseSchema,
+  type Request,
   type RequestJson,
   type Response,
 } from "@cre/generated/capabilities/networking/http/v1alpha/client_pb";
@@ -36,10 +37,12 @@ export class ClientCapability {
     private readonly mode: Mode = ClientCapability.DEFAULT_MODE
   ) {}
 
-  async sendRequest(input: RequestJson): Promise<Response> {
+  async sendRequest(input: Request |  RequestJson): Promise<Response> {
+    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+    const value = (input as any).$typeName ? input as Request : fromJson(RequestSchema, input as RequestJson)
     const payload = {
       typeUrl: getTypeUrl(RequestSchema),
-      value: toBinary(RequestSchema, fromJson(RequestSchema, input)),
+      value: toBinary(RequestSchema, value),
     };
     const capabilityId = ClientCapability.CAPABILITY_ID;
     

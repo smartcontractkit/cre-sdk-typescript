@@ -11,6 +11,7 @@ import { getTypeUrl } from "@cre/sdk/utils/typeurl";
 import {
   ConfigSchema,
   OutputsSchema,
+  type Config,
   type ConfigJson,
   type Outputs,
 } from "@cre/generated/capabilities/internal/basictrigger/v1/basic_trigger_pb";
@@ -47,12 +48,16 @@ export class BasicCapability {
  * Trigger implementation for Trigger
  */
 class BasicTrigger implements Trigger<Outputs, Outputs> {
+  public readonly config: Config
   constructor(
     public readonly mode: Mode,
-    public readonly config: ConfigJson,
+    config: Config | ConfigJson,
     private readonly _capabilityId: string,
     private readonly _method: string
-  ) {}
+  ) {
+    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+    this.config = (config as any).$typeName ? config as Config : fromJson(ConfigSchema, config as ConfigJson)
+  }
 
   capabilityId(): string {
     return this._capabilityId;
@@ -67,10 +72,9 @@ class BasicTrigger implements Trigger<Outputs, Outputs> {
   }
 
   configAsAny(): Any {
-    const configMessage = fromJson(ConfigSchema, this.config);
     return create(AnySchema, {
       typeUrl: getTypeUrl(ConfigSchema),
-      value: toBinary(ConfigSchema, configMessage),
+      value: toBinary(ConfigSchema, this.config),
     });
   }
 

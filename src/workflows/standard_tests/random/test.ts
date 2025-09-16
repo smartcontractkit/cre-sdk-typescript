@@ -1,74 +1,60 @@
-import { prepareRuntime } from '@cre/sdk/utils/prepare-runtime'
-import { errorBoundary } from '@cre/sdk/utils/error-boundary'
+import { create } from '@bufbuild/protobuf'
+import { z } from 'zod'
+import { cre, type Runtime, type NodeRuntime } from '@cre/sdk/cre'
+import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
 import { AggregationType, Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { SimpleConsensusInputsSchema } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import { Rand } from '@cre/sdk/utils/random'
-import { sendResponseValue } from '@cre/sdk/utils/send-response-value'
-import { create } from '@bufbuild/protobuf'
 import { BasicActionCapability as NodeActionCapability } from '@cre/generated-sdk/capabilities/internal/nodeaction/v1/basicaction_sdk_gen'
-import { val } from '@cre/sdk/utils/values/value'
-import { cre } from '@cre/sdk/cre'
-import { handleExecuteRequest } from '@cre/sdk/engine/execute'
-import { getRequest } from '@cre/sdk/utils/get-request'
-import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
-import { consensusFieldsFrom, observationValue } from '@cre/sdk/utils/values/consensus'
-import { runInNodeMode } from '@cre/sdk/runtime/run-in-node-mode'
-import { emptyConfig, basicRuntime } from '@cre/sdk/testhelpers/mocks'
-import { type NodeRuntime } from '@cre/sdk/runtime/runtime'
+import { Int64, Value, ConsensusAggregationByFields, median } from '@cre/sdk/utils'
+
+const configSchema = z.object({ config: z.string() })
+type Config = z.infer<typeof configSchema>
+
+class Output {
+	constructor(public OutputThing: Int64) { }
+}
+
+const randHandler = async (_config: Config, runtime: Runtime) => {
+	const donRandomNumber = runtime.getRand().Uint64()
+	let total = donRandomNumber
+
+	await cre.runInNodeMode(async (nodeRuntime: NodeRuntime) => {
+		const nodeRandomNumber = nodeRuntime.getRand().Uint64()
+
+		const nodeActionCapability = new NodeActionCapability()
+		const nodeResponse = await nodeActionCapability.performAction({
+			inputThing: true,
+		})
+
+		if (nodeResponse.outputThing < 100) {
+			log('***' + nodeRandomNumber.toString())
+		}
+
+		return new Output(new Int64(nodeResponse.outputThing))
+	}, ConsensusAggregationByFields<Output>({
+			OutputThing: median
+	}).withDefault(new Output(new Int64(123))))()
+
+	total += donRandomNumber
+
+	cre.sendResponseValue(Value.from(total))
+}
+
+const initWorkflow = () => {
+	const basicTrigger = new BasicTriggerCapability()
+
+	return [cre.handler(basicTrigger.trigger({}), randHandler)]
+}
 
 export async function main() {
 	console.log(`TS workflow: standard test: random [${new Date().toISOString()}]`)
 
-	const basicTrigger = new BasicTriggerCapability()
-	const handler = async () => {
-		const donSeed = BigInt(randomSeed(Mode.DON))
-		const donRandomNumber = new Rand(donSeed)
-		let total = donRandomNumber.Uint64()
+	const runner = await cre.newRunner<Config>({
+		configParser: (config) => ({ config }),
+		configSchema,
+	})
 
-		await runInNodeMode(async (_nodeRuntime: NodeRuntime) => {
-			const nodeSeed = BigInt(randomSeed(Mode.NODE))
-			const nodeRandomNumber = new Rand(nodeSeed)
-
-			const nodeActionCapability = new NodeActionCapability()
-			const nodeResponse = await nodeActionCapability.performAction({
-				inputThing: true,
-			})
-
-			if (nodeResponse.outputThing < 100) {
-				log('***' + nodeRandomNumber.Uint64().toString())
-			}
-
-			const consensusInput = create(SimpleConsensusInputsSchema, {
-				observation: observationValue(
-					val.mapValue({ OutputThing: val.int64(nodeResponse.outputThing) }),
-				),
-				descriptors: consensusFieldsFrom({
-					OutputThing: AggregationType.MEDIAN,
-				}),
-				default: val.mapValue({
-					OutputThing: val.int64(123),
-				}),
-			})
-
-			// runInNodeMode accepts message or JSON; pass message for clarity
-			return consensusInput
-		})
-
-		total += donRandomNumber.Uint64()
-
-		sendResponseValue(val.bigint(total))
-	}
-
-	const workflow = [
-		cre.handler(basicTrigger.trigger({ name: 'first-trigger', number: 100 }), handler),
-	]
-
-	try {
-		const executeRequest = getRequest()
-		await handleExecuteRequest(executeRequest, workflow, emptyConfig, basicRuntime)
-	} catch (e) {
-		errorBoundary(e)
-	}
+	await runner.run(initWorkflow)
 }
 
-main()
+cre.withErrorBoundary(main)

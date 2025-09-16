@@ -1,4 +1,4 @@
-import { fromBinary, toBinary, fromJson, create } from "@bufbuild/protobuf";
+import { fromBinary, toBinary, fromJson } from "@bufbuild/protobuf";
 import {
   Mode,
   type CapabilityResponse,
@@ -9,6 +9,7 @@ import { getTypeUrl } from "@cre/sdk/utils/typeurl";
 import {
   InputsSchema,
   OutputsSchema,
+  type Inputs,
   type InputsJson,
   type Outputs,
 } from "@cre/generated/capabilities/internal/basicaction/v1/basic_action_pb";
@@ -36,10 +37,12 @@ export class BasicActionCapability {
     private readonly mode: Mode = BasicActionCapability.DEFAULT_MODE
   ) {}
 
-  async performAction(input: InputsJson): Promise<Outputs> {
+  async performAction(input: Inputs |  InputsJson): Promise<Outputs> {
+    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+    const value = (input as any).$typeName ? input as Inputs : fromJson(InputsSchema, input as InputsJson)
     const payload = {
       typeUrl: getTypeUrl(InputsSchema),
-      value: toBinary(InputsSchema, fromJson(InputsSchema, input)),
+      value: toBinary(InputsSchema, value),
     };
     const capabilityId = BasicActionCapability.CAPABILITY_ID;
     

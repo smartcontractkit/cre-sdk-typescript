@@ -1,40 +1,38 @@
-import { prepareRuntime } from '@cre/sdk/utils/prepare-runtime'
-import { sendResponseValue } from '@cre/sdk/utils/send-response-value'
-import { sendErrorWrapped } from '@cre/sdk/testhelpers/send-error-wrapped'
-import { SecretsError } from '@cre/sdk/utils/secrets-error'
-import { errorBoundary } from '@cre/sdk/utils/error-boundary'
-import { getSecret } from '@cre/sdk/utils/secrets/get-secret'
-import { val } from '@cre/sdk/utils/values/value'
-import { handler } from '@cre/sdk/workflow'
-import { handleExecuteRequest } from '@cre/sdk/engine/execute'
-import { getRequest } from '@cre/sdk/utils/get-request'
+import { cre, type Runtime } from '@cre/sdk/cre'
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
-import { emptyConfig, basicRuntime } from '@cre/sdk/testhelpers/mocks'
+import { SecretsError } from '@cre/sdk/utils/secrets-error'
+import { Value } from '@cre/sdk/utils'
 
-export async function main() {
-	console.log(`TS workflow: standard test: secrets [${new Date().toISOString()}]`)
+// Doesn't matter for this test
+type Config = any
 
-	prepareRuntime()
-	versionV2()
-
-	const basicTrigger = new BasicTriggerCapability()
-	const workflow = [
-		handler(basicTrigger.trigger({ name: 'first-trigger', number: 100 }), async () => {
-			const secret = await getSecret('Foo')
-			sendResponseValue(val.string(secret))
-		}),
-	]
-
+const handleSecret = async (_config: Config, runtime: Runtime) => {
 	try {
-		const executeRequest = getRequest()
-		await handleExecuteRequest(executeRequest, workflow, emptyConfig, basicRuntime)
-	} catch (e) {
-		if (e instanceof SecretsError) {
-			sendErrorWrapped(e.message)
+		const secret = await runtime.getSecret('Foo')
+		cre.sendResponseValue(Value.from(secret))
+	} catch (error) {
+		// One of the tests covers the lack of particular secret.
+		// We cover that in this catch block, however any other error should still be thrown.
+		// TODO: should SecretsError be exposed via cre?
+		if (error instanceof SecretsError) {
+			cre.sendError(error.message)
 		} else {
-			errorBoundary(e)
+			throw error
 		}
 	}
 }
 
-main()
+const initWorkflow = () => {
+	const basicTrigger = new BasicTriggerCapability()
+
+	return [cre.handler(basicTrigger.trigger({}), handleSecret)]
+}
+
+export async function main() {
+	console.log(`TS workflow: standard test: secrets [${new Date().toISOString()}]`)
+
+	const runner = await cre.newRunner<Config>()
+	await runner.run(initWorkflow)
+}
+
+cre.withErrorBoundary(main)

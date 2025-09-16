@@ -1,4 +1,4 @@
-import { fromBinary, toBinary, fromJson, create } from "@bufbuild/protobuf";
+import { fromBinary, toBinary, fromJson } from "@bufbuild/protobuf";
 import {
   Mode,
   type CapabilityResponse,
@@ -10,8 +10,10 @@ import {
   ReportRequestSchema,
   ReportResponseSchema,
   SimpleConsensusInputsSchema,
+  type ReportRequest,
   type ReportRequestJson,
   type ReportResponse,
+  type SimpleConsensusInputs,
   type SimpleConsensusInputsJson,
 } from "@cre/generated/sdk/v1alpha/sdk_pb";
 import {
@@ -42,10 +44,12 @@ export class ConsensusCapability {
     private readonly mode: Mode = ConsensusCapability.DEFAULT_MODE
   ) {}
 
-  async simple(input: SimpleConsensusInputsJson): Promise<Value> {
+  async simple(input: SimpleConsensusInputs |  SimpleConsensusInputsJson): Promise<Value> {
+    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+    const value = (input as any).$typeName ? input as SimpleConsensusInputs : fromJson(SimpleConsensusInputsSchema, input as SimpleConsensusInputsJson)
     const payload = {
       typeUrl: getTypeUrl(SimpleConsensusInputsSchema),
-      value: toBinary(SimpleConsensusInputsSchema, fromJson(SimpleConsensusInputsSchema, input)),
+      value: toBinary(SimpleConsensusInputsSchema, value),
     };
     const capabilityId = ConsensusCapability.CAPABILITY_ID;
     
@@ -75,10 +79,12 @@ export class ConsensusCapability {
     });
   }
 
-  async report(input: ReportRequestJson): Promise<ReportResponse> {
+  async report(input: ReportRequest |  ReportRequestJson): Promise<ReportResponse> {
+    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+    const value = (input as any).$typeName ? input as ReportRequest : fromJson(ReportRequestSchema, input as ReportRequestJson)
     const payload = {
       typeUrl: getTypeUrl(ReportRequestSchema),
-      value: toBinary(ReportRequestSchema, fromJson(ReportRequestSchema, input)),
+      value: toBinary(ReportRequestSchema, value),
     };
     const capabilityId = ConsensusCapability.CAPABILITY_ID;
     

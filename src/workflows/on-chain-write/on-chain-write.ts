@@ -1,16 +1,12 @@
-import { cre } from '@cre/sdk/cre'
-import type { Runtime } from '@cre/sdk/runtime/runtime'
+import { cre, type NodeRuntime, type Runtime } from '@cre/sdk/cre'
 import { withErrorBoundary } from '@cre/sdk/utils/error-boundary'
 import { bytesToHex, hexToBase64 } from '@cre/sdk/utils/hex-utils'
 import { sendResponseValue } from '@cre/sdk/utils/send-response-value'
-import { useMedianConsensus } from '@cre/sdk/utils/values/consensus-hooks'
-import { val } from '@cre/sdk/utils/values/value'
-import { decodeFunctionResult, encodeFunctionData, type Hex, toHex, zeroAddress } from 'viem'
+import { decodeFunctionResult, encodeFunctionData, toHex, zeroAddress } from 'viem'
+import { Value, consensusMedianAggregation } from '@cre/sdk/utils'
 import { z } from 'zod'
 
-// Storage contract ABI - we only need the 'get' function
 // TODO: In production, load ABI from external file or contract metadata
-// following Go SDK patterns for ABI management
 import { CALCULATOR_CONSUMER_ABI, STORAGE_ABI } from './abi'
 
 const configSchema = z.object({
@@ -28,12 +24,12 @@ const configSchema = z.object({
 
 type Config = z.infer<typeof configSchema>
 
-const fetchMathResult = useMedianConsensus(async (config: Config) => {
+async function fetchMathResult(nodeRuntime: NodeRuntime, config: Config): Promise<number> {
 	const response = await cre.utils.fetch({
 		url: config.apiUrl,
 	})
 	return Number.parseFloat(response.body.trim())
-}, 'float64')
+}
 
 const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> => {
 	if (!config.evms?.length) {
@@ -41,7 +37,7 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 	}
 
 	// Step 1: Fetch offchain data using consensus (from Part 2)
-	const offchainValue = await fetchMathResult(config)
+	const offchainValue = await cre.runInNodeMode(fetchMathResult, consensusMedianAggregation())(config)
 
 	runtime.logger.log('Successfully fetched offchain value')
 
@@ -82,9 +78,7 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 	runtime.logger.log(`Successfully read onchain value: ${onchainValue.toString()}`)
 
 	// Step 3: Combine the results - convert offchain float to bigint and add
-	const offchainFloat = offchainValue.value.case === 'float64Value' ? offchainValue.value.value : 0
-
-	const offchainBigInt = BigInt(Math.floor(offchainFloat))
+	const offchainBigInt = BigInt(Math.floor(offchainValue))
 	const finalResult = onchainValue + offchainBigInt
 
 	runtime.logger.log('Final calculated result')
@@ -122,7 +116,7 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 	const dryRunResponse = decodeFunctionResult({
 		abi: CALCULATOR_CONSUMER_ABI,
 		functionName: 'isResultAnomalous',
-		data: bytesToHex(dryRunCall.data) as Hex,
+		data: bytesToHex(dryRunCall.data),
 	})
 
 	runtime.logger.log(`Dry run response: ${dryRunResponse ? 'Anomalous' : 'Not anomalous'}`)
@@ -153,11 +147,11 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 	}
 
 	sendResponseValue(
-		val.mapValue({
-			OffchainValue: val.bigint(offchainBigInt),
-			OnchainValue: val.bigint(onchainValue),
-			FinalResult: val.bigint(finalResult),
-			TxHash: val.string(txHash.toString()),
+		Value.from({
+			OffchainValue: offchainBigInt,
+			OnchainValue: onchainValue,
+			FinalResult: finalResult,
+			TxHash: txHash.toString(),
 		}),
 	)
 }

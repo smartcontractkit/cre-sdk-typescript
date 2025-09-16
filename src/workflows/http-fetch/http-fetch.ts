@@ -2,6 +2,8 @@ import { z } from 'zod'
 import { cre } from '@cre/sdk/cre'
 import { type NodeRuntime } from '@cre/sdk/runtime/runtime'
 import { withErrorBoundary } from '@cre/sdk/utils/error-boundary'
+import { Value, consensusMedianAggregation } from '@cre/sdk/utils'
+import { runInNodeMode } from '@cre/sdk/runtime/run-in-node-mode'
 
 const configSchema = z.object({
 	schedule: z.string(),
@@ -10,22 +12,17 @@ const configSchema = z.object({
 
 type Config = z.infer<typeof configSchema>
 
-const fetchMathResult = async (config: Config) => {
+const fetchMathResult = async (nodeRuntime: NodeRuntime, config: Config) => {
 	const response = await cre.utils.fetch({
 		url: config.apiUrl,
 	})
 	return Number.parseFloat(response.body.trim())
 }
-
-const fetchAggregatedResult = async (config: Config) =>
-	cre.runInNodeMode(async (_nodeRuntime: NodeRuntime) => {
-		const result = await fetchMathResult(config)
-		return cre.utils.consensus.getAggregatedValue(cre.utils.val.float64(result), 'median')
-	})
+	
 
 const onCronTrigger = async (config: Config) => {
-	const aggregatedValue = await fetchAggregatedResult(config)
-	cre.sendResponseValue(cre.utils.val.mapValue({ Result: aggregatedValue }))
+	const aggregatedValue = await runInNodeMode(fetchMathResult, consensusMedianAggregation())(config)
+	cre.sendResponseValue(Value.from(aggregatedValue))
 }
 
 const initWorkflow = (config: Config) => {

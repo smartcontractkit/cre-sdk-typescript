@@ -30,24 +30,35 @@ import {
   WriteReportReplySchema,
   WriteReportRequestSchema,
   type BalanceAtReply,
+  type BalanceAtRequest,
   type BalanceAtRequestJson,
   type CallContractReply,
+  type CallContractRequest,
   type CallContractRequestJson,
   type EstimateGasReply,
+  type EstimateGasRequest,
   type EstimateGasRequestJson,
+  type FilterLogTriggerRequest,
   type FilterLogTriggerRequestJson,
   type FilterLogsReply,
+  type FilterLogsRequest,
   type FilterLogsRequestJson,
   type GetTransactionByHashReply,
+  type GetTransactionByHashRequest,
   type GetTransactionByHashRequestJson,
   type GetTransactionReceiptReply,
+  type GetTransactionReceiptRequest,
   type GetTransactionReceiptRequestJson,
   type HeaderByNumberReply,
+  type HeaderByNumberRequest,
   type HeaderByNumberRequestJson,
   type Log,
+  type RegisterLogTrackingRequest,
   type RegisterLogTrackingRequestJson,
+  type UnregisterLogTrackingRequest,
   type UnregisterLogTrackingRequestJson,
   type WriteReportReply,
+  type WriteReportRequest,
   type WriteReportRequestJson,
 } from "@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb";
 import {
@@ -95,10 +106,12 @@ export class ClientCapability {
     private readonly chainSelector?: bigint
   ) {}
 
-  async callContract(input: CallContractRequestJson): Promise<CallContractReply> {
+  async callContract(input: CallContractRequest |  CallContractRequestJson): Promise<CallContractReply> {
+    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+    const value = (input as any).$typeName ? input as CallContractRequest : fromJson(CallContractRequestSchema, input as CallContractRequestJson)
     const payload = {
       typeUrl: getTypeUrl(CallContractRequestSchema),
-      value: toBinary(CallContractRequestSchema, fromJson(CallContractRequestSchema, input)),
+      value: toBinary(CallContractRequestSchema, value),
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
@@ -131,10 +144,12 @@ export class ClientCapability {
     });
   }
 
-  async filterLogs(input: FilterLogsRequestJson): Promise<FilterLogsReply> {
+  async filterLogs(input: FilterLogsRequest |  FilterLogsRequestJson): Promise<FilterLogsReply> {
+    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+    const value = (input as any).$typeName ? input as FilterLogsRequest : fromJson(FilterLogsRequestSchema, input as FilterLogsRequestJson)
     const payload = {
       typeUrl: getTypeUrl(FilterLogsRequestSchema),
-      value: toBinary(FilterLogsRequestSchema, fromJson(FilterLogsRequestSchema, input)),
+      value: toBinary(FilterLogsRequestSchema, value),
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
@@ -167,10 +182,12 @@ export class ClientCapability {
     });
   }
 
-  async balanceAt(input: BalanceAtRequestJson): Promise<BalanceAtReply> {
+  async balanceAt(input: BalanceAtRequest |  BalanceAtRequestJson): Promise<BalanceAtReply> {
+    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+    const value = (input as any).$typeName ? input as BalanceAtRequest : fromJson(BalanceAtRequestSchema, input as BalanceAtRequestJson)
     const payload = {
       typeUrl: getTypeUrl(BalanceAtRequestSchema),
-      value: toBinary(BalanceAtRequestSchema, fromJson(BalanceAtRequestSchema, input)),
+      value: toBinary(BalanceAtRequestSchema, value),
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
@@ -203,10 +220,12 @@ export class ClientCapability {
     });
   }
 
-  async estimateGas(input: EstimateGasRequestJson): Promise<EstimateGasReply> {
+  async estimateGas(input: EstimateGasRequest |  EstimateGasRequestJson): Promise<EstimateGasReply> {
+    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+    const value = (input as any).$typeName ? input as EstimateGasRequest : fromJson(EstimateGasRequestSchema, input as EstimateGasRequestJson)
     const payload = {
       typeUrl: getTypeUrl(EstimateGasRequestSchema),
-      value: toBinary(EstimateGasRequestSchema, fromJson(EstimateGasRequestSchema, input)),
+      value: toBinary(EstimateGasRequestSchema, value),
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
@@ -239,10 +258,12 @@ export class ClientCapability {
     });
   }
 
-  async getTransactionByHash(input: GetTransactionByHashRequestJson): Promise<GetTransactionByHashReply> {
+  async getTransactionByHash(input: GetTransactionByHashRequest |  GetTransactionByHashRequestJson): Promise<GetTransactionByHashReply> {
+    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+    const value = (input as any).$typeName ? input as GetTransactionByHashRequest : fromJson(GetTransactionByHashRequestSchema, input as GetTransactionByHashRequestJson)
     const payload = {
       typeUrl: getTypeUrl(GetTransactionByHashRequestSchema),
-      value: toBinary(GetTransactionByHashRequestSchema, fromJson(GetTransactionByHashRequestSchema, input)),
+      value: toBinary(GetTransactionByHashRequestSchema, value),
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
@@ -275,10 +296,12 @@ export class ClientCapability {
     });
   }
 
-  async getTransactionReceipt(input: GetTransactionReceiptRequestJson): Promise<GetTransactionReceiptReply> {
+  async getTransactionReceipt(input: GetTransactionReceiptRequest |  GetTransactionReceiptRequestJson): Promise<GetTransactionReceiptReply> {
+    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+    const value = (input as any).$typeName ? input as GetTransactionReceiptRequest : fromJson(GetTransactionReceiptRequestSchema, input as GetTransactionReceiptRequestJson)
     const payload = {
       typeUrl: getTypeUrl(GetTransactionReceiptRequestSchema),
-      value: toBinary(GetTransactionReceiptRequestSchema, fromJson(GetTransactionReceiptRequestSchema, input)),
+      value: toBinary(GetTransactionReceiptRequestSchema, value),
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
@@ -311,10 +334,12 @@ export class ClientCapability {
     });
   }
 
-  async headerByNumber(input: HeaderByNumberRequestJson): Promise<HeaderByNumberReply> {
+  async headerByNumber(input: HeaderByNumberRequest |  HeaderByNumberRequestJson): Promise<HeaderByNumberReply> {
+    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+    const value = (input as any).$typeName ? input as HeaderByNumberRequest : fromJson(HeaderByNumberRequestSchema, input as HeaderByNumberRequestJson)
     const payload = {
       typeUrl: getTypeUrl(HeaderByNumberRequestSchema),
-      value: toBinary(HeaderByNumberRequestSchema, fromJson(HeaderByNumberRequestSchema, input)),
+      value: toBinary(HeaderByNumberRequestSchema, value),
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
@@ -347,10 +372,12 @@ export class ClientCapability {
     });
   }
 
-  async registerLogTracking(input: RegisterLogTrackingRequestJson): Promise<Empty> {
+  async registerLogTracking(input: RegisterLogTrackingRequest |  RegisterLogTrackingRequestJson): Promise<Empty> {
+    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+    const value = (input as any).$typeName ? input as RegisterLogTrackingRequest : fromJson(RegisterLogTrackingRequestSchema, input as RegisterLogTrackingRequestJson)
     const payload = {
       typeUrl: getTypeUrl(RegisterLogTrackingRequestSchema),
-      value: toBinary(RegisterLogTrackingRequestSchema, fromJson(RegisterLogTrackingRequestSchema, input)),
+      value: toBinary(RegisterLogTrackingRequestSchema, value),
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
@@ -383,10 +410,12 @@ export class ClientCapability {
     });
   }
 
-  async unregisterLogTracking(input: UnregisterLogTrackingRequestJson): Promise<Empty> {
+  async unregisterLogTracking(input: UnregisterLogTrackingRequest |  UnregisterLogTrackingRequestJson): Promise<Empty> {
+    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+    const value = (input as any).$typeName ? input as UnregisterLogTrackingRequest : fromJson(UnregisterLogTrackingRequestSchema, input as UnregisterLogTrackingRequestJson)
     const payload = {
       typeUrl: getTypeUrl(UnregisterLogTrackingRequestSchema),
-      value: toBinary(UnregisterLogTrackingRequestSchema, fromJson(UnregisterLogTrackingRequestSchema, input)),
+      value: toBinary(UnregisterLogTrackingRequestSchema, value),
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
@@ -423,10 +452,12 @@ export class ClientCapability {
     return new ClientLogTrigger(this.mode, config, ClientCapability.CAPABILITY_ID, "LogTrigger");
   }
 
-  async writeReport(input: WriteReportRequestJson): Promise<WriteReportReply> {
+  async writeReport(input: WriteReportRequest |  WriteReportRequestJson): Promise<WriteReportReply> {
+    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+    const value = (input as any).$typeName ? input as WriteReportRequest : fromJson(WriteReportRequestSchema, input as WriteReportRequestJson)
     const payload = {
       typeUrl: getTypeUrl(WriteReportRequestSchema),
-      value: toBinary(WriteReportRequestSchema, fromJson(WriteReportRequestSchema, input)),
+      value: toBinary(WriteReportRequestSchema, value),
     };
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
@@ -464,12 +495,16 @@ export class ClientCapability {
  * Trigger implementation for LogTrigger
  */
 class ClientLogTrigger implements Trigger<Log, Log> {
+  public readonly config: FilterLogTriggerRequest
   constructor(
     public readonly mode: Mode,
-    public readonly config: FilterLogTriggerRequestJson,
+    config: FilterLogTriggerRequest | FilterLogTriggerRequestJson,
     private readonly _capabilityId: string,
     private readonly _method: string
-  ) {}
+  ) {
+    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+    this.config = (config as any).$typeName ? config as FilterLogTriggerRequest : fromJson(FilterLogTriggerRequestSchema, config as FilterLogTriggerRequestJson)
+  }
 
   capabilityId(): string {
     return this._capabilityId;
@@ -484,10 +519,9 @@ class ClientLogTrigger implements Trigger<Log, Log> {
   }
 
   configAsAny(): Any {
-    const configMessage = fromJson(FilterLogTriggerRequestSchema, this.config);
     return create(AnySchema, {
       typeUrl: getTypeUrl(FilterLogTriggerRequestSchema),
-      value: toBinary(FilterLogTriggerRequestSchema, configMessage),
+      value: toBinary(FilterLogTriggerRequestSchema, this.config),
     });
   }
 
