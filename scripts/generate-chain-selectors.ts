@@ -272,133 +272,104 @@ const generateAllNetworksFile = (networks: NetworkInfo[]): void => {
     return acc;
   }, {} as Record<ChainFamily, NetworkInfo[]>);
 
+  // Generate import statements and variable names
+  const generateImportName = (network: NetworkInfo): string => {
+    const sanitized = sanitizeFilename(network.chainSelector.name)
+      .replace(/\./g, "_")
+      .replace(/-/g, "_");
+    return `${network.networkType}_${network.chainFamily}_${sanitized}`;
+  };
+
+  const allImports = networks.map((network) => ({
+    importName: generateImportName(network),
+    importPath: `./chain-selectors/${network.networkType}/${
+      network.chainFamily
+    }/${sanitizeFilename(network.chainSelector.name)}`,
+    network,
+  }));
+
   const content = `// This file is auto-generated. Do not edit manually.
 // Generated from: https://github.com/smartcontractkit/chain-selectors
 
 import type { NetworkInfo, ChainFamily } from "@cre/sdk/utils/chain-selectors/types";
 
-export const allNetworks: NetworkInfo[] = [
-${networks
+// Import all individual network files
+${allImports
   .map(
-    (network) => `	{
-		chainId: "${network.chainId}",
-		chainSelector: {
-			name: "${network.chainSelector.name}",
-			selector: "${network.chainSelector.selector}",
-		},
-		chainFamily: "${network.chainFamily}",
-		networkType: "${network.networkType}",
-	},`
+    ({ importName, importPath }) => `import ${importName} from "${importPath}";`
   )
   .join("\n")}
+
+export const allNetworks: NetworkInfo[] = [
+${allImports.map(({ importName }) => `	${importName},`).join("\n")}
 ] as const;
 
 export const mainnet = {
 ${Object.entries(mainnetByFamily)
-  .map(
-    ([family, networks]) => `	${family}: [
-${networks
-  .map(
-    (network) => `		{
-			chainId: "${network.chainId}",
-			chainSelector: {
-				name: "${network.chainSelector.name}",
-				selector: "${network.chainSelector.selector}",
-			},
-			chainFamily: "${network.chainFamily}",
-			networkType: "${network.networkType}",
-		},`
-  )
-  .join("\n")}
-	] as const,`
-  )
+  .map(([family, networks]) => {
+    const familyImports = allImports.filter(
+      ({ network }) =>
+        network.chainFamily === family && network.networkType === "mainnet"
+    );
+    return `	${family}: [
+${familyImports.map(({ importName }) => `		${importName},`).join("\n")}
+	] as const,`;
+  })
   .join("\n")}
 } as const;
 
 export const testnet = {
 ${Object.entries(testnetByFamily)
-  .map(
-    ([family, networks]) => `	${family}: [
-${networks
-  .map(
-    (network) => `		{
-			chainId: "${network.chainId}",
-			chainSelector: {
-				name: "${network.chainSelector.name}",
-				selector: "${network.chainSelector.selector}",
-			},
-			chainFamily: "${network.chainFamily}",
-			networkType: "${network.networkType}",
-		},`
-  )
-  .join("\n")}
-	] as const,`
-  )
+  .map(([family, networks]) => {
+    const familyImports = allImports.filter(
+      ({ network }) =>
+        network.chainFamily === family && network.networkType === "testnet"
+    );
+    return `	${family}: [
+${familyImports.map(({ importName }) => `		${importName},`).join("\n")}
+	] as const,`;
+  })
   .join("\n")}
 } as const;
 
 // Optimized Maps for fast lookups by chain selector
 export const mainnetBySelector = new Map<string, NetworkInfo>([
-${mainnetNetworks
+${allImports
+  .filter(({ network }) => network.networkType === "mainnet")
   .map(
-    (network) => `	["${network.chainSelector.selector}", {
-		chainId: "${network.chainId}",
-		chainSelector: {
-			name: "${network.chainSelector.name}",
-			selector: "${network.chainSelector.selector}",
-		},
-		chainFamily: "${network.chainFamily}",
-		networkType: "${network.networkType}",
-	}],`
+    ({ importName, network }) =>
+      `	["${network.chainSelector.selector}", ${importName}],`
   )
   .join("\n")}
 ]);
 
 export const testnetBySelector = new Map<string, NetworkInfo>([
-${testnetNetworks
+${allImports
+  .filter(({ network }) => network.networkType === "testnet")
   .map(
-    (network) => `	["${network.chainSelector.selector}", {
-		chainId: "${network.chainId}",
-		chainSelector: {
-			name: "${network.chainSelector.name}",
-			selector: "${network.chainSelector.selector}",
-		},
-		chainFamily: "${network.chainFamily}",
-		networkType: "${network.networkType}",
-	}],`
+    ({ importName, network }) =>
+      `	["${network.chainSelector.selector}", ${importName}],`
   )
   .join("\n")}
 ]);
 
 // Optimized Maps for fast lookups by chain selector name
 export const mainnetByName = new Map<string, NetworkInfo>([
-${mainnetNetworks
+${allImports
+  .filter(({ network }) => network.networkType === "mainnet")
   .map(
-    (network) => `	["${network.chainSelector.name}", {
-		chainId: "${network.chainId}",
-		chainSelector: {
-			name: "${network.chainSelector.name}",
-			selector: "${network.chainSelector.selector}",
-		},
-		chainFamily: "${network.chainFamily}",
-		networkType: "${network.networkType}",
-	}],`
+    ({ importName, network }) =>
+      `	["${network.chainSelector.name}", ${importName}],`
   )
   .join("\n")}
 ]);
 
 export const testnetByName = new Map<string, NetworkInfo>([
-${testnetNetworks
+${allImports
+  .filter(({ network }) => network.networkType === "testnet")
   .map(
-    (network) => `	["${network.chainSelector.name}", {
-		chainId: "${network.chainId}",
-		chainSelector: {
-			name: "${network.chainSelector.name}",
-			selector: "${network.chainSelector.selector}",
-		},
-		chainFamily: "${network.chainFamily}",
-		networkType: "${network.networkType}",
-	}],`
+    ({ importName, network }) =>
+      `	["${network.chainSelector.name}", ${importName}],`
   )
   .join("\n")}
 ]);
@@ -406,90 +377,78 @@ ${testnetNetworks
 // Maps by family and network type for chain selector lookups
 export const mainnetBySelectorByFamily = {
 ${Object.entries(mainnetByFamily)
+  .map(([family, networks]) => {
+    const familyImports = allImports.filter(
+      ({ network }) =>
+        network.chainFamily === family && network.networkType === "mainnet"
+    );
+    return `	${family}: new Map<string, NetworkInfo>([
+${familyImports
   .map(
-    ([family, networks]) => `	${family}: new Map<string, NetworkInfo>([
-${networks
-  .map(
-    (network) => `		["${network.chainSelector.selector}", {
-			chainId: "${network.chainId}",
-			chainSelector: {
-				name: "${network.chainSelector.name}",
-				selector: "${network.chainSelector.selector}",
-			},
-			chainFamily: "${network.chainFamily}",
-			networkType: "${network.networkType}",
-		}],`
+    ({ importName, network }) =>
+      `		["${network.chainSelector.selector}", ${importName}],`
   )
   .join("\n")}
-	]),`
-  )
+	]),`;
+  })
   .join("\n")}
 } as const;
 
 export const testnetBySelectorByFamily = {
 ${Object.entries(testnetByFamily)
+  .map(([family, networks]) => {
+    const familyImports = allImports.filter(
+      ({ network }) =>
+        network.chainFamily === family && network.networkType === "testnet"
+    );
+    return `	${family}: new Map<string, NetworkInfo>([
+${familyImports
   .map(
-    ([family, networks]) => `	${family}: new Map<string, NetworkInfo>([
-${networks
-  .map(
-    (network) => `		["${network.chainSelector.selector}", {
-			chainId: "${network.chainId}",
-			chainSelector: {
-				name: "${network.chainSelector.name}",
-				selector: "${network.chainSelector.selector}",
-			},
-			chainFamily: "${network.chainFamily}",
-			networkType: "${network.networkType}",
-		}],`
+    ({ importName, network }) =>
+      `		["${network.chainSelector.selector}", ${importName}],`
   )
   .join("\n")}
-	]),`
-  )
+	]),`;
+  })
   .join("\n")}
 } as const;
 
 // Maps by family and network type for name lookups
 export const mainnetByNameByFamily = {
 ${Object.entries(mainnetByFamily)
+  .map(([family, networks]) => {
+    const familyImports = allImports.filter(
+      ({ network }) =>
+        network.chainFamily === family && network.networkType === "mainnet"
+    );
+    return `	${family}: new Map<string, NetworkInfo>([
+${familyImports
   .map(
-    ([family, networks]) => `	${family}: new Map<string, NetworkInfo>([
-${networks
-  .map(
-    (network) => `		["${network.chainSelector.name}", {
-			chainId: "${network.chainId}",
-			chainSelector: {
-				name: "${network.chainSelector.name}",
-				selector: "${network.chainSelector.selector}",
-			},
-			chainFamily: "${network.chainFamily}",
-			networkType: "${network.networkType}",
-		}],`
+    ({ importName, network }) =>
+      `		["${network.chainSelector.name}", ${importName}],`
   )
   .join("\n")}
-	]),`
-  )
+	]),`;
+  })
   .join("\n")}
 } as const;
 
 export const testnetByNameByFamily = {
 ${Object.entries(testnetByFamily)
+  .map(([family, networks]) => {
+    const familyImports = allImports.filter(
+      ({ network }) =>
+        network.chainFamily === family && network.networkType === "testnet"
+    );
+    return `	${family}: new Map<string, NetworkInfo>([
+${familyImports
   .map(
-    ([family, networks]) => `	${family}: new Map<string, NetworkInfo>([
-${networks
-  .map(
-    (network) => `		["${network.chainSelector.name}", {
-			chainId: "${network.chainId}",
-			chainSelector: {
-				name: "${network.chainSelector.name}",
-				selector: "${network.chainSelector.selector}",
-			},
-			chainFamily: "${network.chainFamily}",
-			networkType: "${network.networkType}",
-		}],`
+    ({ importName, network }) =>
+      `		["${network.chainSelector.name}", ${importName}],`
   )
   .join("\n")}
-	]),`
-  )
+	]),`;
+  })
   .join("\n")}
 } as const;
 `;

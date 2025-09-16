@@ -3,16413 +3,1833 @@
 
 import type { NetworkInfo, ChainFamily } from '@cre/sdk/utils/chain-selectors/types'
 
+// Import all individual network files
+import mainnet_evm_ethereum_mainnet from './chain-selectors/mainnet/evm/ethereum-mainnet'
+import mainnet_evm_ethereum_mainnet_optimism_1 from './chain-selectors/mainnet/evm/ethereum-mainnet-optimism-1'
+import mainnet_evm_cronos_mainnet from './chain-selectors/mainnet/evm/cronos-mainnet'
+import mainnet_evm_rootstock_mainnet from './chain-selectors/mainnet/evm/rootstock-mainnet'
+import testnet_evm_bitcoin_testnet_rootstock from './chain-selectors/testnet/evm/bitcoin-testnet-rootstock'
+import mainnet_evm_telos_evm_mainnet from './chain-selectors/mainnet/evm/telos-evm-mainnet'
+import testnet_evm_telos_evm_testnet from './chain-selectors/testnet/evm/telos-evm-testnet'
+import testnet_evm_polkadot_testnet_darwinia_pangoro from './chain-selectors/testnet/evm/polkadot-testnet-darwinia-pangoro'
+import mainnet_evm_polkadot_mainnet_darwinia from './chain-selectors/mainnet/evm/polkadot-mainnet-darwinia'
+import mainnet_evm_xdc_mainnet from './chain-selectors/mainnet/evm/xdc-mainnet'
+import testnet_evm_xdc_testnet from './chain-selectors/testnet/evm/xdc-testnet'
+import mainnet_evm_coinex_smart_chain_mainnet from './chain-selectors/mainnet/evm/coinex.smart.chain-mainnet'
+import testnet_evm_coinex_smart_chain_testnet from './chain-selectors/testnet/evm/coinex.smart.chain-testnet'
+import mainnet_evm_binance_smart_chain_mainnet from './chain-selectors/mainnet/evm/binance.smart.chain-mainnet'
+import testnet_evm_polkadot_testnet_astar_shibuya from './chain-selectors/testnet/evm/polkadot-testnet-astar-shibuya'
+import testnet_evm_binance_smart_chain_testnet from './chain-selectors/testnet/evm/binance.smart.chain-testnet'
+import mainnet_evm_gnosis_chain_mainnet from './chain-selectors/mainnet/evm/gnosis.chain-mainnet'
+import mainnet_evm_velas_mainnet from './chain-selectors/mainnet/evm/velas-mainnet'
+import mainnet_evm_shibarium_mainnet from './chain-selectors/mainnet/evm/shibarium-mainnet'
+import testnet_evm_velas_testnet from './chain-selectors/testnet/evm/velas-testnet'
+import mainnet_evm_ethereum_mainnet_unichain_1 from './chain-selectors/mainnet/evm/ethereum-mainnet-unichain-1'
+import testnet_evm_ethereum_testnet_sepolia_hashkey_1 from './chain-selectors/testnet/evm/ethereum-testnet-sepolia-hashkey-1'
+import mainnet_evm_polygon_mainnet from './chain-selectors/mainnet/evm/polygon-mainnet'
+import mainnet_evm_monad_mainnet from './chain-selectors/mainnet/evm/monad-mainnet'
+import mainnet_evm_sonic_mainnet from './chain-selectors/mainnet/evm/sonic-mainnet'
+import testnet_evm_shibarium_testnet_puppynet from './chain-selectors/testnet/evm/shibarium-testnet-puppynet'
+import mainnet_evm_ethereum_mainnet_hashkey_1 from './chain-selectors/mainnet/evm/ethereum-mainnet-hashkey-1'
+import mainnet_evm_mint_mainnet from './chain-selectors/mainnet/evm/mint-mainnet'
+import testnet_evm_ethereum_testnet_sepolia_xlayer_1 from './chain-selectors/testnet/evm/ethereum-testnet-sepolia-xlayer-1'
+import mainnet_evm_ethereum_mainnet_xlayer_1 from './chain-selectors/mainnet/evm/ethereum-mainnet-xlayer-1'
+import mainnet_evm_bittorrent_chain_mainnet from './chain-selectors/mainnet/evm/bittorrent.chain-mainnet'
+import mainnet_evm_binance_smart_chain_mainnet_opbnb_1 from './chain-selectors/mainnet/evm/binance.smart.chain-mainnet-opbnb-1'
+import mainnet_evm_bitcoin_mainnet_bsquared_1 from './chain-selectors/mainnet/evm/bitcoin-mainnet-bsquared-1'
+import mainnet_evm_mind_mainnet from './chain-selectors/mainnet/evm/mind-mainnet'
+import mainnet_evm_lens_mainnet from './chain-selectors/mainnet/evm/lens-mainnet'
+import mainnet_evm_tac_mainnet from './chain-selectors/mainnet/evm/tac-mainnet'
+import testnet_evm_cronos_zkevm_testnet_sepolia from './chain-selectors/testnet/evm/cronos-zkevm-testnet-sepolia'
+import mainnet_evm_fantom_mainnet from './chain-selectors/mainnet/evm/fantom-mainnet'
+import mainnet_evm_fraxtal_mainnet from './chain-selectors/mainnet/evm/fraxtal-mainnet'
+import mainnet_evm_ethereum_mainnet_kroma_1 from './chain-selectors/mainnet/evm/ethereum-mainnet-kroma-1'
+import mainnet_evm_neonlink_mainnet from './chain-selectors/mainnet/evm/neonlink-mainnet'
+import testnet_evm_ethereum_testnet_goerli_zksync_1 from './chain-selectors/testnet/evm/ethereum-testnet-goerli-zksync-1'
+import testnet_evm_cronos_testnet_zkevm_1 from './chain-selectors/testnet/evm/cronos-testnet-zkevm-1'
+import mainnet_evm_hedera_mainnet from './chain-selectors/mainnet/evm/hedera-mainnet'
+import testnet_evm_hedera_testnet from './chain-selectors/testnet/evm/hedera-testnet'
+import testnet_evm_ethereum_testnet_sepolia_zksync_1 from './chain-selectors/testnet/evm/ethereum-testnet-sepolia-zksync-1'
+import mainnet_evm_filecoin_mainnet from './chain-selectors/mainnet/evm/filecoin-mainnet'
+import mainnet_evm_ethereum_mainnet_zksync_1 from './chain-selectors/mainnet/evm/ethereum-mainnet-zksync-1'
+import testnet_evm_cronos_testnet from './chain-selectors/testnet/evm/cronos-testnet'
+import mainnet_evm_cronos_zkevm_mainnet from './chain-selectors/mainnet/evm/cronos-zkevm-mainnet'
+import mainnet_evm_near_mainnet from './chain-selectors/mainnet/evm/near-mainnet'
+import testnet_evm_near_testnet from './chain-selectors/testnet/evm/near-testnet'
+import testnet_evm_ethereum_testnet_goerli_optimism_1 from './chain-selectors/testnet/evm/ethereum-testnet-goerli-optimism-1'
+import testnet_evm_areon_testnet from './chain-selectors/testnet/evm/areon-testnet'
+import mainnet_evm_areon_mainnet from './chain-selectors/mainnet/evm/areon-mainnet'
+import mainnet_evm_ethereum_mainnet_worldchain_1 from './chain-selectors/mainnet/evm/ethereum-mainnet-worldchain-1'
+import mainnet_evm_polkadot_mainnet_astar from './chain-selectors/mainnet/evm/polkadot-mainnet-astar'
+import mainnet_evm_janction_mainnet from './chain-selectors/mainnet/evm/janction-mainnet'
+import testnet_evm_janction_testnet_sepolia from './chain-selectors/testnet/evm/janction-testnet-sepolia'
+import testnet_evm_private_testnet_obsidian from './chain-selectors/testnet/evm/private-testnet-obsidian'
+import testnet_evm_ethereum_testnet_sepolia_mode_1 from './chain-selectors/testnet/evm/ethereum-testnet-sepolia-mode-1'
+import testnet_evm_bittensor_testnet from './chain-selectors/testnet/evm/bittensor-testnet'
+import mainnet_evm_bittensor_mainnet from './chain-selectors/mainnet/evm/bittensor-mainnet'
+import testnet_evm_hyperliquid_testnet from './chain-selectors/testnet/evm/hyperliquid-testnet'
+import mainnet_evm_hyperliquid_mainnet from './chain-selectors/mainnet/evm/hyperliquid-mainnet'
+import testnet_evm_kaia_testnet_kairos from './chain-selectors/testnet/evm/kaia-testnet-kairos'
+import testnet_evm_bittorrent_chain_testnet from './chain-selectors/testnet/evm/bittorrent.chain-testnet'
+import mainnet_evm_conflux_mainnet from './chain-selectors/mainnet/evm/conflux-mainnet'
+import mainnet_evm_ethereum_mainnet_metis_1 from './chain-selectors/mainnet/evm/ethereum-mainnet-metis-1'
+import mainnet_evm_ethereum_mainnet_polygon_zkevm_1 from './chain-selectors/mainnet/evm/ethereum-mainnet-polygon-zkevm-1'
+import mainnet_evm_wemix_mainnet from './chain-selectors/mainnet/evm/wemix-mainnet'
+import testnet_evm_wemix_testnet from './chain-selectors/testnet/evm/wemix-testnet'
+import testnet_evm_core_testnet from './chain-selectors/testnet/evm/core-testnet'
+import mainnet_evm_core_mainnet from './chain-selectors/mainnet/evm/core-mainnet'
+import testnet_evm_bitcoin_testnet_bsquared_1 from './chain-selectors/testnet/evm/bitcoin-testnet-bsquared-1'
+import mainnet_evm_lisk_mainnet from './chain-selectors/mainnet/evm/lisk-mainnet'
+import mainnet_evm_polkadot_mainnet_moonbeam from './chain-selectors/mainnet/evm/polkadot-mainnet-moonbeam'
+import mainnet_evm_kusama_mainnet_moonriver from './chain-selectors/mainnet/evm/kusama-mainnet-moonriver'
+import testnet_evm_polkadot_testnet_moonbeam_moonbase from './chain-selectors/testnet/evm/polkadot-testnet-moonbeam-moonbase'
+import testnet_evm_ethereum_testnet_sepolia_unichain_1 from './chain-selectors/testnet/evm/ethereum-testnet-sepolia-unichain-1'
+import testnet_evm_sei_testnet_atlantic from './chain-selectors/testnet/evm/sei-testnet-atlantic'
+import mainnet_evm_sei_mainnet from './chain-selectors/mainnet/evm/sei-mainnet'
+import testnet_evm_geth_testnet from './chain-selectors/testnet/evm/geth-testnet'
+import testnet_evm_ethereum_testnet_goerli_polygon_zkevm_1 from './chain-selectors/testnet/evm/ethereum-testnet-goerli-polygon-zkevm-1'
+import testnet_evm_story_testnet from './chain-selectors/testnet/evm/story-testnet'
+import testnet_evm_mint_testnet from './chain-selectors/testnet/evm/mint-testnet'
+import testnet_evm_metal_testnet from './chain-selectors/testnet/evm/metal-testnet'
+import mainnet_evm_metal_mainnet from './chain-selectors/mainnet/evm/metal-mainnet'
+import mainnet_evm_soneium_mainnet from './chain-selectors/mainnet/evm/soneium-mainnet'
+import mainnet_evm_bitcichain_mainnet from './chain-selectors/mainnet/evm/bitcichain-mainnet'
+import testnet_evm_bitcichain_testnet from './chain-selectors/testnet/evm/bitcichain-testnet'
+import testnet_evm_ethereum_testnet_sepolia_soneium_1 from './chain-selectors/testnet/evm/ethereum-testnet-sepolia-soneium-1'
+import mainnet_evm_ronin_mainnet from './chain-selectors/mainnet/evm/ronin-mainnet'
+import testnet_evm_ronin_testnet_saigon from './chain-selectors/testnet/evm/ronin-testnet-saigon'
+import testnet_evm_private_testnet_granite from './chain-selectors/testnet/evm/private-testnet-granite'
+import testnet_evm_private_testnet_andesite from './chain-selectors/testnet/evm/private-testnet-andesite'
+import testnet_evm_dtcc_testnet_andesite from './chain-selectors/testnet/evm/dtcc-testnet-andesite'
+import mainnet_evm_polkadot_mainnet_centrifuge from './chain-selectors/mainnet/evm/polkadot-mainnet-centrifuge'
+import testnet_evm_polkadot_testnet_centrifuge_altair from './chain-selectors/testnet/evm/polkadot-testnet-centrifuge-altair'
+import testnet_evm_memento_testnet from './chain-selectors/testnet/evm/memento-testnet'
+import testnet_evm_kava_testnet from './chain-selectors/testnet/evm/kava-testnet'
+import mainnet_evm_kava_mainnet from './chain-selectors/mainnet/evm/kava-mainnet'
+import testnet_evm_ethereum_testnet_sepolia_kroma_1 from './chain-selectors/testnet/evm/ethereum-testnet-sepolia-kroma-1'
+import testnet_evm_tac_testnet from './chain-selectors/testnet/evm/tac-testnet'
+import testnet_evm_ethereum_testnet_sepolia_polygon_zkevm_1 from './chain-selectors/testnet/evm/ethereum-testnet-sepolia-polygon-zkevm-1'
+import testnet_evm_ethereum_testnet_holesky_fraxtal_1 from './chain-selectors/testnet/evm/ethereum-testnet-holesky-fraxtal-1'
+import mainnet_evm_abstract_mainnet from './chain-selectors/mainnet/evm/abstract-mainnet'
+import testnet_evm_ethereum_testnet_holesky_morph_1 from './chain-selectors/testnet/evm/ethereum-testnet-holesky-morph-1'
+import mainnet_evm_morph_mainnet from './chain-selectors/mainnet/evm/morph-mainnet'
+import testnet_evm_bitcoin_testnet_botanix from './chain-selectors/testnet/evm/bitcoin-testnet-botanix'
+import mainnet_evm_bitcoin_mainnet_botanix from './chain-selectors/mainnet/evm/bitcoin-mainnet-botanix'
+import mainnet_evm_ethereum_mainnet_astar_zkevm_1 from './chain-selectors/mainnet/evm/ethereum-mainnet-astar-zkevm-1'
+import testnet_evm_fantom_testnet from './chain-selectors/testnet/evm/fantom-testnet'
+import mainnet_evm_bitcoin_merlin_mainnet from './chain-selectors/mainnet/evm/bitcoin-merlin-mainnet'
+import testnet_evm_ethereum_testnet_sepolia_lisk_1 from './chain-selectors/testnet/evm/ethereum-testnet-sepolia-lisk-1'
+import testnet_evm_ethereum_testnet_sepolia_worldchain_1 from './chain-selectors/testnet/evm/ethereum-testnet-sepolia-worldchain-1'
+import mainnet_evm_ethereum_mainnet_mantle_1 from './chain-selectors/mainnet/evm/ethereum-mainnet-mantle-1'
+import testnet_evm_ethereum_testnet_goerli_mantle_1 from './chain-selectors/testnet/evm/ethereum-testnet-goerli-mantle-1'
+import testnet_evm_ethereum_testnet_sepolia_mantle_1 from './chain-selectors/testnet/evm/ethereum-testnet-sepolia-mantle-1'
+import mainnet_evm_superseed_mainnet from './chain-selectors/mainnet/evm/superseed-mainnet'
+import testnet_evm_binance_smart_chain_testnet_opbnb_1 from './chain-selectors/testnet/evm/binance.smart.chain-testnet-opbnb-1'
+import testnet_evm_nexon_dev from './chain-selectors/testnet/evm/nexon-dev'
+import testnet_evm_megaeth_testnet from './chain-selectors/testnet/evm/megaeth-testnet'
+import mainnet_evm_nibiru_mainnet from './chain-selectors/mainnet/evm/nibiru-mainnet'
+import testnet_evm_nibiru_testnet from './chain-selectors/testnet/evm/nibiru-testnet'
+import mainnet_evm_zetachain_mainnet from './chain-selectors/mainnet/evm/zetachain-mainnet'
+import mainnet_evm_kaia_mainnet from './chain-selectors/mainnet/evm/kaia-mainnet'
+import mainnet_evm_ethereum_mainnet_base_1 from './chain-selectors/mainnet/evm/ethereum-mainnet-base-1'
+import testnet_evm_ondo_testnet from './chain-selectors/testnet/evm/ondo-testnet'
+import testnet_evm_neonlink_testnet from './chain-selectors/testnet/evm/neonlink-testnet'
+import mainnet_evm_plasma_mainnet from './chain-selectors/mainnet/evm/plasma-mainnet'
+import testnet_evm_plasma_testnet from './chain-selectors/testnet/evm/plasma-testnet'
+import testnet_evm_monad_testnet from './chain-selectors/testnet/evm/monad-testnet'
+import testnet_evm_gnosis_chain_testnet_chiado from './chain-selectors/testnet/evm/gnosis.chain-testnet-chiado'
+import testnet_evm_abstract_testnet from './chain-selectors/testnet/evm/abstract-testnet'
+import mainnet_evm_ethereum_mainnet_arbitrum_1_l3x_1 from './chain-selectors/mainnet/evm/ethereum-mainnet-arbitrum-1-l3x-1'
+import testnet_evm_ethereum_testnet_sepolia_arbitrum_1_l3x_1 from './chain-selectors/testnet/evm/ethereum-testnet-sepolia-arbitrum-1-l3x-1'
+import mainnet_evm_ethereum_mainnet_immutable_zkevm_1 from './chain-selectors/mainnet/evm/ethereum-mainnet-immutable-zkevm-1'
+import testnet_evm_ethereum_testnet_sepolia_immutable_zkevm_1 from './chain-selectors/testnet/evm/ethereum-testnet-sepolia-immutable-zkevm-1'
+import testnet_evm_0g_testnet_newton from './chain-selectors/testnet/evm/0g-testnet-newton'
+import testnet_evm_0g_testnet_galileo from './chain-selectors/testnet/evm/0g-testnet-galileo'
+import mainnet_evm_0g_mainnet from './chain-selectors/mainnet/evm/0g-mainnet'
+import testnet_evm_ethereum_testnet_holesky from './chain-selectors/testnet/evm/ethereum-testnet-holesky'
+import testnet_evm_anvil_devnet from './chain-selectors/testnet/evm/anvil-devnet'
+import testnet_evm_apechain_testnet_curtis from './chain-selectors/testnet/evm/apechain-testnet-curtis'
+import mainnet_evm_apechain_mainnet from './chain-selectors/mainnet/evm/apechain-mainnet'
+import mainnet_evm_ethereum_mainnet_mode_1 from './chain-selectors/mainnet/evm/ethereum-mainnet-mode-1'
+import testnet_evm_ethereum_testnet_sepolia_lens_1 from './chain-selectors/testnet/evm/ethereum-testnet-sepolia-lens-1'
+import mainnet_evm_ethereum_mainnet_arbitrum_1 from './chain-selectors/mainnet/evm/ethereum-mainnet-arbitrum-1'
+import mainnet_evm_celo_mainnet from './chain-selectors/mainnet/evm/celo-mainnet'
+import mainnet_evm_etherlink_mainnet from './chain-selectors/mainnet/evm/etherlink-mainnet'
+import mainnet_evm_hemi_mainnet from './chain-selectors/mainnet/evm/hemi-mainnet'
+import testnet_evm_avalanche_testnet_fuji from './chain-selectors/testnet/evm/avalanche-testnet-fuji'
+import mainnet_evm_avalanche_mainnet from './chain-selectors/mainnet/evm/avalanche-mainnet'
+import testnet_evm_celo_testnet_alfajores from './chain-selectors/testnet/evm/celo-testnet-alfajores'
+import testnet_evm_private_testnet_opala from './chain-selectors/testnet/evm/private-testnet-opala'
+import mainnet_evm_neox_mainnet from './chain-selectors/mainnet/evm/neox-mainnet'
+import testnet_evm_zircuit_testnet_garfield from './chain-selectors/testnet/evm/zircuit-testnet-garfield'
+import testnet_evm_ethereum_testnet_sepolia_zircuit_1 from './chain-selectors/testnet/evm/ethereum-testnet-sepolia-zircuit-1'
+import mainnet_evm_ethereum_mainnet_zircuit_1 from './chain-selectors/mainnet/evm/ethereum-mainnet-zircuit-1'
+import mainnet_evm_memento_mainnet from './chain-selectors/mainnet/evm/memento-mainnet'
+import testnet_evm_superseed_testnet from './chain-selectors/testnet/evm/superseed-testnet'
+import testnet_evm_sonic_testnet_blaze from './chain-selectors/testnet/evm/sonic-testnet-blaze'
+import mainnet_evm_ethereum_mainnet_ink_1 from './chain-selectors/mainnet/evm/ethereum-mainnet-ink-1'
+import testnet_evm_ethereum_testnet_goerli_linea_1 from './chain-selectors/testnet/evm/ethereum-testnet-goerli-linea-1'
+import testnet_evm_ethereum_testnet_sepolia_linea_1 from './chain-selectors/testnet/evm/ethereum-testnet-sepolia-linea-1'
+import mainnet_evm_ethereum_mainnet_linea_1 from './chain-selectors/mainnet/evm/ethereum-mainnet-linea-1'
+import testnet_evm_ethereum_testnet_sepolia_metis_1 from './chain-selectors/testnet/evm/ethereum-testnet-sepolia-metis-1'
+import mainnet_evm_nexon_mainnet_lith from './chain-selectors/mainnet/evm/nexon-mainnet-lith'
+import mainnet_evm_bitcoin_mainnet_bob_1 from './chain-selectors/mainnet/evm/bitcoin-mainnet-bob-1'
+import mainnet_evm_treasure_mainnet from './chain-selectors/mainnet/evm/treasure-mainnet'
+import mainnet_evm_nexon_mainnet_henesys from './chain-selectors/mainnet/evm/nexon-mainnet-henesys'
+import testnet_evm_polygon_testnet_mumbai from './chain-selectors/testnet/evm/polygon-testnet-mumbai'
+import testnet_evm_polygon_testnet_amoy from './chain-selectors/testnet/evm/polygon-testnet-amoy'
+import testnet_evm_berachain_testnet_bepolia from './chain-selectors/testnet/evm/berachain-testnet-bepolia'
+import testnet_evm_berachain_testnet_bartio from './chain-selectors/testnet/evm/berachain-testnet-bartio'
+import testnet_evm_berachain_testnet_artio from './chain-selectors/testnet/evm/berachain-testnet-artio'
+import testnet_evm_zero_g_testnet_galileo from './chain-selectors/testnet/evm/zero-g-testnet-galileo'
+import mainnet_evm_berachain_mainnet from './chain-selectors/mainnet/evm/berachain-mainnet'
+import mainnet_evm_codex_mainnet from './chain-selectors/mainnet/evm/codex-mainnet'
+import mainnet_evm_ethereum_mainnet_blast_1 from './chain-selectors/mainnet/evm/ethereum-mainnet-blast-1'
+import testnet_evm_ethereum_testnet_goerli_base_1 from './chain-selectors/testnet/evm/ethereum-testnet-goerli-base-1'
+import testnet_evm_ethereum_testnet_sepolia_base_1 from './chain-selectors/testnet/evm/ethereum-testnet-sepolia-base-1'
+import testnet_evm_plume_devnet from './chain-selectors/testnet/evm/plume-devnet'
+import mainnet_evm_plume_mainnet from './chain-selectors/mainnet/evm/plume-mainnet'
+import testnet_evm_plume_testnet_sepolia from './chain-selectors/testnet/evm/plume-testnet-sepolia'
+import testnet_evm_etherlink_testnet from './chain-selectors/testnet/evm/etherlink-testnet'
+import testnet_evm_polygon_testnet_tatara from './chain-selectors/testnet/evm/polygon-testnet-tatara'
+import mainnet_evm_ethereum_mainnet_taiko_1 from './chain-selectors/mainnet/evm/ethereum-mainnet-taiko-1'
+import testnet_evm_ethereum_testnet_holesky_taiko_1 from './chain-selectors/testnet/evm/ethereum-testnet-holesky-taiko-1'
+import testnet_evm_mind_testnet from './chain-selectors/testnet/evm/mind-testnet'
+import testnet_evm_bitcoin_testnet_bitlayer_1 from './chain-selectors/testnet/evm/bitcoin-testnet-bitlayer-1'
+import mainnet_evm_bitcoin_mainnet_bitlayer_1 from './chain-selectors/mainnet/evm/bitcoin-mainnet-bitlayer-1'
+import testnet_evm_ethereum_testnet_goerli_arbitrum_1 from './chain-selectors/testnet/evm/ethereum-testnet-goerli-arbitrum-1'
+import testnet_evm_ethereum_testnet_sepolia_arbitrum_1 from './chain-selectors/testnet/evm/ethereum-testnet-sepolia-arbitrum-1'
+import testnet_evm_private_testnet_mica from './chain-selectors/testnet/evm/private-testnet-mica'
+import testnet_evm_avalanche_subnet_dexalot_testnet from './chain-selectors/testnet/evm/avalanche-subnet-dexalot-testnet'
+import mainnet_evm_avalanche_subnet_dexalot_mainnet from './chain-selectors/mainnet/evm/avalanche-subnet-dexalot-mainnet'
+import testnet_evm_ethereum_testnet_sepolia_scroll_1 from './chain-selectors/testnet/evm/ethereum-testnet-sepolia-scroll-1'
+import mainnet_evm_ethereum_mainnet_scroll_1 from './chain-selectors/mainnet/evm/ethereum-mainnet-scroll-1'
+import testnet_evm_avalanche_testnet_nexon from './chain-selectors/testnet/evm/avalanche-testnet-nexon'
+import testnet_evm_bitcoin_testnet_merlin from './chain-selectors/testnet/evm/bitcoin-testnet-merlin'
+import testnet_evm_pharos_testnet from './chain-selectors/testnet/evm/pharos-testnet'
+import testnet_evm_ethereum_testnet_sepolia_polygon_validium_1 from './chain-selectors/testnet/evm/ethereum-testnet-sepolia-polygon-validium-1'
+import testnet_evm_hemi_testnet_sepolia from './chain-selectors/testnet/evm/hemi-testnet-sepolia'
+import mainnet_evm_polygon_mainnet_katana from './chain-selectors/mainnet/evm/polygon-mainnet-katana'
+import testnet_evm_ink_testnet_sepolia from './chain-selectors/testnet/evm/ink-testnet-sepolia'
+import mainnet_evm_nexon_qa from './chain-selectors/mainnet/evm/nexon-qa'
+import testnet_evm_bitcoin_testnet_sepolia_bob_1 from './chain-selectors/testnet/evm/bitcoin-testnet-sepolia-bob-1'
+import mainnet_evm_zklink_nova_mainnet from './chain-selectors/mainnet/evm/zklink.nova-mainnet'
+import testnet_evm_zklink_nova_testnet from './chain-selectors/testnet/evm/zklink.nova-testnet'
+import testnet_evm_codex_testnet from './chain-selectors/testnet/evm/codex-testnet'
+import mainnet_evm_nexon_stage from './chain-selectors/mainnet/evm/nexon-stage'
+import testnet_evm_ethereum_testnet_sepolia_arbitrum_1_treasure_1 from './chain-selectors/testnet/evm/ethereum-testnet-sepolia-arbitrum-1-treasure-1'
+import testnet_evm_treasure_testnet_topaz from './chain-selectors/testnet/evm/treasure-testnet-topaz'
+import mainnet_evm_ethereum_mainnet_arbitrum_1_treasure_1 from './chain-selectors/mainnet/evm/ethereum-mainnet-arbitrum-1-treasure-1'
+import testnet_evm_jovay_testnet from './chain-selectors/testnet/evm/jovay-testnet'
+import mainnet_evm_zora_mainnet from './chain-selectors/mainnet/evm/zora-mainnet'
+import testnet_evm_ethereum_testnet_sepolia from './chain-selectors/testnet/evm/ethereum-testnet-sepolia'
+import testnet_evm_ethereum_testnet_sepolia_optimism_1 from './chain-selectors/testnet/evm/ethereum-testnet-sepolia-optimism-1'
+import testnet_evm_neox_testnet_t4 from './chain-selectors/testnet/evm/neox-testnet-t4'
+import mainnet_evm_corn_mainnet from './chain-selectors/mainnet/evm/corn-mainnet'
+import testnet_evm_ethereum_testnet_sepolia_corn_1 from './chain-selectors/testnet/evm/ethereum-testnet-sepolia-corn-1'
+import testnet_evm_filecoin_testnet from './chain-selectors/testnet/evm/filecoin-testnet'
+import testnet_evm_plume_testnet from './chain-selectors/testnet/evm/plume-testnet'
+import testnet_evm_ethereum_testnet_sepolia_blast_1 from './chain-selectors/testnet/evm/ethereum-testnet-sepolia-blast-1'
+import mainnet_evm_tron_mainnet_evm from './chain-selectors/mainnet/evm/tron-mainnet-evm'
+import testnet_evm_zora_testnet from './chain-selectors/testnet/evm/zora-testnet'
+import testnet_evm_tron_testnet_shasta_evm from './chain-selectors/testnet/evm/tron-testnet-shasta-evm'
+import testnet_evm_tron_devnet_evm from './chain-selectors/testnet/evm/tron-devnet-evm'
+import testnet_evm_tron_testnet_nile_evm from './chain-selectors/testnet/evm/tron-testnet-nile-evm'
+import mainnet_solana_solana_mainnet from './chain-selectors/mainnet/solana/solana-mainnet'
+import testnet_solana_solana_testnet from './chain-selectors/testnet/solana/solana-testnet'
+import testnet_solana_solana_devnet from './chain-selectors/testnet/solana/solana-devnet'
+import mainnet_aptos_aptos_mainnet from './chain-selectors/mainnet/aptos/aptos-mainnet'
+import testnet_aptos_aptos_testnet from './chain-selectors/testnet/aptos/aptos-testnet'
+import testnet_aptos_aptos_localnet from './chain-selectors/testnet/aptos/aptos-localnet'
+import mainnet_sui_sui_mainnet from './chain-selectors/mainnet/sui/sui-mainnet'
+import testnet_sui_sui_testnet from './chain-selectors/testnet/sui/sui-testnet'
+import testnet_sui_sui_localnet from './chain-selectors/testnet/sui/sui-localnet'
+import mainnet_ton_ton_mainnet from './chain-selectors/mainnet/ton/ton-mainnet'
+import testnet_ton_ton_testnet from './chain-selectors/testnet/ton/ton-testnet'
+import testnet_ton_ton_localnet from './chain-selectors/testnet/ton/ton-localnet'
+import mainnet_tron_tron_mainnet from './chain-selectors/mainnet/tron/tron-mainnet'
+import testnet_tron_tron_testnet_shasta from './chain-selectors/testnet/tron/tron-testnet-shasta'
+import testnet_tron_tron_devnet from './chain-selectors/testnet/tron/tron-devnet'
+import testnet_tron_tron_testnet_nile from './chain-selectors/testnet/tron/tron-testnet-nile'
+
 export const allNetworks: NetworkInfo[] = [
-	{
-		chainId: '1',
-		chainSelector: {
-			name: 'ethereum-mainnet',
-			selector: '5009297550715158000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '10',
-		chainSelector: {
-			name: 'ethereum-mainnet-optimism-1',
-			selector: '3734403246176062000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '25',
-		chainSelector: {
-			name: 'cronos-mainnet',
-			selector: '1456215246176062200',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '30',
-		chainSelector: {
-			name: 'rootstock-mainnet',
-			selector: '11964252391146578000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '31',
-		chainSelector: {
-			name: 'bitcoin-testnet-rootstock',
-			selector: '8953668971247136000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '40',
-		chainSelector: {
-			name: 'telos-evm-mainnet',
-			selector: '1477345371608778000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '41',
-		chainSelector: {
-			name: 'telos-evm-testnet',
-			selector: '729797994450396300',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '45',
-		chainSelector: {
-			name: 'polkadot-testnet-darwinia-pangoro',
-			selector: '4340886533089894000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '46',
-		chainSelector: {
-			name: 'polkadot-mainnet-darwinia',
-			selector: '8866418665544333000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '50',
-		chainSelector: {
-			name: 'xdc-mainnet',
-			selector: '17673274061779415000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '51',
-		chainSelector: {
-			name: 'xdc-testnet',
-			selector: '3017758115101369000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '52',
-		chainSelector: {
-			name: 'coinex_smart_chain-mainnet',
-			selector: '1761333065194157300',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '53',
-		chainSelector: {
-			name: 'coinex_smart_chain-testnet',
-			selector: '8955032871639343000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '56',
-		chainSelector: {
-			name: 'binance_smart_chain-mainnet',
-			selector: '11344663589394135000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '81',
-		chainSelector: {
-			name: 'polkadot-testnet-astar-shibuya',
-			selector: '6955638871347137000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '97',
-		chainSelector: {
-			name: 'binance_smart_chain-testnet',
-			selector: '13264668187771770000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '100',
-		chainSelector: {
-			name: 'gnosis_chain-mainnet',
-			selector: '465200170687744400',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '106',
-		chainSelector: {
-			name: 'velas-mainnet',
-			selector: '374210358663784400',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '109',
-		chainSelector: {
-			name: 'shibarium-mainnet',
-			selector: '3993510008929295400',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '111',
-		chainSelector: {
-			name: 'velas-testnet',
-			selector: '572210378683744400',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '130',
-		chainSelector: {
-			name: 'ethereum-mainnet-unichain-1',
-			selector: '1923510103922296300',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '133',
-		chainSelector: {
-			name: 'ethereum-testnet-sepolia-hashkey-1',
-			selector: '4356164186791070000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '137',
-		chainSelector: {
-			name: 'polygon-mainnet',
-			selector: '4051577828743386600',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '143',
-		chainSelector: {
-			name: 'monad-mainnet',
-			selector: '8481857512324358000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '146',
-		chainSelector: {
-			name: 'sonic-mainnet',
-			selector: '1673871237479750000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '157',
-		chainSelector: {
-			name: 'shibarium-testnet-puppynet',
-			selector: '17833296867764335000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '177',
-		chainSelector: {
-			name: 'ethereum-mainnet-hashkey-1',
-			selector: '7613811247471742000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '185',
-		chainSelector: {
-			name: 'mint-mainnet',
-			selector: '17164792800244662000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '195',
-		chainSelector: {
-			name: 'ethereum-testnet-sepolia-xlayer-1',
-			selector: '2066098519157881900',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '196',
-		chainSelector: {
-			name: 'ethereum-mainnet-xlayer-1',
-			selector: '3016212468291539500',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '199',
-		chainSelector: {
-			name: 'bittorrent_chain-mainnet',
-			selector: '3776006016387883000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '204',
-		chainSelector: {
-			name: 'binance_smart_chain-mainnet-opbnb-1',
-			selector: '465944652040885900',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '223',
-		chainSelector: {
-			name: 'bitcoin-mainnet-bsquared-1',
-			selector: '5406759801798338000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '228',
-		chainSelector: {
-			name: 'mind-mainnet',
-			selector: '11690709103138290000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '232',
-		chainSelector: {
-			name: 'lens-mainnet',
-			selector: '5608378062013573000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '239',
-		chainSelector: {
-			name: 'tac-mainnet',
-			selector: '5936861837188149000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '240',
-		chainSelector: {
-			name: 'cronos-zkevm-testnet-sepolia',
-			selector: '16487132492576885000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '250',
-		chainSelector: {
-			name: 'fantom-mainnet',
-			selector: '3768048213127884000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '252',
-		chainSelector: {
-			name: 'fraxtal-mainnet',
-			selector: '1462016016387883300',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '255',
-		chainSelector: {
-			name: 'ethereum-mainnet-kroma-1',
-			selector: '3719320017875267000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '259',
-		chainSelector: {
-			name: 'neonlink-mainnet',
-			selector: '8239338020728974000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '280',
-		chainSelector: {
-			name: 'ethereum-testnet-goerli-zksync-1',
-			selector: '6802309497652714000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '282',
-		chainSelector: {
-			name: 'cronos-testnet-zkevm-1',
-			selector: '3842103497652714000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '295',
-		chainSelector: {
-			name: 'hedera-mainnet',
-			selector: '3229138320728879000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '296',
-		chainSelector: {
-			name: 'hedera-testnet',
-			selector: '222782988166878820',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '300',
-		chainSelector: {
-			name: 'ethereum-testnet-sepolia-zksync-1',
-			selector: '6898391096552792000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '314',
-		chainSelector: {
-			name: 'filecoin-mainnet',
-			selector: '4561443241176883000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '324',
-		chainSelector: {
-			name: 'ethereum-mainnet-zksync-1',
-			selector: '1562403441176082200',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '338',
-		chainSelector: {
-			name: 'cronos-testnet',
-			selector: '2995292832068775000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '388',
-		chainSelector: {
-			name: 'cronos-zkevm-mainnet',
-			selector: '8788096068760391000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '397',
-		chainSelector: {
-			name: 'near-mainnet',
-			selector: '2039744413822257700',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '398',
-		chainSelector: {
-			name: 'near-testnet',
-			selector: '5061593697262339000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '420',
-		chainSelector: {
-			name: 'ethereum-testnet-goerli-optimism-1',
-			selector: '2664363617261497000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '462',
-		chainSelector: {
-			name: 'areon-testnet',
-			selector: '7317911323415911000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '463',
-		chainSelector: {
-			name: 'areon-mainnet',
-			selector: '1939936305787790600',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '480',
-		chainSelector: {
-			name: 'ethereum-mainnet-worldchain-1',
-			selector: '2049429975587534800',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '592',
-		chainSelector: {
-			name: 'polkadot-mainnet-astar',
-			selector: '6422105447186081000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '678',
-		chainSelector: {
-			name: 'janction-mainnet',
-			selector: '9107126442626378000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '679',
-		chainSelector: {
-			name: 'janction-testnet-sepolia',
-			selector: '5059197667603798000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '682',
-		chainSelector: {
-			name: 'private-testnet-obsidian',
-			selector: '6260932437388305000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '919',
-		chainSelector: {
-			name: 'ethereum-testnet-sepolia-mode-1',
-			selector: '829525985033418800',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '945',
-		chainSelector: {
-			name: 'bittensor-testnet',
-			selector: '2177900824115119000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '964',
-		chainSelector: {
-			name: 'bittensor-mainnet',
-			selector: '2135107236357186800',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '998',
-		chainSelector: {
-			name: 'hyperliquid-testnet',
-			selector: '4286062357653186600',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '999',
-		chainSelector: {
-			name: 'hyperliquid-mainnet',
-			selector: '2442541497099098600',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '1001',
-		chainSelector: {
-			name: 'kaia-testnet-kairos',
-			selector: '2624132734533622000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '1029',
-		chainSelector: {
-			name: 'bittorrent_chain-testnet',
-			selector: '4459371029167934500',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '1030',
-		chainSelector: {
-			name: 'conflux-mainnet',
-			selector: '3358365939762719000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '1088',
-		chainSelector: {
-			name: 'ethereum-mainnet-metis-1',
-			selector: '8805746078405599000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '1101',
-		chainSelector: {
-			name: 'ethereum-mainnet-polygon-zkevm-1',
-			selector: '4348158687435793400',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '1111',
-		chainSelector: {
-			name: 'wemix-mainnet',
-			selector: '5142893604156790000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '1112',
-		chainSelector: {
-			name: 'wemix-testnet',
-			selector: '9284632837123596000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '1114',
-		chainSelector: {
-			name: 'core-testnet',
-			selector: '4264732132125536000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '1116',
-		chainSelector: {
-			name: 'core-mainnet',
-			selector: '1224752112135636200',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '1123',
-		chainSelector: {
-			name: 'bitcoin-testnet-bsquared-1',
-			selector: '1948510578179542000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '1135',
-		chainSelector: {
-			name: 'lisk-mainnet',
-			selector: '15293031020466096000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '1284',
-		chainSelector: {
-			name: 'polkadot-mainnet-moonbeam',
-			selector: '1252863800116739600',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '1285',
-		chainSelector: {
-			name: 'kusama-mainnet-moonriver',
-			selector: '1355020143337428000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '1287',
-		chainSelector: {
-			name: 'polkadot-testnet-moonbeam-moonbase',
-			selector: '5361632739113537000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '1301',
-		chainSelector: {
-			name: 'ethereum-testnet-sepolia-unichain-1',
-			selector: '14135854469784515000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '1328',
-		chainSelector: {
-			name: 'sei-testnet-atlantic',
-			selector: '1216300075444106800',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '1329',
-		chainSelector: {
-			name: 'sei-mainnet',
-			selector: '9027416829622343000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '1337',
-		chainSelector: {
-			name: 'geth-testnet',
-			selector: '3379446385462418400',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '1442',
-		chainSelector: {
-			name: 'ethereum-testnet-goerli-polygon-zkevm-1',
-			selector: '11059667695644973000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '1513',
-		chainSelector: {
-			name: 'story-testnet',
-			selector: '4237030917318060500',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '1687',
-		chainSelector: {
-			name: 'mint-testnet',
-			selector: '10749384167430722000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '1740',
-		chainSelector: {
-			name: 'metal-testnet',
-			selector: '6286293440461808000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '1750',
-		chainSelector: {
-			name: 'metal-mainnet',
-			selector: '13447077090413146000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '1868',
-		chainSelector: {
-			name: 'soneium-mainnet',
-			selector: '12505351618335764000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '1907',
-		chainSelector: {
-			name: 'bitcichain-mainnet',
-			selector: '4874388048629246000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '1908',
-		chainSelector: {
-			name: 'bitcichain-testnet',
-			selector: '4888058894222120000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '1946',
-		chainSelector: {
-			name: 'ethereum-testnet-sepolia-soneium-1',
-			selector: '686603546605904500',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '2020',
-		chainSelector: {
-			name: 'ronin-mainnet',
-			selector: '6916147374840168000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '2021',
-		chainSelector: {
-			name: 'ronin-testnet-saigon',
-			selector: '13116810400804393000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '2023',
-		chainSelector: {
-			name: 'private-testnet-granite',
-			selector: '3260900564719373300',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '2024',
-		chainSelector: {
-			name: 'private-testnet-andesite',
-			selector: '6915682381028791000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '2025',
-		chainSelector: {
-			name: 'dtcc-testnet-andesite',
-			selector: '15513093881969820000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '2031',
-		chainSelector: {
-			name: 'polkadot-mainnet-centrifuge',
-			selector: '8175830712062618000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '2088',
-		chainSelector: {
-			name: 'polkadot-testnet-centrifuge-altair',
-			selector: '2333097300889805000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '2129',
-		chainSelector: {
-			name: 'memento-testnet',
-			selector: '12168171414969487000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '2221',
-		chainSelector: {
-			name: 'kava-testnet',
-			selector: '2110537777356199200',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '2222',
-		chainSelector: {
-			name: 'kava-mainnet',
-			selector: '7550000543357438000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '2358',
-		chainSelector: {
-			name: 'ethereum-testnet-sepolia-kroma-1',
-			selector: '5990477251245693000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '2391',
-		chainSelector: {
-			name: 'tac-testnet',
-			selector: '9488606126177219000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '2442',
-		chainSelector: {
-			name: 'ethereum-testnet-sepolia-polygon-zkevm-1',
-			selector: '1654667687261492700',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '2522',
-		chainSelector: {
-			name: 'ethereum-testnet-holesky-fraxtal-1',
-			selector: '8901520481741772000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '2741',
-		chainSelector: {
-			name: 'abstract-mainnet',
-			selector: '3577778157919314400',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '2810',
-		chainSelector: {
-			name: 'ethereum-testnet-holesky-morph-1',
-			selector: '8304510386741731000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '2818',
-		chainSelector: {
-			name: 'morph-mainnet',
-			selector: '18164309074156128000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '3636',
-		chainSelector: {
-			name: 'bitcoin-testnet-botanix',
-			selector: '1467223411771711500',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '3637',
-		chainSelector: {
-			name: 'bitcoin-mainnet-botanix',
-			selector: '4560701533377838000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '3776',
-		chainSelector: {
-			name: 'ethereum-mainnet-astar-zkevm-1',
-			selector: '1540201334317828000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '4002',
-		chainSelector: {
-			name: 'fantom-testnet',
-			selector: '4905564228793744000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '4200',
-		chainSelector: {
-			name: 'bitcoin-merlin-mainnet',
-			selector: '241851231317829000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '4202',
-		chainSelector: {
-			name: 'ethereum-testnet-sepolia-lisk-1',
-			selector: '5298399861320401000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '4801',
-		chainSelector: {
-			name: 'ethereum-testnet-sepolia-worldchain-1',
-			selector: '5299555114858066000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '5000',
-		chainSelector: {
-			name: 'ethereum-mainnet-mantle-1',
-			selector: '1556008542357238800',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '5001',
-		chainSelector: {
-			name: 'ethereum-testnet-goerli-mantle-1',
-			selector: '4168263376276232000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '5003',
-		chainSelector: {
-			name: 'ethereum-testnet-sepolia-mantle-1',
-			selector: '8236463271206331000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '5330',
-		chainSelector: {
-			name: 'superseed-mainnet',
-			selector: '470401360549526850',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '5611',
-		chainSelector: {
-			name: 'binance_smart_chain-testnet-opbnb-1',
-			selector: '13274425992935471000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '5668',
-		chainSelector: {
-			name: 'nexon-dev',
-			selector: '8911150974185440000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '6342',
-		chainSelector: {
-			name: 'megaeth-testnet',
-			selector: '2443239559770384400',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '6900',
-		chainSelector: {
-			name: 'nibiru-mainnet',
-			selector: '17349189558768828000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '6930',
-		chainSelector: {
-			name: 'nibiru-testnet',
-			selector: '305104239123120450',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '7000',
-		chainSelector: {
-			name: 'zetachain-mainnet',
-			selector: '10817664450262215000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '8217',
-		chainSelector: {
-			name: 'kaia-mainnet',
-			selector: '9813823125703492000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '8453',
-		chainSelector: {
-			name: 'ethereum-mainnet-base-1',
-			selector: '15971525489660199000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '9000',
-		chainSelector: {
-			name: 'ondo-testnet',
-			selector: '344208382356656600',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '9559',
-		chainSelector: {
-			name: 'neonlink-testnet',
-			selector: '1113014352258747600',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '9745',
-		chainSelector: {
-			name: 'plasma-mainnet',
-			selector: '9335212494177456000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '9746',
-		chainSelector: {
-			name: 'plasma-testnet',
-			selector: '3967220077692964400',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '10143',
-		chainSelector: {
-			name: 'monad-testnet',
-			selector: '2183018362218727400',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '10200',
-		chainSelector: {
-			name: 'gnosis_chain-testnet-chiado',
-			selector: '8871595565390010000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '11124',
-		chainSelector: {
-			name: 'abstract-testnet',
-			selector: '16235373811196387000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '12324',
-		chainSelector: {
-			name: 'ethereum-mainnet-arbitrum-1-l3x-1',
-			selector: '3162193654116181500',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '12325',
-		chainSelector: {
-			name: 'ethereum-testnet-sepolia-arbitrum-1-l3x-1',
-			selector: '3486622437121596000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '13371',
-		chainSelector: {
-			name: 'ethereum-mainnet-immutable-zkevm-1',
-			selector: '1237925231416732000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '13473',
-		chainSelector: {
-			name: 'ethereum-testnet-sepolia-immutable-zkevm-1',
-			selector: '4526165231216332000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '16600',
-		chainSelector: {
-			name: '0g-testnet-newton',
-			selector: '16088006396410204000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '16601',
-		chainSelector: {
-			name: '0g-testnet-galileo',
-			selector: '2131427466778448100',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '16661',
-		chainSelector: {
-			name: '0g-mainnet',
-			selector: '4426351306075016000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '17000',
-		chainSelector: {
-			name: 'ethereum-testnet-holesky',
-			selector: '7717148896336251000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '31337',
-		chainSelector: {
-			name: 'anvil-devnet',
-			selector: '7759470850252069000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '33111',
-		chainSelector: {
-			name: 'apechain-testnet-curtis',
-			selector: '9900119385908781000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '33139',
-		chainSelector: {
-			name: 'apechain-mainnet',
-			selector: '14894068710063348000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '34443',
-		chainSelector: {
-			name: 'ethereum-mainnet-mode-1',
-			selector: '7264351850409363000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '37111',
-		chainSelector: {
-			name: 'ethereum-testnet-sepolia-lens-1',
-			selector: '6827576821754316000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '42161',
-		chainSelector: {
-			name: 'ethereum-mainnet-arbitrum-1',
-			selector: '4949039107694360000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '42220',
-		chainSelector: {
-			name: 'celo-mainnet',
-			selector: '1346049177634351600',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '42793',
-		chainSelector: {
-			name: 'etherlink-mainnet',
-			selector: '13624601974233774000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '43111',
-		chainSelector: {
-			name: 'hemi-mainnet',
-			selector: '1804312132722180000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '43113',
-		chainSelector: {
-			name: 'avalanche-testnet-fuji',
-			selector: '14767482510784807000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '43114',
-		chainSelector: {
-			name: 'avalanche-mainnet',
-			selector: '6433500567565415000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '44787',
-		chainSelector: {
-			name: 'celo-testnet-alfajores',
-			selector: '3552045678561919000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '45439',
-		chainSelector: {
-			name: 'private-testnet-opala',
-			selector: '8446413392851542000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '47763',
-		chainSelector: {
-			name: 'neox-mainnet',
-			selector: '7222032299962346000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '48898',
-		chainSelector: {
-			name: 'zircuit-testnet-garfield',
-			selector: '13781831279385220000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '48899',
-		chainSelector: {
-			name: 'ethereum-testnet-sepolia-zircuit-1',
-			selector: '4562743618362911000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '48900',
-		chainSelector: {
-			name: 'ethereum-mainnet-zircuit-1',
-			selector: '17198166215261833000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '51888',
-		chainSelector: {
-			name: 'memento-mainnet',
-			selector: '6473245816409426000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '53302',
-		chainSelector: {
-			name: 'superseed-testnet',
-			selector: '13694007683517088000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '57054',
-		chainSelector: {
-			name: 'sonic-testnet-blaze',
-			selector: '3676871237479449000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '57073',
-		chainSelector: {
-			name: 'ethereum-mainnet-ink-1',
-			selector: '3461204551265786000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '59140',
-		chainSelector: {
-			name: 'ethereum-testnet-goerli-linea-1',
-			selector: '1355246678561316400',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '59141',
-		chainSelector: {
-			name: 'ethereum-testnet-sepolia-linea-1',
-			selector: '5719461335882077000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '59144',
-		chainSelector: {
-			name: 'ethereum-mainnet-linea-1',
-			selector: '4627098889531055000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '59902',
-		chainSelector: {
-			name: 'ethereum-testnet-sepolia-metis-1',
-			selector: '3777822886988675000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '60118',
-		chainSelector: {
-			name: 'nexon-mainnet-lith',
-			selector: '15758750456714168000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '60808',
-		chainSelector: {
-			name: 'bitcoin-mainnet-bob-1',
-			selector: '3849287863852499500',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '61166',
-		chainSelector: {
-			name: 'treasure-mainnet',
-			selector: '5214452172935136000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '68414',
-		chainSelector: {
-			name: 'nexon-mainnet-henesys',
-			selector: '12657445206920370000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '80001',
-		chainSelector: {
-			name: 'polygon-testnet-mumbai',
-			selector: '12532609583862917000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '80002',
-		chainSelector: {
-			name: 'polygon-testnet-amoy',
-			selector: '16281711391670634000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '80069',
-		chainSelector: {
-			name: 'berachain-testnet-bepolia',
-			selector: '7728255861635209000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '80084',
-		chainSelector: {
-			name: 'berachain-testnet-bartio',
-			selector: '8999465244383784000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '80085',
-		chainSelector: {
-			name: 'berachain-testnet-artio',
-			selector: '12336603543561912000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '80087',
-		chainSelector: {
-			name: 'zero-g-testnet-galileo',
-			selector: '2285225387454015700',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '80094',
-		chainSelector: {
-			name: 'berachain-mainnet',
-			selector: '1294465214383781000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '81224',
-		chainSelector: {
-			name: 'codex-mainnet',
-			selector: '9478124434908828000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '81457',
-		chainSelector: {
-			name: 'ethereum-mainnet-blast-1',
-			selector: '4411394078118774300',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '84531',
-		chainSelector: {
-			name: 'ethereum-testnet-goerli-base-1',
-			selector: '5790810961207156000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '84532',
-		chainSelector: {
-			name: 'ethereum-testnet-sepolia-base-1',
-			selector: '10344971235874466000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '98864',
-		chainSelector: {
-			name: 'plume-devnet',
-			selector: '3743020999916461000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '98866',
-		chainSelector: {
-			name: 'plume-mainnet',
-			selector: '17912061998839310000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '98867',
-		chainSelector: {
-			name: 'plume-testnet-sepolia',
-			selector: '13874588925447303000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '128123',
-		chainSelector: {
-			name: 'etherlink-testnet',
-			selector: '1910019406958449400',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '129399',
-		chainSelector: {
-			name: 'polygon-testnet-tatara',
-			selector: '9090863410735740000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '167000',
-		chainSelector: {
-			name: 'ethereum-mainnet-taiko-1',
-			selector: '16468599424800719000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '167009',
-		chainSelector: {
-			name: 'ethereum-testnet-holesky-taiko-1',
-			selector: '7248756420937880000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '192940',
-		chainSelector: {
-			name: 'mind-testnet',
-			selector: '7189150270347330000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '200810',
-		chainSelector: {
-			name: 'bitcoin-testnet-bitlayer-1',
-			selector: '3789623672476206000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '200901',
-		chainSelector: {
-			name: 'bitcoin-mainnet-bitlayer-1',
-			selector: '7937294810946806000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '421613',
-		chainSelector: {
-			name: 'ethereum-testnet-goerli-arbitrum-1',
-			selector: '6101244977088475000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '421614',
-		chainSelector: {
-			name: 'ethereum-testnet-sepolia-arbitrum-1',
-			selector: '3478487238524512000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '424242',
-		chainSelector: {
-			name: 'private-testnet-mica',
-			selector: '4489326297382772000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '432201',
-		chainSelector: {
-			name: 'avalanche-subnet-dexalot-testnet',
-			selector: '1458281248224513000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '432204',
-		chainSelector: {
-			name: 'avalanche-subnet-dexalot-mainnet',
-			selector: '5463201557265485000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '534351',
-		chainSelector: {
-			name: 'ethereum-testnet-sepolia-scroll-1',
-			selector: '2279865765895943400',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '534352',
-		chainSelector: {
-			name: 'ethereum-mainnet-scroll-1',
-			selector: '13204309965629104000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '595581',
-		chainSelector: {
-			name: 'avalanche-testnet-nexon',
-			selector: '7837562506228496000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '686868',
-		chainSelector: {
-			name: 'bitcoin-testnet-merlin',
-			selector: '5269261765892944000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '688688',
-		chainSelector: {
-			name: 'pharos-testnet',
-			selector: '4012524741200567300',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '717160',
-		chainSelector: {
-			name: 'ethereum-testnet-sepolia-polygon-validium-1',
-			selector: '4418231248214523000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '743111',
-		chainSelector: {
-			name: 'hemi-testnet-sepolia',
-			selector: '16126893759944360000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '747474',
-		chainSelector: {
-			name: 'polygon-mainnet-katana',
-			selector: '2459028469735686000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '763373',
-		chainSelector: {
-			name: 'ink-testnet-sepolia',
-			selector: '9763904284804119000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '807424',
-		chainSelector: {
-			name: 'nexon-qa',
-			selector: '14632960069656270000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '808813',
-		chainSelector: {
-			name: 'bitcoin-testnet-sepolia-bob-1',
-			selector: '5535534526963509000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '810180',
-		chainSelector: {
-			name: 'zklink_nova-mainnet',
-			selector: '4350319965322102000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '810181',
-		chainSelector: {
-			name: 'zklink_nova-testnet',
-			selector: '5837261596322417000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '812242',
-		chainSelector: {
-			name: 'codex-testnet',
-			selector: '7225665875429174000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '847799',
-		chainSelector: {
-			name: 'nexon-stage',
-			selector: '5556806327594154000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '978657',
-		chainSelector: {
-			name: 'ethereum-testnet-sepolia-arbitrum-1-treasure-1',
-			selector: '10443705513486043000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '978658',
-		chainSelector: {
-			name: 'treasure-testnet-topaz',
-			selector: '3676916124122458000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '978670',
-		chainSelector: {
-			name: 'ethereum-mainnet-arbitrum-1-treasure-1',
-			selector: '1010349088906778000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '2019775',
-		chainSelector: {
-			name: 'jovay-testnet',
-			selector: '945045181441419300',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '7777777',
-		chainSelector: {
-			name: 'zora-mainnet',
-			selector: '3555797439612589000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '11155111',
-		chainSelector: {
-			name: 'ethereum-testnet-sepolia',
-			selector: '16015286601757825000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '11155420',
-		chainSelector: {
-			name: 'ethereum-testnet-sepolia-optimism-1',
-			selector: '5224473277236332000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '12227332',
-		chainSelector: {
-			name: 'neox-testnet-t4',
-			selector: '2217764097022649300',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '21000000',
-		chainSelector: {
-			name: 'corn-mainnet',
-			selector: '9043146809313071000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '21000001',
-		chainSelector: {
-			name: 'ethereum-testnet-sepolia-corn-1',
-			selector: '1467427327723634000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '31415926',
-		chainSelector: {
-			name: 'filecoin-testnet',
-			selector: '7060342227814389000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '161221135',
-		chainSelector: {
-			name: 'plume-testnet',
-			selector: '14684575664602284000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '168587773',
-		chainSelector: {
-			name: 'ethereum-testnet-sepolia-blast-1',
-			selector: '2027362563942762500',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '728126428',
-		chainSelector: {
-			name: 'tron-mainnet-evm',
-			selector: '1546563616611574000',
-		},
-		chainFamily: 'evm',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '999999999',
-		chainSelector: {
-			name: 'zora-testnet',
-			selector: '16244020411108057000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '2494104990',
-		chainSelector: {
-			name: 'tron-testnet-shasta-evm',
-			selector: '13231703482326770000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '3360022319',
-		chainSelector: {
-			name: 'tron-devnet-evm',
-			selector: '13231703482326770000',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '3448148188',
-		chainSelector: {
-			name: 'tron-testnet-nile-evm',
-			selector: '2052925811360307700',
-		},
-		chainFamily: 'evm',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d',
-		chainSelector: {
-			name: 'solana-mainnet',
-			selector: '124615329519749600',
-		},
-		chainFamily: 'solana',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3zQawwpjk2NsNY',
-		chainSelector: {
-			name: 'solana-testnet',
-			selector: '6302590918974934000',
-		},
-		chainFamily: 'solana',
-		networkType: 'testnet',
-	},
-	{
-		chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG',
-		chainSelector: {
-			name: 'solana-devnet',
-			selector: '16423721717087812000',
-		},
-		chainFamily: 'solana',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '1',
-		chainSelector: {
-			name: 'aptos-mainnet',
-			selector: '4741433654826278000',
-		},
-		chainFamily: 'aptos',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '2',
-		chainSelector: {
-			name: 'aptos-testnet',
-			selector: '743186221051783400',
-		},
-		chainFamily: 'aptos',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '4',
-		chainSelector: {
-			name: 'aptos-localnet',
-			selector: '4457093679053095400',
-		},
-		chainFamily: 'aptos',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '1',
-		chainSelector: {
-			name: 'sui-mainnet',
-			selector: '17529533435026248000',
-		},
-		chainFamily: 'sui',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '2',
-		chainSelector: {
-			name: 'sui-testnet',
-			selector: '9762610643973837000',
-		},
-		chainFamily: 'sui',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '4',
-		chainSelector: {
-			name: 'sui-localnet',
-			selector: '18395503381733958000',
-		},
-		chainFamily: 'sui',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '-239',
-		chainSelector: {
-			name: 'ton-mainnet',
-			selector: '16448340667252470000',
-		},
-		chainFamily: 'ton',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '-3',
-		chainSelector: {
-			name: 'ton-testnet',
-			selector: '1399300952838017800',
-		},
-		chainFamily: 'ton',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '-217',
-		chainSelector: {
-			name: 'ton-localnet',
-			selector: '13879075125137744000',
-		},
-		chainFamily: 'ton',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '728126428',
-		chainSelector: {
-			name: 'tron-mainnet',
-			selector: '1546563616611574000',
-		},
-		chainFamily: 'tron',
-		networkType: 'mainnet',
-	},
-	{
-		chainId: '2494104990',
-		chainSelector: {
-			name: 'tron-testnet-shasta',
-			selector: '13231703482326770000',
-		},
-		chainFamily: 'tron',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '3360022319',
-		chainSelector: {
-			name: 'tron-devnet',
-			selector: '13231703482326770000',
-		},
-		chainFamily: 'tron',
-		networkType: 'testnet',
-	},
-	{
-		chainId: '3448148188',
-		chainSelector: {
-			name: 'tron-testnet-nile',
-			selector: '2052925811360307700',
-		},
-		chainFamily: 'tron',
-		networkType: 'testnet',
-	},
+	mainnet_evm_ethereum_mainnet,
+	mainnet_evm_ethereum_mainnet_optimism_1,
+	mainnet_evm_cronos_mainnet,
+	mainnet_evm_rootstock_mainnet,
+	testnet_evm_bitcoin_testnet_rootstock,
+	mainnet_evm_telos_evm_mainnet,
+	testnet_evm_telos_evm_testnet,
+	testnet_evm_polkadot_testnet_darwinia_pangoro,
+	mainnet_evm_polkadot_mainnet_darwinia,
+	mainnet_evm_xdc_mainnet,
+	testnet_evm_xdc_testnet,
+	mainnet_evm_coinex_smart_chain_mainnet,
+	testnet_evm_coinex_smart_chain_testnet,
+	mainnet_evm_binance_smart_chain_mainnet,
+	testnet_evm_polkadot_testnet_astar_shibuya,
+	testnet_evm_binance_smart_chain_testnet,
+	mainnet_evm_gnosis_chain_mainnet,
+	mainnet_evm_velas_mainnet,
+	mainnet_evm_shibarium_mainnet,
+	testnet_evm_velas_testnet,
+	mainnet_evm_ethereum_mainnet_unichain_1,
+	testnet_evm_ethereum_testnet_sepolia_hashkey_1,
+	mainnet_evm_polygon_mainnet,
+	mainnet_evm_monad_mainnet,
+	mainnet_evm_sonic_mainnet,
+	testnet_evm_shibarium_testnet_puppynet,
+	mainnet_evm_ethereum_mainnet_hashkey_1,
+	mainnet_evm_mint_mainnet,
+	testnet_evm_ethereum_testnet_sepolia_xlayer_1,
+	mainnet_evm_ethereum_mainnet_xlayer_1,
+	mainnet_evm_bittorrent_chain_mainnet,
+	mainnet_evm_binance_smart_chain_mainnet_opbnb_1,
+	mainnet_evm_bitcoin_mainnet_bsquared_1,
+	mainnet_evm_mind_mainnet,
+	mainnet_evm_lens_mainnet,
+	mainnet_evm_tac_mainnet,
+	testnet_evm_cronos_zkevm_testnet_sepolia,
+	mainnet_evm_fantom_mainnet,
+	mainnet_evm_fraxtal_mainnet,
+	mainnet_evm_ethereum_mainnet_kroma_1,
+	mainnet_evm_neonlink_mainnet,
+	testnet_evm_ethereum_testnet_goerli_zksync_1,
+	testnet_evm_cronos_testnet_zkevm_1,
+	mainnet_evm_hedera_mainnet,
+	testnet_evm_hedera_testnet,
+	testnet_evm_ethereum_testnet_sepolia_zksync_1,
+	mainnet_evm_filecoin_mainnet,
+	mainnet_evm_ethereum_mainnet_zksync_1,
+	testnet_evm_cronos_testnet,
+	mainnet_evm_cronos_zkevm_mainnet,
+	mainnet_evm_near_mainnet,
+	testnet_evm_near_testnet,
+	testnet_evm_ethereum_testnet_goerli_optimism_1,
+	testnet_evm_areon_testnet,
+	mainnet_evm_areon_mainnet,
+	mainnet_evm_ethereum_mainnet_worldchain_1,
+	mainnet_evm_polkadot_mainnet_astar,
+	mainnet_evm_janction_mainnet,
+	testnet_evm_janction_testnet_sepolia,
+	testnet_evm_private_testnet_obsidian,
+	testnet_evm_ethereum_testnet_sepolia_mode_1,
+	testnet_evm_bittensor_testnet,
+	mainnet_evm_bittensor_mainnet,
+	testnet_evm_hyperliquid_testnet,
+	mainnet_evm_hyperliquid_mainnet,
+	testnet_evm_kaia_testnet_kairos,
+	testnet_evm_bittorrent_chain_testnet,
+	mainnet_evm_conflux_mainnet,
+	mainnet_evm_ethereum_mainnet_metis_1,
+	mainnet_evm_ethereum_mainnet_polygon_zkevm_1,
+	mainnet_evm_wemix_mainnet,
+	testnet_evm_wemix_testnet,
+	testnet_evm_core_testnet,
+	mainnet_evm_core_mainnet,
+	testnet_evm_bitcoin_testnet_bsquared_1,
+	mainnet_evm_lisk_mainnet,
+	mainnet_evm_polkadot_mainnet_moonbeam,
+	mainnet_evm_kusama_mainnet_moonriver,
+	testnet_evm_polkadot_testnet_moonbeam_moonbase,
+	testnet_evm_ethereum_testnet_sepolia_unichain_1,
+	testnet_evm_sei_testnet_atlantic,
+	mainnet_evm_sei_mainnet,
+	testnet_evm_geth_testnet,
+	testnet_evm_ethereum_testnet_goerli_polygon_zkevm_1,
+	testnet_evm_story_testnet,
+	testnet_evm_mint_testnet,
+	testnet_evm_metal_testnet,
+	mainnet_evm_metal_mainnet,
+	mainnet_evm_soneium_mainnet,
+	mainnet_evm_bitcichain_mainnet,
+	testnet_evm_bitcichain_testnet,
+	testnet_evm_ethereum_testnet_sepolia_soneium_1,
+	mainnet_evm_ronin_mainnet,
+	testnet_evm_ronin_testnet_saigon,
+	testnet_evm_private_testnet_granite,
+	testnet_evm_private_testnet_andesite,
+	testnet_evm_dtcc_testnet_andesite,
+	mainnet_evm_polkadot_mainnet_centrifuge,
+	testnet_evm_polkadot_testnet_centrifuge_altair,
+	testnet_evm_memento_testnet,
+	testnet_evm_kava_testnet,
+	mainnet_evm_kava_mainnet,
+	testnet_evm_ethereum_testnet_sepolia_kroma_1,
+	testnet_evm_tac_testnet,
+	testnet_evm_ethereum_testnet_sepolia_polygon_zkevm_1,
+	testnet_evm_ethereum_testnet_holesky_fraxtal_1,
+	mainnet_evm_abstract_mainnet,
+	testnet_evm_ethereum_testnet_holesky_morph_1,
+	mainnet_evm_morph_mainnet,
+	testnet_evm_bitcoin_testnet_botanix,
+	mainnet_evm_bitcoin_mainnet_botanix,
+	mainnet_evm_ethereum_mainnet_astar_zkevm_1,
+	testnet_evm_fantom_testnet,
+	mainnet_evm_bitcoin_merlin_mainnet,
+	testnet_evm_ethereum_testnet_sepolia_lisk_1,
+	testnet_evm_ethereum_testnet_sepolia_worldchain_1,
+	mainnet_evm_ethereum_mainnet_mantle_1,
+	testnet_evm_ethereum_testnet_goerli_mantle_1,
+	testnet_evm_ethereum_testnet_sepolia_mantle_1,
+	mainnet_evm_superseed_mainnet,
+	testnet_evm_binance_smart_chain_testnet_opbnb_1,
+	testnet_evm_nexon_dev,
+	testnet_evm_megaeth_testnet,
+	mainnet_evm_nibiru_mainnet,
+	testnet_evm_nibiru_testnet,
+	mainnet_evm_zetachain_mainnet,
+	mainnet_evm_kaia_mainnet,
+	mainnet_evm_ethereum_mainnet_base_1,
+	testnet_evm_ondo_testnet,
+	testnet_evm_neonlink_testnet,
+	mainnet_evm_plasma_mainnet,
+	testnet_evm_plasma_testnet,
+	testnet_evm_monad_testnet,
+	testnet_evm_gnosis_chain_testnet_chiado,
+	testnet_evm_abstract_testnet,
+	mainnet_evm_ethereum_mainnet_arbitrum_1_l3x_1,
+	testnet_evm_ethereum_testnet_sepolia_arbitrum_1_l3x_1,
+	mainnet_evm_ethereum_mainnet_immutable_zkevm_1,
+	testnet_evm_ethereum_testnet_sepolia_immutable_zkevm_1,
+	testnet_evm_0g_testnet_newton,
+	testnet_evm_0g_testnet_galileo,
+	mainnet_evm_0g_mainnet,
+	testnet_evm_ethereum_testnet_holesky,
+	testnet_evm_anvil_devnet,
+	testnet_evm_apechain_testnet_curtis,
+	mainnet_evm_apechain_mainnet,
+	mainnet_evm_ethereum_mainnet_mode_1,
+	testnet_evm_ethereum_testnet_sepolia_lens_1,
+	mainnet_evm_ethereum_mainnet_arbitrum_1,
+	mainnet_evm_celo_mainnet,
+	mainnet_evm_etherlink_mainnet,
+	mainnet_evm_hemi_mainnet,
+	testnet_evm_avalanche_testnet_fuji,
+	mainnet_evm_avalanche_mainnet,
+	testnet_evm_celo_testnet_alfajores,
+	testnet_evm_private_testnet_opala,
+	mainnet_evm_neox_mainnet,
+	testnet_evm_zircuit_testnet_garfield,
+	testnet_evm_ethereum_testnet_sepolia_zircuit_1,
+	mainnet_evm_ethereum_mainnet_zircuit_1,
+	mainnet_evm_memento_mainnet,
+	testnet_evm_superseed_testnet,
+	testnet_evm_sonic_testnet_blaze,
+	mainnet_evm_ethereum_mainnet_ink_1,
+	testnet_evm_ethereum_testnet_goerli_linea_1,
+	testnet_evm_ethereum_testnet_sepolia_linea_1,
+	mainnet_evm_ethereum_mainnet_linea_1,
+	testnet_evm_ethereum_testnet_sepolia_metis_1,
+	mainnet_evm_nexon_mainnet_lith,
+	mainnet_evm_bitcoin_mainnet_bob_1,
+	mainnet_evm_treasure_mainnet,
+	mainnet_evm_nexon_mainnet_henesys,
+	testnet_evm_polygon_testnet_mumbai,
+	testnet_evm_polygon_testnet_amoy,
+	testnet_evm_berachain_testnet_bepolia,
+	testnet_evm_berachain_testnet_bartio,
+	testnet_evm_berachain_testnet_artio,
+	testnet_evm_zero_g_testnet_galileo,
+	mainnet_evm_berachain_mainnet,
+	mainnet_evm_codex_mainnet,
+	mainnet_evm_ethereum_mainnet_blast_1,
+	testnet_evm_ethereum_testnet_goerli_base_1,
+	testnet_evm_ethereum_testnet_sepolia_base_1,
+	testnet_evm_plume_devnet,
+	mainnet_evm_plume_mainnet,
+	testnet_evm_plume_testnet_sepolia,
+	testnet_evm_etherlink_testnet,
+	testnet_evm_polygon_testnet_tatara,
+	mainnet_evm_ethereum_mainnet_taiko_1,
+	testnet_evm_ethereum_testnet_holesky_taiko_1,
+	testnet_evm_mind_testnet,
+	testnet_evm_bitcoin_testnet_bitlayer_1,
+	mainnet_evm_bitcoin_mainnet_bitlayer_1,
+	testnet_evm_ethereum_testnet_goerli_arbitrum_1,
+	testnet_evm_ethereum_testnet_sepolia_arbitrum_1,
+	testnet_evm_private_testnet_mica,
+	testnet_evm_avalanche_subnet_dexalot_testnet,
+	mainnet_evm_avalanche_subnet_dexalot_mainnet,
+	testnet_evm_ethereum_testnet_sepolia_scroll_1,
+	mainnet_evm_ethereum_mainnet_scroll_1,
+	testnet_evm_avalanche_testnet_nexon,
+	testnet_evm_bitcoin_testnet_merlin,
+	testnet_evm_pharos_testnet,
+	testnet_evm_ethereum_testnet_sepolia_polygon_validium_1,
+	testnet_evm_hemi_testnet_sepolia,
+	mainnet_evm_polygon_mainnet_katana,
+	testnet_evm_ink_testnet_sepolia,
+	mainnet_evm_nexon_qa,
+	testnet_evm_bitcoin_testnet_sepolia_bob_1,
+	mainnet_evm_zklink_nova_mainnet,
+	testnet_evm_zklink_nova_testnet,
+	testnet_evm_codex_testnet,
+	mainnet_evm_nexon_stage,
+	testnet_evm_ethereum_testnet_sepolia_arbitrum_1_treasure_1,
+	testnet_evm_treasure_testnet_topaz,
+	mainnet_evm_ethereum_mainnet_arbitrum_1_treasure_1,
+	testnet_evm_jovay_testnet,
+	mainnet_evm_zora_mainnet,
+	testnet_evm_ethereum_testnet_sepolia,
+	testnet_evm_ethereum_testnet_sepolia_optimism_1,
+	testnet_evm_neox_testnet_t4,
+	mainnet_evm_corn_mainnet,
+	testnet_evm_ethereum_testnet_sepolia_corn_1,
+	testnet_evm_filecoin_testnet,
+	testnet_evm_plume_testnet,
+	testnet_evm_ethereum_testnet_sepolia_blast_1,
+	mainnet_evm_tron_mainnet_evm,
+	testnet_evm_zora_testnet,
+	testnet_evm_tron_testnet_shasta_evm,
+	testnet_evm_tron_devnet_evm,
+	testnet_evm_tron_testnet_nile_evm,
+	mainnet_solana_solana_mainnet,
+	testnet_solana_solana_testnet,
+	testnet_solana_solana_devnet,
+	mainnet_aptos_aptos_mainnet,
+	testnet_aptos_aptos_testnet,
+	testnet_aptos_aptos_localnet,
+	mainnet_sui_sui_mainnet,
+	testnet_sui_sui_testnet,
+	testnet_sui_sui_localnet,
+	mainnet_ton_ton_mainnet,
+	testnet_ton_ton_testnet,
+	testnet_ton_ton_localnet,
+	mainnet_tron_tron_mainnet,
+	testnet_tron_tron_testnet_shasta,
+	testnet_tron_tron_devnet,
+	testnet_tron_tron_testnet_nile,
 ] as const
 
 export const mainnet = {
 	evm: [
-		{
-			chainId: '1',
-			chainSelector: {
-				name: 'ethereum-mainnet',
-				selector: '5009297550715158000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '10',
-			chainSelector: {
-				name: 'ethereum-mainnet-optimism-1',
-				selector: '3734403246176062000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '25',
-			chainSelector: {
-				name: 'cronos-mainnet',
-				selector: '1456215246176062200',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '30',
-			chainSelector: {
-				name: 'rootstock-mainnet',
-				selector: '11964252391146578000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '40',
-			chainSelector: {
-				name: 'telos-evm-mainnet',
-				selector: '1477345371608778000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '46',
-			chainSelector: {
-				name: 'polkadot-mainnet-darwinia',
-				selector: '8866418665544333000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '50',
-			chainSelector: {
-				name: 'xdc-mainnet',
-				selector: '17673274061779415000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '52',
-			chainSelector: {
-				name: 'coinex_smart_chain-mainnet',
-				selector: '1761333065194157300',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '56',
-			chainSelector: {
-				name: 'binance_smart_chain-mainnet',
-				selector: '11344663589394135000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '100',
-			chainSelector: {
-				name: 'gnosis_chain-mainnet',
-				selector: '465200170687744400',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '106',
-			chainSelector: {
-				name: 'velas-mainnet',
-				selector: '374210358663784400',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '109',
-			chainSelector: {
-				name: 'shibarium-mainnet',
-				selector: '3993510008929295400',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '130',
-			chainSelector: {
-				name: 'ethereum-mainnet-unichain-1',
-				selector: '1923510103922296300',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '137',
-			chainSelector: {
-				name: 'polygon-mainnet',
-				selector: '4051577828743386600',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '143',
-			chainSelector: {
-				name: 'monad-mainnet',
-				selector: '8481857512324358000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '146',
-			chainSelector: {
-				name: 'sonic-mainnet',
-				selector: '1673871237479750000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '177',
-			chainSelector: {
-				name: 'ethereum-mainnet-hashkey-1',
-				selector: '7613811247471742000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '185',
-			chainSelector: {
-				name: 'mint-mainnet',
-				selector: '17164792800244662000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '196',
-			chainSelector: {
-				name: 'ethereum-mainnet-xlayer-1',
-				selector: '3016212468291539500',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '199',
-			chainSelector: {
-				name: 'bittorrent_chain-mainnet',
-				selector: '3776006016387883000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '204',
-			chainSelector: {
-				name: 'binance_smart_chain-mainnet-opbnb-1',
-				selector: '465944652040885900',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '223',
-			chainSelector: {
-				name: 'bitcoin-mainnet-bsquared-1',
-				selector: '5406759801798338000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '228',
-			chainSelector: {
-				name: 'mind-mainnet',
-				selector: '11690709103138290000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '232',
-			chainSelector: {
-				name: 'lens-mainnet',
-				selector: '5608378062013573000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '239',
-			chainSelector: {
-				name: 'tac-mainnet',
-				selector: '5936861837188149000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '250',
-			chainSelector: {
-				name: 'fantom-mainnet',
-				selector: '3768048213127884000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '252',
-			chainSelector: {
-				name: 'fraxtal-mainnet',
-				selector: '1462016016387883300',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '255',
-			chainSelector: {
-				name: 'ethereum-mainnet-kroma-1',
-				selector: '3719320017875267000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '259',
-			chainSelector: {
-				name: 'neonlink-mainnet',
-				selector: '8239338020728974000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '295',
-			chainSelector: {
-				name: 'hedera-mainnet',
-				selector: '3229138320728879000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '314',
-			chainSelector: {
-				name: 'filecoin-mainnet',
-				selector: '4561443241176883000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '324',
-			chainSelector: {
-				name: 'ethereum-mainnet-zksync-1',
-				selector: '1562403441176082200',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '388',
-			chainSelector: {
-				name: 'cronos-zkevm-mainnet',
-				selector: '8788096068760391000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '397',
-			chainSelector: {
-				name: 'near-mainnet',
-				selector: '2039744413822257700',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '463',
-			chainSelector: {
-				name: 'areon-mainnet',
-				selector: '1939936305787790600',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '480',
-			chainSelector: {
-				name: 'ethereum-mainnet-worldchain-1',
-				selector: '2049429975587534800',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '592',
-			chainSelector: {
-				name: 'polkadot-mainnet-astar',
-				selector: '6422105447186081000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '678',
-			chainSelector: {
-				name: 'janction-mainnet',
-				selector: '9107126442626378000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '964',
-			chainSelector: {
-				name: 'bittensor-mainnet',
-				selector: '2135107236357186800',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '999',
-			chainSelector: {
-				name: 'hyperliquid-mainnet',
-				selector: '2442541497099098600',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '1030',
-			chainSelector: {
-				name: 'conflux-mainnet',
-				selector: '3358365939762719000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '1088',
-			chainSelector: {
-				name: 'ethereum-mainnet-metis-1',
-				selector: '8805746078405599000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '1101',
-			chainSelector: {
-				name: 'ethereum-mainnet-polygon-zkevm-1',
-				selector: '4348158687435793400',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '1111',
-			chainSelector: {
-				name: 'wemix-mainnet',
-				selector: '5142893604156790000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '1116',
-			chainSelector: {
-				name: 'core-mainnet',
-				selector: '1224752112135636200',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '1135',
-			chainSelector: {
-				name: 'lisk-mainnet',
-				selector: '15293031020466096000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '1284',
-			chainSelector: {
-				name: 'polkadot-mainnet-moonbeam',
-				selector: '1252863800116739600',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '1285',
-			chainSelector: {
-				name: 'kusama-mainnet-moonriver',
-				selector: '1355020143337428000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '1329',
-			chainSelector: {
-				name: 'sei-mainnet',
-				selector: '9027416829622343000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '1750',
-			chainSelector: {
-				name: 'metal-mainnet',
-				selector: '13447077090413146000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '1868',
-			chainSelector: {
-				name: 'soneium-mainnet',
-				selector: '12505351618335764000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '1907',
-			chainSelector: {
-				name: 'bitcichain-mainnet',
-				selector: '4874388048629246000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '2020',
-			chainSelector: {
-				name: 'ronin-mainnet',
-				selector: '6916147374840168000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '2031',
-			chainSelector: {
-				name: 'polkadot-mainnet-centrifuge',
-				selector: '8175830712062618000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '2222',
-			chainSelector: {
-				name: 'kava-mainnet',
-				selector: '7550000543357438000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '2741',
-			chainSelector: {
-				name: 'abstract-mainnet',
-				selector: '3577778157919314400',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '2818',
-			chainSelector: {
-				name: 'morph-mainnet',
-				selector: '18164309074156128000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '3637',
-			chainSelector: {
-				name: 'bitcoin-mainnet-botanix',
-				selector: '4560701533377838000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '3776',
-			chainSelector: {
-				name: 'ethereum-mainnet-astar-zkevm-1',
-				selector: '1540201334317828000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '4200',
-			chainSelector: {
-				name: 'bitcoin-merlin-mainnet',
-				selector: '241851231317829000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '5000',
-			chainSelector: {
-				name: 'ethereum-mainnet-mantle-1',
-				selector: '1556008542357238800',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '5330',
-			chainSelector: {
-				name: 'superseed-mainnet',
-				selector: '470401360549526850',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '6900',
-			chainSelector: {
-				name: 'nibiru-mainnet',
-				selector: '17349189558768828000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '7000',
-			chainSelector: {
-				name: 'zetachain-mainnet',
-				selector: '10817664450262215000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '8217',
-			chainSelector: {
-				name: 'kaia-mainnet',
-				selector: '9813823125703492000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '8453',
-			chainSelector: {
-				name: 'ethereum-mainnet-base-1',
-				selector: '15971525489660199000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '9745',
-			chainSelector: {
-				name: 'plasma-mainnet',
-				selector: '9335212494177456000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '12324',
-			chainSelector: {
-				name: 'ethereum-mainnet-arbitrum-1-l3x-1',
-				selector: '3162193654116181500',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '13371',
-			chainSelector: {
-				name: 'ethereum-mainnet-immutable-zkevm-1',
-				selector: '1237925231416732000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '16661',
-			chainSelector: {
-				name: '0g-mainnet',
-				selector: '4426351306075016000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '33139',
-			chainSelector: {
-				name: 'apechain-mainnet',
-				selector: '14894068710063348000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '34443',
-			chainSelector: {
-				name: 'ethereum-mainnet-mode-1',
-				selector: '7264351850409363000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '42161',
-			chainSelector: {
-				name: 'ethereum-mainnet-arbitrum-1',
-				selector: '4949039107694360000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '42220',
-			chainSelector: {
-				name: 'celo-mainnet',
-				selector: '1346049177634351600',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '42793',
-			chainSelector: {
-				name: 'etherlink-mainnet',
-				selector: '13624601974233774000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '43111',
-			chainSelector: {
-				name: 'hemi-mainnet',
-				selector: '1804312132722180000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '43114',
-			chainSelector: {
-				name: 'avalanche-mainnet',
-				selector: '6433500567565415000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '47763',
-			chainSelector: {
-				name: 'neox-mainnet',
-				selector: '7222032299962346000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '48900',
-			chainSelector: {
-				name: 'ethereum-mainnet-zircuit-1',
-				selector: '17198166215261833000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '51888',
-			chainSelector: {
-				name: 'memento-mainnet',
-				selector: '6473245816409426000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '57073',
-			chainSelector: {
-				name: 'ethereum-mainnet-ink-1',
-				selector: '3461204551265786000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '59144',
-			chainSelector: {
-				name: 'ethereum-mainnet-linea-1',
-				selector: '4627098889531055000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '60118',
-			chainSelector: {
-				name: 'nexon-mainnet-lith',
-				selector: '15758750456714168000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '60808',
-			chainSelector: {
-				name: 'bitcoin-mainnet-bob-1',
-				selector: '3849287863852499500',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '61166',
-			chainSelector: {
-				name: 'treasure-mainnet',
-				selector: '5214452172935136000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '68414',
-			chainSelector: {
-				name: 'nexon-mainnet-henesys',
-				selector: '12657445206920370000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '80094',
-			chainSelector: {
-				name: 'berachain-mainnet',
-				selector: '1294465214383781000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '81224',
-			chainSelector: {
-				name: 'codex-mainnet',
-				selector: '9478124434908828000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '81457',
-			chainSelector: {
-				name: 'ethereum-mainnet-blast-1',
-				selector: '4411394078118774300',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '98866',
-			chainSelector: {
-				name: 'plume-mainnet',
-				selector: '17912061998839310000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '167000',
-			chainSelector: {
-				name: 'ethereum-mainnet-taiko-1',
-				selector: '16468599424800719000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '200901',
-			chainSelector: {
-				name: 'bitcoin-mainnet-bitlayer-1',
-				selector: '7937294810946806000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '432204',
-			chainSelector: {
-				name: 'avalanche-subnet-dexalot-mainnet',
-				selector: '5463201557265485000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '534352',
-			chainSelector: {
-				name: 'ethereum-mainnet-scroll-1',
-				selector: '13204309965629104000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '747474',
-			chainSelector: {
-				name: 'polygon-mainnet-katana',
-				selector: '2459028469735686000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '807424',
-			chainSelector: {
-				name: 'nexon-qa',
-				selector: '14632960069656270000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '810180',
-			chainSelector: {
-				name: 'zklink_nova-mainnet',
-				selector: '4350319965322102000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '847799',
-			chainSelector: {
-				name: 'nexon-stage',
-				selector: '5556806327594154000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '978670',
-			chainSelector: {
-				name: 'ethereum-mainnet-arbitrum-1-treasure-1',
-				selector: '1010349088906778000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '7777777',
-			chainSelector: {
-				name: 'zora-mainnet',
-				selector: '3555797439612589000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '21000000',
-			chainSelector: {
-				name: 'corn-mainnet',
-				selector: '9043146809313071000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-		{
-			chainId: '728126428',
-			chainSelector: {
-				name: 'tron-mainnet-evm',
-				selector: '1546563616611574000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
+		mainnet_evm_ethereum_mainnet,
+		mainnet_evm_ethereum_mainnet_optimism_1,
+		mainnet_evm_cronos_mainnet,
+		mainnet_evm_rootstock_mainnet,
+		mainnet_evm_telos_evm_mainnet,
+		mainnet_evm_polkadot_mainnet_darwinia,
+		mainnet_evm_xdc_mainnet,
+		mainnet_evm_coinex_smart_chain_mainnet,
+		mainnet_evm_binance_smart_chain_mainnet,
+		mainnet_evm_gnosis_chain_mainnet,
+		mainnet_evm_velas_mainnet,
+		mainnet_evm_shibarium_mainnet,
+		mainnet_evm_ethereum_mainnet_unichain_1,
+		mainnet_evm_polygon_mainnet,
+		mainnet_evm_monad_mainnet,
+		mainnet_evm_sonic_mainnet,
+		mainnet_evm_ethereum_mainnet_hashkey_1,
+		mainnet_evm_mint_mainnet,
+		mainnet_evm_ethereum_mainnet_xlayer_1,
+		mainnet_evm_bittorrent_chain_mainnet,
+		mainnet_evm_binance_smart_chain_mainnet_opbnb_1,
+		mainnet_evm_bitcoin_mainnet_bsquared_1,
+		mainnet_evm_mind_mainnet,
+		mainnet_evm_lens_mainnet,
+		mainnet_evm_tac_mainnet,
+		mainnet_evm_fantom_mainnet,
+		mainnet_evm_fraxtal_mainnet,
+		mainnet_evm_ethereum_mainnet_kroma_1,
+		mainnet_evm_neonlink_mainnet,
+		mainnet_evm_hedera_mainnet,
+		mainnet_evm_filecoin_mainnet,
+		mainnet_evm_ethereum_mainnet_zksync_1,
+		mainnet_evm_cronos_zkevm_mainnet,
+		mainnet_evm_near_mainnet,
+		mainnet_evm_areon_mainnet,
+		mainnet_evm_ethereum_mainnet_worldchain_1,
+		mainnet_evm_polkadot_mainnet_astar,
+		mainnet_evm_janction_mainnet,
+		mainnet_evm_bittensor_mainnet,
+		mainnet_evm_hyperliquid_mainnet,
+		mainnet_evm_conflux_mainnet,
+		mainnet_evm_ethereum_mainnet_metis_1,
+		mainnet_evm_ethereum_mainnet_polygon_zkevm_1,
+		mainnet_evm_wemix_mainnet,
+		mainnet_evm_core_mainnet,
+		mainnet_evm_lisk_mainnet,
+		mainnet_evm_polkadot_mainnet_moonbeam,
+		mainnet_evm_kusama_mainnet_moonriver,
+		mainnet_evm_sei_mainnet,
+		mainnet_evm_metal_mainnet,
+		mainnet_evm_soneium_mainnet,
+		mainnet_evm_bitcichain_mainnet,
+		mainnet_evm_ronin_mainnet,
+		mainnet_evm_polkadot_mainnet_centrifuge,
+		mainnet_evm_kava_mainnet,
+		mainnet_evm_abstract_mainnet,
+		mainnet_evm_morph_mainnet,
+		mainnet_evm_bitcoin_mainnet_botanix,
+		mainnet_evm_ethereum_mainnet_astar_zkevm_1,
+		mainnet_evm_bitcoin_merlin_mainnet,
+		mainnet_evm_ethereum_mainnet_mantle_1,
+		mainnet_evm_superseed_mainnet,
+		mainnet_evm_nibiru_mainnet,
+		mainnet_evm_zetachain_mainnet,
+		mainnet_evm_kaia_mainnet,
+		mainnet_evm_ethereum_mainnet_base_1,
+		mainnet_evm_plasma_mainnet,
+		mainnet_evm_ethereum_mainnet_arbitrum_1_l3x_1,
+		mainnet_evm_ethereum_mainnet_immutable_zkevm_1,
+		mainnet_evm_0g_mainnet,
+		mainnet_evm_apechain_mainnet,
+		mainnet_evm_ethereum_mainnet_mode_1,
+		mainnet_evm_ethereum_mainnet_arbitrum_1,
+		mainnet_evm_celo_mainnet,
+		mainnet_evm_etherlink_mainnet,
+		mainnet_evm_hemi_mainnet,
+		mainnet_evm_avalanche_mainnet,
+		mainnet_evm_neox_mainnet,
+		mainnet_evm_ethereum_mainnet_zircuit_1,
+		mainnet_evm_memento_mainnet,
+		mainnet_evm_ethereum_mainnet_ink_1,
+		mainnet_evm_ethereum_mainnet_linea_1,
+		mainnet_evm_nexon_mainnet_lith,
+		mainnet_evm_bitcoin_mainnet_bob_1,
+		mainnet_evm_treasure_mainnet,
+		mainnet_evm_nexon_mainnet_henesys,
+		mainnet_evm_berachain_mainnet,
+		mainnet_evm_codex_mainnet,
+		mainnet_evm_ethereum_mainnet_blast_1,
+		mainnet_evm_plume_mainnet,
+		mainnet_evm_ethereum_mainnet_taiko_1,
+		mainnet_evm_bitcoin_mainnet_bitlayer_1,
+		mainnet_evm_avalanche_subnet_dexalot_mainnet,
+		mainnet_evm_ethereum_mainnet_scroll_1,
+		mainnet_evm_polygon_mainnet_katana,
+		mainnet_evm_nexon_qa,
+		mainnet_evm_zklink_nova_mainnet,
+		mainnet_evm_nexon_stage,
+		mainnet_evm_ethereum_mainnet_arbitrum_1_treasure_1,
+		mainnet_evm_zora_mainnet,
+		mainnet_evm_corn_mainnet,
+		mainnet_evm_tron_mainnet_evm,
 	] as const,
-	solana: [
-		{
-			chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d',
-			chainSelector: {
-				name: 'solana-mainnet',
-				selector: '124615329519749600',
-			},
-			chainFamily: 'solana',
-			networkType: 'mainnet',
-		},
-	] as const,
-	aptos: [
-		{
-			chainId: '1',
-			chainSelector: {
-				name: 'aptos-mainnet',
-				selector: '4741433654826278000',
-			},
-			chainFamily: 'aptos',
-			networkType: 'mainnet',
-		},
-	] as const,
-	sui: [
-		{
-			chainId: '1',
-			chainSelector: {
-				name: 'sui-mainnet',
-				selector: '17529533435026248000',
-			},
-			chainFamily: 'sui',
-			networkType: 'mainnet',
-		},
-	] as const,
-	ton: [
-		{
-			chainId: '-239',
-			chainSelector: {
-				name: 'ton-mainnet',
-				selector: '16448340667252470000',
-			},
-			chainFamily: 'ton',
-			networkType: 'mainnet',
-		},
-	] as const,
-	tron: [
-		{
-			chainId: '728126428',
-			chainSelector: {
-				name: 'tron-mainnet',
-				selector: '1546563616611574000',
-			},
-			chainFamily: 'tron',
-			networkType: 'mainnet',
-		},
-	] as const,
+	solana: [mainnet_solana_solana_mainnet] as const,
+	aptos: [mainnet_aptos_aptos_mainnet] as const,
+	sui: [mainnet_sui_sui_mainnet] as const,
+	ton: [mainnet_ton_ton_mainnet] as const,
+	tron: [mainnet_tron_tron_mainnet] as const,
 } as const
 
 export const testnet = {
 	evm: [
-		{
-			chainId: '31',
-			chainSelector: {
-				name: 'bitcoin-testnet-rootstock',
-				selector: '8953668971247136000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '41',
-			chainSelector: {
-				name: 'telos-evm-testnet',
-				selector: '729797994450396300',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '45',
-			chainSelector: {
-				name: 'polkadot-testnet-darwinia-pangoro',
-				selector: '4340886533089894000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '51',
-			chainSelector: {
-				name: 'xdc-testnet',
-				selector: '3017758115101369000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '53',
-			chainSelector: {
-				name: 'coinex_smart_chain-testnet',
-				selector: '8955032871639343000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '81',
-			chainSelector: {
-				name: 'polkadot-testnet-astar-shibuya',
-				selector: '6955638871347137000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '97',
-			chainSelector: {
-				name: 'binance_smart_chain-testnet',
-				selector: '13264668187771770000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '111',
-			chainSelector: {
-				name: 'velas-testnet',
-				selector: '572210378683744400',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '133',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-hashkey-1',
-				selector: '4356164186791070000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '157',
-			chainSelector: {
-				name: 'shibarium-testnet-puppynet',
-				selector: '17833296867764335000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '195',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-xlayer-1',
-				selector: '2066098519157881900',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '240',
-			chainSelector: {
-				name: 'cronos-zkevm-testnet-sepolia',
-				selector: '16487132492576885000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '280',
-			chainSelector: {
-				name: 'ethereum-testnet-goerli-zksync-1',
-				selector: '6802309497652714000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '282',
-			chainSelector: {
-				name: 'cronos-testnet-zkevm-1',
-				selector: '3842103497652714000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '296',
-			chainSelector: {
-				name: 'hedera-testnet',
-				selector: '222782988166878820',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '300',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-zksync-1',
-				selector: '6898391096552792000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '338',
-			chainSelector: {
-				name: 'cronos-testnet',
-				selector: '2995292832068775000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '398',
-			chainSelector: {
-				name: 'near-testnet',
-				selector: '5061593697262339000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '420',
-			chainSelector: {
-				name: 'ethereum-testnet-goerli-optimism-1',
-				selector: '2664363617261497000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '462',
-			chainSelector: {
-				name: 'areon-testnet',
-				selector: '7317911323415911000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '679',
-			chainSelector: {
-				name: 'janction-testnet-sepolia',
-				selector: '5059197667603798000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '682',
-			chainSelector: {
-				name: 'private-testnet-obsidian',
-				selector: '6260932437388305000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '919',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-mode-1',
-				selector: '829525985033418800',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '945',
-			chainSelector: {
-				name: 'bittensor-testnet',
-				selector: '2177900824115119000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '998',
-			chainSelector: {
-				name: 'hyperliquid-testnet',
-				selector: '4286062357653186600',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '1001',
-			chainSelector: {
-				name: 'kaia-testnet-kairos',
-				selector: '2624132734533622000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '1029',
-			chainSelector: {
-				name: 'bittorrent_chain-testnet',
-				selector: '4459371029167934500',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '1112',
-			chainSelector: {
-				name: 'wemix-testnet',
-				selector: '9284632837123596000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '1114',
-			chainSelector: {
-				name: 'core-testnet',
-				selector: '4264732132125536000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '1123',
-			chainSelector: {
-				name: 'bitcoin-testnet-bsquared-1',
-				selector: '1948510578179542000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '1287',
-			chainSelector: {
-				name: 'polkadot-testnet-moonbeam-moonbase',
-				selector: '5361632739113537000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '1301',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-unichain-1',
-				selector: '14135854469784515000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '1328',
-			chainSelector: {
-				name: 'sei-testnet-atlantic',
-				selector: '1216300075444106800',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '1337',
-			chainSelector: {
-				name: 'geth-testnet',
-				selector: '3379446385462418400',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '1442',
-			chainSelector: {
-				name: 'ethereum-testnet-goerli-polygon-zkevm-1',
-				selector: '11059667695644973000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '1513',
-			chainSelector: {
-				name: 'story-testnet',
-				selector: '4237030917318060500',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '1687',
-			chainSelector: {
-				name: 'mint-testnet',
-				selector: '10749384167430722000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '1740',
-			chainSelector: {
-				name: 'metal-testnet',
-				selector: '6286293440461808000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '1908',
-			chainSelector: {
-				name: 'bitcichain-testnet',
-				selector: '4888058894222120000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '1946',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-soneium-1',
-				selector: '686603546605904500',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '2021',
-			chainSelector: {
-				name: 'ronin-testnet-saigon',
-				selector: '13116810400804393000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '2023',
-			chainSelector: {
-				name: 'private-testnet-granite',
-				selector: '3260900564719373300',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '2024',
-			chainSelector: {
-				name: 'private-testnet-andesite',
-				selector: '6915682381028791000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '2025',
-			chainSelector: {
-				name: 'dtcc-testnet-andesite',
-				selector: '15513093881969820000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '2088',
-			chainSelector: {
-				name: 'polkadot-testnet-centrifuge-altair',
-				selector: '2333097300889805000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '2129',
-			chainSelector: {
-				name: 'memento-testnet',
-				selector: '12168171414969487000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '2221',
-			chainSelector: {
-				name: 'kava-testnet',
-				selector: '2110537777356199200',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '2358',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-kroma-1',
-				selector: '5990477251245693000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '2391',
-			chainSelector: {
-				name: 'tac-testnet',
-				selector: '9488606126177219000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '2442',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-polygon-zkevm-1',
-				selector: '1654667687261492700',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '2522',
-			chainSelector: {
-				name: 'ethereum-testnet-holesky-fraxtal-1',
-				selector: '8901520481741772000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '2810',
-			chainSelector: {
-				name: 'ethereum-testnet-holesky-morph-1',
-				selector: '8304510386741731000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '3636',
-			chainSelector: {
-				name: 'bitcoin-testnet-botanix',
-				selector: '1467223411771711500',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '4002',
-			chainSelector: {
-				name: 'fantom-testnet',
-				selector: '4905564228793744000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '4202',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-lisk-1',
-				selector: '5298399861320401000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '4801',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-worldchain-1',
-				selector: '5299555114858066000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '5001',
-			chainSelector: {
-				name: 'ethereum-testnet-goerli-mantle-1',
-				selector: '4168263376276232000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '5003',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-mantle-1',
-				selector: '8236463271206331000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '5611',
-			chainSelector: {
-				name: 'binance_smart_chain-testnet-opbnb-1',
-				selector: '13274425992935471000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '5668',
-			chainSelector: {
-				name: 'nexon-dev',
-				selector: '8911150974185440000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '6342',
-			chainSelector: {
-				name: 'megaeth-testnet',
-				selector: '2443239559770384400',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '6930',
-			chainSelector: {
-				name: 'nibiru-testnet',
-				selector: '305104239123120450',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '9000',
-			chainSelector: {
-				name: 'ondo-testnet',
-				selector: '344208382356656600',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '9559',
-			chainSelector: {
-				name: 'neonlink-testnet',
-				selector: '1113014352258747600',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '9746',
-			chainSelector: {
-				name: 'plasma-testnet',
-				selector: '3967220077692964400',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '10143',
-			chainSelector: {
-				name: 'monad-testnet',
-				selector: '2183018362218727400',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '10200',
-			chainSelector: {
-				name: 'gnosis_chain-testnet-chiado',
-				selector: '8871595565390010000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '11124',
-			chainSelector: {
-				name: 'abstract-testnet',
-				selector: '16235373811196387000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '12325',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-arbitrum-1-l3x-1',
-				selector: '3486622437121596000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '13473',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-immutable-zkevm-1',
-				selector: '4526165231216332000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '16600',
-			chainSelector: {
-				name: '0g-testnet-newton',
-				selector: '16088006396410204000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '16601',
-			chainSelector: {
-				name: '0g-testnet-galileo',
-				selector: '2131427466778448100',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '17000',
-			chainSelector: {
-				name: 'ethereum-testnet-holesky',
-				selector: '7717148896336251000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '31337',
-			chainSelector: {
-				name: 'anvil-devnet',
-				selector: '7759470850252069000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '33111',
-			chainSelector: {
-				name: 'apechain-testnet-curtis',
-				selector: '9900119385908781000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '37111',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-lens-1',
-				selector: '6827576821754316000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '43113',
-			chainSelector: {
-				name: 'avalanche-testnet-fuji',
-				selector: '14767482510784807000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '44787',
-			chainSelector: {
-				name: 'celo-testnet-alfajores',
-				selector: '3552045678561919000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '45439',
-			chainSelector: {
-				name: 'private-testnet-opala',
-				selector: '8446413392851542000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '48898',
-			chainSelector: {
-				name: 'zircuit-testnet-garfield',
-				selector: '13781831279385220000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '48899',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-zircuit-1',
-				selector: '4562743618362911000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '53302',
-			chainSelector: {
-				name: 'superseed-testnet',
-				selector: '13694007683517088000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '57054',
-			chainSelector: {
-				name: 'sonic-testnet-blaze',
-				selector: '3676871237479449000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '59140',
-			chainSelector: {
-				name: 'ethereum-testnet-goerli-linea-1',
-				selector: '1355246678561316400',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '59141',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-linea-1',
-				selector: '5719461335882077000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '59902',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-metis-1',
-				selector: '3777822886988675000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '80001',
-			chainSelector: {
-				name: 'polygon-testnet-mumbai',
-				selector: '12532609583862917000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '80002',
-			chainSelector: {
-				name: 'polygon-testnet-amoy',
-				selector: '16281711391670634000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '80069',
-			chainSelector: {
-				name: 'berachain-testnet-bepolia',
-				selector: '7728255861635209000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '80084',
-			chainSelector: {
-				name: 'berachain-testnet-bartio',
-				selector: '8999465244383784000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '80085',
-			chainSelector: {
-				name: 'berachain-testnet-artio',
-				selector: '12336603543561912000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '80087',
-			chainSelector: {
-				name: 'zero-g-testnet-galileo',
-				selector: '2285225387454015700',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '84531',
-			chainSelector: {
-				name: 'ethereum-testnet-goerli-base-1',
-				selector: '5790810961207156000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '84532',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-base-1',
-				selector: '10344971235874466000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '98864',
-			chainSelector: {
-				name: 'plume-devnet',
-				selector: '3743020999916461000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '98867',
-			chainSelector: {
-				name: 'plume-testnet-sepolia',
-				selector: '13874588925447303000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '128123',
-			chainSelector: {
-				name: 'etherlink-testnet',
-				selector: '1910019406958449400',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '129399',
-			chainSelector: {
-				name: 'polygon-testnet-tatara',
-				selector: '9090863410735740000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '167009',
-			chainSelector: {
-				name: 'ethereum-testnet-holesky-taiko-1',
-				selector: '7248756420937880000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '192940',
-			chainSelector: {
-				name: 'mind-testnet',
-				selector: '7189150270347330000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '200810',
-			chainSelector: {
-				name: 'bitcoin-testnet-bitlayer-1',
-				selector: '3789623672476206000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '421613',
-			chainSelector: {
-				name: 'ethereum-testnet-goerli-arbitrum-1',
-				selector: '6101244977088475000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '421614',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-arbitrum-1',
-				selector: '3478487238524512000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '424242',
-			chainSelector: {
-				name: 'private-testnet-mica',
-				selector: '4489326297382772000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '432201',
-			chainSelector: {
-				name: 'avalanche-subnet-dexalot-testnet',
-				selector: '1458281248224513000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '534351',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-scroll-1',
-				selector: '2279865765895943400',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '595581',
-			chainSelector: {
-				name: 'avalanche-testnet-nexon',
-				selector: '7837562506228496000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '686868',
-			chainSelector: {
-				name: 'bitcoin-testnet-merlin',
-				selector: '5269261765892944000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '688688',
-			chainSelector: {
-				name: 'pharos-testnet',
-				selector: '4012524741200567300',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '717160',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-polygon-validium-1',
-				selector: '4418231248214523000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '743111',
-			chainSelector: {
-				name: 'hemi-testnet-sepolia',
-				selector: '16126893759944360000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '763373',
-			chainSelector: {
-				name: 'ink-testnet-sepolia',
-				selector: '9763904284804119000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '808813',
-			chainSelector: {
-				name: 'bitcoin-testnet-sepolia-bob-1',
-				selector: '5535534526963509000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '810181',
-			chainSelector: {
-				name: 'zklink_nova-testnet',
-				selector: '5837261596322417000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '812242',
-			chainSelector: {
-				name: 'codex-testnet',
-				selector: '7225665875429174000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '978657',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-arbitrum-1-treasure-1',
-				selector: '10443705513486043000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '978658',
-			chainSelector: {
-				name: 'treasure-testnet-topaz',
-				selector: '3676916124122458000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '2019775',
-			chainSelector: {
-				name: 'jovay-testnet',
-				selector: '945045181441419300',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '11155111',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia',
-				selector: '16015286601757825000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '11155420',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-optimism-1',
-				selector: '5224473277236332000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '12227332',
-			chainSelector: {
-				name: 'neox-testnet-t4',
-				selector: '2217764097022649300',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '21000001',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-corn-1',
-				selector: '1467427327723634000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '31415926',
-			chainSelector: {
-				name: 'filecoin-testnet',
-				selector: '7060342227814389000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '161221135',
-			chainSelector: {
-				name: 'plume-testnet',
-				selector: '14684575664602284000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '168587773',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-blast-1',
-				selector: '2027362563942762500',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '999999999',
-			chainSelector: {
-				name: 'zora-testnet',
-				selector: '16244020411108057000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '2494104990',
-			chainSelector: {
-				name: 'tron-testnet-shasta-evm',
-				selector: '13231703482326770000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '3360022319',
-			chainSelector: {
-				name: 'tron-devnet-evm',
-				selector: '13231703482326770000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '3448148188',
-			chainSelector: {
-				name: 'tron-testnet-nile-evm',
-				selector: '2052925811360307700',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
+		testnet_evm_bitcoin_testnet_rootstock,
+		testnet_evm_telos_evm_testnet,
+		testnet_evm_polkadot_testnet_darwinia_pangoro,
+		testnet_evm_xdc_testnet,
+		testnet_evm_coinex_smart_chain_testnet,
+		testnet_evm_polkadot_testnet_astar_shibuya,
+		testnet_evm_binance_smart_chain_testnet,
+		testnet_evm_velas_testnet,
+		testnet_evm_ethereum_testnet_sepolia_hashkey_1,
+		testnet_evm_shibarium_testnet_puppynet,
+		testnet_evm_ethereum_testnet_sepolia_xlayer_1,
+		testnet_evm_cronos_zkevm_testnet_sepolia,
+		testnet_evm_ethereum_testnet_goerli_zksync_1,
+		testnet_evm_cronos_testnet_zkevm_1,
+		testnet_evm_hedera_testnet,
+		testnet_evm_ethereum_testnet_sepolia_zksync_1,
+		testnet_evm_cronos_testnet,
+		testnet_evm_near_testnet,
+		testnet_evm_ethereum_testnet_goerli_optimism_1,
+		testnet_evm_areon_testnet,
+		testnet_evm_janction_testnet_sepolia,
+		testnet_evm_private_testnet_obsidian,
+		testnet_evm_ethereum_testnet_sepolia_mode_1,
+		testnet_evm_bittensor_testnet,
+		testnet_evm_hyperliquid_testnet,
+		testnet_evm_kaia_testnet_kairos,
+		testnet_evm_bittorrent_chain_testnet,
+		testnet_evm_wemix_testnet,
+		testnet_evm_core_testnet,
+		testnet_evm_bitcoin_testnet_bsquared_1,
+		testnet_evm_polkadot_testnet_moonbeam_moonbase,
+		testnet_evm_ethereum_testnet_sepolia_unichain_1,
+		testnet_evm_sei_testnet_atlantic,
+		testnet_evm_geth_testnet,
+		testnet_evm_ethereum_testnet_goerli_polygon_zkevm_1,
+		testnet_evm_story_testnet,
+		testnet_evm_mint_testnet,
+		testnet_evm_metal_testnet,
+		testnet_evm_bitcichain_testnet,
+		testnet_evm_ethereum_testnet_sepolia_soneium_1,
+		testnet_evm_ronin_testnet_saigon,
+		testnet_evm_private_testnet_granite,
+		testnet_evm_private_testnet_andesite,
+		testnet_evm_dtcc_testnet_andesite,
+		testnet_evm_polkadot_testnet_centrifuge_altair,
+		testnet_evm_memento_testnet,
+		testnet_evm_kava_testnet,
+		testnet_evm_ethereum_testnet_sepolia_kroma_1,
+		testnet_evm_tac_testnet,
+		testnet_evm_ethereum_testnet_sepolia_polygon_zkevm_1,
+		testnet_evm_ethereum_testnet_holesky_fraxtal_1,
+		testnet_evm_ethereum_testnet_holesky_morph_1,
+		testnet_evm_bitcoin_testnet_botanix,
+		testnet_evm_fantom_testnet,
+		testnet_evm_ethereum_testnet_sepolia_lisk_1,
+		testnet_evm_ethereum_testnet_sepolia_worldchain_1,
+		testnet_evm_ethereum_testnet_goerli_mantle_1,
+		testnet_evm_ethereum_testnet_sepolia_mantle_1,
+		testnet_evm_binance_smart_chain_testnet_opbnb_1,
+		testnet_evm_nexon_dev,
+		testnet_evm_megaeth_testnet,
+		testnet_evm_nibiru_testnet,
+		testnet_evm_ondo_testnet,
+		testnet_evm_neonlink_testnet,
+		testnet_evm_plasma_testnet,
+		testnet_evm_monad_testnet,
+		testnet_evm_gnosis_chain_testnet_chiado,
+		testnet_evm_abstract_testnet,
+		testnet_evm_ethereum_testnet_sepolia_arbitrum_1_l3x_1,
+		testnet_evm_ethereum_testnet_sepolia_immutable_zkevm_1,
+		testnet_evm_0g_testnet_newton,
+		testnet_evm_0g_testnet_galileo,
+		testnet_evm_ethereum_testnet_holesky,
+		testnet_evm_anvil_devnet,
+		testnet_evm_apechain_testnet_curtis,
+		testnet_evm_ethereum_testnet_sepolia_lens_1,
+		testnet_evm_avalanche_testnet_fuji,
+		testnet_evm_celo_testnet_alfajores,
+		testnet_evm_private_testnet_opala,
+		testnet_evm_zircuit_testnet_garfield,
+		testnet_evm_ethereum_testnet_sepolia_zircuit_1,
+		testnet_evm_superseed_testnet,
+		testnet_evm_sonic_testnet_blaze,
+		testnet_evm_ethereum_testnet_goerli_linea_1,
+		testnet_evm_ethereum_testnet_sepolia_linea_1,
+		testnet_evm_ethereum_testnet_sepolia_metis_1,
+		testnet_evm_polygon_testnet_mumbai,
+		testnet_evm_polygon_testnet_amoy,
+		testnet_evm_berachain_testnet_bepolia,
+		testnet_evm_berachain_testnet_bartio,
+		testnet_evm_berachain_testnet_artio,
+		testnet_evm_zero_g_testnet_galileo,
+		testnet_evm_ethereum_testnet_goerli_base_1,
+		testnet_evm_ethereum_testnet_sepolia_base_1,
+		testnet_evm_plume_devnet,
+		testnet_evm_plume_testnet_sepolia,
+		testnet_evm_etherlink_testnet,
+		testnet_evm_polygon_testnet_tatara,
+		testnet_evm_ethereum_testnet_holesky_taiko_1,
+		testnet_evm_mind_testnet,
+		testnet_evm_bitcoin_testnet_bitlayer_1,
+		testnet_evm_ethereum_testnet_goerli_arbitrum_1,
+		testnet_evm_ethereum_testnet_sepolia_arbitrum_1,
+		testnet_evm_private_testnet_mica,
+		testnet_evm_avalanche_subnet_dexalot_testnet,
+		testnet_evm_ethereum_testnet_sepolia_scroll_1,
+		testnet_evm_avalanche_testnet_nexon,
+		testnet_evm_bitcoin_testnet_merlin,
+		testnet_evm_pharos_testnet,
+		testnet_evm_ethereum_testnet_sepolia_polygon_validium_1,
+		testnet_evm_hemi_testnet_sepolia,
+		testnet_evm_ink_testnet_sepolia,
+		testnet_evm_bitcoin_testnet_sepolia_bob_1,
+		testnet_evm_zklink_nova_testnet,
+		testnet_evm_codex_testnet,
+		testnet_evm_ethereum_testnet_sepolia_arbitrum_1_treasure_1,
+		testnet_evm_treasure_testnet_topaz,
+		testnet_evm_jovay_testnet,
+		testnet_evm_ethereum_testnet_sepolia,
+		testnet_evm_ethereum_testnet_sepolia_optimism_1,
+		testnet_evm_neox_testnet_t4,
+		testnet_evm_ethereum_testnet_sepolia_corn_1,
+		testnet_evm_filecoin_testnet,
+		testnet_evm_plume_testnet,
+		testnet_evm_ethereum_testnet_sepolia_blast_1,
+		testnet_evm_zora_testnet,
+		testnet_evm_tron_testnet_shasta_evm,
+		testnet_evm_tron_devnet_evm,
+		testnet_evm_tron_testnet_nile_evm,
 	] as const,
-	solana: [
-		{
-			chainId: '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3zQawwpjk2NsNY',
-			chainSelector: {
-				name: 'solana-testnet',
-				selector: '6302590918974934000',
-			},
-			chainFamily: 'solana',
-			networkType: 'testnet',
-		},
-		{
-			chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG',
-			chainSelector: {
-				name: 'solana-devnet',
-				selector: '16423721717087812000',
-			},
-			chainFamily: 'solana',
-			networkType: 'testnet',
-		},
-	] as const,
-	aptos: [
-		{
-			chainId: '2',
-			chainSelector: {
-				name: 'aptos-testnet',
-				selector: '743186221051783400',
-			},
-			chainFamily: 'aptos',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '4',
-			chainSelector: {
-				name: 'aptos-localnet',
-				selector: '4457093679053095400',
-			},
-			chainFamily: 'aptos',
-			networkType: 'testnet',
-		},
-	] as const,
-	sui: [
-		{
-			chainId: '2',
-			chainSelector: {
-				name: 'sui-testnet',
-				selector: '9762610643973837000',
-			},
-			chainFamily: 'sui',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '4',
-			chainSelector: {
-				name: 'sui-localnet',
-				selector: '18395503381733958000',
-			},
-			chainFamily: 'sui',
-			networkType: 'testnet',
-		},
-	] as const,
-	ton: [
-		{
-			chainId: '-3',
-			chainSelector: {
-				name: 'ton-testnet',
-				selector: '1399300952838017800',
-			},
-			chainFamily: 'ton',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '-217',
-			chainSelector: {
-				name: 'ton-localnet',
-				selector: '13879075125137744000',
-			},
-			chainFamily: 'ton',
-			networkType: 'testnet',
-		},
-	] as const,
+	solana: [testnet_solana_solana_testnet, testnet_solana_solana_devnet] as const,
+	aptos: [testnet_aptos_aptos_testnet, testnet_aptos_aptos_localnet] as const,
+	sui: [testnet_sui_sui_testnet, testnet_sui_sui_localnet] as const,
+	ton: [testnet_ton_ton_testnet, testnet_ton_ton_localnet] as const,
 	tron: [
-		{
-			chainId: '2494104990',
-			chainSelector: {
-				name: 'tron-testnet-shasta',
-				selector: '13231703482326770000',
-			},
-			chainFamily: 'tron',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '3360022319',
-			chainSelector: {
-				name: 'tron-devnet',
-				selector: '13231703482326770000',
-			},
-			chainFamily: 'tron',
-			networkType: 'testnet',
-		},
-		{
-			chainId: '3448148188',
-			chainSelector: {
-				name: 'tron-testnet-nile',
-				selector: '2052925811360307700',
-			},
-			chainFamily: 'tron',
-			networkType: 'testnet',
-		},
+		testnet_tron_tron_testnet_shasta,
+		testnet_tron_tron_devnet,
+		testnet_tron_tron_testnet_nile,
 	] as const,
 } as const
 
 // Optimized Maps for fast lookups by chain selector
 export const mainnetBySelector = new Map<string, NetworkInfo>([
-	[
-		'5009297550715158000',
-		{
-			chainId: '1',
-			chainSelector: {
-				name: 'ethereum-mainnet',
-				selector: '5009297550715158000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'3734403246176062000',
-		{
-			chainId: '10',
-			chainSelector: {
-				name: 'ethereum-mainnet-optimism-1',
-				selector: '3734403246176062000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'1456215246176062200',
-		{
-			chainId: '25',
-			chainSelector: {
-				name: 'cronos-mainnet',
-				selector: '1456215246176062200',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'11964252391146578000',
-		{
-			chainId: '30',
-			chainSelector: {
-				name: 'rootstock-mainnet',
-				selector: '11964252391146578000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'1477345371608778000',
-		{
-			chainId: '40',
-			chainSelector: {
-				name: 'telos-evm-mainnet',
-				selector: '1477345371608778000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'8866418665544333000',
-		{
-			chainId: '46',
-			chainSelector: {
-				name: 'polkadot-mainnet-darwinia',
-				selector: '8866418665544333000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'17673274061779415000',
-		{
-			chainId: '50',
-			chainSelector: {
-				name: 'xdc-mainnet',
-				selector: '17673274061779415000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'1761333065194157300',
-		{
-			chainId: '52',
-			chainSelector: {
-				name: 'coinex_smart_chain-mainnet',
-				selector: '1761333065194157300',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'11344663589394135000',
-		{
-			chainId: '56',
-			chainSelector: {
-				name: 'binance_smart_chain-mainnet',
-				selector: '11344663589394135000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'465200170687744400',
-		{
-			chainId: '100',
-			chainSelector: {
-				name: 'gnosis_chain-mainnet',
-				selector: '465200170687744400',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'374210358663784400',
-		{
-			chainId: '106',
-			chainSelector: {
-				name: 'velas-mainnet',
-				selector: '374210358663784400',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'3993510008929295400',
-		{
-			chainId: '109',
-			chainSelector: {
-				name: 'shibarium-mainnet',
-				selector: '3993510008929295400',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'1923510103922296300',
-		{
-			chainId: '130',
-			chainSelector: {
-				name: 'ethereum-mainnet-unichain-1',
-				selector: '1923510103922296300',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'4051577828743386600',
-		{
-			chainId: '137',
-			chainSelector: {
-				name: 'polygon-mainnet',
-				selector: '4051577828743386600',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'8481857512324358000',
-		{
-			chainId: '143',
-			chainSelector: {
-				name: 'monad-mainnet',
-				selector: '8481857512324358000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'1673871237479750000',
-		{
-			chainId: '146',
-			chainSelector: {
-				name: 'sonic-mainnet',
-				selector: '1673871237479750000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'7613811247471742000',
-		{
-			chainId: '177',
-			chainSelector: {
-				name: 'ethereum-mainnet-hashkey-1',
-				selector: '7613811247471742000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'17164792800244662000',
-		{
-			chainId: '185',
-			chainSelector: {
-				name: 'mint-mainnet',
-				selector: '17164792800244662000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'3016212468291539500',
-		{
-			chainId: '196',
-			chainSelector: {
-				name: 'ethereum-mainnet-xlayer-1',
-				selector: '3016212468291539500',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'3776006016387883000',
-		{
-			chainId: '199',
-			chainSelector: {
-				name: 'bittorrent_chain-mainnet',
-				selector: '3776006016387883000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'465944652040885900',
-		{
-			chainId: '204',
-			chainSelector: {
-				name: 'binance_smart_chain-mainnet-opbnb-1',
-				selector: '465944652040885900',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'5406759801798338000',
-		{
-			chainId: '223',
-			chainSelector: {
-				name: 'bitcoin-mainnet-bsquared-1',
-				selector: '5406759801798338000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'11690709103138290000',
-		{
-			chainId: '228',
-			chainSelector: {
-				name: 'mind-mainnet',
-				selector: '11690709103138290000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'5608378062013573000',
-		{
-			chainId: '232',
-			chainSelector: {
-				name: 'lens-mainnet',
-				selector: '5608378062013573000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'5936861837188149000',
-		{
-			chainId: '239',
-			chainSelector: {
-				name: 'tac-mainnet',
-				selector: '5936861837188149000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'3768048213127884000',
-		{
-			chainId: '250',
-			chainSelector: {
-				name: 'fantom-mainnet',
-				selector: '3768048213127884000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'1462016016387883300',
-		{
-			chainId: '252',
-			chainSelector: {
-				name: 'fraxtal-mainnet',
-				selector: '1462016016387883300',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'3719320017875267000',
-		{
-			chainId: '255',
-			chainSelector: {
-				name: 'ethereum-mainnet-kroma-1',
-				selector: '3719320017875267000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'8239338020728974000',
-		{
-			chainId: '259',
-			chainSelector: {
-				name: 'neonlink-mainnet',
-				selector: '8239338020728974000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'3229138320728879000',
-		{
-			chainId: '295',
-			chainSelector: {
-				name: 'hedera-mainnet',
-				selector: '3229138320728879000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'4561443241176883000',
-		{
-			chainId: '314',
-			chainSelector: {
-				name: 'filecoin-mainnet',
-				selector: '4561443241176883000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'1562403441176082200',
-		{
-			chainId: '324',
-			chainSelector: {
-				name: 'ethereum-mainnet-zksync-1',
-				selector: '1562403441176082200',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'8788096068760391000',
-		{
-			chainId: '388',
-			chainSelector: {
-				name: 'cronos-zkevm-mainnet',
-				selector: '8788096068760391000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'2039744413822257700',
-		{
-			chainId: '397',
-			chainSelector: {
-				name: 'near-mainnet',
-				selector: '2039744413822257700',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'1939936305787790600',
-		{
-			chainId: '463',
-			chainSelector: {
-				name: 'areon-mainnet',
-				selector: '1939936305787790600',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'2049429975587534800',
-		{
-			chainId: '480',
-			chainSelector: {
-				name: 'ethereum-mainnet-worldchain-1',
-				selector: '2049429975587534800',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'6422105447186081000',
-		{
-			chainId: '592',
-			chainSelector: {
-				name: 'polkadot-mainnet-astar',
-				selector: '6422105447186081000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'9107126442626378000',
-		{
-			chainId: '678',
-			chainSelector: {
-				name: 'janction-mainnet',
-				selector: '9107126442626378000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'2135107236357186800',
-		{
-			chainId: '964',
-			chainSelector: {
-				name: 'bittensor-mainnet',
-				selector: '2135107236357186800',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'2442541497099098600',
-		{
-			chainId: '999',
-			chainSelector: {
-				name: 'hyperliquid-mainnet',
-				selector: '2442541497099098600',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'3358365939762719000',
-		{
-			chainId: '1030',
-			chainSelector: {
-				name: 'conflux-mainnet',
-				selector: '3358365939762719000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'8805746078405599000',
-		{
-			chainId: '1088',
-			chainSelector: {
-				name: 'ethereum-mainnet-metis-1',
-				selector: '8805746078405599000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'4348158687435793400',
-		{
-			chainId: '1101',
-			chainSelector: {
-				name: 'ethereum-mainnet-polygon-zkevm-1',
-				selector: '4348158687435793400',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'5142893604156790000',
-		{
-			chainId: '1111',
-			chainSelector: {
-				name: 'wemix-mainnet',
-				selector: '5142893604156790000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'1224752112135636200',
-		{
-			chainId: '1116',
-			chainSelector: {
-				name: 'core-mainnet',
-				selector: '1224752112135636200',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'15293031020466096000',
-		{
-			chainId: '1135',
-			chainSelector: {
-				name: 'lisk-mainnet',
-				selector: '15293031020466096000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'1252863800116739600',
-		{
-			chainId: '1284',
-			chainSelector: {
-				name: 'polkadot-mainnet-moonbeam',
-				selector: '1252863800116739600',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'1355020143337428000',
-		{
-			chainId: '1285',
-			chainSelector: {
-				name: 'kusama-mainnet-moonriver',
-				selector: '1355020143337428000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'9027416829622343000',
-		{
-			chainId: '1329',
-			chainSelector: {
-				name: 'sei-mainnet',
-				selector: '9027416829622343000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'13447077090413146000',
-		{
-			chainId: '1750',
-			chainSelector: {
-				name: 'metal-mainnet',
-				selector: '13447077090413146000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'12505351618335764000',
-		{
-			chainId: '1868',
-			chainSelector: {
-				name: 'soneium-mainnet',
-				selector: '12505351618335764000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'4874388048629246000',
-		{
-			chainId: '1907',
-			chainSelector: {
-				name: 'bitcichain-mainnet',
-				selector: '4874388048629246000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'6916147374840168000',
-		{
-			chainId: '2020',
-			chainSelector: {
-				name: 'ronin-mainnet',
-				selector: '6916147374840168000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'8175830712062618000',
-		{
-			chainId: '2031',
-			chainSelector: {
-				name: 'polkadot-mainnet-centrifuge',
-				selector: '8175830712062618000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'7550000543357438000',
-		{
-			chainId: '2222',
-			chainSelector: {
-				name: 'kava-mainnet',
-				selector: '7550000543357438000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'3577778157919314400',
-		{
-			chainId: '2741',
-			chainSelector: {
-				name: 'abstract-mainnet',
-				selector: '3577778157919314400',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'18164309074156128000',
-		{
-			chainId: '2818',
-			chainSelector: {
-				name: 'morph-mainnet',
-				selector: '18164309074156128000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'4560701533377838000',
-		{
-			chainId: '3637',
-			chainSelector: {
-				name: 'bitcoin-mainnet-botanix',
-				selector: '4560701533377838000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'1540201334317828000',
-		{
-			chainId: '3776',
-			chainSelector: {
-				name: 'ethereum-mainnet-astar-zkevm-1',
-				selector: '1540201334317828000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'241851231317829000',
-		{
-			chainId: '4200',
-			chainSelector: {
-				name: 'bitcoin-merlin-mainnet',
-				selector: '241851231317829000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'1556008542357238800',
-		{
-			chainId: '5000',
-			chainSelector: {
-				name: 'ethereum-mainnet-mantle-1',
-				selector: '1556008542357238800',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'470401360549526850',
-		{
-			chainId: '5330',
-			chainSelector: {
-				name: 'superseed-mainnet',
-				selector: '470401360549526850',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'17349189558768828000',
-		{
-			chainId: '6900',
-			chainSelector: {
-				name: 'nibiru-mainnet',
-				selector: '17349189558768828000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'10817664450262215000',
-		{
-			chainId: '7000',
-			chainSelector: {
-				name: 'zetachain-mainnet',
-				selector: '10817664450262215000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'9813823125703492000',
-		{
-			chainId: '8217',
-			chainSelector: {
-				name: 'kaia-mainnet',
-				selector: '9813823125703492000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'15971525489660199000',
-		{
-			chainId: '8453',
-			chainSelector: {
-				name: 'ethereum-mainnet-base-1',
-				selector: '15971525489660199000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'9335212494177456000',
-		{
-			chainId: '9745',
-			chainSelector: {
-				name: 'plasma-mainnet',
-				selector: '9335212494177456000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'3162193654116181500',
-		{
-			chainId: '12324',
-			chainSelector: {
-				name: 'ethereum-mainnet-arbitrum-1-l3x-1',
-				selector: '3162193654116181500',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'1237925231416732000',
-		{
-			chainId: '13371',
-			chainSelector: {
-				name: 'ethereum-mainnet-immutable-zkevm-1',
-				selector: '1237925231416732000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'4426351306075016000',
-		{
-			chainId: '16661',
-			chainSelector: {
-				name: '0g-mainnet',
-				selector: '4426351306075016000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'14894068710063348000',
-		{
-			chainId: '33139',
-			chainSelector: {
-				name: 'apechain-mainnet',
-				selector: '14894068710063348000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'7264351850409363000',
-		{
-			chainId: '34443',
-			chainSelector: {
-				name: 'ethereum-mainnet-mode-1',
-				selector: '7264351850409363000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'4949039107694360000',
-		{
-			chainId: '42161',
-			chainSelector: {
-				name: 'ethereum-mainnet-arbitrum-1',
-				selector: '4949039107694360000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'1346049177634351600',
-		{
-			chainId: '42220',
-			chainSelector: {
-				name: 'celo-mainnet',
-				selector: '1346049177634351600',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'13624601974233774000',
-		{
-			chainId: '42793',
-			chainSelector: {
-				name: 'etherlink-mainnet',
-				selector: '13624601974233774000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'1804312132722180000',
-		{
-			chainId: '43111',
-			chainSelector: {
-				name: 'hemi-mainnet',
-				selector: '1804312132722180000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'6433500567565415000',
-		{
-			chainId: '43114',
-			chainSelector: {
-				name: 'avalanche-mainnet',
-				selector: '6433500567565415000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'7222032299962346000',
-		{
-			chainId: '47763',
-			chainSelector: {
-				name: 'neox-mainnet',
-				selector: '7222032299962346000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'17198166215261833000',
-		{
-			chainId: '48900',
-			chainSelector: {
-				name: 'ethereum-mainnet-zircuit-1',
-				selector: '17198166215261833000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'6473245816409426000',
-		{
-			chainId: '51888',
-			chainSelector: {
-				name: 'memento-mainnet',
-				selector: '6473245816409426000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'3461204551265786000',
-		{
-			chainId: '57073',
-			chainSelector: {
-				name: 'ethereum-mainnet-ink-1',
-				selector: '3461204551265786000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'4627098889531055000',
-		{
-			chainId: '59144',
-			chainSelector: {
-				name: 'ethereum-mainnet-linea-1',
-				selector: '4627098889531055000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'15758750456714168000',
-		{
-			chainId: '60118',
-			chainSelector: {
-				name: 'nexon-mainnet-lith',
-				selector: '15758750456714168000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'3849287863852499500',
-		{
-			chainId: '60808',
-			chainSelector: {
-				name: 'bitcoin-mainnet-bob-1',
-				selector: '3849287863852499500',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'5214452172935136000',
-		{
-			chainId: '61166',
-			chainSelector: {
-				name: 'treasure-mainnet',
-				selector: '5214452172935136000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'12657445206920370000',
-		{
-			chainId: '68414',
-			chainSelector: {
-				name: 'nexon-mainnet-henesys',
-				selector: '12657445206920370000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'1294465214383781000',
-		{
-			chainId: '80094',
-			chainSelector: {
-				name: 'berachain-mainnet',
-				selector: '1294465214383781000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'9478124434908828000',
-		{
-			chainId: '81224',
-			chainSelector: {
-				name: 'codex-mainnet',
-				selector: '9478124434908828000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'4411394078118774300',
-		{
-			chainId: '81457',
-			chainSelector: {
-				name: 'ethereum-mainnet-blast-1',
-				selector: '4411394078118774300',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'17912061998839310000',
-		{
-			chainId: '98866',
-			chainSelector: {
-				name: 'plume-mainnet',
-				selector: '17912061998839310000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'16468599424800719000',
-		{
-			chainId: '167000',
-			chainSelector: {
-				name: 'ethereum-mainnet-taiko-1',
-				selector: '16468599424800719000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'7937294810946806000',
-		{
-			chainId: '200901',
-			chainSelector: {
-				name: 'bitcoin-mainnet-bitlayer-1',
-				selector: '7937294810946806000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'5463201557265485000',
-		{
-			chainId: '432204',
-			chainSelector: {
-				name: 'avalanche-subnet-dexalot-mainnet',
-				selector: '5463201557265485000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'13204309965629104000',
-		{
-			chainId: '534352',
-			chainSelector: {
-				name: 'ethereum-mainnet-scroll-1',
-				selector: '13204309965629104000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'2459028469735686000',
-		{
-			chainId: '747474',
-			chainSelector: {
-				name: 'polygon-mainnet-katana',
-				selector: '2459028469735686000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'14632960069656270000',
-		{
-			chainId: '807424',
-			chainSelector: {
-				name: 'nexon-qa',
-				selector: '14632960069656270000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'4350319965322102000',
-		{
-			chainId: '810180',
-			chainSelector: {
-				name: 'zklink_nova-mainnet',
-				selector: '4350319965322102000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'5556806327594154000',
-		{
-			chainId: '847799',
-			chainSelector: {
-				name: 'nexon-stage',
-				selector: '5556806327594154000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'1010349088906778000',
-		{
-			chainId: '978670',
-			chainSelector: {
-				name: 'ethereum-mainnet-arbitrum-1-treasure-1',
-				selector: '1010349088906778000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'3555797439612589000',
-		{
-			chainId: '7777777',
-			chainSelector: {
-				name: 'zora-mainnet',
-				selector: '3555797439612589000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'9043146809313071000',
-		{
-			chainId: '21000000',
-			chainSelector: {
-				name: 'corn-mainnet',
-				selector: '9043146809313071000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'1546563616611574000',
-		{
-			chainId: '728126428',
-			chainSelector: {
-				name: 'tron-mainnet-evm',
-				selector: '1546563616611574000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'124615329519749600',
-		{
-			chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d',
-			chainSelector: {
-				name: 'solana-mainnet',
-				selector: '124615329519749600',
-			},
-			chainFamily: 'solana',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'4741433654826278000',
-		{
-			chainId: '1',
-			chainSelector: {
-				name: 'aptos-mainnet',
-				selector: '4741433654826278000',
-			},
-			chainFamily: 'aptos',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'17529533435026248000',
-		{
-			chainId: '1',
-			chainSelector: {
-				name: 'sui-mainnet',
-				selector: '17529533435026248000',
-			},
-			chainFamily: 'sui',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'16448340667252470000',
-		{
-			chainId: '-239',
-			chainSelector: {
-				name: 'ton-mainnet',
-				selector: '16448340667252470000',
-			},
-			chainFamily: 'ton',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'1546563616611574000',
-		{
-			chainId: '728126428',
-			chainSelector: {
-				name: 'tron-mainnet',
-				selector: '1546563616611574000',
-			},
-			chainFamily: 'tron',
-			networkType: 'mainnet',
-		},
-	],
+	['5009297550715158000', mainnet_evm_ethereum_mainnet],
+	['3734403246176062000', mainnet_evm_ethereum_mainnet_optimism_1],
+	['1456215246176062200', mainnet_evm_cronos_mainnet],
+	['11964252391146578000', mainnet_evm_rootstock_mainnet],
+	['1477345371608778000', mainnet_evm_telos_evm_mainnet],
+	['8866418665544333000', mainnet_evm_polkadot_mainnet_darwinia],
+	['17673274061779415000', mainnet_evm_xdc_mainnet],
+	['1761333065194157300', mainnet_evm_coinex_smart_chain_mainnet],
+	['11344663589394135000', mainnet_evm_binance_smart_chain_mainnet],
+	['465200170687744400', mainnet_evm_gnosis_chain_mainnet],
+	['374210358663784400', mainnet_evm_velas_mainnet],
+	['3993510008929295400', mainnet_evm_shibarium_mainnet],
+	['1923510103922296300', mainnet_evm_ethereum_mainnet_unichain_1],
+	['4051577828743386600', mainnet_evm_polygon_mainnet],
+	['8481857512324358000', mainnet_evm_monad_mainnet],
+	['1673871237479750000', mainnet_evm_sonic_mainnet],
+	['7613811247471742000', mainnet_evm_ethereum_mainnet_hashkey_1],
+	['17164792800244662000', mainnet_evm_mint_mainnet],
+	['3016212468291539500', mainnet_evm_ethereum_mainnet_xlayer_1],
+	['3776006016387883000', mainnet_evm_bittorrent_chain_mainnet],
+	['465944652040885900', mainnet_evm_binance_smart_chain_mainnet_opbnb_1],
+	['5406759801798338000', mainnet_evm_bitcoin_mainnet_bsquared_1],
+	['11690709103138290000', mainnet_evm_mind_mainnet],
+	['5608378062013573000', mainnet_evm_lens_mainnet],
+	['5936861837188149000', mainnet_evm_tac_mainnet],
+	['3768048213127884000', mainnet_evm_fantom_mainnet],
+	['1462016016387883300', mainnet_evm_fraxtal_mainnet],
+	['3719320017875267000', mainnet_evm_ethereum_mainnet_kroma_1],
+	['8239338020728974000', mainnet_evm_neonlink_mainnet],
+	['3229138320728879000', mainnet_evm_hedera_mainnet],
+	['4561443241176883000', mainnet_evm_filecoin_mainnet],
+	['1562403441176082200', mainnet_evm_ethereum_mainnet_zksync_1],
+	['8788096068760391000', mainnet_evm_cronos_zkevm_mainnet],
+	['2039744413822257700', mainnet_evm_near_mainnet],
+	['1939936305787790600', mainnet_evm_areon_mainnet],
+	['2049429975587534800', mainnet_evm_ethereum_mainnet_worldchain_1],
+	['6422105447186081000', mainnet_evm_polkadot_mainnet_astar],
+	['9107126442626378000', mainnet_evm_janction_mainnet],
+	['2135107236357186800', mainnet_evm_bittensor_mainnet],
+	['2442541497099098600', mainnet_evm_hyperliquid_mainnet],
+	['3358365939762719000', mainnet_evm_conflux_mainnet],
+	['8805746078405599000', mainnet_evm_ethereum_mainnet_metis_1],
+	['4348158687435793400', mainnet_evm_ethereum_mainnet_polygon_zkevm_1],
+	['5142893604156790000', mainnet_evm_wemix_mainnet],
+	['1224752112135636200', mainnet_evm_core_mainnet],
+	['15293031020466096000', mainnet_evm_lisk_mainnet],
+	['1252863800116739600', mainnet_evm_polkadot_mainnet_moonbeam],
+	['1355020143337428000', mainnet_evm_kusama_mainnet_moonriver],
+	['9027416829622343000', mainnet_evm_sei_mainnet],
+	['13447077090413146000', mainnet_evm_metal_mainnet],
+	['12505351618335764000', mainnet_evm_soneium_mainnet],
+	['4874388048629246000', mainnet_evm_bitcichain_mainnet],
+	['6916147374840168000', mainnet_evm_ronin_mainnet],
+	['8175830712062618000', mainnet_evm_polkadot_mainnet_centrifuge],
+	['7550000543357438000', mainnet_evm_kava_mainnet],
+	['3577778157919314400', mainnet_evm_abstract_mainnet],
+	['18164309074156128000', mainnet_evm_morph_mainnet],
+	['4560701533377838000', mainnet_evm_bitcoin_mainnet_botanix],
+	['1540201334317828000', mainnet_evm_ethereum_mainnet_astar_zkevm_1],
+	['241851231317829000', mainnet_evm_bitcoin_merlin_mainnet],
+	['1556008542357238800', mainnet_evm_ethereum_mainnet_mantle_1],
+	['470401360549526850', mainnet_evm_superseed_mainnet],
+	['17349189558768828000', mainnet_evm_nibiru_mainnet],
+	['10817664450262215000', mainnet_evm_zetachain_mainnet],
+	['9813823125703492000', mainnet_evm_kaia_mainnet],
+	['15971525489660199000', mainnet_evm_ethereum_mainnet_base_1],
+	['9335212494177456000', mainnet_evm_plasma_mainnet],
+	['3162193654116181500', mainnet_evm_ethereum_mainnet_arbitrum_1_l3x_1],
+	['1237925231416732000', mainnet_evm_ethereum_mainnet_immutable_zkevm_1],
+	['4426351306075016000', mainnet_evm_0g_mainnet],
+	['14894068710063348000', mainnet_evm_apechain_mainnet],
+	['7264351850409363000', mainnet_evm_ethereum_mainnet_mode_1],
+	['4949039107694360000', mainnet_evm_ethereum_mainnet_arbitrum_1],
+	['1346049177634351600', mainnet_evm_celo_mainnet],
+	['13624601974233774000', mainnet_evm_etherlink_mainnet],
+	['1804312132722180000', mainnet_evm_hemi_mainnet],
+	['6433500567565415000', mainnet_evm_avalanche_mainnet],
+	['7222032299962346000', mainnet_evm_neox_mainnet],
+	['17198166215261833000', mainnet_evm_ethereum_mainnet_zircuit_1],
+	['6473245816409426000', mainnet_evm_memento_mainnet],
+	['3461204551265786000', mainnet_evm_ethereum_mainnet_ink_1],
+	['4627098889531055000', mainnet_evm_ethereum_mainnet_linea_1],
+	['15758750456714168000', mainnet_evm_nexon_mainnet_lith],
+	['3849287863852499500', mainnet_evm_bitcoin_mainnet_bob_1],
+	['5214452172935136000', mainnet_evm_treasure_mainnet],
+	['12657445206920370000', mainnet_evm_nexon_mainnet_henesys],
+	['1294465214383781000', mainnet_evm_berachain_mainnet],
+	['9478124434908828000', mainnet_evm_codex_mainnet],
+	['4411394078118774300', mainnet_evm_ethereum_mainnet_blast_1],
+	['17912061998839310000', mainnet_evm_plume_mainnet],
+	['16468599424800719000', mainnet_evm_ethereum_mainnet_taiko_1],
+	['7937294810946806000', mainnet_evm_bitcoin_mainnet_bitlayer_1],
+	['5463201557265485000', mainnet_evm_avalanche_subnet_dexalot_mainnet],
+	['13204309965629104000', mainnet_evm_ethereum_mainnet_scroll_1],
+	['2459028469735686000', mainnet_evm_polygon_mainnet_katana],
+	['14632960069656270000', mainnet_evm_nexon_qa],
+	['4350319965322102000', mainnet_evm_zklink_nova_mainnet],
+	['5556806327594154000', mainnet_evm_nexon_stage],
+	['1010349088906778000', mainnet_evm_ethereum_mainnet_arbitrum_1_treasure_1],
+	['3555797439612589000', mainnet_evm_zora_mainnet],
+	['9043146809313071000', mainnet_evm_corn_mainnet],
+	['1546563616611574000', mainnet_evm_tron_mainnet_evm],
+	['124615329519749600', mainnet_solana_solana_mainnet],
+	['4741433654826278000', mainnet_aptos_aptos_mainnet],
+	['17529533435026248000', mainnet_sui_sui_mainnet],
+	['16448340667252470000', mainnet_ton_ton_mainnet],
+	['1546563616611574000', mainnet_tron_tron_mainnet],
 ])
 
 export const testnetBySelector = new Map<string, NetworkInfo>([
-	[
-		'8953668971247136000',
-		{
-			chainId: '31',
-			chainSelector: {
-				name: 'bitcoin-testnet-rootstock',
-				selector: '8953668971247136000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'729797994450396300',
-		{
-			chainId: '41',
-			chainSelector: {
-				name: 'telos-evm-testnet',
-				selector: '729797994450396300',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'4340886533089894000',
-		{
-			chainId: '45',
-			chainSelector: {
-				name: 'polkadot-testnet-darwinia-pangoro',
-				selector: '4340886533089894000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'3017758115101369000',
-		{
-			chainId: '51',
-			chainSelector: {
-				name: 'xdc-testnet',
-				selector: '3017758115101369000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'8955032871639343000',
-		{
-			chainId: '53',
-			chainSelector: {
-				name: 'coinex_smart_chain-testnet',
-				selector: '8955032871639343000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'6955638871347137000',
-		{
-			chainId: '81',
-			chainSelector: {
-				name: 'polkadot-testnet-astar-shibuya',
-				selector: '6955638871347137000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'13264668187771770000',
-		{
-			chainId: '97',
-			chainSelector: {
-				name: 'binance_smart_chain-testnet',
-				selector: '13264668187771770000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'572210378683744400',
-		{
-			chainId: '111',
-			chainSelector: {
-				name: 'velas-testnet',
-				selector: '572210378683744400',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'4356164186791070000',
-		{
-			chainId: '133',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-hashkey-1',
-				selector: '4356164186791070000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'17833296867764335000',
-		{
-			chainId: '157',
-			chainSelector: {
-				name: 'shibarium-testnet-puppynet',
-				selector: '17833296867764335000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'2066098519157881900',
-		{
-			chainId: '195',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-xlayer-1',
-				selector: '2066098519157881900',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'16487132492576885000',
-		{
-			chainId: '240',
-			chainSelector: {
-				name: 'cronos-zkevm-testnet-sepolia',
-				selector: '16487132492576885000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'6802309497652714000',
-		{
-			chainId: '280',
-			chainSelector: {
-				name: 'ethereum-testnet-goerli-zksync-1',
-				selector: '6802309497652714000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'3842103497652714000',
-		{
-			chainId: '282',
-			chainSelector: {
-				name: 'cronos-testnet-zkevm-1',
-				selector: '3842103497652714000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'222782988166878820',
-		{
-			chainId: '296',
-			chainSelector: {
-				name: 'hedera-testnet',
-				selector: '222782988166878820',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'6898391096552792000',
-		{
-			chainId: '300',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-zksync-1',
-				selector: '6898391096552792000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'2995292832068775000',
-		{
-			chainId: '338',
-			chainSelector: {
-				name: 'cronos-testnet',
-				selector: '2995292832068775000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'5061593697262339000',
-		{
-			chainId: '398',
-			chainSelector: {
-				name: 'near-testnet',
-				selector: '5061593697262339000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'2664363617261497000',
-		{
-			chainId: '420',
-			chainSelector: {
-				name: 'ethereum-testnet-goerli-optimism-1',
-				selector: '2664363617261497000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'7317911323415911000',
-		{
-			chainId: '462',
-			chainSelector: {
-				name: 'areon-testnet',
-				selector: '7317911323415911000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'5059197667603798000',
-		{
-			chainId: '679',
-			chainSelector: {
-				name: 'janction-testnet-sepolia',
-				selector: '5059197667603798000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'6260932437388305000',
-		{
-			chainId: '682',
-			chainSelector: {
-				name: 'private-testnet-obsidian',
-				selector: '6260932437388305000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'829525985033418800',
-		{
-			chainId: '919',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-mode-1',
-				selector: '829525985033418800',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'2177900824115119000',
-		{
-			chainId: '945',
-			chainSelector: {
-				name: 'bittensor-testnet',
-				selector: '2177900824115119000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'4286062357653186600',
-		{
-			chainId: '998',
-			chainSelector: {
-				name: 'hyperliquid-testnet',
-				selector: '4286062357653186600',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'2624132734533622000',
-		{
-			chainId: '1001',
-			chainSelector: {
-				name: 'kaia-testnet-kairos',
-				selector: '2624132734533622000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'4459371029167934500',
-		{
-			chainId: '1029',
-			chainSelector: {
-				name: 'bittorrent_chain-testnet',
-				selector: '4459371029167934500',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'9284632837123596000',
-		{
-			chainId: '1112',
-			chainSelector: {
-				name: 'wemix-testnet',
-				selector: '9284632837123596000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'4264732132125536000',
-		{
-			chainId: '1114',
-			chainSelector: {
-				name: 'core-testnet',
-				selector: '4264732132125536000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'1948510578179542000',
-		{
-			chainId: '1123',
-			chainSelector: {
-				name: 'bitcoin-testnet-bsquared-1',
-				selector: '1948510578179542000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'5361632739113537000',
-		{
-			chainId: '1287',
-			chainSelector: {
-				name: 'polkadot-testnet-moonbeam-moonbase',
-				selector: '5361632739113537000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'14135854469784515000',
-		{
-			chainId: '1301',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-unichain-1',
-				selector: '14135854469784515000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'1216300075444106800',
-		{
-			chainId: '1328',
-			chainSelector: {
-				name: 'sei-testnet-atlantic',
-				selector: '1216300075444106800',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'3379446385462418400',
-		{
-			chainId: '1337',
-			chainSelector: {
-				name: 'geth-testnet',
-				selector: '3379446385462418400',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'11059667695644973000',
-		{
-			chainId: '1442',
-			chainSelector: {
-				name: 'ethereum-testnet-goerli-polygon-zkevm-1',
-				selector: '11059667695644973000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'4237030917318060500',
-		{
-			chainId: '1513',
-			chainSelector: {
-				name: 'story-testnet',
-				selector: '4237030917318060500',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'10749384167430722000',
-		{
-			chainId: '1687',
-			chainSelector: {
-				name: 'mint-testnet',
-				selector: '10749384167430722000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'6286293440461808000',
-		{
-			chainId: '1740',
-			chainSelector: {
-				name: 'metal-testnet',
-				selector: '6286293440461808000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'4888058894222120000',
-		{
-			chainId: '1908',
-			chainSelector: {
-				name: 'bitcichain-testnet',
-				selector: '4888058894222120000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'686603546605904500',
-		{
-			chainId: '1946',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-soneium-1',
-				selector: '686603546605904500',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'13116810400804393000',
-		{
-			chainId: '2021',
-			chainSelector: {
-				name: 'ronin-testnet-saigon',
-				selector: '13116810400804393000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'3260900564719373300',
-		{
-			chainId: '2023',
-			chainSelector: {
-				name: 'private-testnet-granite',
-				selector: '3260900564719373300',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'6915682381028791000',
-		{
-			chainId: '2024',
-			chainSelector: {
-				name: 'private-testnet-andesite',
-				selector: '6915682381028791000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'15513093881969820000',
-		{
-			chainId: '2025',
-			chainSelector: {
-				name: 'dtcc-testnet-andesite',
-				selector: '15513093881969820000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'2333097300889805000',
-		{
-			chainId: '2088',
-			chainSelector: {
-				name: 'polkadot-testnet-centrifuge-altair',
-				selector: '2333097300889805000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'12168171414969487000',
-		{
-			chainId: '2129',
-			chainSelector: {
-				name: 'memento-testnet',
-				selector: '12168171414969487000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'2110537777356199200',
-		{
-			chainId: '2221',
-			chainSelector: {
-				name: 'kava-testnet',
-				selector: '2110537777356199200',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'5990477251245693000',
-		{
-			chainId: '2358',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-kroma-1',
-				selector: '5990477251245693000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'9488606126177219000',
-		{
-			chainId: '2391',
-			chainSelector: {
-				name: 'tac-testnet',
-				selector: '9488606126177219000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'1654667687261492700',
-		{
-			chainId: '2442',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-polygon-zkevm-1',
-				selector: '1654667687261492700',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'8901520481741772000',
-		{
-			chainId: '2522',
-			chainSelector: {
-				name: 'ethereum-testnet-holesky-fraxtal-1',
-				selector: '8901520481741772000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'8304510386741731000',
-		{
-			chainId: '2810',
-			chainSelector: {
-				name: 'ethereum-testnet-holesky-morph-1',
-				selector: '8304510386741731000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'1467223411771711500',
-		{
-			chainId: '3636',
-			chainSelector: {
-				name: 'bitcoin-testnet-botanix',
-				selector: '1467223411771711500',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'4905564228793744000',
-		{
-			chainId: '4002',
-			chainSelector: {
-				name: 'fantom-testnet',
-				selector: '4905564228793744000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'5298399861320401000',
-		{
-			chainId: '4202',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-lisk-1',
-				selector: '5298399861320401000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'5299555114858066000',
-		{
-			chainId: '4801',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-worldchain-1',
-				selector: '5299555114858066000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'4168263376276232000',
-		{
-			chainId: '5001',
-			chainSelector: {
-				name: 'ethereum-testnet-goerli-mantle-1',
-				selector: '4168263376276232000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'8236463271206331000',
-		{
-			chainId: '5003',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-mantle-1',
-				selector: '8236463271206331000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'13274425992935471000',
-		{
-			chainId: '5611',
-			chainSelector: {
-				name: 'binance_smart_chain-testnet-opbnb-1',
-				selector: '13274425992935471000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'8911150974185440000',
-		{
-			chainId: '5668',
-			chainSelector: {
-				name: 'nexon-dev',
-				selector: '8911150974185440000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'2443239559770384400',
-		{
-			chainId: '6342',
-			chainSelector: {
-				name: 'megaeth-testnet',
-				selector: '2443239559770384400',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'305104239123120450',
-		{
-			chainId: '6930',
-			chainSelector: {
-				name: 'nibiru-testnet',
-				selector: '305104239123120450',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'344208382356656600',
-		{
-			chainId: '9000',
-			chainSelector: {
-				name: 'ondo-testnet',
-				selector: '344208382356656600',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'1113014352258747600',
-		{
-			chainId: '9559',
-			chainSelector: {
-				name: 'neonlink-testnet',
-				selector: '1113014352258747600',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'3967220077692964400',
-		{
-			chainId: '9746',
-			chainSelector: {
-				name: 'plasma-testnet',
-				selector: '3967220077692964400',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'2183018362218727400',
-		{
-			chainId: '10143',
-			chainSelector: {
-				name: 'monad-testnet',
-				selector: '2183018362218727400',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'8871595565390010000',
-		{
-			chainId: '10200',
-			chainSelector: {
-				name: 'gnosis_chain-testnet-chiado',
-				selector: '8871595565390010000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'16235373811196387000',
-		{
-			chainId: '11124',
-			chainSelector: {
-				name: 'abstract-testnet',
-				selector: '16235373811196387000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'3486622437121596000',
-		{
-			chainId: '12325',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-arbitrum-1-l3x-1',
-				selector: '3486622437121596000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'4526165231216332000',
-		{
-			chainId: '13473',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-immutable-zkevm-1',
-				selector: '4526165231216332000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'16088006396410204000',
-		{
-			chainId: '16600',
-			chainSelector: {
-				name: '0g-testnet-newton',
-				selector: '16088006396410204000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'2131427466778448100',
-		{
-			chainId: '16601',
-			chainSelector: {
-				name: '0g-testnet-galileo',
-				selector: '2131427466778448100',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'7717148896336251000',
-		{
-			chainId: '17000',
-			chainSelector: {
-				name: 'ethereum-testnet-holesky',
-				selector: '7717148896336251000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'7759470850252069000',
-		{
-			chainId: '31337',
-			chainSelector: {
-				name: 'anvil-devnet',
-				selector: '7759470850252069000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'9900119385908781000',
-		{
-			chainId: '33111',
-			chainSelector: {
-				name: 'apechain-testnet-curtis',
-				selector: '9900119385908781000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'6827576821754316000',
-		{
-			chainId: '37111',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-lens-1',
-				selector: '6827576821754316000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'14767482510784807000',
-		{
-			chainId: '43113',
-			chainSelector: {
-				name: 'avalanche-testnet-fuji',
-				selector: '14767482510784807000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'3552045678561919000',
-		{
-			chainId: '44787',
-			chainSelector: {
-				name: 'celo-testnet-alfajores',
-				selector: '3552045678561919000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'8446413392851542000',
-		{
-			chainId: '45439',
-			chainSelector: {
-				name: 'private-testnet-opala',
-				selector: '8446413392851542000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'13781831279385220000',
-		{
-			chainId: '48898',
-			chainSelector: {
-				name: 'zircuit-testnet-garfield',
-				selector: '13781831279385220000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'4562743618362911000',
-		{
-			chainId: '48899',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-zircuit-1',
-				selector: '4562743618362911000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'13694007683517088000',
-		{
-			chainId: '53302',
-			chainSelector: {
-				name: 'superseed-testnet',
-				selector: '13694007683517088000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'3676871237479449000',
-		{
-			chainId: '57054',
-			chainSelector: {
-				name: 'sonic-testnet-blaze',
-				selector: '3676871237479449000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'1355246678561316400',
-		{
-			chainId: '59140',
-			chainSelector: {
-				name: 'ethereum-testnet-goerli-linea-1',
-				selector: '1355246678561316400',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'5719461335882077000',
-		{
-			chainId: '59141',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-linea-1',
-				selector: '5719461335882077000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'3777822886988675000',
-		{
-			chainId: '59902',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-metis-1',
-				selector: '3777822886988675000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'12532609583862917000',
-		{
-			chainId: '80001',
-			chainSelector: {
-				name: 'polygon-testnet-mumbai',
-				selector: '12532609583862917000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'16281711391670634000',
-		{
-			chainId: '80002',
-			chainSelector: {
-				name: 'polygon-testnet-amoy',
-				selector: '16281711391670634000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'7728255861635209000',
-		{
-			chainId: '80069',
-			chainSelector: {
-				name: 'berachain-testnet-bepolia',
-				selector: '7728255861635209000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'8999465244383784000',
-		{
-			chainId: '80084',
-			chainSelector: {
-				name: 'berachain-testnet-bartio',
-				selector: '8999465244383784000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'12336603543561912000',
-		{
-			chainId: '80085',
-			chainSelector: {
-				name: 'berachain-testnet-artio',
-				selector: '12336603543561912000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'2285225387454015700',
-		{
-			chainId: '80087',
-			chainSelector: {
-				name: 'zero-g-testnet-galileo',
-				selector: '2285225387454015700',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'5790810961207156000',
-		{
-			chainId: '84531',
-			chainSelector: {
-				name: 'ethereum-testnet-goerli-base-1',
-				selector: '5790810961207156000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'10344971235874466000',
-		{
-			chainId: '84532',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-base-1',
-				selector: '10344971235874466000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'3743020999916461000',
-		{
-			chainId: '98864',
-			chainSelector: {
-				name: 'plume-devnet',
-				selector: '3743020999916461000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'13874588925447303000',
-		{
-			chainId: '98867',
-			chainSelector: {
-				name: 'plume-testnet-sepolia',
-				selector: '13874588925447303000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'1910019406958449400',
-		{
-			chainId: '128123',
-			chainSelector: {
-				name: 'etherlink-testnet',
-				selector: '1910019406958449400',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'9090863410735740000',
-		{
-			chainId: '129399',
-			chainSelector: {
-				name: 'polygon-testnet-tatara',
-				selector: '9090863410735740000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'7248756420937880000',
-		{
-			chainId: '167009',
-			chainSelector: {
-				name: 'ethereum-testnet-holesky-taiko-1',
-				selector: '7248756420937880000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'7189150270347330000',
-		{
-			chainId: '192940',
-			chainSelector: {
-				name: 'mind-testnet',
-				selector: '7189150270347330000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'3789623672476206000',
-		{
-			chainId: '200810',
-			chainSelector: {
-				name: 'bitcoin-testnet-bitlayer-1',
-				selector: '3789623672476206000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'6101244977088475000',
-		{
-			chainId: '421613',
-			chainSelector: {
-				name: 'ethereum-testnet-goerli-arbitrum-1',
-				selector: '6101244977088475000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'3478487238524512000',
-		{
-			chainId: '421614',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-arbitrum-1',
-				selector: '3478487238524512000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'4489326297382772000',
-		{
-			chainId: '424242',
-			chainSelector: {
-				name: 'private-testnet-mica',
-				selector: '4489326297382772000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'1458281248224513000',
-		{
-			chainId: '432201',
-			chainSelector: {
-				name: 'avalanche-subnet-dexalot-testnet',
-				selector: '1458281248224513000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'2279865765895943400',
-		{
-			chainId: '534351',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-scroll-1',
-				selector: '2279865765895943400',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'7837562506228496000',
-		{
-			chainId: '595581',
-			chainSelector: {
-				name: 'avalanche-testnet-nexon',
-				selector: '7837562506228496000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'5269261765892944000',
-		{
-			chainId: '686868',
-			chainSelector: {
-				name: 'bitcoin-testnet-merlin',
-				selector: '5269261765892944000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'4012524741200567300',
-		{
-			chainId: '688688',
-			chainSelector: {
-				name: 'pharos-testnet',
-				selector: '4012524741200567300',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'4418231248214523000',
-		{
-			chainId: '717160',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-polygon-validium-1',
-				selector: '4418231248214523000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'16126893759944360000',
-		{
-			chainId: '743111',
-			chainSelector: {
-				name: 'hemi-testnet-sepolia',
-				selector: '16126893759944360000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'9763904284804119000',
-		{
-			chainId: '763373',
-			chainSelector: {
-				name: 'ink-testnet-sepolia',
-				selector: '9763904284804119000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'5535534526963509000',
-		{
-			chainId: '808813',
-			chainSelector: {
-				name: 'bitcoin-testnet-sepolia-bob-1',
-				selector: '5535534526963509000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'5837261596322417000',
-		{
-			chainId: '810181',
-			chainSelector: {
-				name: 'zklink_nova-testnet',
-				selector: '5837261596322417000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'7225665875429174000',
-		{
-			chainId: '812242',
-			chainSelector: {
-				name: 'codex-testnet',
-				selector: '7225665875429174000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'10443705513486043000',
-		{
-			chainId: '978657',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-arbitrum-1-treasure-1',
-				selector: '10443705513486043000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'3676916124122458000',
-		{
-			chainId: '978658',
-			chainSelector: {
-				name: 'treasure-testnet-topaz',
-				selector: '3676916124122458000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'945045181441419300',
-		{
-			chainId: '2019775',
-			chainSelector: {
-				name: 'jovay-testnet',
-				selector: '945045181441419300',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'16015286601757825000',
-		{
-			chainId: '11155111',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia',
-				selector: '16015286601757825000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'5224473277236332000',
-		{
-			chainId: '11155420',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-optimism-1',
-				selector: '5224473277236332000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'2217764097022649300',
-		{
-			chainId: '12227332',
-			chainSelector: {
-				name: 'neox-testnet-t4',
-				selector: '2217764097022649300',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'1467427327723634000',
-		{
-			chainId: '21000001',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-corn-1',
-				selector: '1467427327723634000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'7060342227814389000',
-		{
-			chainId: '31415926',
-			chainSelector: {
-				name: 'filecoin-testnet',
-				selector: '7060342227814389000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'14684575664602284000',
-		{
-			chainId: '161221135',
-			chainSelector: {
-				name: 'plume-testnet',
-				selector: '14684575664602284000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'2027362563942762500',
-		{
-			chainId: '168587773',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-blast-1',
-				selector: '2027362563942762500',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'16244020411108057000',
-		{
-			chainId: '999999999',
-			chainSelector: {
-				name: 'zora-testnet',
-				selector: '16244020411108057000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'13231703482326770000',
-		{
-			chainId: '2494104990',
-			chainSelector: {
-				name: 'tron-testnet-shasta-evm',
-				selector: '13231703482326770000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'13231703482326770000',
-		{
-			chainId: '3360022319',
-			chainSelector: {
-				name: 'tron-devnet-evm',
-				selector: '13231703482326770000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'2052925811360307700',
-		{
-			chainId: '3448148188',
-			chainSelector: {
-				name: 'tron-testnet-nile-evm',
-				selector: '2052925811360307700',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'6302590918974934000',
-		{
-			chainId: '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3zQawwpjk2NsNY',
-			chainSelector: {
-				name: 'solana-testnet',
-				selector: '6302590918974934000',
-			},
-			chainFamily: 'solana',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'16423721717087812000',
-		{
-			chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG',
-			chainSelector: {
-				name: 'solana-devnet',
-				selector: '16423721717087812000',
-			},
-			chainFamily: 'solana',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'743186221051783400',
-		{
-			chainId: '2',
-			chainSelector: {
-				name: 'aptos-testnet',
-				selector: '743186221051783400',
-			},
-			chainFamily: 'aptos',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'4457093679053095400',
-		{
-			chainId: '4',
-			chainSelector: {
-				name: 'aptos-localnet',
-				selector: '4457093679053095400',
-			},
-			chainFamily: 'aptos',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'9762610643973837000',
-		{
-			chainId: '2',
-			chainSelector: {
-				name: 'sui-testnet',
-				selector: '9762610643973837000',
-			},
-			chainFamily: 'sui',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'18395503381733958000',
-		{
-			chainId: '4',
-			chainSelector: {
-				name: 'sui-localnet',
-				selector: '18395503381733958000',
-			},
-			chainFamily: 'sui',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'1399300952838017800',
-		{
-			chainId: '-3',
-			chainSelector: {
-				name: 'ton-testnet',
-				selector: '1399300952838017800',
-			},
-			chainFamily: 'ton',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'13879075125137744000',
-		{
-			chainId: '-217',
-			chainSelector: {
-				name: 'ton-localnet',
-				selector: '13879075125137744000',
-			},
-			chainFamily: 'ton',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'13231703482326770000',
-		{
-			chainId: '2494104990',
-			chainSelector: {
-				name: 'tron-testnet-shasta',
-				selector: '13231703482326770000',
-			},
-			chainFamily: 'tron',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'13231703482326770000',
-		{
-			chainId: '3360022319',
-			chainSelector: {
-				name: 'tron-devnet',
-				selector: '13231703482326770000',
-			},
-			chainFamily: 'tron',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'2052925811360307700',
-		{
-			chainId: '3448148188',
-			chainSelector: {
-				name: 'tron-testnet-nile',
-				selector: '2052925811360307700',
-			},
-			chainFamily: 'tron',
-			networkType: 'testnet',
-		},
-	],
+	['8953668971247136000', testnet_evm_bitcoin_testnet_rootstock],
+	['729797994450396300', testnet_evm_telos_evm_testnet],
+	['4340886533089894000', testnet_evm_polkadot_testnet_darwinia_pangoro],
+	['3017758115101369000', testnet_evm_xdc_testnet],
+	['8955032871639343000', testnet_evm_coinex_smart_chain_testnet],
+	['6955638871347137000', testnet_evm_polkadot_testnet_astar_shibuya],
+	['13264668187771770000', testnet_evm_binance_smart_chain_testnet],
+	['572210378683744400', testnet_evm_velas_testnet],
+	['4356164186791070000', testnet_evm_ethereum_testnet_sepolia_hashkey_1],
+	['17833296867764335000', testnet_evm_shibarium_testnet_puppynet],
+	['2066098519157881900', testnet_evm_ethereum_testnet_sepolia_xlayer_1],
+	['16487132492576885000', testnet_evm_cronos_zkevm_testnet_sepolia],
+	['6802309497652714000', testnet_evm_ethereum_testnet_goerli_zksync_1],
+	['3842103497652714000', testnet_evm_cronos_testnet_zkevm_1],
+	['222782988166878820', testnet_evm_hedera_testnet],
+	['6898391096552792000', testnet_evm_ethereum_testnet_sepolia_zksync_1],
+	['2995292832068775000', testnet_evm_cronos_testnet],
+	['5061593697262339000', testnet_evm_near_testnet],
+	['2664363617261497000', testnet_evm_ethereum_testnet_goerli_optimism_1],
+	['7317911323415911000', testnet_evm_areon_testnet],
+	['5059197667603798000', testnet_evm_janction_testnet_sepolia],
+	['6260932437388305000', testnet_evm_private_testnet_obsidian],
+	['829525985033418800', testnet_evm_ethereum_testnet_sepolia_mode_1],
+	['2177900824115119000', testnet_evm_bittensor_testnet],
+	['4286062357653186600', testnet_evm_hyperliquid_testnet],
+	['2624132734533622000', testnet_evm_kaia_testnet_kairos],
+	['4459371029167934500', testnet_evm_bittorrent_chain_testnet],
+	['9284632837123596000', testnet_evm_wemix_testnet],
+	['4264732132125536000', testnet_evm_core_testnet],
+	['1948510578179542000', testnet_evm_bitcoin_testnet_bsquared_1],
+	['5361632739113537000', testnet_evm_polkadot_testnet_moonbeam_moonbase],
+	['14135854469784515000', testnet_evm_ethereum_testnet_sepolia_unichain_1],
+	['1216300075444106800', testnet_evm_sei_testnet_atlantic],
+	['3379446385462418400', testnet_evm_geth_testnet],
+	['11059667695644973000', testnet_evm_ethereum_testnet_goerli_polygon_zkevm_1],
+	['4237030917318060500', testnet_evm_story_testnet],
+	['10749384167430722000', testnet_evm_mint_testnet],
+	['6286293440461808000', testnet_evm_metal_testnet],
+	['4888058894222120000', testnet_evm_bitcichain_testnet],
+	['686603546605904500', testnet_evm_ethereum_testnet_sepolia_soneium_1],
+	['13116810400804393000', testnet_evm_ronin_testnet_saigon],
+	['3260900564719373300', testnet_evm_private_testnet_granite],
+	['6915682381028791000', testnet_evm_private_testnet_andesite],
+	['15513093881969820000', testnet_evm_dtcc_testnet_andesite],
+	['2333097300889805000', testnet_evm_polkadot_testnet_centrifuge_altair],
+	['12168171414969487000', testnet_evm_memento_testnet],
+	['2110537777356199200', testnet_evm_kava_testnet],
+	['5990477251245693000', testnet_evm_ethereum_testnet_sepolia_kroma_1],
+	['9488606126177219000', testnet_evm_tac_testnet],
+	['1654667687261492700', testnet_evm_ethereum_testnet_sepolia_polygon_zkevm_1],
+	['8901520481741772000', testnet_evm_ethereum_testnet_holesky_fraxtal_1],
+	['8304510386741731000', testnet_evm_ethereum_testnet_holesky_morph_1],
+	['1467223411771711500', testnet_evm_bitcoin_testnet_botanix],
+	['4905564228793744000', testnet_evm_fantom_testnet],
+	['5298399861320401000', testnet_evm_ethereum_testnet_sepolia_lisk_1],
+	['5299555114858066000', testnet_evm_ethereum_testnet_sepolia_worldchain_1],
+	['4168263376276232000', testnet_evm_ethereum_testnet_goerli_mantle_1],
+	['8236463271206331000', testnet_evm_ethereum_testnet_sepolia_mantle_1],
+	['13274425992935471000', testnet_evm_binance_smart_chain_testnet_opbnb_1],
+	['8911150974185440000', testnet_evm_nexon_dev],
+	['2443239559770384400', testnet_evm_megaeth_testnet],
+	['305104239123120450', testnet_evm_nibiru_testnet],
+	['344208382356656600', testnet_evm_ondo_testnet],
+	['1113014352258747600', testnet_evm_neonlink_testnet],
+	['3967220077692964400', testnet_evm_plasma_testnet],
+	['2183018362218727400', testnet_evm_monad_testnet],
+	['8871595565390010000', testnet_evm_gnosis_chain_testnet_chiado],
+	['16235373811196387000', testnet_evm_abstract_testnet],
+	['3486622437121596000', testnet_evm_ethereum_testnet_sepolia_arbitrum_1_l3x_1],
+	['4526165231216332000', testnet_evm_ethereum_testnet_sepolia_immutable_zkevm_1],
+	['16088006396410204000', testnet_evm_0g_testnet_newton],
+	['2131427466778448100', testnet_evm_0g_testnet_galileo],
+	['7717148896336251000', testnet_evm_ethereum_testnet_holesky],
+	['7759470850252069000', testnet_evm_anvil_devnet],
+	['9900119385908781000', testnet_evm_apechain_testnet_curtis],
+	['6827576821754316000', testnet_evm_ethereum_testnet_sepolia_lens_1],
+	['14767482510784807000', testnet_evm_avalanche_testnet_fuji],
+	['3552045678561919000', testnet_evm_celo_testnet_alfajores],
+	['8446413392851542000', testnet_evm_private_testnet_opala],
+	['13781831279385220000', testnet_evm_zircuit_testnet_garfield],
+	['4562743618362911000', testnet_evm_ethereum_testnet_sepolia_zircuit_1],
+	['13694007683517088000', testnet_evm_superseed_testnet],
+	['3676871237479449000', testnet_evm_sonic_testnet_blaze],
+	['1355246678561316400', testnet_evm_ethereum_testnet_goerli_linea_1],
+	['5719461335882077000', testnet_evm_ethereum_testnet_sepolia_linea_1],
+	['3777822886988675000', testnet_evm_ethereum_testnet_sepolia_metis_1],
+	['12532609583862917000', testnet_evm_polygon_testnet_mumbai],
+	['16281711391670634000', testnet_evm_polygon_testnet_amoy],
+	['7728255861635209000', testnet_evm_berachain_testnet_bepolia],
+	['8999465244383784000', testnet_evm_berachain_testnet_bartio],
+	['12336603543561912000', testnet_evm_berachain_testnet_artio],
+	['2285225387454015700', testnet_evm_zero_g_testnet_galileo],
+	['5790810961207156000', testnet_evm_ethereum_testnet_goerli_base_1],
+	['10344971235874466000', testnet_evm_ethereum_testnet_sepolia_base_1],
+	['3743020999916461000', testnet_evm_plume_devnet],
+	['13874588925447303000', testnet_evm_plume_testnet_sepolia],
+	['1910019406958449400', testnet_evm_etherlink_testnet],
+	['9090863410735740000', testnet_evm_polygon_testnet_tatara],
+	['7248756420937880000', testnet_evm_ethereum_testnet_holesky_taiko_1],
+	['7189150270347330000', testnet_evm_mind_testnet],
+	['3789623672476206000', testnet_evm_bitcoin_testnet_bitlayer_1],
+	['6101244977088475000', testnet_evm_ethereum_testnet_goerli_arbitrum_1],
+	['3478487238524512000', testnet_evm_ethereum_testnet_sepolia_arbitrum_1],
+	['4489326297382772000', testnet_evm_private_testnet_mica],
+	['1458281248224513000', testnet_evm_avalanche_subnet_dexalot_testnet],
+	['2279865765895943400', testnet_evm_ethereum_testnet_sepolia_scroll_1],
+	['7837562506228496000', testnet_evm_avalanche_testnet_nexon],
+	['5269261765892944000', testnet_evm_bitcoin_testnet_merlin],
+	['4012524741200567300', testnet_evm_pharos_testnet],
+	['4418231248214523000', testnet_evm_ethereum_testnet_sepolia_polygon_validium_1],
+	['16126893759944360000', testnet_evm_hemi_testnet_sepolia],
+	['9763904284804119000', testnet_evm_ink_testnet_sepolia],
+	['5535534526963509000', testnet_evm_bitcoin_testnet_sepolia_bob_1],
+	['5837261596322417000', testnet_evm_zklink_nova_testnet],
+	['7225665875429174000', testnet_evm_codex_testnet],
+	['10443705513486043000', testnet_evm_ethereum_testnet_sepolia_arbitrum_1_treasure_1],
+	['3676916124122458000', testnet_evm_treasure_testnet_topaz],
+	['945045181441419300', testnet_evm_jovay_testnet],
+	['16015286601757825000', testnet_evm_ethereum_testnet_sepolia],
+	['5224473277236332000', testnet_evm_ethereum_testnet_sepolia_optimism_1],
+	['2217764097022649300', testnet_evm_neox_testnet_t4],
+	['1467427327723634000', testnet_evm_ethereum_testnet_sepolia_corn_1],
+	['7060342227814389000', testnet_evm_filecoin_testnet],
+	['14684575664602284000', testnet_evm_plume_testnet],
+	['2027362563942762500', testnet_evm_ethereum_testnet_sepolia_blast_1],
+	['16244020411108057000', testnet_evm_zora_testnet],
+	['13231703482326770000', testnet_evm_tron_testnet_shasta_evm],
+	['13231703482326770000', testnet_evm_tron_devnet_evm],
+	['2052925811360307700', testnet_evm_tron_testnet_nile_evm],
+	['6302590918974934000', testnet_solana_solana_testnet],
+	['16423721717087812000', testnet_solana_solana_devnet],
+	['743186221051783400', testnet_aptos_aptos_testnet],
+	['4457093679053095400', testnet_aptos_aptos_localnet],
+	['9762610643973837000', testnet_sui_sui_testnet],
+	['18395503381733958000', testnet_sui_sui_localnet],
+	['1399300952838017800', testnet_ton_ton_testnet],
+	['13879075125137744000', testnet_ton_ton_localnet],
+	['13231703482326770000', testnet_tron_tron_testnet_shasta],
+	['13231703482326770000', testnet_tron_tron_devnet],
+	['2052925811360307700', testnet_tron_tron_testnet_nile],
 ])
 
 // Optimized Maps for fast lookups by chain selector name
 export const mainnetByName = new Map<string, NetworkInfo>([
-	[
-		'ethereum-mainnet',
-		{
-			chainId: '1',
-			chainSelector: {
-				name: 'ethereum-mainnet',
-				selector: '5009297550715158000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'ethereum-mainnet-optimism-1',
-		{
-			chainId: '10',
-			chainSelector: {
-				name: 'ethereum-mainnet-optimism-1',
-				selector: '3734403246176062000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'cronos-mainnet',
-		{
-			chainId: '25',
-			chainSelector: {
-				name: 'cronos-mainnet',
-				selector: '1456215246176062200',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'rootstock-mainnet',
-		{
-			chainId: '30',
-			chainSelector: {
-				name: 'rootstock-mainnet',
-				selector: '11964252391146578000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'telos-evm-mainnet',
-		{
-			chainId: '40',
-			chainSelector: {
-				name: 'telos-evm-mainnet',
-				selector: '1477345371608778000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'polkadot-mainnet-darwinia',
-		{
-			chainId: '46',
-			chainSelector: {
-				name: 'polkadot-mainnet-darwinia',
-				selector: '8866418665544333000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'xdc-mainnet',
-		{
-			chainId: '50',
-			chainSelector: {
-				name: 'xdc-mainnet',
-				selector: '17673274061779415000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'coinex_smart_chain-mainnet',
-		{
-			chainId: '52',
-			chainSelector: {
-				name: 'coinex_smart_chain-mainnet',
-				selector: '1761333065194157300',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'binance_smart_chain-mainnet',
-		{
-			chainId: '56',
-			chainSelector: {
-				name: 'binance_smart_chain-mainnet',
-				selector: '11344663589394135000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'gnosis_chain-mainnet',
-		{
-			chainId: '100',
-			chainSelector: {
-				name: 'gnosis_chain-mainnet',
-				selector: '465200170687744400',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'velas-mainnet',
-		{
-			chainId: '106',
-			chainSelector: {
-				name: 'velas-mainnet',
-				selector: '374210358663784400',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'shibarium-mainnet',
-		{
-			chainId: '109',
-			chainSelector: {
-				name: 'shibarium-mainnet',
-				selector: '3993510008929295400',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'ethereum-mainnet-unichain-1',
-		{
-			chainId: '130',
-			chainSelector: {
-				name: 'ethereum-mainnet-unichain-1',
-				selector: '1923510103922296300',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'polygon-mainnet',
-		{
-			chainId: '137',
-			chainSelector: {
-				name: 'polygon-mainnet',
-				selector: '4051577828743386600',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'monad-mainnet',
-		{
-			chainId: '143',
-			chainSelector: {
-				name: 'monad-mainnet',
-				selector: '8481857512324358000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'sonic-mainnet',
-		{
-			chainId: '146',
-			chainSelector: {
-				name: 'sonic-mainnet',
-				selector: '1673871237479750000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'ethereum-mainnet-hashkey-1',
-		{
-			chainId: '177',
-			chainSelector: {
-				name: 'ethereum-mainnet-hashkey-1',
-				selector: '7613811247471742000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'mint-mainnet',
-		{
-			chainId: '185',
-			chainSelector: {
-				name: 'mint-mainnet',
-				selector: '17164792800244662000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'ethereum-mainnet-xlayer-1',
-		{
-			chainId: '196',
-			chainSelector: {
-				name: 'ethereum-mainnet-xlayer-1',
-				selector: '3016212468291539500',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'bittorrent_chain-mainnet',
-		{
-			chainId: '199',
-			chainSelector: {
-				name: 'bittorrent_chain-mainnet',
-				selector: '3776006016387883000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'binance_smart_chain-mainnet-opbnb-1',
-		{
-			chainId: '204',
-			chainSelector: {
-				name: 'binance_smart_chain-mainnet-opbnb-1',
-				selector: '465944652040885900',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'bitcoin-mainnet-bsquared-1',
-		{
-			chainId: '223',
-			chainSelector: {
-				name: 'bitcoin-mainnet-bsquared-1',
-				selector: '5406759801798338000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'mind-mainnet',
-		{
-			chainId: '228',
-			chainSelector: {
-				name: 'mind-mainnet',
-				selector: '11690709103138290000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'lens-mainnet',
-		{
-			chainId: '232',
-			chainSelector: {
-				name: 'lens-mainnet',
-				selector: '5608378062013573000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'tac-mainnet',
-		{
-			chainId: '239',
-			chainSelector: {
-				name: 'tac-mainnet',
-				selector: '5936861837188149000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'fantom-mainnet',
-		{
-			chainId: '250',
-			chainSelector: {
-				name: 'fantom-mainnet',
-				selector: '3768048213127884000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'fraxtal-mainnet',
-		{
-			chainId: '252',
-			chainSelector: {
-				name: 'fraxtal-mainnet',
-				selector: '1462016016387883300',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'ethereum-mainnet-kroma-1',
-		{
-			chainId: '255',
-			chainSelector: {
-				name: 'ethereum-mainnet-kroma-1',
-				selector: '3719320017875267000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'neonlink-mainnet',
-		{
-			chainId: '259',
-			chainSelector: {
-				name: 'neonlink-mainnet',
-				selector: '8239338020728974000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'hedera-mainnet',
-		{
-			chainId: '295',
-			chainSelector: {
-				name: 'hedera-mainnet',
-				selector: '3229138320728879000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'filecoin-mainnet',
-		{
-			chainId: '314',
-			chainSelector: {
-				name: 'filecoin-mainnet',
-				selector: '4561443241176883000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'ethereum-mainnet-zksync-1',
-		{
-			chainId: '324',
-			chainSelector: {
-				name: 'ethereum-mainnet-zksync-1',
-				selector: '1562403441176082200',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'cronos-zkevm-mainnet',
-		{
-			chainId: '388',
-			chainSelector: {
-				name: 'cronos-zkevm-mainnet',
-				selector: '8788096068760391000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'near-mainnet',
-		{
-			chainId: '397',
-			chainSelector: {
-				name: 'near-mainnet',
-				selector: '2039744413822257700',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'areon-mainnet',
-		{
-			chainId: '463',
-			chainSelector: {
-				name: 'areon-mainnet',
-				selector: '1939936305787790600',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'ethereum-mainnet-worldchain-1',
-		{
-			chainId: '480',
-			chainSelector: {
-				name: 'ethereum-mainnet-worldchain-1',
-				selector: '2049429975587534800',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'polkadot-mainnet-astar',
-		{
-			chainId: '592',
-			chainSelector: {
-				name: 'polkadot-mainnet-astar',
-				selector: '6422105447186081000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'janction-mainnet',
-		{
-			chainId: '678',
-			chainSelector: {
-				name: 'janction-mainnet',
-				selector: '9107126442626378000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'bittensor-mainnet',
-		{
-			chainId: '964',
-			chainSelector: {
-				name: 'bittensor-mainnet',
-				selector: '2135107236357186800',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'hyperliquid-mainnet',
-		{
-			chainId: '999',
-			chainSelector: {
-				name: 'hyperliquid-mainnet',
-				selector: '2442541497099098600',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'conflux-mainnet',
-		{
-			chainId: '1030',
-			chainSelector: {
-				name: 'conflux-mainnet',
-				selector: '3358365939762719000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'ethereum-mainnet-metis-1',
-		{
-			chainId: '1088',
-			chainSelector: {
-				name: 'ethereum-mainnet-metis-1',
-				selector: '8805746078405599000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'ethereum-mainnet-polygon-zkevm-1',
-		{
-			chainId: '1101',
-			chainSelector: {
-				name: 'ethereum-mainnet-polygon-zkevm-1',
-				selector: '4348158687435793400',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'wemix-mainnet',
-		{
-			chainId: '1111',
-			chainSelector: {
-				name: 'wemix-mainnet',
-				selector: '5142893604156790000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'core-mainnet',
-		{
-			chainId: '1116',
-			chainSelector: {
-				name: 'core-mainnet',
-				selector: '1224752112135636200',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'lisk-mainnet',
-		{
-			chainId: '1135',
-			chainSelector: {
-				name: 'lisk-mainnet',
-				selector: '15293031020466096000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'polkadot-mainnet-moonbeam',
-		{
-			chainId: '1284',
-			chainSelector: {
-				name: 'polkadot-mainnet-moonbeam',
-				selector: '1252863800116739600',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'kusama-mainnet-moonriver',
-		{
-			chainId: '1285',
-			chainSelector: {
-				name: 'kusama-mainnet-moonriver',
-				selector: '1355020143337428000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'sei-mainnet',
-		{
-			chainId: '1329',
-			chainSelector: {
-				name: 'sei-mainnet',
-				selector: '9027416829622343000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'metal-mainnet',
-		{
-			chainId: '1750',
-			chainSelector: {
-				name: 'metal-mainnet',
-				selector: '13447077090413146000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'soneium-mainnet',
-		{
-			chainId: '1868',
-			chainSelector: {
-				name: 'soneium-mainnet',
-				selector: '12505351618335764000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'bitcichain-mainnet',
-		{
-			chainId: '1907',
-			chainSelector: {
-				name: 'bitcichain-mainnet',
-				selector: '4874388048629246000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'ronin-mainnet',
-		{
-			chainId: '2020',
-			chainSelector: {
-				name: 'ronin-mainnet',
-				selector: '6916147374840168000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'polkadot-mainnet-centrifuge',
-		{
-			chainId: '2031',
-			chainSelector: {
-				name: 'polkadot-mainnet-centrifuge',
-				selector: '8175830712062618000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'kava-mainnet',
-		{
-			chainId: '2222',
-			chainSelector: {
-				name: 'kava-mainnet',
-				selector: '7550000543357438000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'abstract-mainnet',
-		{
-			chainId: '2741',
-			chainSelector: {
-				name: 'abstract-mainnet',
-				selector: '3577778157919314400',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'morph-mainnet',
-		{
-			chainId: '2818',
-			chainSelector: {
-				name: 'morph-mainnet',
-				selector: '18164309074156128000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'bitcoin-mainnet-botanix',
-		{
-			chainId: '3637',
-			chainSelector: {
-				name: 'bitcoin-mainnet-botanix',
-				selector: '4560701533377838000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'ethereum-mainnet-astar-zkevm-1',
-		{
-			chainId: '3776',
-			chainSelector: {
-				name: 'ethereum-mainnet-astar-zkevm-1',
-				selector: '1540201334317828000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'bitcoin-merlin-mainnet',
-		{
-			chainId: '4200',
-			chainSelector: {
-				name: 'bitcoin-merlin-mainnet',
-				selector: '241851231317829000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'ethereum-mainnet-mantle-1',
-		{
-			chainId: '5000',
-			chainSelector: {
-				name: 'ethereum-mainnet-mantle-1',
-				selector: '1556008542357238800',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'superseed-mainnet',
-		{
-			chainId: '5330',
-			chainSelector: {
-				name: 'superseed-mainnet',
-				selector: '470401360549526850',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'nibiru-mainnet',
-		{
-			chainId: '6900',
-			chainSelector: {
-				name: 'nibiru-mainnet',
-				selector: '17349189558768828000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'zetachain-mainnet',
-		{
-			chainId: '7000',
-			chainSelector: {
-				name: 'zetachain-mainnet',
-				selector: '10817664450262215000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'kaia-mainnet',
-		{
-			chainId: '8217',
-			chainSelector: {
-				name: 'kaia-mainnet',
-				selector: '9813823125703492000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'ethereum-mainnet-base-1',
-		{
-			chainId: '8453',
-			chainSelector: {
-				name: 'ethereum-mainnet-base-1',
-				selector: '15971525489660199000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'plasma-mainnet',
-		{
-			chainId: '9745',
-			chainSelector: {
-				name: 'plasma-mainnet',
-				selector: '9335212494177456000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'ethereum-mainnet-arbitrum-1-l3x-1',
-		{
-			chainId: '12324',
-			chainSelector: {
-				name: 'ethereum-mainnet-arbitrum-1-l3x-1',
-				selector: '3162193654116181500',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'ethereum-mainnet-immutable-zkevm-1',
-		{
-			chainId: '13371',
-			chainSelector: {
-				name: 'ethereum-mainnet-immutable-zkevm-1',
-				selector: '1237925231416732000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'0g-mainnet',
-		{
-			chainId: '16661',
-			chainSelector: {
-				name: '0g-mainnet',
-				selector: '4426351306075016000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'apechain-mainnet',
-		{
-			chainId: '33139',
-			chainSelector: {
-				name: 'apechain-mainnet',
-				selector: '14894068710063348000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'ethereum-mainnet-mode-1',
-		{
-			chainId: '34443',
-			chainSelector: {
-				name: 'ethereum-mainnet-mode-1',
-				selector: '7264351850409363000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'ethereum-mainnet-arbitrum-1',
-		{
-			chainId: '42161',
-			chainSelector: {
-				name: 'ethereum-mainnet-arbitrum-1',
-				selector: '4949039107694360000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'celo-mainnet',
-		{
-			chainId: '42220',
-			chainSelector: {
-				name: 'celo-mainnet',
-				selector: '1346049177634351600',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'etherlink-mainnet',
-		{
-			chainId: '42793',
-			chainSelector: {
-				name: 'etherlink-mainnet',
-				selector: '13624601974233774000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'hemi-mainnet',
-		{
-			chainId: '43111',
-			chainSelector: {
-				name: 'hemi-mainnet',
-				selector: '1804312132722180000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'avalanche-mainnet',
-		{
-			chainId: '43114',
-			chainSelector: {
-				name: 'avalanche-mainnet',
-				selector: '6433500567565415000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'neox-mainnet',
-		{
-			chainId: '47763',
-			chainSelector: {
-				name: 'neox-mainnet',
-				selector: '7222032299962346000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'ethereum-mainnet-zircuit-1',
-		{
-			chainId: '48900',
-			chainSelector: {
-				name: 'ethereum-mainnet-zircuit-1',
-				selector: '17198166215261833000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'memento-mainnet',
-		{
-			chainId: '51888',
-			chainSelector: {
-				name: 'memento-mainnet',
-				selector: '6473245816409426000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'ethereum-mainnet-ink-1',
-		{
-			chainId: '57073',
-			chainSelector: {
-				name: 'ethereum-mainnet-ink-1',
-				selector: '3461204551265786000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'ethereum-mainnet-linea-1',
-		{
-			chainId: '59144',
-			chainSelector: {
-				name: 'ethereum-mainnet-linea-1',
-				selector: '4627098889531055000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'nexon-mainnet-lith',
-		{
-			chainId: '60118',
-			chainSelector: {
-				name: 'nexon-mainnet-lith',
-				selector: '15758750456714168000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'bitcoin-mainnet-bob-1',
-		{
-			chainId: '60808',
-			chainSelector: {
-				name: 'bitcoin-mainnet-bob-1',
-				selector: '3849287863852499500',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'treasure-mainnet',
-		{
-			chainId: '61166',
-			chainSelector: {
-				name: 'treasure-mainnet',
-				selector: '5214452172935136000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'nexon-mainnet-henesys',
-		{
-			chainId: '68414',
-			chainSelector: {
-				name: 'nexon-mainnet-henesys',
-				selector: '12657445206920370000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'berachain-mainnet',
-		{
-			chainId: '80094',
-			chainSelector: {
-				name: 'berachain-mainnet',
-				selector: '1294465214383781000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'codex-mainnet',
-		{
-			chainId: '81224',
-			chainSelector: {
-				name: 'codex-mainnet',
-				selector: '9478124434908828000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'ethereum-mainnet-blast-1',
-		{
-			chainId: '81457',
-			chainSelector: {
-				name: 'ethereum-mainnet-blast-1',
-				selector: '4411394078118774300',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'plume-mainnet',
-		{
-			chainId: '98866',
-			chainSelector: {
-				name: 'plume-mainnet',
-				selector: '17912061998839310000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'ethereum-mainnet-taiko-1',
-		{
-			chainId: '167000',
-			chainSelector: {
-				name: 'ethereum-mainnet-taiko-1',
-				selector: '16468599424800719000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'bitcoin-mainnet-bitlayer-1',
-		{
-			chainId: '200901',
-			chainSelector: {
-				name: 'bitcoin-mainnet-bitlayer-1',
-				selector: '7937294810946806000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'avalanche-subnet-dexalot-mainnet',
-		{
-			chainId: '432204',
-			chainSelector: {
-				name: 'avalanche-subnet-dexalot-mainnet',
-				selector: '5463201557265485000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'ethereum-mainnet-scroll-1',
-		{
-			chainId: '534352',
-			chainSelector: {
-				name: 'ethereum-mainnet-scroll-1',
-				selector: '13204309965629104000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'polygon-mainnet-katana',
-		{
-			chainId: '747474',
-			chainSelector: {
-				name: 'polygon-mainnet-katana',
-				selector: '2459028469735686000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'nexon-qa',
-		{
-			chainId: '807424',
-			chainSelector: {
-				name: 'nexon-qa',
-				selector: '14632960069656270000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'zklink_nova-mainnet',
-		{
-			chainId: '810180',
-			chainSelector: {
-				name: 'zklink_nova-mainnet',
-				selector: '4350319965322102000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'nexon-stage',
-		{
-			chainId: '847799',
-			chainSelector: {
-				name: 'nexon-stage',
-				selector: '5556806327594154000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'ethereum-mainnet-arbitrum-1-treasure-1',
-		{
-			chainId: '978670',
-			chainSelector: {
-				name: 'ethereum-mainnet-arbitrum-1-treasure-1',
-				selector: '1010349088906778000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'zora-mainnet',
-		{
-			chainId: '7777777',
-			chainSelector: {
-				name: 'zora-mainnet',
-				selector: '3555797439612589000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'corn-mainnet',
-		{
-			chainId: '21000000',
-			chainSelector: {
-				name: 'corn-mainnet',
-				selector: '9043146809313071000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'tron-mainnet-evm',
-		{
-			chainId: '728126428',
-			chainSelector: {
-				name: 'tron-mainnet-evm',
-				selector: '1546563616611574000',
-			},
-			chainFamily: 'evm',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'solana-mainnet',
-		{
-			chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d',
-			chainSelector: {
-				name: 'solana-mainnet',
-				selector: '124615329519749600',
-			},
-			chainFamily: 'solana',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'aptos-mainnet',
-		{
-			chainId: '1',
-			chainSelector: {
-				name: 'aptos-mainnet',
-				selector: '4741433654826278000',
-			},
-			chainFamily: 'aptos',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'sui-mainnet',
-		{
-			chainId: '1',
-			chainSelector: {
-				name: 'sui-mainnet',
-				selector: '17529533435026248000',
-			},
-			chainFamily: 'sui',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'ton-mainnet',
-		{
-			chainId: '-239',
-			chainSelector: {
-				name: 'ton-mainnet',
-				selector: '16448340667252470000',
-			},
-			chainFamily: 'ton',
-			networkType: 'mainnet',
-		},
-	],
-	[
-		'tron-mainnet',
-		{
-			chainId: '728126428',
-			chainSelector: {
-				name: 'tron-mainnet',
-				selector: '1546563616611574000',
-			},
-			chainFamily: 'tron',
-			networkType: 'mainnet',
-		},
-	],
+	['ethereum-mainnet', mainnet_evm_ethereum_mainnet],
+	['ethereum-mainnet-optimism-1', mainnet_evm_ethereum_mainnet_optimism_1],
+	['cronos-mainnet', mainnet_evm_cronos_mainnet],
+	['rootstock-mainnet', mainnet_evm_rootstock_mainnet],
+	['telos-evm-mainnet', mainnet_evm_telos_evm_mainnet],
+	['polkadot-mainnet-darwinia', mainnet_evm_polkadot_mainnet_darwinia],
+	['xdc-mainnet', mainnet_evm_xdc_mainnet],
+	['coinex_smart_chain-mainnet', mainnet_evm_coinex_smart_chain_mainnet],
+	['binance_smart_chain-mainnet', mainnet_evm_binance_smart_chain_mainnet],
+	['gnosis_chain-mainnet', mainnet_evm_gnosis_chain_mainnet],
+	['velas-mainnet', mainnet_evm_velas_mainnet],
+	['shibarium-mainnet', mainnet_evm_shibarium_mainnet],
+	['ethereum-mainnet-unichain-1', mainnet_evm_ethereum_mainnet_unichain_1],
+	['polygon-mainnet', mainnet_evm_polygon_mainnet],
+	['monad-mainnet', mainnet_evm_monad_mainnet],
+	['sonic-mainnet', mainnet_evm_sonic_mainnet],
+	['ethereum-mainnet-hashkey-1', mainnet_evm_ethereum_mainnet_hashkey_1],
+	['mint-mainnet', mainnet_evm_mint_mainnet],
+	['ethereum-mainnet-xlayer-1', mainnet_evm_ethereum_mainnet_xlayer_1],
+	['bittorrent_chain-mainnet', mainnet_evm_bittorrent_chain_mainnet],
+	['binance_smart_chain-mainnet-opbnb-1', mainnet_evm_binance_smart_chain_mainnet_opbnb_1],
+	['bitcoin-mainnet-bsquared-1', mainnet_evm_bitcoin_mainnet_bsquared_1],
+	['mind-mainnet', mainnet_evm_mind_mainnet],
+	['lens-mainnet', mainnet_evm_lens_mainnet],
+	['tac-mainnet', mainnet_evm_tac_mainnet],
+	['fantom-mainnet', mainnet_evm_fantom_mainnet],
+	['fraxtal-mainnet', mainnet_evm_fraxtal_mainnet],
+	['ethereum-mainnet-kroma-1', mainnet_evm_ethereum_mainnet_kroma_1],
+	['neonlink-mainnet', mainnet_evm_neonlink_mainnet],
+	['hedera-mainnet', mainnet_evm_hedera_mainnet],
+	['filecoin-mainnet', mainnet_evm_filecoin_mainnet],
+	['ethereum-mainnet-zksync-1', mainnet_evm_ethereum_mainnet_zksync_1],
+	['cronos-zkevm-mainnet', mainnet_evm_cronos_zkevm_mainnet],
+	['near-mainnet', mainnet_evm_near_mainnet],
+	['areon-mainnet', mainnet_evm_areon_mainnet],
+	['ethereum-mainnet-worldchain-1', mainnet_evm_ethereum_mainnet_worldchain_1],
+	['polkadot-mainnet-astar', mainnet_evm_polkadot_mainnet_astar],
+	['janction-mainnet', mainnet_evm_janction_mainnet],
+	['bittensor-mainnet', mainnet_evm_bittensor_mainnet],
+	['hyperliquid-mainnet', mainnet_evm_hyperliquid_mainnet],
+	['conflux-mainnet', mainnet_evm_conflux_mainnet],
+	['ethereum-mainnet-metis-1', mainnet_evm_ethereum_mainnet_metis_1],
+	['ethereum-mainnet-polygon-zkevm-1', mainnet_evm_ethereum_mainnet_polygon_zkevm_1],
+	['wemix-mainnet', mainnet_evm_wemix_mainnet],
+	['core-mainnet', mainnet_evm_core_mainnet],
+	['lisk-mainnet', mainnet_evm_lisk_mainnet],
+	['polkadot-mainnet-moonbeam', mainnet_evm_polkadot_mainnet_moonbeam],
+	['kusama-mainnet-moonriver', mainnet_evm_kusama_mainnet_moonriver],
+	['sei-mainnet', mainnet_evm_sei_mainnet],
+	['metal-mainnet', mainnet_evm_metal_mainnet],
+	['soneium-mainnet', mainnet_evm_soneium_mainnet],
+	['bitcichain-mainnet', mainnet_evm_bitcichain_mainnet],
+	['ronin-mainnet', mainnet_evm_ronin_mainnet],
+	['polkadot-mainnet-centrifuge', mainnet_evm_polkadot_mainnet_centrifuge],
+	['kava-mainnet', mainnet_evm_kava_mainnet],
+	['abstract-mainnet', mainnet_evm_abstract_mainnet],
+	['morph-mainnet', mainnet_evm_morph_mainnet],
+	['bitcoin-mainnet-botanix', mainnet_evm_bitcoin_mainnet_botanix],
+	['ethereum-mainnet-astar-zkevm-1', mainnet_evm_ethereum_mainnet_astar_zkevm_1],
+	['bitcoin-merlin-mainnet', mainnet_evm_bitcoin_merlin_mainnet],
+	['ethereum-mainnet-mantle-1', mainnet_evm_ethereum_mainnet_mantle_1],
+	['superseed-mainnet', mainnet_evm_superseed_mainnet],
+	['nibiru-mainnet', mainnet_evm_nibiru_mainnet],
+	['zetachain-mainnet', mainnet_evm_zetachain_mainnet],
+	['kaia-mainnet', mainnet_evm_kaia_mainnet],
+	['ethereum-mainnet-base-1', mainnet_evm_ethereum_mainnet_base_1],
+	['plasma-mainnet', mainnet_evm_plasma_mainnet],
+	['ethereum-mainnet-arbitrum-1-l3x-1', mainnet_evm_ethereum_mainnet_arbitrum_1_l3x_1],
+	['ethereum-mainnet-immutable-zkevm-1', mainnet_evm_ethereum_mainnet_immutable_zkevm_1],
+	['0g-mainnet', mainnet_evm_0g_mainnet],
+	['apechain-mainnet', mainnet_evm_apechain_mainnet],
+	['ethereum-mainnet-mode-1', mainnet_evm_ethereum_mainnet_mode_1],
+	['ethereum-mainnet-arbitrum-1', mainnet_evm_ethereum_mainnet_arbitrum_1],
+	['celo-mainnet', mainnet_evm_celo_mainnet],
+	['etherlink-mainnet', mainnet_evm_etherlink_mainnet],
+	['hemi-mainnet', mainnet_evm_hemi_mainnet],
+	['avalanche-mainnet', mainnet_evm_avalanche_mainnet],
+	['neox-mainnet', mainnet_evm_neox_mainnet],
+	['ethereum-mainnet-zircuit-1', mainnet_evm_ethereum_mainnet_zircuit_1],
+	['memento-mainnet', mainnet_evm_memento_mainnet],
+	['ethereum-mainnet-ink-1', mainnet_evm_ethereum_mainnet_ink_1],
+	['ethereum-mainnet-linea-1', mainnet_evm_ethereum_mainnet_linea_1],
+	['nexon-mainnet-lith', mainnet_evm_nexon_mainnet_lith],
+	['bitcoin-mainnet-bob-1', mainnet_evm_bitcoin_mainnet_bob_1],
+	['treasure-mainnet', mainnet_evm_treasure_mainnet],
+	['nexon-mainnet-henesys', mainnet_evm_nexon_mainnet_henesys],
+	['berachain-mainnet', mainnet_evm_berachain_mainnet],
+	['codex-mainnet', mainnet_evm_codex_mainnet],
+	['ethereum-mainnet-blast-1', mainnet_evm_ethereum_mainnet_blast_1],
+	['plume-mainnet', mainnet_evm_plume_mainnet],
+	['ethereum-mainnet-taiko-1', mainnet_evm_ethereum_mainnet_taiko_1],
+	['bitcoin-mainnet-bitlayer-1', mainnet_evm_bitcoin_mainnet_bitlayer_1],
+	['avalanche-subnet-dexalot-mainnet', mainnet_evm_avalanche_subnet_dexalot_mainnet],
+	['ethereum-mainnet-scroll-1', mainnet_evm_ethereum_mainnet_scroll_1],
+	['polygon-mainnet-katana', mainnet_evm_polygon_mainnet_katana],
+	['nexon-qa', mainnet_evm_nexon_qa],
+	['zklink_nova-mainnet', mainnet_evm_zklink_nova_mainnet],
+	['nexon-stage', mainnet_evm_nexon_stage],
+	['ethereum-mainnet-arbitrum-1-treasure-1', mainnet_evm_ethereum_mainnet_arbitrum_1_treasure_1],
+	['zora-mainnet', mainnet_evm_zora_mainnet],
+	['corn-mainnet', mainnet_evm_corn_mainnet],
+	['tron-mainnet-evm', mainnet_evm_tron_mainnet_evm],
+	['solana-mainnet', mainnet_solana_solana_mainnet],
+	['aptos-mainnet', mainnet_aptos_aptos_mainnet],
+	['sui-mainnet', mainnet_sui_sui_mainnet],
+	['ton-mainnet', mainnet_ton_ton_mainnet],
+	['tron-mainnet', mainnet_tron_tron_mainnet],
 ])
 
 export const testnetByName = new Map<string, NetworkInfo>([
-	[
-		'bitcoin-testnet-rootstock',
-		{
-			chainId: '31',
-			chainSelector: {
-				name: 'bitcoin-testnet-rootstock',
-				selector: '8953668971247136000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'telos-evm-testnet',
-		{
-			chainId: '41',
-			chainSelector: {
-				name: 'telos-evm-testnet',
-				selector: '729797994450396300',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'polkadot-testnet-darwinia-pangoro',
-		{
-			chainId: '45',
-			chainSelector: {
-				name: 'polkadot-testnet-darwinia-pangoro',
-				selector: '4340886533089894000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'xdc-testnet',
-		{
-			chainId: '51',
-			chainSelector: {
-				name: 'xdc-testnet',
-				selector: '3017758115101369000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'coinex_smart_chain-testnet',
-		{
-			chainId: '53',
-			chainSelector: {
-				name: 'coinex_smart_chain-testnet',
-				selector: '8955032871639343000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'polkadot-testnet-astar-shibuya',
-		{
-			chainId: '81',
-			chainSelector: {
-				name: 'polkadot-testnet-astar-shibuya',
-				selector: '6955638871347137000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'binance_smart_chain-testnet',
-		{
-			chainId: '97',
-			chainSelector: {
-				name: 'binance_smart_chain-testnet',
-				selector: '13264668187771770000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'velas-testnet',
-		{
-			chainId: '111',
-			chainSelector: {
-				name: 'velas-testnet',
-				selector: '572210378683744400',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-sepolia-hashkey-1',
-		{
-			chainId: '133',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-hashkey-1',
-				selector: '4356164186791070000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'shibarium-testnet-puppynet',
-		{
-			chainId: '157',
-			chainSelector: {
-				name: 'shibarium-testnet-puppynet',
-				selector: '17833296867764335000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-sepolia-xlayer-1',
-		{
-			chainId: '195',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-xlayer-1',
-				selector: '2066098519157881900',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'cronos-zkevm-testnet-sepolia',
-		{
-			chainId: '240',
-			chainSelector: {
-				name: 'cronos-zkevm-testnet-sepolia',
-				selector: '16487132492576885000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-goerli-zksync-1',
-		{
-			chainId: '280',
-			chainSelector: {
-				name: 'ethereum-testnet-goerli-zksync-1',
-				selector: '6802309497652714000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'cronos-testnet-zkevm-1',
-		{
-			chainId: '282',
-			chainSelector: {
-				name: 'cronos-testnet-zkevm-1',
-				selector: '3842103497652714000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'hedera-testnet',
-		{
-			chainId: '296',
-			chainSelector: {
-				name: 'hedera-testnet',
-				selector: '222782988166878820',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-sepolia-zksync-1',
-		{
-			chainId: '300',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-zksync-1',
-				selector: '6898391096552792000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'cronos-testnet',
-		{
-			chainId: '338',
-			chainSelector: {
-				name: 'cronos-testnet',
-				selector: '2995292832068775000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'near-testnet',
-		{
-			chainId: '398',
-			chainSelector: {
-				name: 'near-testnet',
-				selector: '5061593697262339000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-goerli-optimism-1',
-		{
-			chainId: '420',
-			chainSelector: {
-				name: 'ethereum-testnet-goerli-optimism-1',
-				selector: '2664363617261497000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'areon-testnet',
-		{
-			chainId: '462',
-			chainSelector: {
-				name: 'areon-testnet',
-				selector: '7317911323415911000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'janction-testnet-sepolia',
-		{
-			chainId: '679',
-			chainSelector: {
-				name: 'janction-testnet-sepolia',
-				selector: '5059197667603798000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'private-testnet-obsidian',
-		{
-			chainId: '682',
-			chainSelector: {
-				name: 'private-testnet-obsidian',
-				selector: '6260932437388305000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-sepolia-mode-1',
-		{
-			chainId: '919',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-mode-1',
-				selector: '829525985033418800',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'bittensor-testnet',
-		{
-			chainId: '945',
-			chainSelector: {
-				name: 'bittensor-testnet',
-				selector: '2177900824115119000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'hyperliquid-testnet',
-		{
-			chainId: '998',
-			chainSelector: {
-				name: 'hyperliquid-testnet',
-				selector: '4286062357653186600',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'kaia-testnet-kairos',
-		{
-			chainId: '1001',
-			chainSelector: {
-				name: 'kaia-testnet-kairos',
-				selector: '2624132734533622000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'bittorrent_chain-testnet',
-		{
-			chainId: '1029',
-			chainSelector: {
-				name: 'bittorrent_chain-testnet',
-				selector: '4459371029167934500',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'wemix-testnet',
-		{
-			chainId: '1112',
-			chainSelector: {
-				name: 'wemix-testnet',
-				selector: '9284632837123596000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'core-testnet',
-		{
-			chainId: '1114',
-			chainSelector: {
-				name: 'core-testnet',
-				selector: '4264732132125536000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'bitcoin-testnet-bsquared-1',
-		{
-			chainId: '1123',
-			chainSelector: {
-				name: 'bitcoin-testnet-bsquared-1',
-				selector: '1948510578179542000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'polkadot-testnet-moonbeam-moonbase',
-		{
-			chainId: '1287',
-			chainSelector: {
-				name: 'polkadot-testnet-moonbeam-moonbase',
-				selector: '5361632739113537000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-sepolia-unichain-1',
-		{
-			chainId: '1301',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-unichain-1',
-				selector: '14135854469784515000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'sei-testnet-atlantic',
-		{
-			chainId: '1328',
-			chainSelector: {
-				name: 'sei-testnet-atlantic',
-				selector: '1216300075444106800',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'geth-testnet',
-		{
-			chainId: '1337',
-			chainSelector: {
-				name: 'geth-testnet',
-				selector: '3379446385462418400',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-goerli-polygon-zkevm-1',
-		{
-			chainId: '1442',
-			chainSelector: {
-				name: 'ethereum-testnet-goerli-polygon-zkevm-1',
-				selector: '11059667695644973000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'story-testnet',
-		{
-			chainId: '1513',
-			chainSelector: {
-				name: 'story-testnet',
-				selector: '4237030917318060500',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'mint-testnet',
-		{
-			chainId: '1687',
-			chainSelector: {
-				name: 'mint-testnet',
-				selector: '10749384167430722000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'metal-testnet',
-		{
-			chainId: '1740',
-			chainSelector: {
-				name: 'metal-testnet',
-				selector: '6286293440461808000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'bitcichain-testnet',
-		{
-			chainId: '1908',
-			chainSelector: {
-				name: 'bitcichain-testnet',
-				selector: '4888058894222120000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-sepolia-soneium-1',
-		{
-			chainId: '1946',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-soneium-1',
-				selector: '686603546605904500',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ronin-testnet-saigon',
-		{
-			chainId: '2021',
-			chainSelector: {
-				name: 'ronin-testnet-saigon',
-				selector: '13116810400804393000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'private-testnet-granite',
-		{
-			chainId: '2023',
-			chainSelector: {
-				name: 'private-testnet-granite',
-				selector: '3260900564719373300',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'private-testnet-andesite',
-		{
-			chainId: '2024',
-			chainSelector: {
-				name: 'private-testnet-andesite',
-				selector: '6915682381028791000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'dtcc-testnet-andesite',
-		{
-			chainId: '2025',
-			chainSelector: {
-				name: 'dtcc-testnet-andesite',
-				selector: '15513093881969820000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'polkadot-testnet-centrifuge-altair',
-		{
-			chainId: '2088',
-			chainSelector: {
-				name: 'polkadot-testnet-centrifuge-altair',
-				selector: '2333097300889805000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'memento-testnet',
-		{
-			chainId: '2129',
-			chainSelector: {
-				name: 'memento-testnet',
-				selector: '12168171414969487000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'kava-testnet',
-		{
-			chainId: '2221',
-			chainSelector: {
-				name: 'kava-testnet',
-				selector: '2110537777356199200',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-sepolia-kroma-1',
-		{
-			chainId: '2358',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-kroma-1',
-				selector: '5990477251245693000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'tac-testnet',
-		{
-			chainId: '2391',
-			chainSelector: {
-				name: 'tac-testnet',
-				selector: '9488606126177219000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
+	['bitcoin-testnet-rootstock', testnet_evm_bitcoin_testnet_rootstock],
+	['telos-evm-testnet', testnet_evm_telos_evm_testnet],
+	['polkadot-testnet-darwinia-pangoro', testnet_evm_polkadot_testnet_darwinia_pangoro],
+	['xdc-testnet', testnet_evm_xdc_testnet],
+	['coinex_smart_chain-testnet', testnet_evm_coinex_smart_chain_testnet],
+	['polkadot-testnet-astar-shibuya', testnet_evm_polkadot_testnet_astar_shibuya],
+	['binance_smart_chain-testnet', testnet_evm_binance_smart_chain_testnet],
+	['velas-testnet', testnet_evm_velas_testnet],
+	['ethereum-testnet-sepolia-hashkey-1', testnet_evm_ethereum_testnet_sepolia_hashkey_1],
+	['shibarium-testnet-puppynet', testnet_evm_shibarium_testnet_puppynet],
+	['ethereum-testnet-sepolia-xlayer-1', testnet_evm_ethereum_testnet_sepolia_xlayer_1],
+	['cronos-zkevm-testnet-sepolia', testnet_evm_cronos_zkevm_testnet_sepolia],
+	['ethereum-testnet-goerli-zksync-1', testnet_evm_ethereum_testnet_goerli_zksync_1],
+	['cronos-testnet-zkevm-1', testnet_evm_cronos_testnet_zkevm_1],
+	['hedera-testnet', testnet_evm_hedera_testnet],
+	['ethereum-testnet-sepolia-zksync-1', testnet_evm_ethereum_testnet_sepolia_zksync_1],
+	['cronos-testnet', testnet_evm_cronos_testnet],
+	['near-testnet', testnet_evm_near_testnet],
+	['ethereum-testnet-goerli-optimism-1', testnet_evm_ethereum_testnet_goerli_optimism_1],
+	['areon-testnet', testnet_evm_areon_testnet],
+	['janction-testnet-sepolia', testnet_evm_janction_testnet_sepolia],
+	['private-testnet-obsidian', testnet_evm_private_testnet_obsidian],
+	['ethereum-testnet-sepolia-mode-1', testnet_evm_ethereum_testnet_sepolia_mode_1],
+	['bittensor-testnet', testnet_evm_bittensor_testnet],
+	['hyperliquid-testnet', testnet_evm_hyperliquid_testnet],
+	['kaia-testnet-kairos', testnet_evm_kaia_testnet_kairos],
+	['bittorrent_chain-testnet', testnet_evm_bittorrent_chain_testnet],
+	['wemix-testnet', testnet_evm_wemix_testnet],
+	['core-testnet', testnet_evm_core_testnet],
+	['bitcoin-testnet-bsquared-1', testnet_evm_bitcoin_testnet_bsquared_1],
+	['polkadot-testnet-moonbeam-moonbase', testnet_evm_polkadot_testnet_moonbeam_moonbase],
+	['ethereum-testnet-sepolia-unichain-1', testnet_evm_ethereum_testnet_sepolia_unichain_1],
+	['sei-testnet-atlantic', testnet_evm_sei_testnet_atlantic],
+	['geth-testnet', testnet_evm_geth_testnet],
+	['ethereum-testnet-goerli-polygon-zkevm-1', testnet_evm_ethereum_testnet_goerli_polygon_zkevm_1],
+	['story-testnet', testnet_evm_story_testnet],
+	['mint-testnet', testnet_evm_mint_testnet],
+	['metal-testnet', testnet_evm_metal_testnet],
+	['bitcichain-testnet', testnet_evm_bitcichain_testnet],
+	['ethereum-testnet-sepolia-soneium-1', testnet_evm_ethereum_testnet_sepolia_soneium_1],
+	['ronin-testnet-saigon', testnet_evm_ronin_testnet_saigon],
+	['private-testnet-granite', testnet_evm_private_testnet_granite],
+	['private-testnet-andesite', testnet_evm_private_testnet_andesite],
+	['dtcc-testnet-andesite', testnet_evm_dtcc_testnet_andesite],
+	['polkadot-testnet-centrifuge-altair', testnet_evm_polkadot_testnet_centrifuge_altair],
+	['memento-testnet', testnet_evm_memento_testnet],
+	['kava-testnet', testnet_evm_kava_testnet],
+	['ethereum-testnet-sepolia-kroma-1', testnet_evm_ethereum_testnet_sepolia_kroma_1],
+	['tac-testnet', testnet_evm_tac_testnet],
 	[
 		'ethereum-testnet-sepolia-polygon-zkevm-1',
-		{
-			chainId: '2442',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-polygon-zkevm-1',
-				selector: '1654667687261492700',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
+		testnet_evm_ethereum_testnet_sepolia_polygon_zkevm_1,
 	],
-	[
-		'ethereum-testnet-holesky-fraxtal-1',
-		{
-			chainId: '2522',
-			chainSelector: {
-				name: 'ethereum-testnet-holesky-fraxtal-1',
-				selector: '8901520481741772000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-holesky-morph-1',
-		{
-			chainId: '2810',
-			chainSelector: {
-				name: 'ethereum-testnet-holesky-morph-1',
-				selector: '8304510386741731000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'bitcoin-testnet-botanix',
-		{
-			chainId: '3636',
-			chainSelector: {
-				name: 'bitcoin-testnet-botanix',
-				selector: '1467223411771711500',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'fantom-testnet',
-		{
-			chainId: '4002',
-			chainSelector: {
-				name: 'fantom-testnet',
-				selector: '4905564228793744000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-sepolia-lisk-1',
-		{
-			chainId: '4202',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-lisk-1',
-				selector: '5298399861320401000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-sepolia-worldchain-1',
-		{
-			chainId: '4801',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-worldchain-1',
-				selector: '5299555114858066000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-goerli-mantle-1',
-		{
-			chainId: '5001',
-			chainSelector: {
-				name: 'ethereum-testnet-goerli-mantle-1',
-				selector: '4168263376276232000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-sepolia-mantle-1',
-		{
-			chainId: '5003',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-mantle-1',
-				selector: '8236463271206331000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'binance_smart_chain-testnet-opbnb-1',
-		{
-			chainId: '5611',
-			chainSelector: {
-				name: 'binance_smart_chain-testnet-opbnb-1',
-				selector: '13274425992935471000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'nexon-dev',
-		{
-			chainId: '5668',
-			chainSelector: {
-				name: 'nexon-dev',
-				selector: '8911150974185440000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'megaeth-testnet',
-		{
-			chainId: '6342',
-			chainSelector: {
-				name: 'megaeth-testnet',
-				selector: '2443239559770384400',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'nibiru-testnet',
-		{
-			chainId: '6930',
-			chainSelector: {
-				name: 'nibiru-testnet',
-				selector: '305104239123120450',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ondo-testnet',
-		{
-			chainId: '9000',
-			chainSelector: {
-				name: 'ondo-testnet',
-				selector: '344208382356656600',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'neonlink-testnet',
-		{
-			chainId: '9559',
-			chainSelector: {
-				name: 'neonlink-testnet',
-				selector: '1113014352258747600',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'plasma-testnet',
-		{
-			chainId: '9746',
-			chainSelector: {
-				name: 'plasma-testnet',
-				selector: '3967220077692964400',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'monad-testnet',
-		{
-			chainId: '10143',
-			chainSelector: {
-				name: 'monad-testnet',
-				selector: '2183018362218727400',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'gnosis_chain-testnet-chiado',
-		{
-			chainId: '10200',
-			chainSelector: {
-				name: 'gnosis_chain-testnet-chiado',
-				selector: '8871595565390010000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'abstract-testnet',
-		{
-			chainId: '11124',
-			chainSelector: {
-				name: 'abstract-testnet',
-				selector: '16235373811196387000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
+	['ethereum-testnet-holesky-fraxtal-1', testnet_evm_ethereum_testnet_holesky_fraxtal_1],
+	['ethereum-testnet-holesky-morph-1', testnet_evm_ethereum_testnet_holesky_morph_1],
+	['bitcoin-testnet-botanix', testnet_evm_bitcoin_testnet_botanix],
+	['fantom-testnet', testnet_evm_fantom_testnet],
+	['ethereum-testnet-sepolia-lisk-1', testnet_evm_ethereum_testnet_sepolia_lisk_1],
+	['ethereum-testnet-sepolia-worldchain-1', testnet_evm_ethereum_testnet_sepolia_worldchain_1],
+	['ethereum-testnet-goerli-mantle-1', testnet_evm_ethereum_testnet_goerli_mantle_1],
+	['ethereum-testnet-sepolia-mantle-1', testnet_evm_ethereum_testnet_sepolia_mantle_1],
+	['binance_smart_chain-testnet-opbnb-1', testnet_evm_binance_smart_chain_testnet_opbnb_1],
+	['nexon-dev', testnet_evm_nexon_dev],
+	['megaeth-testnet', testnet_evm_megaeth_testnet],
+	['nibiru-testnet', testnet_evm_nibiru_testnet],
+	['ondo-testnet', testnet_evm_ondo_testnet],
+	['neonlink-testnet', testnet_evm_neonlink_testnet],
+	['plasma-testnet', testnet_evm_plasma_testnet],
+	['monad-testnet', testnet_evm_monad_testnet],
+	['gnosis_chain-testnet-chiado', testnet_evm_gnosis_chain_testnet_chiado],
+	['abstract-testnet', testnet_evm_abstract_testnet],
 	[
 		'ethereum-testnet-sepolia-arbitrum-1-l3x-1',
-		{
-			chainId: '12325',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-arbitrum-1-l3x-1',
-				selector: '3486622437121596000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
+		testnet_evm_ethereum_testnet_sepolia_arbitrum_1_l3x_1,
 	],
 	[
 		'ethereum-testnet-sepolia-immutable-zkevm-1',
-		{
-			chainId: '13473',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-immutable-zkevm-1',
-				selector: '4526165231216332000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
+		testnet_evm_ethereum_testnet_sepolia_immutable_zkevm_1,
 	],
-	[
-		'0g-testnet-newton',
-		{
-			chainId: '16600',
-			chainSelector: {
-				name: '0g-testnet-newton',
-				selector: '16088006396410204000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'0g-testnet-galileo',
-		{
-			chainId: '16601',
-			chainSelector: {
-				name: '0g-testnet-galileo',
-				selector: '2131427466778448100',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-holesky',
-		{
-			chainId: '17000',
-			chainSelector: {
-				name: 'ethereum-testnet-holesky',
-				selector: '7717148896336251000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'anvil-devnet',
-		{
-			chainId: '31337',
-			chainSelector: {
-				name: 'anvil-devnet',
-				selector: '7759470850252069000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'apechain-testnet-curtis',
-		{
-			chainId: '33111',
-			chainSelector: {
-				name: 'apechain-testnet-curtis',
-				selector: '9900119385908781000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-sepolia-lens-1',
-		{
-			chainId: '37111',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-lens-1',
-				selector: '6827576821754316000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'avalanche-testnet-fuji',
-		{
-			chainId: '43113',
-			chainSelector: {
-				name: 'avalanche-testnet-fuji',
-				selector: '14767482510784807000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'celo-testnet-alfajores',
-		{
-			chainId: '44787',
-			chainSelector: {
-				name: 'celo-testnet-alfajores',
-				selector: '3552045678561919000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'private-testnet-opala',
-		{
-			chainId: '45439',
-			chainSelector: {
-				name: 'private-testnet-opala',
-				selector: '8446413392851542000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'zircuit-testnet-garfield',
-		{
-			chainId: '48898',
-			chainSelector: {
-				name: 'zircuit-testnet-garfield',
-				selector: '13781831279385220000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-sepolia-zircuit-1',
-		{
-			chainId: '48899',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-zircuit-1',
-				selector: '4562743618362911000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'superseed-testnet',
-		{
-			chainId: '53302',
-			chainSelector: {
-				name: 'superseed-testnet',
-				selector: '13694007683517088000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'sonic-testnet-blaze',
-		{
-			chainId: '57054',
-			chainSelector: {
-				name: 'sonic-testnet-blaze',
-				selector: '3676871237479449000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-goerli-linea-1',
-		{
-			chainId: '59140',
-			chainSelector: {
-				name: 'ethereum-testnet-goerli-linea-1',
-				selector: '1355246678561316400',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-sepolia-linea-1',
-		{
-			chainId: '59141',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-linea-1',
-				selector: '5719461335882077000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-sepolia-metis-1',
-		{
-			chainId: '59902',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-metis-1',
-				selector: '3777822886988675000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'polygon-testnet-mumbai',
-		{
-			chainId: '80001',
-			chainSelector: {
-				name: 'polygon-testnet-mumbai',
-				selector: '12532609583862917000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'polygon-testnet-amoy',
-		{
-			chainId: '80002',
-			chainSelector: {
-				name: 'polygon-testnet-amoy',
-				selector: '16281711391670634000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'berachain-testnet-bepolia',
-		{
-			chainId: '80069',
-			chainSelector: {
-				name: 'berachain-testnet-bepolia',
-				selector: '7728255861635209000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'berachain-testnet-bartio',
-		{
-			chainId: '80084',
-			chainSelector: {
-				name: 'berachain-testnet-bartio',
-				selector: '8999465244383784000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'berachain-testnet-artio',
-		{
-			chainId: '80085',
-			chainSelector: {
-				name: 'berachain-testnet-artio',
-				selector: '12336603543561912000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'zero-g-testnet-galileo',
-		{
-			chainId: '80087',
-			chainSelector: {
-				name: 'zero-g-testnet-galileo',
-				selector: '2285225387454015700',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-goerli-base-1',
-		{
-			chainId: '84531',
-			chainSelector: {
-				name: 'ethereum-testnet-goerli-base-1',
-				selector: '5790810961207156000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-sepolia-base-1',
-		{
-			chainId: '84532',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-base-1',
-				selector: '10344971235874466000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'plume-devnet',
-		{
-			chainId: '98864',
-			chainSelector: {
-				name: 'plume-devnet',
-				selector: '3743020999916461000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'plume-testnet-sepolia',
-		{
-			chainId: '98867',
-			chainSelector: {
-				name: 'plume-testnet-sepolia',
-				selector: '13874588925447303000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'etherlink-testnet',
-		{
-			chainId: '128123',
-			chainSelector: {
-				name: 'etherlink-testnet',
-				selector: '1910019406958449400',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'polygon-testnet-tatara',
-		{
-			chainId: '129399',
-			chainSelector: {
-				name: 'polygon-testnet-tatara',
-				selector: '9090863410735740000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-holesky-taiko-1',
-		{
-			chainId: '167009',
-			chainSelector: {
-				name: 'ethereum-testnet-holesky-taiko-1',
-				selector: '7248756420937880000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'mind-testnet',
-		{
-			chainId: '192940',
-			chainSelector: {
-				name: 'mind-testnet',
-				selector: '7189150270347330000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'bitcoin-testnet-bitlayer-1',
-		{
-			chainId: '200810',
-			chainSelector: {
-				name: 'bitcoin-testnet-bitlayer-1',
-				selector: '3789623672476206000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-goerli-arbitrum-1',
-		{
-			chainId: '421613',
-			chainSelector: {
-				name: 'ethereum-testnet-goerli-arbitrum-1',
-				selector: '6101244977088475000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-sepolia-arbitrum-1',
-		{
-			chainId: '421614',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-arbitrum-1',
-				selector: '3478487238524512000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'private-testnet-mica',
-		{
-			chainId: '424242',
-			chainSelector: {
-				name: 'private-testnet-mica',
-				selector: '4489326297382772000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'avalanche-subnet-dexalot-testnet',
-		{
-			chainId: '432201',
-			chainSelector: {
-				name: 'avalanche-subnet-dexalot-testnet',
-				selector: '1458281248224513000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-sepolia-scroll-1',
-		{
-			chainId: '534351',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-scroll-1',
-				selector: '2279865765895943400',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'avalanche-testnet-nexon',
-		{
-			chainId: '595581',
-			chainSelector: {
-				name: 'avalanche-testnet-nexon',
-				selector: '7837562506228496000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'bitcoin-testnet-merlin',
-		{
-			chainId: '686868',
-			chainSelector: {
-				name: 'bitcoin-testnet-merlin',
-				selector: '5269261765892944000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'pharos-testnet',
-		{
-			chainId: '688688',
-			chainSelector: {
-				name: 'pharos-testnet',
-				selector: '4012524741200567300',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
+	['0g-testnet-newton', testnet_evm_0g_testnet_newton],
+	['0g-testnet-galileo', testnet_evm_0g_testnet_galileo],
+	['ethereum-testnet-holesky', testnet_evm_ethereum_testnet_holesky],
+	['anvil-devnet', testnet_evm_anvil_devnet],
+	['apechain-testnet-curtis', testnet_evm_apechain_testnet_curtis],
+	['ethereum-testnet-sepolia-lens-1', testnet_evm_ethereum_testnet_sepolia_lens_1],
+	['avalanche-testnet-fuji', testnet_evm_avalanche_testnet_fuji],
+	['celo-testnet-alfajores', testnet_evm_celo_testnet_alfajores],
+	['private-testnet-opala', testnet_evm_private_testnet_opala],
+	['zircuit-testnet-garfield', testnet_evm_zircuit_testnet_garfield],
+	['ethereum-testnet-sepolia-zircuit-1', testnet_evm_ethereum_testnet_sepolia_zircuit_1],
+	['superseed-testnet', testnet_evm_superseed_testnet],
+	['sonic-testnet-blaze', testnet_evm_sonic_testnet_blaze],
+	['ethereum-testnet-goerli-linea-1', testnet_evm_ethereum_testnet_goerli_linea_1],
+	['ethereum-testnet-sepolia-linea-1', testnet_evm_ethereum_testnet_sepolia_linea_1],
+	['ethereum-testnet-sepolia-metis-1', testnet_evm_ethereum_testnet_sepolia_metis_1],
+	['polygon-testnet-mumbai', testnet_evm_polygon_testnet_mumbai],
+	['polygon-testnet-amoy', testnet_evm_polygon_testnet_amoy],
+	['berachain-testnet-bepolia', testnet_evm_berachain_testnet_bepolia],
+	['berachain-testnet-bartio', testnet_evm_berachain_testnet_bartio],
+	['berachain-testnet-artio', testnet_evm_berachain_testnet_artio],
+	['zero-g-testnet-galileo', testnet_evm_zero_g_testnet_galileo],
+	['ethereum-testnet-goerli-base-1', testnet_evm_ethereum_testnet_goerli_base_1],
+	['ethereum-testnet-sepolia-base-1', testnet_evm_ethereum_testnet_sepolia_base_1],
+	['plume-devnet', testnet_evm_plume_devnet],
+	['plume-testnet-sepolia', testnet_evm_plume_testnet_sepolia],
+	['etherlink-testnet', testnet_evm_etherlink_testnet],
+	['polygon-testnet-tatara', testnet_evm_polygon_testnet_tatara],
+	['ethereum-testnet-holesky-taiko-1', testnet_evm_ethereum_testnet_holesky_taiko_1],
+	['mind-testnet', testnet_evm_mind_testnet],
+	['bitcoin-testnet-bitlayer-1', testnet_evm_bitcoin_testnet_bitlayer_1],
+	['ethereum-testnet-goerli-arbitrum-1', testnet_evm_ethereum_testnet_goerli_arbitrum_1],
+	['ethereum-testnet-sepolia-arbitrum-1', testnet_evm_ethereum_testnet_sepolia_arbitrum_1],
+	['private-testnet-mica', testnet_evm_private_testnet_mica],
+	['avalanche-subnet-dexalot-testnet', testnet_evm_avalanche_subnet_dexalot_testnet],
+	['ethereum-testnet-sepolia-scroll-1', testnet_evm_ethereum_testnet_sepolia_scroll_1],
+	['avalanche-testnet-nexon', testnet_evm_avalanche_testnet_nexon],
+	['bitcoin-testnet-merlin', testnet_evm_bitcoin_testnet_merlin],
+	['pharos-testnet', testnet_evm_pharos_testnet],
 	[
 		'ethereum-testnet-sepolia-polygon-validium-1',
-		{
-			chainId: '717160',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-polygon-validium-1',
-				selector: '4418231248214523000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
+		testnet_evm_ethereum_testnet_sepolia_polygon_validium_1,
 	],
-	[
-		'hemi-testnet-sepolia',
-		{
-			chainId: '743111',
-			chainSelector: {
-				name: 'hemi-testnet-sepolia',
-				selector: '16126893759944360000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ink-testnet-sepolia',
-		{
-			chainId: '763373',
-			chainSelector: {
-				name: 'ink-testnet-sepolia',
-				selector: '9763904284804119000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'bitcoin-testnet-sepolia-bob-1',
-		{
-			chainId: '808813',
-			chainSelector: {
-				name: 'bitcoin-testnet-sepolia-bob-1',
-				selector: '5535534526963509000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'zklink_nova-testnet',
-		{
-			chainId: '810181',
-			chainSelector: {
-				name: 'zklink_nova-testnet',
-				selector: '5837261596322417000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'codex-testnet',
-		{
-			chainId: '812242',
-			chainSelector: {
-				name: 'codex-testnet',
-				selector: '7225665875429174000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
+	['hemi-testnet-sepolia', testnet_evm_hemi_testnet_sepolia],
+	['ink-testnet-sepolia', testnet_evm_ink_testnet_sepolia],
+	['bitcoin-testnet-sepolia-bob-1', testnet_evm_bitcoin_testnet_sepolia_bob_1],
+	['zklink_nova-testnet', testnet_evm_zklink_nova_testnet],
+	['codex-testnet', testnet_evm_codex_testnet],
 	[
 		'ethereum-testnet-sepolia-arbitrum-1-treasure-1',
-		{
-			chainId: '978657',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-arbitrum-1-treasure-1',
-				selector: '10443705513486043000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
+		testnet_evm_ethereum_testnet_sepolia_arbitrum_1_treasure_1,
 	],
-	[
-		'treasure-testnet-topaz',
-		{
-			chainId: '978658',
-			chainSelector: {
-				name: 'treasure-testnet-topaz',
-				selector: '3676916124122458000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'jovay-testnet',
-		{
-			chainId: '2019775',
-			chainSelector: {
-				name: 'jovay-testnet',
-				selector: '945045181441419300',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-sepolia',
-		{
-			chainId: '11155111',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia',
-				selector: '16015286601757825000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-sepolia-optimism-1',
-		{
-			chainId: '11155420',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-optimism-1',
-				selector: '5224473277236332000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'neox-testnet-t4',
-		{
-			chainId: '12227332',
-			chainSelector: {
-				name: 'neox-testnet-t4',
-				selector: '2217764097022649300',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-sepolia-corn-1',
-		{
-			chainId: '21000001',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-corn-1',
-				selector: '1467427327723634000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'filecoin-testnet',
-		{
-			chainId: '31415926',
-			chainSelector: {
-				name: 'filecoin-testnet',
-				selector: '7060342227814389000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'plume-testnet',
-		{
-			chainId: '161221135',
-			chainSelector: {
-				name: 'plume-testnet',
-				selector: '14684575664602284000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ethereum-testnet-sepolia-blast-1',
-		{
-			chainId: '168587773',
-			chainSelector: {
-				name: 'ethereum-testnet-sepolia-blast-1',
-				selector: '2027362563942762500',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'zora-testnet',
-		{
-			chainId: '999999999',
-			chainSelector: {
-				name: 'zora-testnet',
-				selector: '16244020411108057000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'tron-testnet-shasta-evm',
-		{
-			chainId: '2494104990',
-			chainSelector: {
-				name: 'tron-testnet-shasta-evm',
-				selector: '13231703482326770000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'tron-devnet-evm',
-		{
-			chainId: '3360022319',
-			chainSelector: {
-				name: 'tron-devnet-evm',
-				selector: '13231703482326770000',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'tron-testnet-nile-evm',
-		{
-			chainId: '3448148188',
-			chainSelector: {
-				name: 'tron-testnet-nile-evm',
-				selector: '2052925811360307700',
-			},
-			chainFamily: 'evm',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'solana-testnet',
-		{
-			chainId: '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3zQawwpjk2NsNY',
-			chainSelector: {
-				name: 'solana-testnet',
-				selector: '6302590918974934000',
-			},
-			chainFamily: 'solana',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'solana-devnet',
-		{
-			chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG',
-			chainSelector: {
-				name: 'solana-devnet',
-				selector: '16423721717087812000',
-			},
-			chainFamily: 'solana',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'aptos-testnet',
-		{
-			chainId: '2',
-			chainSelector: {
-				name: 'aptos-testnet',
-				selector: '743186221051783400',
-			},
-			chainFamily: 'aptos',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'aptos-localnet',
-		{
-			chainId: '4',
-			chainSelector: {
-				name: 'aptos-localnet',
-				selector: '4457093679053095400',
-			},
-			chainFamily: 'aptos',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'sui-testnet',
-		{
-			chainId: '2',
-			chainSelector: {
-				name: 'sui-testnet',
-				selector: '9762610643973837000',
-			},
-			chainFamily: 'sui',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'sui-localnet',
-		{
-			chainId: '4',
-			chainSelector: {
-				name: 'sui-localnet',
-				selector: '18395503381733958000',
-			},
-			chainFamily: 'sui',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ton-testnet',
-		{
-			chainId: '-3',
-			chainSelector: {
-				name: 'ton-testnet',
-				selector: '1399300952838017800',
-			},
-			chainFamily: 'ton',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'ton-localnet',
-		{
-			chainId: '-217',
-			chainSelector: {
-				name: 'ton-localnet',
-				selector: '13879075125137744000',
-			},
-			chainFamily: 'ton',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'tron-testnet-shasta',
-		{
-			chainId: '2494104990',
-			chainSelector: {
-				name: 'tron-testnet-shasta',
-				selector: '13231703482326770000',
-			},
-			chainFamily: 'tron',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'tron-devnet',
-		{
-			chainId: '3360022319',
-			chainSelector: {
-				name: 'tron-devnet',
-				selector: '13231703482326770000',
-			},
-			chainFamily: 'tron',
-			networkType: 'testnet',
-		},
-	],
-	[
-		'tron-testnet-nile',
-		{
-			chainId: '3448148188',
-			chainSelector: {
-				name: 'tron-testnet-nile',
-				selector: '2052925811360307700',
-			},
-			chainFamily: 'tron',
-			networkType: 'testnet',
-		},
-	],
+	['treasure-testnet-topaz', testnet_evm_treasure_testnet_topaz],
+	['jovay-testnet', testnet_evm_jovay_testnet],
+	['ethereum-testnet-sepolia', testnet_evm_ethereum_testnet_sepolia],
+	['ethereum-testnet-sepolia-optimism-1', testnet_evm_ethereum_testnet_sepolia_optimism_1],
+	['neox-testnet-t4', testnet_evm_neox_testnet_t4],
+	['ethereum-testnet-sepolia-corn-1', testnet_evm_ethereum_testnet_sepolia_corn_1],
+	['filecoin-testnet', testnet_evm_filecoin_testnet],
+	['plume-testnet', testnet_evm_plume_testnet],
+	['ethereum-testnet-sepolia-blast-1', testnet_evm_ethereum_testnet_sepolia_blast_1],
+	['zora-testnet', testnet_evm_zora_testnet],
+	['tron-testnet-shasta-evm', testnet_evm_tron_testnet_shasta_evm],
+	['tron-devnet-evm', testnet_evm_tron_devnet_evm],
+	['tron-testnet-nile-evm', testnet_evm_tron_testnet_nile_evm],
+	['solana-testnet', testnet_solana_solana_testnet],
+	['solana-devnet', testnet_solana_solana_devnet],
+	['aptos-testnet', testnet_aptos_aptos_testnet],
+	['aptos-localnet', testnet_aptos_aptos_localnet],
+	['sui-testnet', testnet_sui_sui_testnet],
+	['sui-localnet', testnet_sui_sui_localnet],
+	['ton-testnet', testnet_ton_ton_testnet],
+	['ton-localnet', testnet_ton_ton_localnet],
+	['tron-testnet-shasta', testnet_tron_tron_testnet_shasta],
+	['tron-devnet', testnet_tron_tron_devnet],
+	['tron-testnet-nile', testnet_tron_tron_testnet_nile],
 ])
 
 // Maps by family and network type for chain selector lookups
 export const mainnetBySelectorByFamily = {
 	evm: new Map<string, NetworkInfo>([
-		[
-			'5009297550715158000',
-			{
-				chainId: '1',
-				chainSelector: {
-					name: 'ethereum-mainnet',
-					selector: '5009297550715158000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'3734403246176062000',
-			{
-				chainId: '10',
-				chainSelector: {
-					name: 'ethereum-mainnet-optimism-1',
-					selector: '3734403246176062000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'1456215246176062200',
-			{
-				chainId: '25',
-				chainSelector: {
-					name: 'cronos-mainnet',
-					selector: '1456215246176062200',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'11964252391146578000',
-			{
-				chainId: '30',
-				chainSelector: {
-					name: 'rootstock-mainnet',
-					selector: '11964252391146578000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'1477345371608778000',
-			{
-				chainId: '40',
-				chainSelector: {
-					name: 'telos-evm-mainnet',
-					selector: '1477345371608778000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'8866418665544333000',
-			{
-				chainId: '46',
-				chainSelector: {
-					name: 'polkadot-mainnet-darwinia',
-					selector: '8866418665544333000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'17673274061779415000',
-			{
-				chainId: '50',
-				chainSelector: {
-					name: 'xdc-mainnet',
-					selector: '17673274061779415000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'1761333065194157300',
-			{
-				chainId: '52',
-				chainSelector: {
-					name: 'coinex_smart_chain-mainnet',
-					selector: '1761333065194157300',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'11344663589394135000',
-			{
-				chainId: '56',
-				chainSelector: {
-					name: 'binance_smart_chain-mainnet',
-					selector: '11344663589394135000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'465200170687744400',
-			{
-				chainId: '100',
-				chainSelector: {
-					name: 'gnosis_chain-mainnet',
-					selector: '465200170687744400',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'374210358663784400',
-			{
-				chainId: '106',
-				chainSelector: {
-					name: 'velas-mainnet',
-					selector: '374210358663784400',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'3993510008929295400',
-			{
-				chainId: '109',
-				chainSelector: {
-					name: 'shibarium-mainnet',
-					selector: '3993510008929295400',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'1923510103922296300',
-			{
-				chainId: '130',
-				chainSelector: {
-					name: 'ethereum-mainnet-unichain-1',
-					selector: '1923510103922296300',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'4051577828743386600',
-			{
-				chainId: '137',
-				chainSelector: {
-					name: 'polygon-mainnet',
-					selector: '4051577828743386600',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'8481857512324358000',
-			{
-				chainId: '143',
-				chainSelector: {
-					name: 'monad-mainnet',
-					selector: '8481857512324358000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'1673871237479750000',
-			{
-				chainId: '146',
-				chainSelector: {
-					name: 'sonic-mainnet',
-					selector: '1673871237479750000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'7613811247471742000',
-			{
-				chainId: '177',
-				chainSelector: {
-					name: 'ethereum-mainnet-hashkey-1',
-					selector: '7613811247471742000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'17164792800244662000',
-			{
-				chainId: '185',
-				chainSelector: {
-					name: 'mint-mainnet',
-					selector: '17164792800244662000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'3016212468291539500',
-			{
-				chainId: '196',
-				chainSelector: {
-					name: 'ethereum-mainnet-xlayer-1',
-					selector: '3016212468291539500',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'3776006016387883000',
-			{
-				chainId: '199',
-				chainSelector: {
-					name: 'bittorrent_chain-mainnet',
-					selector: '3776006016387883000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'465944652040885900',
-			{
-				chainId: '204',
-				chainSelector: {
-					name: 'binance_smart_chain-mainnet-opbnb-1',
-					selector: '465944652040885900',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'5406759801798338000',
-			{
-				chainId: '223',
-				chainSelector: {
-					name: 'bitcoin-mainnet-bsquared-1',
-					selector: '5406759801798338000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'11690709103138290000',
-			{
-				chainId: '228',
-				chainSelector: {
-					name: 'mind-mainnet',
-					selector: '11690709103138290000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'5608378062013573000',
-			{
-				chainId: '232',
-				chainSelector: {
-					name: 'lens-mainnet',
-					selector: '5608378062013573000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'5936861837188149000',
-			{
-				chainId: '239',
-				chainSelector: {
-					name: 'tac-mainnet',
-					selector: '5936861837188149000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'3768048213127884000',
-			{
-				chainId: '250',
-				chainSelector: {
-					name: 'fantom-mainnet',
-					selector: '3768048213127884000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'1462016016387883300',
-			{
-				chainId: '252',
-				chainSelector: {
-					name: 'fraxtal-mainnet',
-					selector: '1462016016387883300',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'3719320017875267000',
-			{
-				chainId: '255',
-				chainSelector: {
-					name: 'ethereum-mainnet-kroma-1',
-					selector: '3719320017875267000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'8239338020728974000',
-			{
-				chainId: '259',
-				chainSelector: {
-					name: 'neonlink-mainnet',
-					selector: '8239338020728974000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'3229138320728879000',
-			{
-				chainId: '295',
-				chainSelector: {
-					name: 'hedera-mainnet',
-					selector: '3229138320728879000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'4561443241176883000',
-			{
-				chainId: '314',
-				chainSelector: {
-					name: 'filecoin-mainnet',
-					selector: '4561443241176883000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'1562403441176082200',
-			{
-				chainId: '324',
-				chainSelector: {
-					name: 'ethereum-mainnet-zksync-1',
-					selector: '1562403441176082200',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'8788096068760391000',
-			{
-				chainId: '388',
-				chainSelector: {
-					name: 'cronos-zkevm-mainnet',
-					selector: '8788096068760391000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'2039744413822257700',
-			{
-				chainId: '397',
-				chainSelector: {
-					name: 'near-mainnet',
-					selector: '2039744413822257700',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'1939936305787790600',
-			{
-				chainId: '463',
-				chainSelector: {
-					name: 'areon-mainnet',
-					selector: '1939936305787790600',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'2049429975587534800',
-			{
-				chainId: '480',
-				chainSelector: {
-					name: 'ethereum-mainnet-worldchain-1',
-					selector: '2049429975587534800',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'6422105447186081000',
-			{
-				chainId: '592',
-				chainSelector: {
-					name: 'polkadot-mainnet-astar',
-					selector: '6422105447186081000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'9107126442626378000',
-			{
-				chainId: '678',
-				chainSelector: {
-					name: 'janction-mainnet',
-					selector: '9107126442626378000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'2135107236357186800',
-			{
-				chainId: '964',
-				chainSelector: {
-					name: 'bittensor-mainnet',
-					selector: '2135107236357186800',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'2442541497099098600',
-			{
-				chainId: '999',
-				chainSelector: {
-					name: 'hyperliquid-mainnet',
-					selector: '2442541497099098600',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'3358365939762719000',
-			{
-				chainId: '1030',
-				chainSelector: {
-					name: 'conflux-mainnet',
-					selector: '3358365939762719000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'8805746078405599000',
-			{
-				chainId: '1088',
-				chainSelector: {
-					name: 'ethereum-mainnet-metis-1',
-					selector: '8805746078405599000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'4348158687435793400',
-			{
-				chainId: '1101',
-				chainSelector: {
-					name: 'ethereum-mainnet-polygon-zkevm-1',
-					selector: '4348158687435793400',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'5142893604156790000',
-			{
-				chainId: '1111',
-				chainSelector: {
-					name: 'wemix-mainnet',
-					selector: '5142893604156790000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'1224752112135636200',
-			{
-				chainId: '1116',
-				chainSelector: {
-					name: 'core-mainnet',
-					selector: '1224752112135636200',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'15293031020466096000',
-			{
-				chainId: '1135',
-				chainSelector: {
-					name: 'lisk-mainnet',
-					selector: '15293031020466096000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'1252863800116739600',
-			{
-				chainId: '1284',
-				chainSelector: {
-					name: 'polkadot-mainnet-moonbeam',
-					selector: '1252863800116739600',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'1355020143337428000',
-			{
-				chainId: '1285',
-				chainSelector: {
-					name: 'kusama-mainnet-moonriver',
-					selector: '1355020143337428000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'9027416829622343000',
-			{
-				chainId: '1329',
-				chainSelector: {
-					name: 'sei-mainnet',
-					selector: '9027416829622343000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'13447077090413146000',
-			{
-				chainId: '1750',
-				chainSelector: {
-					name: 'metal-mainnet',
-					selector: '13447077090413146000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'12505351618335764000',
-			{
-				chainId: '1868',
-				chainSelector: {
-					name: 'soneium-mainnet',
-					selector: '12505351618335764000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'4874388048629246000',
-			{
-				chainId: '1907',
-				chainSelector: {
-					name: 'bitcichain-mainnet',
-					selector: '4874388048629246000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'6916147374840168000',
-			{
-				chainId: '2020',
-				chainSelector: {
-					name: 'ronin-mainnet',
-					selector: '6916147374840168000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'8175830712062618000',
-			{
-				chainId: '2031',
-				chainSelector: {
-					name: 'polkadot-mainnet-centrifuge',
-					selector: '8175830712062618000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'7550000543357438000',
-			{
-				chainId: '2222',
-				chainSelector: {
-					name: 'kava-mainnet',
-					selector: '7550000543357438000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'3577778157919314400',
-			{
-				chainId: '2741',
-				chainSelector: {
-					name: 'abstract-mainnet',
-					selector: '3577778157919314400',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'18164309074156128000',
-			{
-				chainId: '2818',
-				chainSelector: {
-					name: 'morph-mainnet',
-					selector: '18164309074156128000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'4560701533377838000',
-			{
-				chainId: '3637',
-				chainSelector: {
-					name: 'bitcoin-mainnet-botanix',
-					selector: '4560701533377838000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'1540201334317828000',
-			{
-				chainId: '3776',
-				chainSelector: {
-					name: 'ethereum-mainnet-astar-zkevm-1',
-					selector: '1540201334317828000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'241851231317829000',
-			{
-				chainId: '4200',
-				chainSelector: {
-					name: 'bitcoin-merlin-mainnet',
-					selector: '241851231317829000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'1556008542357238800',
-			{
-				chainId: '5000',
-				chainSelector: {
-					name: 'ethereum-mainnet-mantle-1',
-					selector: '1556008542357238800',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'470401360549526850',
-			{
-				chainId: '5330',
-				chainSelector: {
-					name: 'superseed-mainnet',
-					selector: '470401360549526850',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'17349189558768828000',
-			{
-				chainId: '6900',
-				chainSelector: {
-					name: 'nibiru-mainnet',
-					selector: '17349189558768828000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'10817664450262215000',
-			{
-				chainId: '7000',
-				chainSelector: {
-					name: 'zetachain-mainnet',
-					selector: '10817664450262215000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'9813823125703492000',
-			{
-				chainId: '8217',
-				chainSelector: {
-					name: 'kaia-mainnet',
-					selector: '9813823125703492000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'15971525489660199000',
-			{
-				chainId: '8453',
-				chainSelector: {
-					name: 'ethereum-mainnet-base-1',
-					selector: '15971525489660199000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'9335212494177456000',
-			{
-				chainId: '9745',
-				chainSelector: {
-					name: 'plasma-mainnet',
-					selector: '9335212494177456000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'3162193654116181500',
-			{
-				chainId: '12324',
-				chainSelector: {
-					name: 'ethereum-mainnet-arbitrum-1-l3x-1',
-					selector: '3162193654116181500',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'1237925231416732000',
-			{
-				chainId: '13371',
-				chainSelector: {
-					name: 'ethereum-mainnet-immutable-zkevm-1',
-					selector: '1237925231416732000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'4426351306075016000',
-			{
-				chainId: '16661',
-				chainSelector: {
-					name: '0g-mainnet',
-					selector: '4426351306075016000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'14894068710063348000',
-			{
-				chainId: '33139',
-				chainSelector: {
-					name: 'apechain-mainnet',
-					selector: '14894068710063348000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'7264351850409363000',
-			{
-				chainId: '34443',
-				chainSelector: {
-					name: 'ethereum-mainnet-mode-1',
-					selector: '7264351850409363000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'4949039107694360000',
-			{
-				chainId: '42161',
-				chainSelector: {
-					name: 'ethereum-mainnet-arbitrum-1',
-					selector: '4949039107694360000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'1346049177634351600',
-			{
-				chainId: '42220',
-				chainSelector: {
-					name: 'celo-mainnet',
-					selector: '1346049177634351600',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'13624601974233774000',
-			{
-				chainId: '42793',
-				chainSelector: {
-					name: 'etherlink-mainnet',
-					selector: '13624601974233774000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'1804312132722180000',
-			{
-				chainId: '43111',
-				chainSelector: {
-					name: 'hemi-mainnet',
-					selector: '1804312132722180000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'6433500567565415000',
-			{
-				chainId: '43114',
-				chainSelector: {
-					name: 'avalanche-mainnet',
-					selector: '6433500567565415000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'7222032299962346000',
-			{
-				chainId: '47763',
-				chainSelector: {
-					name: 'neox-mainnet',
-					selector: '7222032299962346000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'17198166215261833000',
-			{
-				chainId: '48900',
-				chainSelector: {
-					name: 'ethereum-mainnet-zircuit-1',
-					selector: '17198166215261833000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'6473245816409426000',
-			{
-				chainId: '51888',
-				chainSelector: {
-					name: 'memento-mainnet',
-					selector: '6473245816409426000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'3461204551265786000',
-			{
-				chainId: '57073',
-				chainSelector: {
-					name: 'ethereum-mainnet-ink-1',
-					selector: '3461204551265786000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'4627098889531055000',
-			{
-				chainId: '59144',
-				chainSelector: {
-					name: 'ethereum-mainnet-linea-1',
-					selector: '4627098889531055000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'15758750456714168000',
-			{
-				chainId: '60118',
-				chainSelector: {
-					name: 'nexon-mainnet-lith',
-					selector: '15758750456714168000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'3849287863852499500',
-			{
-				chainId: '60808',
-				chainSelector: {
-					name: 'bitcoin-mainnet-bob-1',
-					selector: '3849287863852499500',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'5214452172935136000',
-			{
-				chainId: '61166',
-				chainSelector: {
-					name: 'treasure-mainnet',
-					selector: '5214452172935136000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'12657445206920370000',
-			{
-				chainId: '68414',
-				chainSelector: {
-					name: 'nexon-mainnet-henesys',
-					selector: '12657445206920370000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'1294465214383781000',
-			{
-				chainId: '80094',
-				chainSelector: {
-					name: 'berachain-mainnet',
-					selector: '1294465214383781000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'9478124434908828000',
-			{
-				chainId: '81224',
-				chainSelector: {
-					name: 'codex-mainnet',
-					selector: '9478124434908828000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'4411394078118774300',
-			{
-				chainId: '81457',
-				chainSelector: {
-					name: 'ethereum-mainnet-blast-1',
-					selector: '4411394078118774300',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'17912061998839310000',
-			{
-				chainId: '98866',
-				chainSelector: {
-					name: 'plume-mainnet',
-					selector: '17912061998839310000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'16468599424800719000',
-			{
-				chainId: '167000',
-				chainSelector: {
-					name: 'ethereum-mainnet-taiko-1',
-					selector: '16468599424800719000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'7937294810946806000',
-			{
-				chainId: '200901',
-				chainSelector: {
-					name: 'bitcoin-mainnet-bitlayer-1',
-					selector: '7937294810946806000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'5463201557265485000',
-			{
-				chainId: '432204',
-				chainSelector: {
-					name: 'avalanche-subnet-dexalot-mainnet',
-					selector: '5463201557265485000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'13204309965629104000',
-			{
-				chainId: '534352',
-				chainSelector: {
-					name: 'ethereum-mainnet-scroll-1',
-					selector: '13204309965629104000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'2459028469735686000',
-			{
-				chainId: '747474',
-				chainSelector: {
-					name: 'polygon-mainnet-katana',
-					selector: '2459028469735686000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'14632960069656270000',
-			{
-				chainId: '807424',
-				chainSelector: {
-					name: 'nexon-qa',
-					selector: '14632960069656270000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'4350319965322102000',
-			{
-				chainId: '810180',
-				chainSelector: {
-					name: 'zklink_nova-mainnet',
-					selector: '4350319965322102000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'5556806327594154000',
-			{
-				chainId: '847799',
-				chainSelector: {
-					name: 'nexon-stage',
-					selector: '5556806327594154000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'1010349088906778000',
-			{
-				chainId: '978670',
-				chainSelector: {
-					name: 'ethereum-mainnet-arbitrum-1-treasure-1',
-					selector: '1010349088906778000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'3555797439612589000',
-			{
-				chainId: '7777777',
-				chainSelector: {
-					name: 'zora-mainnet',
-					selector: '3555797439612589000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'9043146809313071000',
-			{
-				chainId: '21000000',
-				chainSelector: {
-					name: 'corn-mainnet',
-					selector: '9043146809313071000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'1546563616611574000',
-			{
-				chainId: '728126428',
-				chainSelector: {
-					name: 'tron-mainnet-evm',
-					selector: '1546563616611574000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
+		['5009297550715158000', mainnet_evm_ethereum_mainnet],
+		['3734403246176062000', mainnet_evm_ethereum_mainnet_optimism_1],
+		['1456215246176062200', mainnet_evm_cronos_mainnet],
+		['11964252391146578000', mainnet_evm_rootstock_mainnet],
+		['1477345371608778000', mainnet_evm_telos_evm_mainnet],
+		['8866418665544333000', mainnet_evm_polkadot_mainnet_darwinia],
+		['17673274061779415000', mainnet_evm_xdc_mainnet],
+		['1761333065194157300', mainnet_evm_coinex_smart_chain_mainnet],
+		['11344663589394135000', mainnet_evm_binance_smart_chain_mainnet],
+		['465200170687744400', mainnet_evm_gnosis_chain_mainnet],
+		['374210358663784400', mainnet_evm_velas_mainnet],
+		['3993510008929295400', mainnet_evm_shibarium_mainnet],
+		['1923510103922296300', mainnet_evm_ethereum_mainnet_unichain_1],
+		['4051577828743386600', mainnet_evm_polygon_mainnet],
+		['8481857512324358000', mainnet_evm_monad_mainnet],
+		['1673871237479750000', mainnet_evm_sonic_mainnet],
+		['7613811247471742000', mainnet_evm_ethereum_mainnet_hashkey_1],
+		['17164792800244662000', mainnet_evm_mint_mainnet],
+		['3016212468291539500', mainnet_evm_ethereum_mainnet_xlayer_1],
+		['3776006016387883000', mainnet_evm_bittorrent_chain_mainnet],
+		['465944652040885900', mainnet_evm_binance_smart_chain_mainnet_opbnb_1],
+		['5406759801798338000', mainnet_evm_bitcoin_mainnet_bsquared_1],
+		['11690709103138290000', mainnet_evm_mind_mainnet],
+		['5608378062013573000', mainnet_evm_lens_mainnet],
+		['5936861837188149000', mainnet_evm_tac_mainnet],
+		['3768048213127884000', mainnet_evm_fantom_mainnet],
+		['1462016016387883300', mainnet_evm_fraxtal_mainnet],
+		['3719320017875267000', mainnet_evm_ethereum_mainnet_kroma_1],
+		['8239338020728974000', mainnet_evm_neonlink_mainnet],
+		['3229138320728879000', mainnet_evm_hedera_mainnet],
+		['4561443241176883000', mainnet_evm_filecoin_mainnet],
+		['1562403441176082200', mainnet_evm_ethereum_mainnet_zksync_1],
+		['8788096068760391000', mainnet_evm_cronos_zkevm_mainnet],
+		['2039744413822257700', mainnet_evm_near_mainnet],
+		['1939936305787790600', mainnet_evm_areon_mainnet],
+		['2049429975587534800', mainnet_evm_ethereum_mainnet_worldchain_1],
+		['6422105447186081000', mainnet_evm_polkadot_mainnet_astar],
+		['9107126442626378000', mainnet_evm_janction_mainnet],
+		['2135107236357186800', mainnet_evm_bittensor_mainnet],
+		['2442541497099098600', mainnet_evm_hyperliquid_mainnet],
+		['3358365939762719000', mainnet_evm_conflux_mainnet],
+		['8805746078405599000', mainnet_evm_ethereum_mainnet_metis_1],
+		['4348158687435793400', mainnet_evm_ethereum_mainnet_polygon_zkevm_1],
+		['5142893604156790000', mainnet_evm_wemix_mainnet],
+		['1224752112135636200', mainnet_evm_core_mainnet],
+		['15293031020466096000', mainnet_evm_lisk_mainnet],
+		['1252863800116739600', mainnet_evm_polkadot_mainnet_moonbeam],
+		['1355020143337428000', mainnet_evm_kusama_mainnet_moonriver],
+		['9027416829622343000', mainnet_evm_sei_mainnet],
+		['13447077090413146000', mainnet_evm_metal_mainnet],
+		['12505351618335764000', mainnet_evm_soneium_mainnet],
+		['4874388048629246000', mainnet_evm_bitcichain_mainnet],
+		['6916147374840168000', mainnet_evm_ronin_mainnet],
+		['8175830712062618000', mainnet_evm_polkadot_mainnet_centrifuge],
+		['7550000543357438000', mainnet_evm_kava_mainnet],
+		['3577778157919314400', mainnet_evm_abstract_mainnet],
+		['18164309074156128000', mainnet_evm_morph_mainnet],
+		['4560701533377838000', mainnet_evm_bitcoin_mainnet_botanix],
+		['1540201334317828000', mainnet_evm_ethereum_mainnet_astar_zkevm_1],
+		['241851231317829000', mainnet_evm_bitcoin_merlin_mainnet],
+		['1556008542357238800', mainnet_evm_ethereum_mainnet_mantle_1],
+		['470401360549526850', mainnet_evm_superseed_mainnet],
+		['17349189558768828000', mainnet_evm_nibiru_mainnet],
+		['10817664450262215000', mainnet_evm_zetachain_mainnet],
+		['9813823125703492000', mainnet_evm_kaia_mainnet],
+		['15971525489660199000', mainnet_evm_ethereum_mainnet_base_1],
+		['9335212494177456000', mainnet_evm_plasma_mainnet],
+		['3162193654116181500', mainnet_evm_ethereum_mainnet_arbitrum_1_l3x_1],
+		['1237925231416732000', mainnet_evm_ethereum_mainnet_immutable_zkevm_1],
+		['4426351306075016000', mainnet_evm_0g_mainnet],
+		['14894068710063348000', mainnet_evm_apechain_mainnet],
+		['7264351850409363000', mainnet_evm_ethereum_mainnet_mode_1],
+		['4949039107694360000', mainnet_evm_ethereum_mainnet_arbitrum_1],
+		['1346049177634351600', mainnet_evm_celo_mainnet],
+		['13624601974233774000', mainnet_evm_etherlink_mainnet],
+		['1804312132722180000', mainnet_evm_hemi_mainnet],
+		['6433500567565415000', mainnet_evm_avalanche_mainnet],
+		['7222032299962346000', mainnet_evm_neox_mainnet],
+		['17198166215261833000', mainnet_evm_ethereum_mainnet_zircuit_1],
+		['6473245816409426000', mainnet_evm_memento_mainnet],
+		['3461204551265786000', mainnet_evm_ethereum_mainnet_ink_1],
+		['4627098889531055000', mainnet_evm_ethereum_mainnet_linea_1],
+		['15758750456714168000', mainnet_evm_nexon_mainnet_lith],
+		['3849287863852499500', mainnet_evm_bitcoin_mainnet_bob_1],
+		['5214452172935136000', mainnet_evm_treasure_mainnet],
+		['12657445206920370000', mainnet_evm_nexon_mainnet_henesys],
+		['1294465214383781000', mainnet_evm_berachain_mainnet],
+		['9478124434908828000', mainnet_evm_codex_mainnet],
+		['4411394078118774300', mainnet_evm_ethereum_mainnet_blast_1],
+		['17912061998839310000', mainnet_evm_plume_mainnet],
+		['16468599424800719000', mainnet_evm_ethereum_mainnet_taiko_1],
+		['7937294810946806000', mainnet_evm_bitcoin_mainnet_bitlayer_1],
+		['5463201557265485000', mainnet_evm_avalanche_subnet_dexalot_mainnet],
+		['13204309965629104000', mainnet_evm_ethereum_mainnet_scroll_1],
+		['2459028469735686000', mainnet_evm_polygon_mainnet_katana],
+		['14632960069656270000', mainnet_evm_nexon_qa],
+		['4350319965322102000', mainnet_evm_zklink_nova_mainnet],
+		['5556806327594154000', mainnet_evm_nexon_stage],
+		['1010349088906778000', mainnet_evm_ethereum_mainnet_arbitrum_1_treasure_1],
+		['3555797439612589000', mainnet_evm_zora_mainnet],
+		['9043146809313071000', mainnet_evm_corn_mainnet],
+		['1546563616611574000', mainnet_evm_tron_mainnet_evm],
 	]),
-	solana: new Map<string, NetworkInfo>([
-		[
-			'124615329519749600',
-			{
-				chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d',
-				chainSelector: {
-					name: 'solana-mainnet',
-					selector: '124615329519749600',
-				},
-				chainFamily: 'solana',
-				networkType: 'mainnet',
-			},
-		],
-	]),
-	aptos: new Map<string, NetworkInfo>([
-		[
-			'4741433654826278000',
-			{
-				chainId: '1',
-				chainSelector: {
-					name: 'aptos-mainnet',
-					selector: '4741433654826278000',
-				},
-				chainFamily: 'aptos',
-				networkType: 'mainnet',
-			},
-		],
-	]),
-	sui: new Map<string, NetworkInfo>([
-		[
-			'17529533435026248000',
-			{
-				chainId: '1',
-				chainSelector: {
-					name: 'sui-mainnet',
-					selector: '17529533435026248000',
-				},
-				chainFamily: 'sui',
-				networkType: 'mainnet',
-			},
-		],
-	]),
-	ton: new Map<string, NetworkInfo>([
-		[
-			'16448340667252470000',
-			{
-				chainId: '-239',
-				chainSelector: {
-					name: 'ton-mainnet',
-					selector: '16448340667252470000',
-				},
-				chainFamily: 'ton',
-				networkType: 'mainnet',
-			},
-		],
-	]),
-	tron: new Map<string, NetworkInfo>([
-		[
-			'1546563616611574000',
-			{
-				chainId: '728126428',
-				chainSelector: {
-					name: 'tron-mainnet',
-					selector: '1546563616611574000',
-				},
-				chainFamily: 'tron',
-				networkType: 'mainnet',
-			},
-		],
-	]),
+	solana: new Map<string, NetworkInfo>([['124615329519749600', mainnet_solana_solana_mainnet]]),
+	aptos: new Map<string, NetworkInfo>([['4741433654826278000', mainnet_aptos_aptos_mainnet]]),
+	sui: new Map<string, NetworkInfo>([['17529533435026248000', mainnet_sui_sui_mainnet]]),
+	ton: new Map<string, NetworkInfo>([['16448340667252470000', mainnet_ton_ton_mainnet]]),
+	tron: new Map<string, NetworkInfo>([['1546563616611574000', mainnet_tron_tron_mainnet]]),
 } as const
 
 export const testnetBySelectorByFamily = {
 	evm: new Map<string, NetworkInfo>([
-		[
-			'8953668971247136000',
-			{
-				chainId: '31',
-				chainSelector: {
-					name: 'bitcoin-testnet-rootstock',
-					selector: '8953668971247136000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'729797994450396300',
-			{
-				chainId: '41',
-				chainSelector: {
-					name: 'telos-evm-testnet',
-					selector: '729797994450396300',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'4340886533089894000',
-			{
-				chainId: '45',
-				chainSelector: {
-					name: 'polkadot-testnet-darwinia-pangoro',
-					selector: '4340886533089894000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'3017758115101369000',
-			{
-				chainId: '51',
-				chainSelector: {
-					name: 'xdc-testnet',
-					selector: '3017758115101369000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'8955032871639343000',
-			{
-				chainId: '53',
-				chainSelector: {
-					name: 'coinex_smart_chain-testnet',
-					selector: '8955032871639343000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'6955638871347137000',
-			{
-				chainId: '81',
-				chainSelector: {
-					name: 'polkadot-testnet-astar-shibuya',
-					selector: '6955638871347137000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'13264668187771770000',
-			{
-				chainId: '97',
-				chainSelector: {
-					name: 'binance_smart_chain-testnet',
-					selector: '13264668187771770000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'572210378683744400',
-			{
-				chainId: '111',
-				chainSelector: {
-					name: 'velas-testnet',
-					selector: '572210378683744400',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'4356164186791070000',
-			{
-				chainId: '133',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-hashkey-1',
-					selector: '4356164186791070000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'17833296867764335000',
-			{
-				chainId: '157',
-				chainSelector: {
-					name: 'shibarium-testnet-puppynet',
-					selector: '17833296867764335000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'2066098519157881900',
-			{
-				chainId: '195',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-xlayer-1',
-					selector: '2066098519157881900',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'16487132492576885000',
-			{
-				chainId: '240',
-				chainSelector: {
-					name: 'cronos-zkevm-testnet-sepolia',
-					selector: '16487132492576885000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'6802309497652714000',
-			{
-				chainId: '280',
-				chainSelector: {
-					name: 'ethereum-testnet-goerli-zksync-1',
-					selector: '6802309497652714000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'3842103497652714000',
-			{
-				chainId: '282',
-				chainSelector: {
-					name: 'cronos-testnet-zkevm-1',
-					selector: '3842103497652714000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'222782988166878820',
-			{
-				chainId: '296',
-				chainSelector: {
-					name: 'hedera-testnet',
-					selector: '222782988166878820',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'6898391096552792000',
-			{
-				chainId: '300',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-zksync-1',
-					selector: '6898391096552792000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'2995292832068775000',
-			{
-				chainId: '338',
-				chainSelector: {
-					name: 'cronos-testnet',
-					selector: '2995292832068775000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'5061593697262339000',
-			{
-				chainId: '398',
-				chainSelector: {
-					name: 'near-testnet',
-					selector: '5061593697262339000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'2664363617261497000',
-			{
-				chainId: '420',
-				chainSelector: {
-					name: 'ethereum-testnet-goerli-optimism-1',
-					selector: '2664363617261497000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'7317911323415911000',
-			{
-				chainId: '462',
-				chainSelector: {
-					name: 'areon-testnet',
-					selector: '7317911323415911000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'5059197667603798000',
-			{
-				chainId: '679',
-				chainSelector: {
-					name: 'janction-testnet-sepolia',
-					selector: '5059197667603798000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'6260932437388305000',
-			{
-				chainId: '682',
-				chainSelector: {
-					name: 'private-testnet-obsidian',
-					selector: '6260932437388305000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'829525985033418800',
-			{
-				chainId: '919',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-mode-1',
-					selector: '829525985033418800',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'2177900824115119000',
-			{
-				chainId: '945',
-				chainSelector: {
-					name: 'bittensor-testnet',
-					selector: '2177900824115119000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'4286062357653186600',
-			{
-				chainId: '998',
-				chainSelector: {
-					name: 'hyperliquid-testnet',
-					selector: '4286062357653186600',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'2624132734533622000',
-			{
-				chainId: '1001',
-				chainSelector: {
-					name: 'kaia-testnet-kairos',
-					selector: '2624132734533622000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'4459371029167934500',
-			{
-				chainId: '1029',
-				chainSelector: {
-					name: 'bittorrent_chain-testnet',
-					selector: '4459371029167934500',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'9284632837123596000',
-			{
-				chainId: '1112',
-				chainSelector: {
-					name: 'wemix-testnet',
-					selector: '9284632837123596000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'4264732132125536000',
-			{
-				chainId: '1114',
-				chainSelector: {
-					name: 'core-testnet',
-					selector: '4264732132125536000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'1948510578179542000',
-			{
-				chainId: '1123',
-				chainSelector: {
-					name: 'bitcoin-testnet-bsquared-1',
-					selector: '1948510578179542000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'5361632739113537000',
-			{
-				chainId: '1287',
-				chainSelector: {
-					name: 'polkadot-testnet-moonbeam-moonbase',
-					selector: '5361632739113537000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'14135854469784515000',
-			{
-				chainId: '1301',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-unichain-1',
-					selector: '14135854469784515000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'1216300075444106800',
-			{
-				chainId: '1328',
-				chainSelector: {
-					name: 'sei-testnet-atlantic',
-					selector: '1216300075444106800',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'3379446385462418400',
-			{
-				chainId: '1337',
-				chainSelector: {
-					name: 'geth-testnet',
-					selector: '3379446385462418400',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'11059667695644973000',
-			{
-				chainId: '1442',
-				chainSelector: {
-					name: 'ethereum-testnet-goerli-polygon-zkevm-1',
-					selector: '11059667695644973000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'4237030917318060500',
-			{
-				chainId: '1513',
-				chainSelector: {
-					name: 'story-testnet',
-					selector: '4237030917318060500',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'10749384167430722000',
-			{
-				chainId: '1687',
-				chainSelector: {
-					name: 'mint-testnet',
-					selector: '10749384167430722000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'6286293440461808000',
-			{
-				chainId: '1740',
-				chainSelector: {
-					name: 'metal-testnet',
-					selector: '6286293440461808000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'4888058894222120000',
-			{
-				chainId: '1908',
-				chainSelector: {
-					name: 'bitcichain-testnet',
-					selector: '4888058894222120000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'686603546605904500',
-			{
-				chainId: '1946',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-soneium-1',
-					selector: '686603546605904500',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'13116810400804393000',
-			{
-				chainId: '2021',
-				chainSelector: {
-					name: 'ronin-testnet-saigon',
-					selector: '13116810400804393000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'3260900564719373300',
-			{
-				chainId: '2023',
-				chainSelector: {
-					name: 'private-testnet-granite',
-					selector: '3260900564719373300',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'6915682381028791000',
-			{
-				chainId: '2024',
-				chainSelector: {
-					name: 'private-testnet-andesite',
-					selector: '6915682381028791000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'15513093881969820000',
-			{
-				chainId: '2025',
-				chainSelector: {
-					name: 'dtcc-testnet-andesite',
-					selector: '15513093881969820000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'2333097300889805000',
-			{
-				chainId: '2088',
-				chainSelector: {
-					name: 'polkadot-testnet-centrifuge-altair',
-					selector: '2333097300889805000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'12168171414969487000',
-			{
-				chainId: '2129',
-				chainSelector: {
-					name: 'memento-testnet',
-					selector: '12168171414969487000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'2110537777356199200',
-			{
-				chainId: '2221',
-				chainSelector: {
-					name: 'kava-testnet',
-					selector: '2110537777356199200',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'5990477251245693000',
-			{
-				chainId: '2358',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-kroma-1',
-					selector: '5990477251245693000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'9488606126177219000',
-			{
-				chainId: '2391',
-				chainSelector: {
-					name: 'tac-testnet',
-					selector: '9488606126177219000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'1654667687261492700',
-			{
-				chainId: '2442',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-polygon-zkevm-1',
-					selector: '1654667687261492700',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'8901520481741772000',
-			{
-				chainId: '2522',
-				chainSelector: {
-					name: 'ethereum-testnet-holesky-fraxtal-1',
-					selector: '8901520481741772000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'8304510386741731000',
-			{
-				chainId: '2810',
-				chainSelector: {
-					name: 'ethereum-testnet-holesky-morph-1',
-					selector: '8304510386741731000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'1467223411771711500',
-			{
-				chainId: '3636',
-				chainSelector: {
-					name: 'bitcoin-testnet-botanix',
-					selector: '1467223411771711500',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'4905564228793744000',
-			{
-				chainId: '4002',
-				chainSelector: {
-					name: 'fantom-testnet',
-					selector: '4905564228793744000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'5298399861320401000',
-			{
-				chainId: '4202',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-lisk-1',
-					selector: '5298399861320401000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'5299555114858066000',
-			{
-				chainId: '4801',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-worldchain-1',
-					selector: '5299555114858066000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'4168263376276232000',
-			{
-				chainId: '5001',
-				chainSelector: {
-					name: 'ethereum-testnet-goerli-mantle-1',
-					selector: '4168263376276232000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'8236463271206331000',
-			{
-				chainId: '5003',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-mantle-1',
-					selector: '8236463271206331000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'13274425992935471000',
-			{
-				chainId: '5611',
-				chainSelector: {
-					name: 'binance_smart_chain-testnet-opbnb-1',
-					selector: '13274425992935471000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'8911150974185440000',
-			{
-				chainId: '5668',
-				chainSelector: {
-					name: 'nexon-dev',
-					selector: '8911150974185440000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'2443239559770384400',
-			{
-				chainId: '6342',
-				chainSelector: {
-					name: 'megaeth-testnet',
-					selector: '2443239559770384400',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'305104239123120450',
-			{
-				chainId: '6930',
-				chainSelector: {
-					name: 'nibiru-testnet',
-					selector: '305104239123120450',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'344208382356656600',
-			{
-				chainId: '9000',
-				chainSelector: {
-					name: 'ondo-testnet',
-					selector: '344208382356656600',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'1113014352258747600',
-			{
-				chainId: '9559',
-				chainSelector: {
-					name: 'neonlink-testnet',
-					selector: '1113014352258747600',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'3967220077692964400',
-			{
-				chainId: '9746',
-				chainSelector: {
-					name: 'plasma-testnet',
-					selector: '3967220077692964400',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'2183018362218727400',
-			{
-				chainId: '10143',
-				chainSelector: {
-					name: 'monad-testnet',
-					selector: '2183018362218727400',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'8871595565390010000',
-			{
-				chainId: '10200',
-				chainSelector: {
-					name: 'gnosis_chain-testnet-chiado',
-					selector: '8871595565390010000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'16235373811196387000',
-			{
-				chainId: '11124',
-				chainSelector: {
-					name: 'abstract-testnet',
-					selector: '16235373811196387000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'3486622437121596000',
-			{
-				chainId: '12325',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-arbitrum-1-l3x-1',
-					selector: '3486622437121596000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'4526165231216332000',
-			{
-				chainId: '13473',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-immutable-zkevm-1',
-					selector: '4526165231216332000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'16088006396410204000',
-			{
-				chainId: '16600',
-				chainSelector: {
-					name: '0g-testnet-newton',
-					selector: '16088006396410204000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'2131427466778448100',
-			{
-				chainId: '16601',
-				chainSelector: {
-					name: '0g-testnet-galileo',
-					selector: '2131427466778448100',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'7717148896336251000',
-			{
-				chainId: '17000',
-				chainSelector: {
-					name: 'ethereum-testnet-holesky',
-					selector: '7717148896336251000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'7759470850252069000',
-			{
-				chainId: '31337',
-				chainSelector: {
-					name: 'anvil-devnet',
-					selector: '7759470850252069000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'9900119385908781000',
-			{
-				chainId: '33111',
-				chainSelector: {
-					name: 'apechain-testnet-curtis',
-					selector: '9900119385908781000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'6827576821754316000',
-			{
-				chainId: '37111',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-lens-1',
-					selector: '6827576821754316000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'14767482510784807000',
-			{
-				chainId: '43113',
-				chainSelector: {
-					name: 'avalanche-testnet-fuji',
-					selector: '14767482510784807000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'3552045678561919000',
-			{
-				chainId: '44787',
-				chainSelector: {
-					name: 'celo-testnet-alfajores',
-					selector: '3552045678561919000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'8446413392851542000',
-			{
-				chainId: '45439',
-				chainSelector: {
-					name: 'private-testnet-opala',
-					selector: '8446413392851542000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'13781831279385220000',
-			{
-				chainId: '48898',
-				chainSelector: {
-					name: 'zircuit-testnet-garfield',
-					selector: '13781831279385220000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'4562743618362911000',
-			{
-				chainId: '48899',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-zircuit-1',
-					selector: '4562743618362911000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'13694007683517088000',
-			{
-				chainId: '53302',
-				chainSelector: {
-					name: 'superseed-testnet',
-					selector: '13694007683517088000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'3676871237479449000',
-			{
-				chainId: '57054',
-				chainSelector: {
-					name: 'sonic-testnet-blaze',
-					selector: '3676871237479449000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'1355246678561316400',
-			{
-				chainId: '59140',
-				chainSelector: {
-					name: 'ethereum-testnet-goerli-linea-1',
-					selector: '1355246678561316400',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'5719461335882077000',
-			{
-				chainId: '59141',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-linea-1',
-					selector: '5719461335882077000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'3777822886988675000',
-			{
-				chainId: '59902',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-metis-1',
-					selector: '3777822886988675000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'12532609583862917000',
-			{
-				chainId: '80001',
-				chainSelector: {
-					name: 'polygon-testnet-mumbai',
-					selector: '12532609583862917000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'16281711391670634000',
-			{
-				chainId: '80002',
-				chainSelector: {
-					name: 'polygon-testnet-amoy',
-					selector: '16281711391670634000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'7728255861635209000',
-			{
-				chainId: '80069',
-				chainSelector: {
-					name: 'berachain-testnet-bepolia',
-					selector: '7728255861635209000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'8999465244383784000',
-			{
-				chainId: '80084',
-				chainSelector: {
-					name: 'berachain-testnet-bartio',
-					selector: '8999465244383784000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'12336603543561912000',
-			{
-				chainId: '80085',
-				chainSelector: {
-					name: 'berachain-testnet-artio',
-					selector: '12336603543561912000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'2285225387454015700',
-			{
-				chainId: '80087',
-				chainSelector: {
-					name: 'zero-g-testnet-galileo',
-					selector: '2285225387454015700',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'5790810961207156000',
-			{
-				chainId: '84531',
-				chainSelector: {
-					name: 'ethereum-testnet-goerli-base-1',
-					selector: '5790810961207156000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'10344971235874466000',
-			{
-				chainId: '84532',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-base-1',
-					selector: '10344971235874466000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'3743020999916461000',
-			{
-				chainId: '98864',
-				chainSelector: {
-					name: 'plume-devnet',
-					selector: '3743020999916461000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'13874588925447303000',
-			{
-				chainId: '98867',
-				chainSelector: {
-					name: 'plume-testnet-sepolia',
-					selector: '13874588925447303000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'1910019406958449400',
-			{
-				chainId: '128123',
-				chainSelector: {
-					name: 'etherlink-testnet',
-					selector: '1910019406958449400',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'9090863410735740000',
-			{
-				chainId: '129399',
-				chainSelector: {
-					name: 'polygon-testnet-tatara',
-					selector: '9090863410735740000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'7248756420937880000',
-			{
-				chainId: '167009',
-				chainSelector: {
-					name: 'ethereum-testnet-holesky-taiko-1',
-					selector: '7248756420937880000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'7189150270347330000',
-			{
-				chainId: '192940',
-				chainSelector: {
-					name: 'mind-testnet',
-					selector: '7189150270347330000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'3789623672476206000',
-			{
-				chainId: '200810',
-				chainSelector: {
-					name: 'bitcoin-testnet-bitlayer-1',
-					selector: '3789623672476206000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'6101244977088475000',
-			{
-				chainId: '421613',
-				chainSelector: {
-					name: 'ethereum-testnet-goerli-arbitrum-1',
-					selector: '6101244977088475000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'3478487238524512000',
-			{
-				chainId: '421614',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-arbitrum-1',
-					selector: '3478487238524512000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'4489326297382772000',
-			{
-				chainId: '424242',
-				chainSelector: {
-					name: 'private-testnet-mica',
-					selector: '4489326297382772000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'1458281248224513000',
-			{
-				chainId: '432201',
-				chainSelector: {
-					name: 'avalanche-subnet-dexalot-testnet',
-					selector: '1458281248224513000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'2279865765895943400',
-			{
-				chainId: '534351',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-scroll-1',
-					selector: '2279865765895943400',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'7837562506228496000',
-			{
-				chainId: '595581',
-				chainSelector: {
-					name: 'avalanche-testnet-nexon',
-					selector: '7837562506228496000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'5269261765892944000',
-			{
-				chainId: '686868',
-				chainSelector: {
-					name: 'bitcoin-testnet-merlin',
-					selector: '5269261765892944000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'4012524741200567300',
-			{
-				chainId: '688688',
-				chainSelector: {
-					name: 'pharos-testnet',
-					selector: '4012524741200567300',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'4418231248214523000',
-			{
-				chainId: '717160',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-polygon-validium-1',
-					selector: '4418231248214523000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'16126893759944360000',
-			{
-				chainId: '743111',
-				chainSelector: {
-					name: 'hemi-testnet-sepolia',
-					selector: '16126893759944360000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'9763904284804119000',
-			{
-				chainId: '763373',
-				chainSelector: {
-					name: 'ink-testnet-sepolia',
-					selector: '9763904284804119000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'5535534526963509000',
-			{
-				chainId: '808813',
-				chainSelector: {
-					name: 'bitcoin-testnet-sepolia-bob-1',
-					selector: '5535534526963509000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'5837261596322417000',
-			{
-				chainId: '810181',
-				chainSelector: {
-					name: 'zklink_nova-testnet',
-					selector: '5837261596322417000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'7225665875429174000',
-			{
-				chainId: '812242',
-				chainSelector: {
-					name: 'codex-testnet',
-					selector: '7225665875429174000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'10443705513486043000',
-			{
-				chainId: '978657',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-arbitrum-1-treasure-1',
-					selector: '10443705513486043000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'3676916124122458000',
-			{
-				chainId: '978658',
-				chainSelector: {
-					name: 'treasure-testnet-topaz',
-					selector: '3676916124122458000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'945045181441419300',
-			{
-				chainId: '2019775',
-				chainSelector: {
-					name: 'jovay-testnet',
-					selector: '945045181441419300',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'16015286601757825000',
-			{
-				chainId: '11155111',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia',
-					selector: '16015286601757825000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'5224473277236332000',
-			{
-				chainId: '11155420',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-optimism-1',
-					selector: '5224473277236332000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'2217764097022649300',
-			{
-				chainId: '12227332',
-				chainSelector: {
-					name: 'neox-testnet-t4',
-					selector: '2217764097022649300',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'1467427327723634000',
-			{
-				chainId: '21000001',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-corn-1',
-					selector: '1467427327723634000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'7060342227814389000',
-			{
-				chainId: '31415926',
-				chainSelector: {
-					name: 'filecoin-testnet',
-					selector: '7060342227814389000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'14684575664602284000',
-			{
-				chainId: '161221135',
-				chainSelector: {
-					name: 'plume-testnet',
-					selector: '14684575664602284000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'2027362563942762500',
-			{
-				chainId: '168587773',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-blast-1',
-					selector: '2027362563942762500',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'16244020411108057000',
-			{
-				chainId: '999999999',
-				chainSelector: {
-					name: 'zora-testnet',
-					selector: '16244020411108057000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'13231703482326770000',
-			{
-				chainId: '2494104990',
-				chainSelector: {
-					name: 'tron-testnet-shasta-evm',
-					selector: '13231703482326770000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'13231703482326770000',
-			{
-				chainId: '3360022319',
-				chainSelector: {
-					name: 'tron-devnet-evm',
-					selector: '13231703482326770000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'2052925811360307700',
-			{
-				chainId: '3448148188',
-				chainSelector: {
-					name: 'tron-testnet-nile-evm',
-					selector: '2052925811360307700',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
+		['8953668971247136000', testnet_evm_bitcoin_testnet_rootstock],
+		['729797994450396300', testnet_evm_telos_evm_testnet],
+		['4340886533089894000', testnet_evm_polkadot_testnet_darwinia_pangoro],
+		['3017758115101369000', testnet_evm_xdc_testnet],
+		['8955032871639343000', testnet_evm_coinex_smart_chain_testnet],
+		['6955638871347137000', testnet_evm_polkadot_testnet_astar_shibuya],
+		['13264668187771770000', testnet_evm_binance_smart_chain_testnet],
+		['572210378683744400', testnet_evm_velas_testnet],
+		['4356164186791070000', testnet_evm_ethereum_testnet_sepolia_hashkey_1],
+		['17833296867764335000', testnet_evm_shibarium_testnet_puppynet],
+		['2066098519157881900', testnet_evm_ethereum_testnet_sepolia_xlayer_1],
+		['16487132492576885000', testnet_evm_cronos_zkevm_testnet_sepolia],
+		['6802309497652714000', testnet_evm_ethereum_testnet_goerli_zksync_1],
+		['3842103497652714000', testnet_evm_cronos_testnet_zkevm_1],
+		['222782988166878820', testnet_evm_hedera_testnet],
+		['6898391096552792000', testnet_evm_ethereum_testnet_sepolia_zksync_1],
+		['2995292832068775000', testnet_evm_cronos_testnet],
+		['5061593697262339000', testnet_evm_near_testnet],
+		['2664363617261497000', testnet_evm_ethereum_testnet_goerli_optimism_1],
+		['7317911323415911000', testnet_evm_areon_testnet],
+		['5059197667603798000', testnet_evm_janction_testnet_sepolia],
+		['6260932437388305000', testnet_evm_private_testnet_obsidian],
+		['829525985033418800', testnet_evm_ethereum_testnet_sepolia_mode_1],
+		['2177900824115119000', testnet_evm_bittensor_testnet],
+		['4286062357653186600', testnet_evm_hyperliquid_testnet],
+		['2624132734533622000', testnet_evm_kaia_testnet_kairos],
+		['4459371029167934500', testnet_evm_bittorrent_chain_testnet],
+		['9284632837123596000', testnet_evm_wemix_testnet],
+		['4264732132125536000', testnet_evm_core_testnet],
+		['1948510578179542000', testnet_evm_bitcoin_testnet_bsquared_1],
+		['5361632739113537000', testnet_evm_polkadot_testnet_moonbeam_moonbase],
+		['14135854469784515000', testnet_evm_ethereum_testnet_sepolia_unichain_1],
+		['1216300075444106800', testnet_evm_sei_testnet_atlantic],
+		['3379446385462418400', testnet_evm_geth_testnet],
+		['11059667695644973000', testnet_evm_ethereum_testnet_goerli_polygon_zkevm_1],
+		['4237030917318060500', testnet_evm_story_testnet],
+		['10749384167430722000', testnet_evm_mint_testnet],
+		['6286293440461808000', testnet_evm_metal_testnet],
+		['4888058894222120000', testnet_evm_bitcichain_testnet],
+		['686603546605904500', testnet_evm_ethereum_testnet_sepolia_soneium_1],
+		['13116810400804393000', testnet_evm_ronin_testnet_saigon],
+		['3260900564719373300', testnet_evm_private_testnet_granite],
+		['6915682381028791000', testnet_evm_private_testnet_andesite],
+		['15513093881969820000', testnet_evm_dtcc_testnet_andesite],
+		['2333097300889805000', testnet_evm_polkadot_testnet_centrifuge_altair],
+		['12168171414969487000', testnet_evm_memento_testnet],
+		['2110537777356199200', testnet_evm_kava_testnet],
+		['5990477251245693000', testnet_evm_ethereum_testnet_sepolia_kroma_1],
+		['9488606126177219000', testnet_evm_tac_testnet],
+		['1654667687261492700', testnet_evm_ethereum_testnet_sepolia_polygon_zkevm_1],
+		['8901520481741772000', testnet_evm_ethereum_testnet_holesky_fraxtal_1],
+		['8304510386741731000', testnet_evm_ethereum_testnet_holesky_morph_1],
+		['1467223411771711500', testnet_evm_bitcoin_testnet_botanix],
+		['4905564228793744000', testnet_evm_fantom_testnet],
+		['5298399861320401000', testnet_evm_ethereum_testnet_sepolia_lisk_1],
+		['5299555114858066000', testnet_evm_ethereum_testnet_sepolia_worldchain_1],
+		['4168263376276232000', testnet_evm_ethereum_testnet_goerli_mantle_1],
+		['8236463271206331000', testnet_evm_ethereum_testnet_sepolia_mantle_1],
+		['13274425992935471000', testnet_evm_binance_smart_chain_testnet_opbnb_1],
+		['8911150974185440000', testnet_evm_nexon_dev],
+		['2443239559770384400', testnet_evm_megaeth_testnet],
+		['305104239123120450', testnet_evm_nibiru_testnet],
+		['344208382356656600', testnet_evm_ondo_testnet],
+		['1113014352258747600', testnet_evm_neonlink_testnet],
+		['3967220077692964400', testnet_evm_plasma_testnet],
+		['2183018362218727400', testnet_evm_monad_testnet],
+		['8871595565390010000', testnet_evm_gnosis_chain_testnet_chiado],
+		['16235373811196387000', testnet_evm_abstract_testnet],
+		['3486622437121596000', testnet_evm_ethereum_testnet_sepolia_arbitrum_1_l3x_1],
+		['4526165231216332000', testnet_evm_ethereum_testnet_sepolia_immutable_zkevm_1],
+		['16088006396410204000', testnet_evm_0g_testnet_newton],
+		['2131427466778448100', testnet_evm_0g_testnet_galileo],
+		['7717148896336251000', testnet_evm_ethereum_testnet_holesky],
+		['7759470850252069000', testnet_evm_anvil_devnet],
+		['9900119385908781000', testnet_evm_apechain_testnet_curtis],
+		['6827576821754316000', testnet_evm_ethereum_testnet_sepolia_lens_1],
+		['14767482510784807000', testnet_evm_avalanche_testnet_fuji],
+		['3552045678561919000', testnet_evm_celo_testnet_alfajores],
+		['8446413392851542000', testnet_evm_private_testnet_opala],
+		['13781831279385220000', testnet_evm_zircuit_testnet_garfield],
+		['4562743618362911000', testnet_evm_ethereum_testnet_sepolia_zircuit_1],
+		['13694007683517088000', testnet_evm_superseed_testnet],
+		['3676871237479449000', testnet_evm_sonic_testnet_blaze],
+		['1355246678561316400', testnet_evm_ethereum_testnet_goerli_linea_1],
+		['5719461335882077000', testnet_evm_ethereum_testnet_sepolia_linea_1],
+		['3777822886988675000', testnet_evm_ethereum_testnet_sepolia_metis_1],
+		['12532609583862917000', testnet_evm_polygon_testnet_mumbai],
+		['16281711391670634000', testnet_evm_polygon_testnet_amoy],
+		['7728255861635209000', testnet_evm_berachain_testnet_bepolia],
+		['8999465244383784000', testnet_evm_berachain_testnet_bartio],
+		['12336603543561912000', testnet_evm_berachain_testnet_artio],
+		['2285225387454015700', testnet_evm_zero_g_testnet_galileo],
+		['5790810961207156000', testnet_evm_ethereum_testnet_goerli_base_1],
+		['10344971235874466000', testnet_evm_ethereum_testnet_sepolia_base_1],
+		['3743020999916461000', testnet_evm_plume_devnet],
+		['13874588925447303000', testnet_evm_plume_testnet_sepolia],
+		['1910019406958449400', testnet_evm_etherlink_testnet],
+		['9090863410735740000', testnet_evm_polygon_testnet_tatara],
+		['7248756420937880000', testnet_evm_ethereum_testnet_holesky_taiko_1],
+		['7189150270347330000', testnet_evm_mind_testnet],
+		['3789623672476206000', testnet_evm_bitcoin_testnet_bitlayer_1],
+		['6101244977088475000', testnet_evm_ethereum_testnet_goerli_arbitrum_1],
+		['3478487238524512000', testnet_evm_ethereum_testnet_sepolia_arbitrum_1],
+		['4489326297382772000', testnet_evm_private_testnet_mica],
+		['1458281248224513000', testnet_evm_avalanche_subnet_dexalot_testnet],
+		['2279865765895943400', testnet_evm_ethereum_testnet_sepolia_scroll_1],
+		['7837562506228496000', testnet_evm_avalanche_testnet_nexon],
+		['5269261765892944000', testnet_evm_bitcoin_testnet_merlin],
+		['4012524741200567300', testnet_evm_pharos_testnet],
+		['4418231248214523000', testnet_evm_ethereum_testnet_sepolia_polygon_validium_1],
+		['16126893759944360000', testnet_evm_hemi_testnet_sepolia],
+		['9763904284804119000', testnet_evm_ink_testnet_sepolia],
+		['5535534526963509000', testnet_evm_bitcoin_testnet_sepolia_bob_1],
+		['5837261596322417000', testnet_evm_zklink_nova_testnet],
+		['7225665875429174000', testnet_evm_codex_testnet],
+		['10443705513486043000', testnet_evm_ethereum_testnet_sepolia_arbitrum_1_treasure_1],
+		['3676916124122458000', testnet_evm_treasure_testnet_topaz],
+		['945045181441419300', testnet_evm_jovay_testnet],
+		['16015286601757825000', testnet_evm_ethereum_testnet_sepolia],
+		['5224473277236332000', testnet_evm_ethereum_testnet_sepolia_optimism_1],
+		['2217764097022649300', testnet_evm_neox_testnet_t4],
+		['1467427327723634000', testnet_evm_ethereum_testnet_sepolia_corn_1],
+		['7060342227814389000', testnet_evm_filecoin_testnet],
+		['14684575664602284000', testnet_evm_plume_testnet],
+		['2027362563942762500', testnet_evm_ethereum_testnet_sepolia_blast_1],
+		['16244020411108057000', testnet_evm_zora_testnet],
+		['13231703482326770000', testnet_evm_tron_testnet_shasta_evm],
+		['13231703482326770000', testnet_evm_tron_devnet_evm],
+		['2052925811360307700', testnet_evm_tron_testnet_nile_evm],
 	]),
 	solana: new Map<string, NetworkInfo>([
-		[
-			'6302590918974934000',
-			{
-				chainId: '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3zQawwpjk2NsNY',
-				chainSelector: {
-					name: 'solana-testnet',
-					selector: '6302590918974934000',
-				},
-				chainFamily: 'solana',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'16423721717087812000',
-			{
-				chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG',
-				chainSelector: {
-					name: 'solana-devnet',
-					selector: '16423721717087812000',
-				},
-				chainFamily: 'solana',
-				networkType: 'testnet',
-			},
-		],
+		['6302590918974934000', testnet_solana_solana_testnet],
+		['16423721717087812000', testnet_solana_solana_devnet],
 	]),
 	aptos: new Map<string, NetworkInfo>([
-		[
-			'743186221051783400',
-			{
-				chainId: '2',
-				chainSelector: {
-					name: 'aptos-testnet',
-					selector: '743186221051783400',
-				},
-				chainFamily: 'aptos',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'4457093679053095400',
-			{
-				chainId: '4',
-				chainSelector: {
-					name: 'aptos-localnet',
-					selector: '4457093679053095400',
-				},
-				chainFamily: 'aptos',
-				networkType: 'testnet',
-			},
-		],
+		['743186221051783400', testnet_aptos_aptos_testnet],
+		['4457093679053095400', testnet_aptos_aptos_localnet],
 	]),
 	sui: new Map<string, NetworkInfo>([
-		[
-			'9762610643973837000',
-			{
-				chainId: '2',
-				chainSelector: {
-					name: 'sui-testnet',
-					selector: '9762610643973837000',
-				},
-				chainFamily: 'sui',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'18395503381733958000',
-			{
-				chainId: '4',
-				chainSelector: {
-					name: 'sui-localnet',
-					selector: '18395503381733958000',
-				},
-				chainFamily: 'sui',
-				networkType: 'testnet',
-			},
-		],
+		['9762610643973837000', testnet_sui_sui_testnet],
+		['18395503381733958000', testnet_sui_sui_localnet],
 	]),
 	ton: new Map<string, NetworkInfo>([
-		[
-			'1399300952838017800',
-			{
-				chainId: '-3',
-				chainSelector: {
-					name: 'ton-testnet',
-					selector: '1399300952838017800',
-				},
-				chainFamily: 'ton',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'13879075125137744000',
-			{
-				chainId: '-217',
-				chainSelector: {
-					name: 'ton-localnet',
-					selector: '13879075125137744000',
-				},
-				chainFamily: 'ton',
-				networkType: 'testnet',
-			},
-		],
+		['1399300952838017800', testnet_ton_ton_testnet],
+		['13879075125137744000', testnet_ton_ton_localnet],
 	]),
 	tron: new Map<string, NetworkInfo>([
-		[
-			'13231703482326770000',
-			{
-				chainId: '2494104990',
-				chainSelector: {
-					name: 'tron-testnet-shasta',
-					selector: '13231703482326770000',
-				},
-				chainFamily: 'tron',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'13231703482326770000',
-			{
-				chainId: '3360022319',
-				chainSelector: {
-					name: 'tron-devnet',
-					selector: '13231703482326770000',
-				},
-				chainFamily: 'tron',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'2052925811360307700',
-			{
-				chainId: '3448148188',
-				chainSelector: {
-					name: 'tron-testnet-nile',
-					selector: '2052925811360307700',
-				},
-				chainFamily: 'tron',
-				networkType: 'testnet',
-			},
-		],
+		['13231703482326770000', testnet_tron_tron_testnet_shasta],
+		['13231703482326770000', testnet_tron_tron_devnet],
+		['2052925811360307700', testnet_tron_tron_testnet_nile],
 	]),
 } as const
 
 // Maps by family and network type for name lookups
 export const mainnetByNameByFamily = {
 	evm: new Map<string, NetworkInfo>([
-		[
-			'ethereum-mainnet',
-			{
-				chainId: '1',
-				chainSelector: {
-					name: 'ethereum-mainnet',
-					selector: '5009297550715158000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'ethereum-mainnet-optimism-1',
-			{
-				chainId: '10',
-				chainSelector: {
-					name: 'ethereum-mainnet-optimism-1',
-					selector: '3734403246176062000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'cronos-mainnet',
-			{
-				chainId: '25',
-				chainSelector: {
-					name: 'cronos-mainnet',
-					selector: '1456215246176062200',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'rootstock-mainnet',
-			{
-				chainId: '30',
-				chainSelector: {
-					name: 'rootstock-mainnet',
-					selector: '11964252391146578000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'telos-evm-mainnet',
-			{
-				chainId: '40',
-				chainSelector: {
-					name: 'telos-evm-mainnet',
-					selector: '1477345371608778000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'polkadot-mainnet-darwinia',
-			{
-				chainId: '46',
-				chainSelector: {
-					name: 'polkadot-mainnet-darwinia',
-					selector: '8866418665544333000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'xdc-mainnet',
-			{
-				chainId: '50',
-				chainSelector: {
-					name: 'xdc-mainnet',
-					selector: '17673274061779415000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'coinex_smart_chain-mainnet',
-			{
-				chainId: '52',
-				chainSelector: {
-					name: 'coinex_smart_chain-mainnet',
-					selector: '1761333065194157300',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'binance_smart_chain-mainnet',
-			{
-				chainId: '56',
-				chainSelector: {
-					name: 'binance_smart_chain-mainnet',
-					selector: '11344663589394135000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'gnosis_chain-mainnet',
-			{
-				chainId: '100',
-				chainSelector: {
-					name: 'gnosis_chain-mainnet',
-					selector: '465200170687744400',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'velas-mainnet',
-			{
-				chainId: '106',
-				chainSelector: {
-					name: 'velas-mainnet',
-					selector: '374210358663784400',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'shibarium-mainnet',
-			{
-				chainId: '109',
-				chainSelector: {
-					name: 'shibarium-mainnet',
-					selector: '3993510008929295400',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'ethereum-mainnet-unichain-1',
-			{
-				chainId: '130',
-				chainSelector: {
-					name: 'ethereum-mainnet-unichain-1',
-					selector: '1923510103922296300',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'polygon-mainnet',
-			{
-				chainId: '137',
-				chainSelector: {
-					name: 'polygon-mainnet',
-					selector: '4051577828743386600',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'monad-mainnet',
-			{
-				chainId: '143',
-				chainSelector: {
-					name: 'monad-mainnet',
-					selector: '8481857512324358000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'sonic-mainnet',
-			{
-				chainId: '146',
-				chainSelector: {
-					name: 'sonic-mainnet',
-					selector: '1673871237479750000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'ethereum-mainnet-hashkey-1',
-			{
-				chainId: '177',
-				chainSelector: {
-					name: 'ethereum-mainnet-hashkey-1',
-					selector: '7613811247471742000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'mint-mainnet',
-			{
-				chainId: '185',
-				chainSelector: {
-					name: 'mint-mainnet',
-					selector: '17164792800244662000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'ethereum-mainnet-xlayer-1',
-			{
-				chainId: '196',
-				chainSelector: {
-					name: 'ethereum-mainnet-xlayer-1',
-					selector: '3016212468291539500',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'bittorrent_chain-mainnet',
-			{
-				chainId: '199',
-				chainSelector: {
-					name: 'bittorrent_chain-mainnet',
-					selector: '3776006016387883000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'binance_smart_chain-mainnet-opbnb-1',
-			{
-				chainId: '204',
-				chainSelector: {
-					name: 'binance_smart_chain-mainnet-opbnb-1',
-					selector: '465944652040885900',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'bitcoin-mainnet-bsquared-1',
-			{
-				chainId: '223',
-				chainSelector: {
-					name: 'bitcoin-mainnet-bsquared-1',
-					selector: '5406759801798338000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'mind-mainnet',
-			{
-				chainId: '228',
-				chainSelector: {
-					name: 'mind-mainnet',
-					selector: '11690709103138290000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'lens-mainnet',
-			{
-				chainId: '232',
-				chainSelector: {
-					name: 'lens-mainnet',
-					selector: '5608378062013573000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'tac-mainnet',
-			{
-				chainId: '239',
-				chainSelector: {
-					name: 'tac-mainnet',
-					selector: '5936861837188149000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'fantom-mainnet',
-			{
-				chainId: '250',
-				chainSelector: {
-					name: 'fantom-mainnet',
-					selector: '3768048213127884000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'fraxtal-mainnet',
-			{
-				chainId: '252',
-				chainSelector: {
-					name: 'fraxtal-mainnet',
-					selector: '1462016016387883300',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'ethereum-mainnet-kroma-1',
-			{
-				chainId: '255',
-				chainSelector: {
-					name: 'ethereum-mainnet-kroma-1',
-					selector: '3719320017875267000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'neonlink-mainnet',
-			{
-				chainId: '259',
-				chainSelector: {
-					name: 'neonlink-mainnet',
-					selector: '8239338020728974000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'hedera-mainnet',
-			{
-				chainId: '295',
-				chainSelector: {
-					name: 'hedera-mainnet',
-					selector: '3229138320728879000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'filecoin-mainnet',
-			{
-				chainId: '314',
-				chainSelector: {
-					name: 'filecoin-mainnet',
-					selector: '4561443241176883000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'ethereum-mainnet-zksync-1',
-			{
-				chainId: '324',
-				chainSelector: {
-					name: 'ethereum-mainnet-zksync-1',
-					selector: '1562403441176082200',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'cronos-zkevm-mainnet',
-			{
-				chainId: '388',
-				chainSelector: {
-					name: 'cronos-zkevm-mainnet',
-					selector: '8788096068760391000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'near-mainnet',
-			{
-				chainId: '397',
-				chainSelector: {
-					name: 'near-mainnet',
-					selector: '2039744413822257700',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'areon-mainnet',
-			{
-				chainId: '463',
-				chainSelector: {
-					name: 'areon-mainnet',
-					selector: '1939936305787790600',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'ethereum-mainnet-worldchain-1',
-			{
-				chainId: '480',
-				chainSelector: {
-					name: 'ethereum-mainnet-worldchain-1',
-					selector: '2049429975587534800',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'polkadot-mainnet-astar',
-			{
-				chainId: '592',
-				chainSelector: {
-					name: 'polkadot-mainnet-astar',
-					selector: '6422105447186081000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'janction-mainnet',
-			{
-				chainId: '678',
-				chainSelector: {
-					name: 'janction-mainnet',
-					selector: '9107126442626378000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'bittensor-mainnet',
-			{
-				chainId: '964',
-				chainSelector: {
-					name: 'bittensor-mainnet',
-					selector: '2135107236357186800',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'hyperliquid-mainnet',
-			{
-				chainId: '999',
-				chainSelector: {
-					name: 'hyperliquid-mainnet',
-					selector: '2442541497099098600',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'conflux-mainnet',
-			{
-				chainId: '1030',
-				chainSelector: {
-					name: 'conflux-mainnet',
-					selector: '3358365939762719000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'ethereum-mainnet-metis-1',
-			{
-				chainId: '1088',
-				chainSelector: {
-					name: 'ethereum-mainnet-metis-1',
-					selector: '8805746078405599000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'ethereum-mainnet-polygon-zkevm-1',
-			{
-				chainId: '1101',
-				chainSelector: {
-					name: 'ethereum-mainnet-polygon-zkevm-1',
-					selector: '4348158687435793400',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'wemix-mainnet',
-			{
-				chainId: '1111',
-				chainSelector: {
-					name: 'wemix-mainnet',
-					selector: '5142893604156790000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'core-mainnet',
-			{
-				chainId: '1116',
-				chainSelector: {
-					name: 'core-mainnet',
-					selector: '1224752112135636200',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'lisk-mainnet',
-			{
-				chainId: '1135',
-				chainSelector: {
-					name: 'lisk-mainnet',
-					selector: '15293031020466096000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'polkadot-mainnet-moonbeam',
-			{
-				chainId: '1284',
-				chainSelector: {
-					name: 'polkadot-mainnet-moonbeam',
-					selector: '1252863800116739600',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'kusama-mainnet-moonriver',
-			{
-				chainId: '1285',
-				chainSelector: {
-					name: 'kusama-mainnet-moonriver',
-					selector: '1355020143337428000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'sei-mainnet',
-			{
-				chainId: '1329',
-				chainSelector: {
-					name: 'sei-mainnet',
-					selector: '9027416829622343000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'metal-mainnet',
-			{
-				chainId: '1750',
-				chainSelector: {
-					name: 'metal-mainnet',
-					selector: '13447077090413146000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'soneium-mainnet',
-			{
-				chainId: '1868',
-				chainSelector: {
-					name: 'soneium-mainnet',
-					selector: '12505351618335764000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'bitcichain-mainnet',
-			{
-				chainId: '1907',
-				chainSelector: {
-					name: 'bitcichain-mainnet',
-					selector: '4874388048629246000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'ronin-mainnet',
-			{
-				chainId: '2020',
-				chainSelector: {
-					name: 'ronin-mainnet',
-					selector: '6916147374840168000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'polkadot-mainnet-centrifuge',
-			{
-				chainId: '2031',
-				chainSelector: {
-					name: 'polkadot-mainnet-centrifuge',
-					selector: '8175830712062618000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'kava-mainnet',
-			{
-				chainId: '2222',
-				chainSelector: {
-					name: 'kava-mainnet',
-					selector: '7550000543357438000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'abstract-mainnet',
-			{
-				chainId: '2741',
-				chainSelector: {
-					name: 'abstract-mainnet',
-					selector: '3577778157919314400',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'morph-mainnet',
-			{
-				chainId: '2818',
-				chainSelector: {
-					name: 'morph-mainnet',
-					selector: '18164309074156128000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'bitcoin-mainnet-botanix',
-			{
-				chainId: '3637',
-				chainSelector: {
-					name: 'bitcoin-mainnet-botanix',
-					selector: '4560701533377838000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'ethereum-mainnet-astar-zkevm-1',
-			{
-				chainId: '3776',
-				chainSelector: {
-					name: 'ethereum-mainnet-astar-zkevm-1',
-					selector: '1540201334317828000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'bitcoin-merlin-mainnet',
-			{
-				chainId: '4200',
-				chainSelector: {
-					name: 'bitcoin-merlin-mainnet',
-					selector: '241851231317829000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'ethereum-mainnet-mantle-1',
-			{
-				chainId: '5000',
-				chainSelector: {
-					name: 'ethereum-mainnet-mantle-1',
-					selector: '1556008542357238800',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'superseed-mainnet',
-			{
-				chainId: '5330',
-				chainSelector: {
-					name: 'superseed-mainnet',
-					selector: '470401360549526850',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'nibiru-mainnet',
-			{
-				chainId: '6900',
-				chainSelector: {
-					name: 'nibiru-mainnet',
-					selector: '17349189558768828000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'zetachain-mainnet',
-			{
-				chainId: '7000',
-				chainSelector: {
-					name: 'zetachain-mainnet',
-					selector: '10817664450262215000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'kaia-mainnet',
-			{
-				chainId: '8217',
-				chainSelector: {
-					name: 'kaia-mainnet',
-					selector: '9813823125703492000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'ethereum-mainnet-base-1',
-			{
-				chainId: '8453',
-				chainSelector: {
-					name: 'ethereum-mainnet-base-1',
-					selector: '15971525489660199000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'plasma-mainnet',
-			{
-				chainId: '9745',
-				chainSelector: {
-					name: 'plasma-mainnet',
-					selector: '9335212494177456000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'ethereum-mainnet-arbitrum-1-l3x-1',
-			{
-				chainId: '12324',
-				chainSelector: {
-					name: 'ethereum-mainnet-arbitrum-1-l3x-1',
-					selector: '3162193654116181500',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'ethereum-mainnet-immutable-zkevm-1',
-			{
-				chainId: '13371',
-				chainSelector: {
-					name: 'ethereum-mainnet-immutable-zkevm-1',
-					selector: '1237925231416732000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'0g-mainnet',
-			{
-				chainId: '16661',
-				chainSelector: {
-					name: '0g-mainnet',
-					selector: '4426351306075016000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'apechain-mainnet',
-			{
-				chainId: '33139',
-				chainSelector: {
-					name: 'apechain-mainnet',
-					selector: '14894068710063348000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'ethereum-mainnet-mode-1',
-			{
-				chainId: '34443',
-				chainSelector: {
-					name: 'ethereum-mainnet-mode-1',
-					selector: '7264351850409363000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'ethereum-mainnet-arbitrum-1',
-			{
-				chainId: '42161',
-				chainSelector: {
-					name: 'ethereum-mainnet-arbitrum-1',
-					selector: '4949039107694360000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'celo-mainnet',
-			{
-				chainId: '42220',
-				chainSelector: {
-					name: 'celo-mainnet',
-					selector: '1346049177634351600',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'etherlink-mainnet',
-			{
-				chainId: '42793',
-				chainSelector: {
-					name: 'etherlink-mainnet',
-					selector: '13624601974233774000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'hemi-mainnet',
-			{
-				chainId: '43111',
-				chainSelector: {
-					name: 'hemi-mainnet',
-					selector: '1804312132722180000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'avalanche-mainnet',
-			{
-				chainId: '43114',
-				chainSelector: {
-					name: 'avalanche-mainnet',
-					selector: '6433500567565415000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'neox-mainnet',
-			{
-				chainId: '47763',
-				chainSelector: {
-					name: 'neox-mainnet',
-					selector: '7222032299962346000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'ethereum-mainnet-zircuit-1',
-			{
-				chainId: '48900',
-				chainSelector: {
-					name: 'ethereum-mainnet-zircuit-1',
-					selector: '17198166215261833000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'memento-mainnet',
-			{
-				chainId: '51888',
-				chainSelector: {
-					name: 'memento-mainnet',
-					selector: '6473245816409426000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'ethereum-mainnet-ink-1',
-			{
-				chainId: '57073',
-				chainSelector: {
-					name: 'ethereum-mainnet-ink-1',
-					selector: '3461204551265786000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'ethereum-mainnet-linea-1',
-			{
-				chainId: '59144',
-				chainSelector: {
-					name: 'ethereum-mainnet-linea-1',
-					selector: '4627098889531055000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'nexon-mainnet-lith',
-			{
-				chainId: '60118',
-				chainSelector: {
-					name: 'nexon-mainnet-lith',
-					selector: '15758750456714168000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'bitcoin-mainnet-bob-1',
-			{
-				chainId: '60808',
-				chainSelector: {
-					name: 'bitcoin-mainnet-bob-1',
-					selector: '3849287863852499500',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'treasure-mainnet',
-			{
-				chainId: '61166',
-				chainSelector: {
-					name: 'treasure-mainnet',
-					selector: '5214452172935136000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'nexon-mainnet-henesys',
-			{
-				chainId: '68414',
-				chainSelector: {
-					name: 'nexon-mainnet-henesys',
-					selector: '12657445206920370000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'berachain-mainnet',
-			{
-				chainId: '80094',
-				chainSelector: {
-					name: 'berachain-mainnet',
-					selector: '1294465214383781000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'codex-mainnet',
-			{
-				chainId: '81224',
-				chainSelector: {
-					name: 'codex-mainnet',
-					selector: '9478124434908828000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'ethereum-mainnet-blast-1',
-			{
-				chainId: '81457',
-				chainSelector: {
-					name: 'ethereum-mainnet-blast-1',
-					selector: '4411394078118774300',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'plume-mainnet',
-			{
-				chainId: '98866',
-				chainSelector: {
-					name: 'plume-mainnet',
-					selector: '17912061998839310000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'ethereum-mainnet-taiko-1',
-			{
-				chainId: '167000',
-				chainSelector: {
-					name: 'ethereum-mainnet-taiko-1',
-					selector: '16468599424800719000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'bitcoin-mainnet-bitlayer-1',
-			{
-				chainId: '200901',
-				chainSelector: {
-					name: 'bitcoin-mainnet-bitlayer-1',
-					selector: '7937294810946806000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'avalanche-subnet-dexalot-mainnet',
-			{
-				chainId: '432204',
-				chainSelector: {
-					name: 'avalanche-subnet-dexalot-mainnet',
-					selector: '5463201557265485000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'ethereum-mainnet-scroll-1',
-			{
-				chainId: '534352',
-				chainSelector: {
-					name: 'ethereum-mainnet-scroll-1',
-					selector: '13204309965629104000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'polygon-mainnet-katana',
-			{
-				chainId: '747474',
-				chainSelector: {
-					name: 'polygon-mainnet-katana',
-					selector: '2459028469735686000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'nexon-qa',
-			{
-				chainId: '807424',
-				chainSelector: {
-					name: 'nexon-qa',
-					selector: '14632960069656270000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'zklink_nova-mainnet',
-			{
-				chainId: '810180',
-				chainSelector: {
-					name: 'zklink_nova-mainnet',
-					selector: '4350319965322102000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'nexon-stage',
-			{
-				chainId: '847799',
-				chainSelector: {
-					name: 'nexon-stage',
-					selector: '5556806327594154000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'ethereum-mainnet-arbitrum-1-treasure-1',
-			{
-				chainId: '978670',
-				chainSelector: {
-					name: 'ethereum-mainnet-arbitrum-1-treasure-1',
-					selector: '1010349088906778000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'zora-mainnet',
-			{
-				chainId: '7777777',
-				chainSelector: {
-					name: 'zora-mainnet',
-					selector: '3555797439612589000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'corn-mainnet',
-			{
-				chainId: '21000000',
-				chainSelector: {
-					name: 'corn-mainnet',
-					selector: '9043146809313071000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
-		[
-			'tron-mainnet-evm',
-			{
-				chainId: '728126428',
-				chainSelector: {
-					name: 'tron-mainnet-evm',
-					selector: '1546563616611574000',
-				},
-				chainFamily: 'evm',
-				networkType: 'mainnet',
-			},
-		],
+		['ethereum-mainnet', mainnet_evm_ethereum_mainnet],
+		['ethereum-mainnet-optimism-1', mainnet_evm_ethereum_mainnet_optimism_1],
+		['cronos-mainnet', mainnet_evm_cronos_mainnet],
+		['rootstock-mainnet', mainnet_evm_rootstock_mainnet],
+		['telos-evm-mainnet', mainnet_evm_telos_evm_mainnet],
+		['polkadot-mainnet-darwinia', mainnet_evm_polkadot_mainnet_darwinia],
+		['xdc-mainnet', mainnet_evm_xdc_mainnet],
+		['coinex_smart_chain-mainnet', mainnet_evm_coinex_smart_chain_mainnet],
+		['binance_smart_chain-mainnet', mainnet_evm_binance_smart_chain_mainnet],
+		['gnosis_chain-mainnet', mainnet_evm_gnosis_chain_mainnet],
+		['velas-mainnet', mainnet_evm_velas_mainnet],
+		['shibarium-mainnet', mainnet_evm_shibarium_mainnet],
+		['ethereum-mainnet-unichain-1', mainnet_evm_ethereum_mainnet_unichain_1],
+		['polygon-mainnet', mainnet_evm_polygon_mainnet],
+		['monad-mainnet', mainnet_evm_monad_mainnet],
+		['sonic-mainnet', mainnet_evm_sonic_mainnet],
+		['ethereum-mainnet-hashkey-1', mainnet_evm_ethereum_mainnet_hashkey_1],
+		['mint-mainnet', mainnet_evm_mint_mainnet],
+		['ethereum-mainnet-xlayer-1', mainnet_evm_ethereum_mainnet_xlayer_1],
+		['bittorrent_chain-mainnet', mainnet_evm_bittorrent_chain_mainnet],
+		['binance_smart_chain-mainnet-opbnb-1', mainnet_evm_binance_smart_chain_mainnet_opbnb_1],
+		['bitcoin-mainnet-bsquared-1', mainnet_evm_bitcoin_mainnet_bsquared_1],
+		['mind-mainnet', mainnet_evm_mind_mainnet],
+		['lens-mainnet', mainnet_evm_lens_mainnet],
+		['tac-mainnet', mainnet_evm_tac_mainnet],
+		['fantom-mainnet', mainnet_evm_fantom_mainnet],
+		['fraxtal-mainnet', mainnet_evm_fraxtal_mainnet],
+		['ethereum-mainnet-kroma-1', mainnet_evm_ethereum_mainnet_kroma_1],
+		['neonlink-mainnet', mainnet_evm_neonlink_mainnet],
+		['hedera-mainnet', mainnet_evm_hedera_mainnet],
+		['filecoin-mainnet', mainnet_evm_filecoin_mainnet],
+		['ethereum-mainnet-zksync-1', mainnet_evm_ethereum_mainnet_zksync_1],
+		['cronos-zkevm-mainnet', mainnet_evm_cronos_zkevm_mainnet],
+		['near-mainnet', mainnet_evm_near_mainnet],
+		['areon-mainnet', mainnet_evm_areon_mainnet],
+		['ethereum-mainnet-worldchain-1', mainnet_evm_ethereum_mainnet_worldchain_1],
+		['polkadot-mainnet-astar', mainnet_evm_polkadot_mainnet_astar],
+		['janction-mainnet', mainnet_evm_janction_mainnet],
+		['bittensor-mainnet', mainnet_evm_bittensor_mainnet],
+		['hyperliquid-mainnet', mainnet_evm_hyperliquid_mainnet],
+		['conflux-mainnet', mainnet_evm_conflux_mainnet],
+		['ethereum-mainnet-metis-1', mainnet_evm_ethereum_mainnet_metis_1],
+		['ethereum-mainnet-polygon-zkevm-1', mainnet_evm_ethereum_mainnet_polygon_zkevm_1],
+		['wemix-mainnet', mainnet_evm_wemix_mainnet],
+		['core-mainnet', mainnet_evm_core_mainnet],
+		['lisk-mainnet', mainnet_evm_lisk_mainnet],
+		['polkadot-mainnet-moonbeam', mainnet_evm_polkadot_mainnet_moonbeam],
+		['kusama-mainnet-moonriver', mainnet_evm_kusama_mainnet_moonriver],
+		['sei-mainnet', mainnet_evm_sei_mainnet],
+		['metal-mainnet', mainnet_evm_metal_mainnet],
+		['soneium-mainnet', mainnet_evm_soneium_mainnet],
+		['bitcichain-mainnet', mainnet_evm_bitcichain_mainnet],
+		['ronin-mainnet', mainnet_evm_ronin_mainnet],
+		['polkadot-mainnet-centrifuge', mainnet_evm_polkadot_mainnet_centrifuge],
+		['kava-mainnet', mainnet_evm_kava_mainnet],
+		['abstract-mainnet', mainnet_evm_abstract_mainnet],
+		['morph-mainnet', mainnet_evm_morph_mainnet],
+		['bitcoin-mainnet-botanix', mainnet_evm_bitcoin_mainnet_botanix],
+		['ethereum-mainnet-astar-zkevm-1', mainnet_evm_ethereum_mainnet_astar_zkevm_1],
+		['bitcoin-merlin-mainnet', mainnet_evm_bitcoin_merlin_mainnet],
+		['ethereum-mainnet-mantle-1', mainnet_evm_ethereum_mainnet_mantle_1],
+		['superseed-mainnet', mainnet_evm_superseed_mainnet],
+		['nibiru-mainnet', mainnet_evm_nibiru_mainnet],
+		['zetachain-mainnet', mainnet_evm_zetachain_mainnet],
+		['kaia-mainnet', mainnet_evm_kaia_mainnet],
+		['ethereum-mainnet-base-1', mainnet_evm_ethereum_mainnet_base_1],
+		['plasma-mainnet', mainnet_evm_plasma_mainnet],
+		['ethereum-mainnet-arbitrum-1-l3x-1', mainnet_evm_ethereum_mainnet_arbitrum_1_l3x_1],
+		['ethereum-mainnet-immutable-zkevm-1', mainnet_evm_ethereum_mainnet_immutable_zkevm_1],
+		['0g-mainnet', mainnet_evm_0g_mainnet],
+		['apechain-mainnet', mainnet_evm_apechain_mainnet],
+		['ethereum-mainnet-mode-1', mainnet_evm_ethereum_mainnet_mode_1],
+		['ethereum-mainnet-arbitrum-1', mainnet_evm_ethereum_mainnet_arbitrum_1],
+		['celo-mainnet', mainnet_evm_celo_mainnet],
+		['etherlink-mainnet', mainnet_evm_etherlink_mainnet],
+		['hemi-mainnet', mainnet_evm_hemi_mainnet],
+		['avalanche-mainnet', mainnet_evm_avalanche_mainnet],
+		['neox-mainnet', mainnet_evm_neox_mainnet],
+		['ethereum-mainnet-zircuit-1', mainnet_evm_ethereum_mainnet_zircuit_1],
+		['memento-mainnet', mainnet_evm_memento_mainnet],
+		['ethereum-mainnet-ink-1', mainnet_evm_ethereum_mainnet_ink_1],
+		['ethereum-mainnet-linea-1', mainnet_evm_ethereum_mainnet_linea_1],
+		['nexon-mainnet-lith', mainnet_evm_nexon_mainnet_lith],
+		['bitcoin-mainnet-bob-1', mainnet_evm_bitcoin_mainnet_bob_1],
+		['treasure-mainnet', mainnet_evm_treasure_mainnet],
+		['nexon-mainnet-henesys', mainnet_evm_nexon_mainnet_henesys],
+		['berachain-mainnet', mainnet_evm_berachain_mainnet],
+		['codex-mainnet', mainnet_evm_codex_mainnet],
+		['ethereum-mainnet-blast-1', mainnet_evm_ethereum_mainnet_blast_1],
+		['plume-mainnet', mainnet_evm_plume_mainnet],
+		['ethereum-mainnet-taiko-1', mainnet_evm_ethereum_mainnet_taiko_1],
+		['bitcoin-mainnet-bitlayer-1', mainnet_evm_bitcoin_mainnet_bitlayer_1],
+		['avalanche-subnet-dexalot-mainnet', mainnet_evm_avalanche_subnet_dexalot_mainnet],
+		['ethereum-mainnet-scroll-1', mainnet_evm_ethereum_mainnet_scroll_1],
+		['polygon-mainnet-katana', mainnet_evm_polygon_mainnet_katana],
+		['nexon-qa', mainnet_evm_nexon_qa],
+		['zklink_nova-mainnet', mainnet_evm_zklink_nova_mainnet],
+		['nexon-stage', mainnet_evm_nexon_stage],
+		['ethereum-mainnet-arbitrum-1-treasure-1', mainnet_evm_ethereum_mainnet_arbitrum_1_treasure_1],
+		['zora-mainnet', mainnet_evm_zora_mainnet],
+		['corn-mainnet', mainnet_evm_corn_mainnet],
+		['tron-mainnet-evm', mainnet_evm_tron_mainnet_evm],
 	]),
-	solana: new Map<string, NetworkInfo>([
-		[
-			'solana-mainnet',
-			{
-				chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d',
-				chainSelector: {
-					name: 'solana-mainnet',
-					selector: '124615329519749600',
-				},
-				chainFamily: 'solana',
-				networkType: 'mainnet',
-			},
-		],
-	]),
-	aptos: new Map<string, NetworkInfo>([
-		[
-			'aptos-mainnet',
-			{
-				chainId: '1',
-				chainSelector: {
-					name: 'aptos-mainnet',
-					selector: '4741433654826278000',
-				},
-				chainFamily: 'aptos',
-				networkType: 'mainnet',
-			},
-		],
-	]),
-	sui: new Map<string, NetworkInfo>([
-		[
-			'sui-mainnet',
-			{
-				chainId: '1',
-				chainSelector: {
-					name: 'sui-mainnet',
-					selector: '17529533435026248000',
-				},
-				chainFamily: 'sui',
-				networkType: 'mainnet',
-			},
-		],
-	]),
-	ton: new Map<string, NetworkInfo>([
-		[
-			'ton-mainnet',
-			{
-				chainId: '-239',
-				chainSelector: {
-					name: 'ton-mainnet',
-					selector: '16448340667252470000',
-				},
-				chainFamily: 'ton',
-				networkType: 'mainnet',
-			},
-		],
-	]),
-	tron: new Map<string, NetworkInfo>([
-		[
-			'tron-mainnet',
-			{
-				chainId: '728126428',
-				chainSelector: {
-					name: 'tron-mainnet',
-					selector: '1546563616611574000',
-				},
-				chainFamily: 'tron',
-				networkType: 'mainnet',
-			},
-		],
-	]),
+	solana: new Map<string, NetworkInfo>([['solana-mainnet', mainnet_solana_solana_mainnet]]),
+	aptos: new Map<string, NetworkInfo>([['aptos-mainnet', mainnet_aptos_aptos_mainnet]]),
+	sui: new Map<string, NetworkInfo>([['sui-mainnet', mainnet_sui_sui_mainnet]]),
+	ton: new Map<string, NetworkInfo>([['ton-mainnet', mainnet_ton_ton_mainnet]]),
+	tron: new Map<string, NetworkInfo>([['tron-mainnet', mainnet_tron_tron_mainnet]]),
 } as const
 
 export const testnetByNameByFamily = {
 	evm: new Map<string, NetworkInfo>([
-		[
-			'bitcoin-testnet-rootstock',
-			{
-				chainId: '31',
-				chainSelector: {
-					name: 'bitcoin-testnet-rootstock',
-					selector: '8953668971247136000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'telos-evm-testnet',
-			{
-				chainId: '41',
-				chainSelector: {
-					name: 'telos-evm-testnet',
-					selector: '729797994450396300',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'polkadot-testnet-darwinia-pangoro',
-			{
-				chainId: '45',
-				chainSelector: {
-					name: 'polkadot-testnet-darwinia-pangoro',
-					selector: '4340886533089894000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'xdc-testnet',
-			{
-				chainId: '51',
-				chainSelector: {
-					name: 'xdc-testnet',
-					selector: '3017758115101369000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'coinex_smart_chain-testnet',
-			{
-				chainId: '53',
-				chainSelector: {
-					name: 'coinex_smart_chain-testnet',
-					selector: '8955032871639343000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'polkadot-testnet-astar-shibuya',
-			{
-				chainId: '81',
-				chainSelector: {
-					name: 'polkadot-testnet-astar-shibuya',
-					selector: '6955638871347137000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'binance_smart_chain-testnet',
-			{
-				chainId: '97',
-				chainSelector: {
-					name: 'binance_smart_chain-testnet',
-					selector: '13264668187771770000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'velas-testnet',
-			{
-				chainId: '111',
-				chainSelector: {
-					name: 'velas-testnet',
-					selector: '572210378683744400',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-sepolia-hashkey-1',
-			{
-				chainId: '133',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-hashkey-1',
-					selector: '4356164186791070000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'shibarium-testnet-puppynet',
-			{
-				chainId: '157',
-				chainSelector: {
-					name: 'shibarium-testnet-puppynet',
-					selector: '17833296867764335000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-sepolia-xlayer-1',
-			{
-				chainId: '195',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-xlayer-1',
-					selector: '2066098519157881900',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'cronos-zkevm-testnet-sepolia',
-			{
-				chainId: '240',
-				chainSelector: {
-					name: 'cronos-zkevm-testnet-sepolia',
-					selector: '16487132492576885000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-goerli-zksync-1',
-			{
-				chainId: '280',
-				chainSelector: {
-					name: 'ethereum-testnet-goerli-zksync-1',
-					selector: '6802309497652714000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'cronos-testnet-zkevm-1',
-			{
-				chainId: '282',
-				chainSelector: {
-					name: 'cronos-testnet-zkevm-1',
-					selector: '3842103497652714000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'hedera-testnet',
-			{
-				chainId: '296',
-				chainSelector: {
-					name: 'hedera-testnet',
-					selector: '222782988166878820',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-sepolia-zksync-1',
-			{
-				chainId: '300',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-zksync-1',
-					selector: '6898391096552792000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'cronos-testnet',
-			{
-				chainId: '338',
-				chainSelector: {
-					name: 'cronos-testnet',
-					selector: '2995292832068775000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'near-testnet',
-			{
-				chainId: '398',
-				chainSelector: {
-					name: 'near-testnet',
-					selector: '5061593697262339000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-goerli-optimism-1',
-			{
-				chainId: '420',
-				chainSelector: {
-					name: 'ethereum-testnet-goerli-optimism-1',
-					selector: '2664363617261497000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'areon-testnet',
-			{
-				chainId: '462',
-				chainSelector: {
-					name: 'areon-testnet',
-					selector: '7317911323415911000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'janction-testnet-sepolia',
-			{
-				chainId: '679',
-				chainSelector: {
-					name: 'janction-testnet-sepolia',
-					selector: '5059197667603798000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'private-testnet-obsidian',
-			{
-				chainId: '682',
-				chainSelector: {
-					name: 'private-testnet-obsidian',
-					selector: '6260932437388305000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-sepolia-mode-1',
-			{
-				chainId: '919',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-mode-1',
-					selector: '829525985033418800',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'bittensor-testnet',
-			{
-				chainId: '945',
-				chainSelector: {
-					name: 'bittensor-testnet',
-					selector: '2177900824115119000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'hyperliquid-testnet',
-			{
-				chainId: '998',
-				chainSelector: {
-					name: 'hyperliquid-testnet',
-					selector: '4286062357653186600',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'kaia-testnet-kairos',
-			{
-				chainId: '1001',
-				chainSelector: {
-					name: 'kaia-testnet-kairos',
-					selector: '2624132734533622000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'bittorrent_chain-testnet',
-			{
-				chainId: '1029',
-				chainSelector: {
-					name: 'bittorrent_chain-testnet',
-					selector: '4459371029167934500',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'wemix-testnet',
-			{
-				chainId: '1112',
-				chainSelector: {
-					name: 'wemix-testnet',
-					selector: '9284632837123596000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'core-testnet',
-			{
-				chainId: '1114',
-				chainSelector: {
-					name: 'core-testnet',
-					selector: '4264732132125536000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'bitcoin-testnet-bsquared-1',
-			{
-				chainId: '1123',
-				chainSelector: {
-					name: 'bitcoin-testnet-bsquared-1',
-					selector: '1948510578179542000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'polkadot-testnet-moonbeam-moonbase',
-			{
-				chainId: '1287',
-				chainSelector: {
-					name: 'polkadot-testnet-moonbeam-moonbase',
-					selector: '5361632739113537000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-sepolia-unichain-1',
-			{
-				chainId: '1301',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-unichain-1',
-					selector: '14135854469784515000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'sei-testnet-atlantic',
-			{
-				chainId: '1328',
-				chainSelector: {
-					name: 'sei-testnet-atlantic',
-					selector: '1216300075444106800',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'geth-testnet',
-			{
-				chainId: '1337',
-				chainSelector: {
-					name: 'geth-testnet',
-					selector: '3379446385462418400',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
+		['bitcoin-testnet-rootstock', testnet_evm_bitcoin_testnet_rootstock],
+		['telos-evm-testnet', testnet_evm_telos_evm_testnet],
+		['polkadot-testnet-darwinia-pangoro', testnet_evm_polkadot_testnet_darwinia_pangoro],
+		['xdc-testnet', testnet_evm_xdc_testnet],
+		['coinex_smart_chain-testnet', testnet_evm_coinex_smart_chain_testnet],
+		['polkadot-testnet-astar-shibuya', testnet_evm_polkadot_testnet_astar_shibuya],
+		['binance_smart_chain-testnet', testnet_evm_binance_smart_chain_testnet],
+		['velas-testnet', testnet_evm_velas_testnet],
+		['ethereum-testnet-sepolia-hashkey-1', testnet_evm_ethereum_testnet_sepolia_hashkey_1],
+		['shibarium-testnet-puppynet', testnet_evm_shibarium_testnet_puppynet],
+		['ethereum-testnet-sepolia-xlayer-1', testnet_evm_ethereum_testnet_sepolia_xlayer_1],
+		['cronos-zkevm-testnet-sepolia', testnet_evm_cronos_zkevm_testnet_sepolia],
+		['ethereum-testnet-goerli-zksync-1', testnet_evm_ethereum_testnet_goerli_zksync_1],
+		['cronos-testnet-zkevm-1', testnet_evm_cronos_testnet_zkevm_1],
+		['hedera-testnet', testnet_evm_hedera_testnet],
+		['ethereum-testnet-sepolia-zksync-1', testnet_evm_ethereum_testnet_sepolia_zksync_1],
+		['cronos-testnet', testnet_evm_cronos_testnet],
+		['near-testnet', testnet_evm_near_testnet],
+		['ethereum-testnet-goerli-optimism-1', testnet_evm_ethereum_testnet_goerli_optimism_1],
+		['areon-testnet', testnet_evm_areon_testnet],
+		['janction-testnet-sepolia', testnet_evm_janction_testnet_sepolia],
+		['private-testnet-obsidian', testnet_evm_private_testnet_obsidian],
+		['ethereum-testnet-sepolia-mode-1', testnet_evm_ethereum_testnet_sepolia_mode_1],
+		['bittensor-testnet', testnet_evm_bittensor_testnet],
+		['hyperliquid-testnet', testnet_evm_hyperliquid_testnet],
+		['kaia-testnet-kairos', testnet_evm_kaia_testnet_kairos],
+		['bittorrent_chain-testnet', testnet_evm_bittorrent_chain_testnet],
+		['wemix-testnet', testnet_evm_wemix_testnet],
+		['core-testnet', testnet_evm_core_testnet],
+		['bitcoin-testnet-bsquared-1', testnet_evm_bitcoin_testnet_bsquared_1],
+		['polkadot-testnet-moonbeam-moonbase', testnet_evm_polkadot_testnet_moonbeam_moonbase],
+		['ethereum-testnet-sepolia-unichain-1', testnet_evm_ethereum_testnet_sepolia_unichain_1],
+		['sei-testnet-atlantic', testnet_evm_sei_testnet_atlantic],
+		['geth-testnet', testnet_evm_geth_testnet],
 		[
 			'ethereum-testnet-goerli-polygon-zkevm-1',
-			{
-				chainId: '1442',
-				chainSelector: {
-					name: 'ethereum-testnet-goerli-polygon-zkevm-1',
-					selector: '11059667695644973000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
+			testnet_evm_ethereum_testnet_goerli_polygon_zkevm_1,
 		],
-		[
-			'story-testnet',
-			{
-				chainId: '1513',
-				chainSelector: {
-					name: 'story-testnet',
-					selector: '4237030917318060500',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'mint-testnet',
-			{
-				chainId: '1687',
-				chainSelector: {
-					name: 'mint-testnet',
-					selector: '10749384167430722000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'metal-testnet',
-			{
-				chainId: '1740',
-				chainSelector: {
-					name: 'metal-testnet',
-					selector: '6286293440461808000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'bitcichain-testnet',
-			{
-				chainId: '1908',
-				chainSelector: {
-					name: 'bitcichain-testnet',
-					selector: '4888058894222120000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-sepolia-soneium-1',
-			{
-				chainId: '1946',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-soneium-1',
-					selector: '686603546605904500',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ronin-testnet-saigon',
-			{
-				chainId: '2021',
-				chainSelector: {
-					name: 'ronin-testnet-saigon',
-					selector: '13116810400804393000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'private-testnet-granite',
-			{
-				chainId: '2023',
-				chainSelector: {
-					name: 'private-testnet-granite',
-					selector: '3260900564719373300',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'private-testnet-andesite',
-			{
-				chainId: '2024',
-				chainSelector: {
-					name: 'private-testnet-andesite',
-					selector: '6915682381028791000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'dtcc-testnet-andesite',
-			{
-				chainId: '2025',
-				chainSelector: {
-					name: 'dtcc-testnet-andesite',
-					selector: '15513093881969820000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'polkadot-testnet-centrifuge-altair',
-			{
-				chainId: '2088',
-				chainSelector: {
-					name: 'polkadot-testnet-centrifuge-altair',
-					selector: '2333097300889805000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'memento-testnet',
-			{
-				chainId: '2129',
-				chainSelector: {
-					name: 'memento-testnet',
-					selector: '12168171414969487000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'kava-testnet',
-			{
-				chainId: '2221',
-				chainSelector: {
-					name: 'kava-testnet',
-					selector: '2110537777356199200',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-sepolia-kroma-1',
-			{
-				chainId: '2358',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-kroma-1',
-					selector: '5990477251245693000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'tac-testnet',
-			{
-				chainId: '2391',
-				chainSelector: {
-					name: 'tac-testnet',
-					selector: '9488606126177219000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
+		['story-testnet', testnet_evm_story_testnet],
+		['mint-testnet', testnet_evm_mint_testnet],
+		['metal-testnet', testnet_evm_metal_testnet],
+		['bitcichain-testnet', testnet_evm_bitcichain_testnet],
+		['ethereum-testnet-sepolia-soneium-1', testnet_evm_ethereum_testnet_sepolia_soneium_1],
+		['ronin-testnet-saigon', testnet_evm_ronin_testnet_saigon],
+		['private-testnet-granite', testnet_evm_private_testnet_granite],
+		['private-testnet-andesite', testnet_evm_private_testnet_andesite],
+		['dtcc-testnet-andesite', testnet_evm_dtcc_testnet_andesite],
+		['polkadot-testnet-centrifuge-altair', testnet_evm_polkadot_testnet_centrifuge_altair],
+		['memento-testnet', testnet_evm_memento_testnet],
+		['kava-testnet', testnet_evm_kava_testnet],
+		['ethereum-testnet-sepolia-kroma-1', testnet_evm_ethereum_testnet_sepolia_kroma_1],
+		['tac-testnet', testnet_evm_tac_testnet],
 		[
 			'ethereum-testnet-sepolia-polygon-zkevm-1',
-			{
-				chainId: '2442',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-polygon-zkevm-1',
-					selector: '1654667687261492700',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
+			testnet_evm_ethereum_testnet_sepolia_polygon_zkevm_1,
 		],
-		[
-			'ethereum-testnet-holesky-fraxtal-1',
-			{
-				chainId: '2522',
-				chainSelector: {
-					name: 'ethereum-testnet-holesky-fraxtal-1',
-					selector: '8901520481741772000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-holesky-morph-1',
-			{
-				chainId: '2810',
-				chainSelector: {
-					name: 'ethereum-testnet-holesky-morph-1',
-					selector: '8304510386741731000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'bitcoin-testnet-botanix',
-			{
-				chainId: '3636',
-				chainSelector: {
-					name: 'bitcoin-testnet-botanix',
-					selector: '1467223411771711500',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'fantom-testnet',
-			{
-				chainId: '4002',
-				chainSelector: {
-					name: 'fantom-testnet',
-					selector: '4905564228793744000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-sepolia-lisk-1',
-			{
-				chainId: '4202',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-lisk-1',
-					selector: '5298399861320401000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-sepolia-worldchain-1',
-			{
-				chainId: '4801',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-worldchain-1',
-					selector: '5299555114858066000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-goerli-mantle-1',
-			{
-				chainId: '5001',
-				chainSelector: {
-					name: 'ethereum-testnet-goerli-mantle-1',
-					selector: '4168263376276232000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-sepolia-mantle-1',
-			{
-				chainId: '5003',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-mantle-1',
-					selector: '8236463271206331000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'binance_smart_chain-testnet-opbnb-1',
-			{
-				chainId: '5611',
-				chainSelector: {
-					name: 'binance_smart_chain-testnet-opbnb-1',
-					selector: '13274425992935471000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'nexon-dev',
-			{
-				chainId: '5668',
-				chainSelector: {
-					name: 'nexon-dev',
-					selector: '8911150974185440000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'megaeth-testnet',
-			{
-				chainId: '6342',
-				chainSelector: {
-					name: 'megaeth-testnet',
-					selector: '2443239559770384400',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'nibiru-testnet',
-			{
-				chainId: '6930',
-				chainSelector: {
-					name: 'nibiru-testnet',
-					selector: '305104239123120450',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ondo-testnet',
-			{
-				chainId: '9000',
-				chainSelector: {
-					name: 'ondo-testnet',
-					selector: '344208382356656600',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'neonlink-testnet',
-			{
-				chainId: '9559',
-				chainSelector: {
-					name: 'neonlink-testnet',
-					selector: '1113014352258747600',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'plasma-testnet',
-			{
-				chainId: '9746',
-				chainSelector: {
-					name: 'plasma-testnet',
-					selector: '3967220077692964400',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'monad-testnet',
-			{
-				chainId: '10143',
-				chainSelector: {
-					name: 'monad-testnet',
-					selector: '2183018362218727400',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'gnosis_chain-testnet-chiado',
-			{
-				chainId: '10200',
-				chainSelector: {
-					name: 'gnosis_chain-testnet-chiado',
-					selector: '8871595565390010000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'abstract-testnet',
-			{
-				chainId: '11124',
-				chainSelector: {
-					name: 'abstract-testnet',
-					selector: '16235373811196387000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
+		['ethereum-testnet-holesky-fraxtal-1', testnet_evm_ethereum_testnet_holesky_fraxtal_1],
+		['ethereum-testnet-holesky-morph-1', testnet_evm_ethereum_testnet_holesky_morph_1],
+		['bitcoin-testnet-botanix', testnet_evm_bitcoin_testnet_botanix],
+		['fantom-testnet', testnet_evm_fantom_testnet],
+		['ethereum-testnet-sepolia-lisk-1', testnet_evm_ethereum_testnet_sepolia_lisk_1],
+		['ethereum-testnet-sepolia-worldchain-1', testnet_evm_ethereum_testnet_sepolia_worldchain_1],
+		['ethereum-testnet-goerli-mantle-1', testnet_evm_ethereum_testnet_goerli_mantle_1],
+		['ethereum-testnet-sepolia-mantle-1', testnet_evm_ethereum_testnet_sepolia_mantle_1],
+		['binance_smart_chain-testnet-opbnb-1', testnet_evm_binance_smart_chain_testnet_opbnb_1],
+		['nexon-dev', testnet_evm_nexon_dev],
+		['megaeth-testnet', testnet_evm_megaeth_testnet],
+		['nibiru-testnet', testnet_evm_nibiru_testnet],
+		['ondo-testnet', testnet_evm_ondo_testnet],
+		['neonlink-testnet', testnet_evm_neonlink_testnet],
+		['plasma-testnet', testnet_evm_plasma_testnet],
+		['monad-testnet', testnet_evm_monad_testnet],
+		['gnosis_chain-testnet-chiado', testnet_evm_gnosis_chain_testnet_chiado],
+		['abstract-testnet', testnet_evm_abstract_testnet],
 		[
 			'ethereum-testnet-sepolia-arbitrum-1-l3x-1',
-			{
-				chainId: '12325',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-arbitrum-1-l3x-1',
-					selector: '3486622437121596000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
+			testnet_evm_ethereum_testnet_sepolia_arbitrum_1_l3x_1,
 		],
 		[
 			'ethereum-testnet-sepolia-immutable-zkevm-1',
-			{
-				chainId: '13473',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-immutable-zkevm-1',
-					selector: '4526165231216332000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
+			testnet_evm_ethereum_testnet_sepolia_immutable_zkevm_1,
 		],
-		[
-			'0g-testnet-newton',
-			{
-				chainId: '16600',
-				chainSelector: {
-					name: '0g-testnet-newton',
-					selector: '16088006396410204000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'0g-testnet-galileo',
-			{
-				chainId: '16601',
-				chainSelector: {
-					name: '0g-testnet-galileo',
-					selector: '2131427466778448100',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-holesky',
-			{
-				chainId: '17000',
-				chainSelector: {
-					name: 'ethereum-testnet-holesky',
-					selector: '7717148896336251000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'anvil-devnet',
-			{
-				chainId: '31337',
-				chainSelector: {
-					name: 'anvil-devnet',
-					selector: '7759470850252069000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'apechain-testnet-curtis',
-			{
-				chainId: '33111',
-				chainSelector: {
-					name: 'apechain-testnet-curtis',
-					selector: '9900119385908781000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-sepolia-lens-1',
-			{
-				chainId: '37111',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-lens-1',
-					selector: '6827576821754316000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'avalanche-testnet-fuji',
-			{
-				chainId: '43113',
-				chainSelector: {
-					name: 'avalanche-testnet-fuji',
-					selector: '14767482510784807000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'celo-testnet-alfajores',
-			{
-				chainId: '44787',
-				chainSelector: {
-					name: 'celo-testnet-alfajores',
-					selector: '3552045678561919000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'private-testnet-opala',
-			{
-				chainId: '45439',
-				chainSelector: {
-					name: 'private-testnet-opala',
-					selector: '8446413392851542000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'zircuit-testnet-garfield',
-			{
-				chainId: '48898',
-				chainSelector: {
-					name: 'zircuit-testnet-garfield',
-					selector: '13781831279385220000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-sepolia-zircuit-1',
-			{
-				chainId: '48899',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-zircuit-1',
-					selector: '4562743618362911000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'superseed-testnet',
-			{
-				chainId: '53302',
-				chainSelector: {
-					name: 'superseed-testnet',
-					selector: '13694007683517088000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'sonic-testnet-blaze',
-			{
-				chainId: '57054',
-				chainSelector: {
-					name: 'sonic-testnet-blaze',
-					selector: '3676871237479449000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-goerli-linea-1',
-			{
-				chainId: '59140',
-				chainSelector: {
-					name: 'ethereum-testnet-goerli-linea-1',
-					selector: '1355246678561316400',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-sepolia-linea-1',
-			{
-				chainId: '59141',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-linea-1',
-					selector: '5719461335882077000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-sepolia-metis-1',
-			{
-				chainId: '59902',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-metis-1',
-					selector: '3777822886988675000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'polygon-testnet-mumbai',
-			{
-				chainId: '80001',
-				chainSelector: {
-					name: 'polygon-testnet-mumbai',
-					selector: '12532609583862917000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'polygon-testnet-amoy',
-			{
-				chainId: '80002',
-				chainSelector: {
-					name: 'polygon-testnet-amoy',
-					selector: '16281711391670634000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'berachain-testnet-bepolia',
-			{
-				chainId: '80069',
-				chainSelector: {
-					name: 'berachain-testnet-bepolia',
-					selector: '7728255861635209000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'berachain-testnet-bartio',
-			{
-				chainId: '80084',
-				chainSelector: {
-					name: 'berachain-testnet-bartio',
-					selector: '8999465244383784000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'berachain-testnet-artio',
-			{
-				chainId: '80085',
-				chainSelector: {
-					name: 'berachain-testnet-artio',
-					selector: '12336603543561912000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'zero-g-testnet-galileo',
-			{
-				chainId: '80087',
-				chainSelector: {
-					name: 'zero-g-testnet-galileo',
-					selector: '2285225387454015700',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-goerli-base-1',
-			{
-				chainId: '84531',
-				chainSelector: {
-					name: 'ethereum-testnet-goerli-base-1',
-					selector: '5790810961207156000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-sepolia-base-1',
-			{
-				chainId: '84532',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-base-1',
-					selector: '10344971235874466000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'plume-devnet',
-			{
-				chainId: '98864',
-				chainSelector: {
-					name: 'plume-devnet',
-					selector: '3743020999916461000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'plume-testnet-sepolia',
-			{
-				chainId: '98867',
-				chainSelector: {
-					name: 'plume-testnet-sepolia',
-					selector: '13874588925447303000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'etherlink-testnet',
-			{
-				chainId: '128123',
-				chainSelector: {
-					name: 'etherlink-testnet',
-					selector: '1910019406958449400',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'polygon-testnet-tatara',
-			{
-				chainId: '129399',
-				chainSelector: {
-					name: 'polygon-testnet-tatara',
-					selector: '9090863410735740000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-holesky-taiko-1',
-			{
-				chainId: '167009',
-				chainSelector: {
-					name: 'ethereum-testnet-holesky-taiko-1',
-					selector: '7248756420937880000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'mind-testnet',
-			{
-				chainId: '192940',
-				chainSelector: {
-					name: 'mind-testnet',
-					selector: '7189150270347330000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'bitcoin-testnet-bitlayer-1',
-			{
-				chainId: '200810',
-				chainSelector: {
-					name: 'bitcoin-testnet-bitlayer-1',
-					selector: '3789623672476206000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-goerli-arbitrum-1',
-			{
-				chainId: '421613',
-				chainSelector: {
-					name: 'ethereum-testnet-goerli-arbitrum-1',
-					selector: '6101244977088475000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-sepolia-arbitrum-1',
-			{
-				chainId: '421614',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-arbitrum-1',
-					selector: '3478487238524512000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'private-testnet-mica',
-			{
-				chainId: '424242',
-				chainSelector: {
-					name: 'private-testnet-mica',
-					selector: '4489326297382772000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'avalanche-subnet-dexalot-testnet',
-			{
-				chainId: '432201',
-				chainSelector: {
-					name: 'avalanche-subnet-dexalot-testnet',
-					selector: '1458281248224513000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-sepolia-scroll-1',
-			{
-				chainId: '534351',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-scroll-1',
-					selector: '2279865765895943400',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'avalanche-testnet-nexon',
-			{
-				chainId: '595581',
-				chainSelector: {
-					name: 'avalanche-testnet-nexon',
-					selector: '7837562506228496000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'bitcoin-testnet-merlin',
-			{
-				chainId: '686868',
-				chainSelector: {
-					name: 'bitcoin-testnet-merlin',
-					selector: '5269261765892944000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'pharos-testnet',
-			{
-				chainId: '688688',
-				chainSelector: {
-					name: 'pharos-testnet',
-					selector: '4012524741200567300',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
+		['0g-testnet-newton', testnet_evm_0g_testnet_newton],
+		['0g-testnet-galileo', testnet_evm_0g_testnet_galileo],
+		['ethereum-testnet-holesky', testnet_evm_ethereum_testnet_holesky],
+		['anvil-devnet', testnet_evm_anvil_devnet],
+		['apechain-testnet-curtis', testnet_evm_apechain_testnet_curtis],
+		['ethereum-testnet-sepolia-lens-1', testnet_evm_ethereum_testnet_sepolia_lens_1],
+		['avalanche-testnet-fuji', testnet_evm_avalanche_testnet_fuji],
+		['celo-testnet-alfajores', testnet_evm_celo_testnet_alfajores],
+		['private-testnet-opala', testnet_evm_private_testnet_opala],
+		['zircuit-testnet-garfield', testnet_evm_zircuit_testnet_garfield],
+		['ethereum-testnet-sepolia-zircuit-1', testnet_evm_ethereum_testnet_sepolia_zircuit_1],
+		['superseed-testnet', testnet_evm_superseed_testnet],
+		['sonic-testnet-blaze', testnet_evm_sonic_testnet_blaze],
+		['ethereum-testnet-goerli-linea-1', testnet_evm_ethereum_testnet_goerli_linea_1],
+		['ethereum-testnet-sepolia-linea-1', testnet_evm_ethereum_testnet_sepolia_linea_1],
+		['ethereum-testnet-sepolia-metis-1', testnet_evm_ethereum_testnet_sepolia_metis_1],
+		['polygon-testnet-mumbai', testnet_evm_polygon_testnet_mumbai],
+		['polygon-testnet-amoy', testnet_evm_polygon_testnet_amoy],
+		['berachain-testnet-bepolia', testnet_evm_berachain_testnet_bepolia],
+		['berachain-testnet-bartio', testnet_evm_berachain_testnet_bartio],
+		['berachain-testnet-artio', testnet_evm_berachain_testnet_artio],
+		['zero-g-testnet-galileo', testnet_evm_zero_g_testnet_galileo],
+		['ethereum-testnet-goerli-base-1', testnet_evm_ethereum_testnet_goerli_base_1],
+		['ethereum-testnet-sepolia-base-1', testnet_evm_ethereum_testnet_sepolia_base_1],
+		['plume-devnet', testnet_evm_plume_devnet],
+		['plume-testnet-sepolia', testnet_evm_plume_testnet_sepolia],
+		['etherlink-testnet', testnet_evm_etherlink_testnet],
+		['polygon-testnet-tatara', testnet_evm_polygon_testnet_tatara],
+		['ethereum-testnet-holesky-taiko-1', testnet_evm_ethereum_testnet_holesky_taiko_1],
+		['mind-testnet', testnet_evm_mind_testnet],
+		['bitcoin-testnet-bitlayer-1', testnet_evm_bitcoin_testnet_bitlayer_1],
+		['ethereum-testnet-goerli-arbitrum-1', testnet_evm_ethereum_testnet_goerli_arbitrum_1],
+		['ethereum-testnet-sepolia-arbitrum-1', testnet_evm_ethereum_testnet_sepolia_arbitrum_1],
+		['private-testnet-mica', testnet_evm_private_testnet_mica],
+		['avalanche-subnet-dexalot-testnet', testnet_evm_avalanche_subnet_dexalot_testnet],
+		['ethereum-testnet-sepolia-scroll-1', testnet_evm_ethereum_testnet_sepolia_scroll_1],
+		['avalanche-testnet-nexon', testnet_evm_avalanche_testnet_nexon],
+		['bitcoin-testnet-merlin', testnet_evm_bitcoin_testnet_merlin],
+		['pharos-testnet', testnet_evm_pharos_testnet],
 		[
 			'ethereum-testnet-sepolia-polygon-validium-1',
-			{
-				chainId: '717160',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-polygon-validium-1',
-					selector: '4418231248214523000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
+			testnet_evm_ethereum_testnet_sepolia_polygon_validium_1,
 		],
-		[
-			'hemi-testnet-sepolia',
-			{
-				chainId: '743111',
-				chainSelector: {
-					name: 'hemi-testnet-sepolia',
-					selector: '16126893759944360000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ink-testnet-sepolia',
-			{
-				chainId: '763373',
-				chainSelector: {
-					name: 'ink-testnet-sepolia',
-					selector: '9763904284804119000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'bitcoin-testnet-sepolia-bob-1',
-			{
-				chainId: '808813',
-				chainSelector: {
-					name: 'bitcoin-testnet-sepolia-bob-1',
-					selector: '5535534526963509000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'zklink_nova-testnet',
-			{
-				chainId: '810181',
-				chainSelector: {
-					name: 'zklink_nova-testnet',
-					selector: '5837261596322417000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'codex-testnet',
-			{
-				chainId: '812242',
-				chainSelector: {
-					name: 'codex-testnet',
-					selector: '7225665875429174000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
+		['hemi-testnet-sepolia', testnet_evm_hemi_testnet_sepolia],
+		['ink-testnet-sepolia', testnet_evm_ink_testnet_sepolia],
+		['bitcoin-testnet-sepolia-bob-1', testnet_evm_bitcoin_testnet_sepolia_bob_1],
+		['zklink_nova-testnet', testnet_evm_zklink_nova_testnet],
+		['codex-testnet', testnet_evm_codex_testnet],
 		[
 			'ethereum-testnet-sepolia-arbitrum-1-treasure-1',
-			{
-				chainId: '978657',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-arbitrum-1-treasure-1',
-					selector: '10443705513486043000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
+			testnet_evm_ethereum_testnet_sepolia_arbitrum_1_treasure_1,
 		],
-		[
-			'treasure-testnet-topaz',
-			{
-				chainId: '978658',
-				chainSelector: {
-					name: 'treasure-testnet-topaz',
-					selector: '3676916124122458000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'jovay-testnet',
-			{
-				chainId: '2019775',
-				chainSelector: {
-					name: 'jovay-testnet',
-					selector: '945045181441419300',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-sepolia',
-			{
-				chainId: '11155111',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia',
-					selector: '16015286601757825000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-sepolia-optimism-1',
-			{
-				chainId: '11155420',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-optimism-1',
-					selector: '5224473277236332000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'neox-testnet-t4',
-			{
-				chainId: '12227332',
-				chainSelector: {
-					name: 'neox-testnet-t4',
-					selector: '2217764097022649300',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-sepolia-corn-1',
-			{
-				chainId: '21000001',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-corn-1',
-					selector: '1467427327723634000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'filecoin-testnet',
-			{
-				chainId: '31415926',
-				chainSelector: {
-					name: 'filecoin-testnet',
-					selector: '7060342227814389000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'plume-testnet',
-			{
-				chainId: '161221135',
-				chainSelector: {
-					name: 'plume-testnet',
-					selector: '14684575664602284000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ethereum-testnet-sepolia-blast-1',
-			{
-				chainId: '168587773',
-				chainSelector: {
-					name: 'ethereum-testnet-sepolia-blast-1',
-					selector: '2027362563942762500',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'zora-testnet',
-			{
-				chainId: '999999999',
-				chainSelector: {
-					name: 'zora-testnet',
-					selector: '16244020411108057000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'tron-testnet-shasta-evm',
-			{
-				chainId: '2494104990',
-				chainSelector: {
-					name: 'tron-testnet-shasta-evm',
-					selector: '13231703482326770000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'tron-devnet-evm',
-			{
-				chainId: '3360022319',
-				chainSelector: {
-					name: 'tron-devnet-evm',
-					selector: '13231703482326770000',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'tron-testnet-nile-evm',
-			{
-				chainId: '3448148188',
-				chainSelector: {
-					name: 'tron-testnet-nile-evm',
-					selector: '2052925811360307700',
-				},
-				chainFamily: 'evm',
-				networkType: 'testnet',
-			},
-		],
+		['treasure-testnet-topaz', testnet_evm_treasure_testnet_topaz],
+		['jovay-testnet', testnet_evm_jovay_testnet],
+		['ethereum-testnet-sepolia', testnet_evm_ethereum_testnet_sepolia],
+		['ethereum-testnet-sepolia-optimism-1', testnet_evm_ethereum_testnet_sepolia_optimism_1],
+		['neox-testnet-t4', testnet_evm_neox_testnet_t4],
+		['ethereum-testnet-sepolia-corn-1', testnet_evm_ethereum_testnet_sepolia_corn_1],
+		['filecoin-testnet', testnet_evm_filecoin_testnet],
+		['plume-testnet', testnet_evm_plume_testnet],
+		['ethereum-testnet-sepolia-blast-1', testnet_evm_ethereum_testnet_sepolia_blast_1],
+		['zora-testnet', testnet_evm_zora_testnet],
+		['tron-testnet-shasta-evm', testnet_evm_tron_testnet_shasta_evm],
+		['tron-devnet-evm', testnet_evm_tron_devnet_evm],
+		['tron-testnet-nile-evm', testnet_evm_tron_testnet_nile_evm],
 	]),
 	solana: new Map<string, NetworkInfo>([
-		[
-			'solana-testnet',
-			{
-				chainId: '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3zQawwpjk2NsNY',
-				chainSelector: {
-					name: 'solana-testnet',
-					selector: '6302590918974934000',
-				},
-				chainFamily: 'solana',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'solana-devnet',
-			{
-				chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG',
-				chainSelector: {
-					name: 'solana-devnet',
-					selector: '16423721717087812000',
-				},
-				chainFamily: 'solana',
-				networkType: 'testnet',
-			},
-		],
+		['solana-testnet', testnet_solana_solana_testnet],
+		['solana-devnet', testnet_solana_solana_devnet],
 	]),
 	aptos: new Map<string, NetworkInfo>([
-		[
-			'aptos-testnet',
-			{
-				chainId: '2',
-				chainSelector: {
-					name: 'aptos-testnet',
-					selector: '743186221051783400',
-				},
-				chainFamily: 'aptos',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'aptos-localnet',
-			{
-				chainId: '4',
-				chainSelector: {
-					name: 'aptos-localnet',
-					selector: '4457093679053095400',
-				},
-				chainFamily: 'aptos',
-				networkType: 'testnet',
-			},
-		],
+		['aptos-testnet', testnet_aptos_aptos_testnet],
+		['aptos-localnet', testnet_aptos_aptos_localnet],
 	]),
 	sui: new Map<string, NetworkInfo>([
-		[
-			'sui-testnet',
-			{
-				chainId: '2',
-				chainSelector: {
-					name: 'sui-testnet',
-					selector: '9762610643973837000',
-				},
-				chainFamily: 'sui',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'sui-localnet',
-			{
-				chainId: '4',
-				chainSelector: {
-					name: 'sui-localnet',
-					selector: '18395503381733958000',
-				},
-				chainFamily: 'sui',
-				networkType: 'testnet',
-			},
-		],
+		['sui-testnet', testnet_sui_sui_testnet],
+		['sui-localnet', testnet_sui_sui_localnet],
 	]),
 	ton: new Map<string, NetworkInfo>([
-		[
-			'ton-testnet',
-			{
-				chainId: '-3',
-				chainSelector: {
-					name: 'ton-testnet',
-					selector: '1399300952838017800',
-				},
-				chainFamily: 'ton',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'ton-localnet',
-			{
-				chainId: '-217',
-				chainSelector: {
-					name: 'ton-localnet',
-					selector: '13879075125137744000',
-				},
-				chainFamily: 'ton',
-				networkType: 'testnet',
-			},
-		],
+		['ton-testnet', testnet_ton_ton_testnet],
+		['ton-localnet', testnet_ton_ton_localnet],
 	]),
 	tron: new Map<string, NetworkInfo>([
-		[
-			'tron-testnet-shasta',
-			{
-				chainId: '2494104990',
-				chainSelector: {
-					name: 'tron-testnet-shasta',
-					selector: '13231703482326770000',
-				},
-				chainFamily: 'tron',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'tron-devnet',
-			{
-				chainId: '3360022319',
-				chainSelector: {
-					name: 'tron-devnet',
-					selector: '13231703482326770000',
-				},
-				chainFamily: 'tron',
-				networkType: 'testnet',
-			},
-		],
-		[
-			'tron-testnet-nile',
-			{
-				chainId: '3448148188',
-				chainSelector: {
-					name: 'tron-testnet-nile',
-					selector: '2052925811360307700',
-				},
-				chainFamily: 'tron',
-				networkType: 'testnet',
-			},
-		],
+		['tron-testnet-shasta', testnet_tron_tron_testnet_shasta],
+		['tron-devnet', testnet_tron_tron_devnet],
+		['tron-testnet-nile', testnet_tron_tron_testnet_nile],
 	]),
 } as const
