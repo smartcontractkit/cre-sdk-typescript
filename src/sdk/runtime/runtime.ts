@@ -14,7 +14,7 @@ import { getTimeAsDate } from '@cre/sdk/utils/time/get-time'
  * If not the prepared error will be thrown.
  */
 export const runtimeGuards = (() => {
-	let currentMode: Mode = Mode.DON
+	let currentMode: Mode = Mode.UNSPECIFIED
 	let donModeGuardError: DonModeError | null = null
 	let nodeModeGuardError: NodeModeError | null = new NodeModeError()
 
@@ -76,7 +76,6 @@ export type NodeRuntime = BaseRuntime<Mode.NODE> & {
 // Shared implementation for mode switching
 function switchModes(mode: Mode.NODE): NodeRuntime
 function switchModes(mode: Mode.DON): Runtime
-function switchModes(mode: Mode): Runtime | NodeRuntime
 function switchModes(mode: Mode): Runtime | NodeRuntime {
 	// Changing to the same mode should be a noop, we make sure to actually call switching logic if it's different mode
 	if (mode !== runtimeGuards.getMode()) {

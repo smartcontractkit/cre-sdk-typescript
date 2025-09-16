@@ -1,33 +1,29 @@
-import { SimpleConsensusInputsSchema } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import { create } from '@bufbuild/protobuf'
-import { consensusDescriptorIdentical, observationValue } from '@cre/sdk/utils/values/consensus'
+import { consensusIdenticalAggregation } from '@cre/sdk/utils'
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
 import { BasicActionCapability as NodeActionCapability } from '@cre/generated-sdk/capabilities/internal/nodeaction/v1/basicaction_sdk_gen'
 import { cre, type NodeRuntime } from '@cre/sdk/cre'
 import { NodeModeError } from '@cre/sdk/runtime/errors'
-import { Value } from '@cre/sdk/utils/values/value'
 
 const handler = async () => {
 	// First, run in node mode and do consensus - this makes the expected CallCapability call
+	var nrt: NodeRuntime | undefined = undefined
 	await cre.runInNodeMode(async (nodeRuntime: NodeRuntime) => {
-		const consensusInput = create(SimpleConsensusInputsSchema, {
-			observation: observationValue(new Value('hi')),
-			descriptors: consensusDescriptorIdentical,
-		})
-
-		return consensusInput
-	})
+		nrt = nodeRuntime
+		return "hi"
+	}, consensusIdenticalAggregation())()
 
 	try {
 		// Now we're back in DON mode, try to use a NODE mode capability
 		// This should trigger assertNodeSafe() and throw "cannot use NodeRuntime outside RunInNodeMode"
+		// We shoudl be using node runtime here in future...
+		const _ = nrt
 		const nodeActionCapability = new NodeActionCapability()
 		await nodeActionCapability.performAction({ inputThing: true })
 	} catch (e) {
 		console.log('error', e)
 		if (e instanceof NodeModeError) {
 			// The runtime guards should catch this and throw the expected error
-			cre.sendError('cannot use NodeRuntime outside RunInNodeMode')
+			cre.sendError(e)
 		} else {
 			// Should still fail the test if something else got broken
 			throw e
