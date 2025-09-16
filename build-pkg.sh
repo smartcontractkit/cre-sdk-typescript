@@ -12,3 +12,7 @@ chmod +x dist/bin/cre-ts
 bun rimraf tsconfig.types.tsbuildinfo 
 
 cp package.json dist/package.json
+
+cd dist
+
+bun pm pkg set scripts.postinstall="node ./install.js"

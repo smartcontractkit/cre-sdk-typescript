@@ -20,6 +20,11 @@
         "ts-proto": "2.7.5",
         "typescript": "5.9.2",
       },
+      "optionalDependencies": {
+        "@chainlink/cre-ts-linux-arm": "0.0.1",
+        "@chainlink/cre-ts-linux-x64": "0.0.1",
+        "@chainlink/cre-ts-windows-x64": "0.0.1",
+      },
     },
   },
   "packages": {

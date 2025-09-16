@@ -97,20 +97,6 @@ async function downloadBinaryFromNpm() {
   )
 }
 
-function extractBinaryFromLocalTarball() {
-  // Read the tarball from the local file system
-  const tarballPath = path.join(__dirname, "../../../..", "cre-sdk-typescript", 'dist', 'chainlink-cre-build-darwin-arm64-0.0.1.tgz')
-  const tarballDownloadBuffer = fs.readFileSync(tarballPath)
-
-  const tarballBuffer = zlib.unzipSync(tarballDownloadBuffer)
-  // Extract binary from package and write to disk
-  fs.writeFileSync(
-    fallbackBinaryPath,
-    extractFileFromTarball(tarballBuffer, `package/bin/${binaryName}`),
-    { mode: 0o755 } // Make binary file executable
-  )
-}
-
 function isPlatformSpecificPackageInstalled() {
   try {
     // Resolving will fail if the optionalDependency was not installed
@@ -128,7 +114,7 @@ if (!platformSpecificPackageName) {
 // Skip downloading the binary if it was already installed via optionalDependencies
 if (!isPlatformSpecificPackageInstalled()) {
   console.log('Platform specific package not found. Will manually download binary.')
-  extractBinaryFromLocalTarball()
+  downloadBinaryFromNpm()
 } else {
   console.log(
     'Platform specific package already installed. Will fall back to manually downloading binary.'

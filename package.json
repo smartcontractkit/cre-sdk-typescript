@@ -58,8 +58,7 @@
 		"build": "bun build --target=node --entrypoints ./src/sdk/index.ts ./src/sdk/utils/index.ts ./src/sdk/runtime/index.ts --outdir=dist && bun run build:declaration && bun run build:cli",
 		"build:cli": "bun build ./scripts/run.ts --target=bun-darwin-arm64 --compile --outfile dist/bin/cre-build-darwin-arm64 && chmod +x dist/bin/cre-build-darwin-arm64 && cp bin/* dist/bin/",
 		"build:declaration": "tsc --emitDeclarationOnly --project tsconfig.types.json",
-		"postbuild": "rimraf tsconfig.types.tsbuildinfo && cp package.json dist/package.json",
-		"postinstall": "node ./install.js"
+		"postbuild": "rimraf tsconfig.types.tsbuildinfo && cp package.json dist/package.json"
 	},
 	"dependencies": {
 		"@bufbuild/protobuf": "2.6.3",
