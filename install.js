@@ -103,6 +103,7 @@ function isPlatformSpecificPackageInstalled() {
     require.resolve(`${platformSpecificPackageName}/bin/${binaryName}`)
     return true
   } catch (e) {
+    console.warn(`Could not resolve platform-specific package: ${platformSpecificPackageName}. Falling back to manual download. Error:`, e.message);
     return false
   }
 }
