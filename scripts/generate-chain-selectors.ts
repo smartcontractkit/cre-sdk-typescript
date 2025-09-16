@@ -25,6 +25,7 @@ const NonEvmSelectorsSchema = z.object({
 });
 
 type ChainFamily = "evm" | "solana" | "aptos" | "sui" | "ton" | "tron";
+type NetworkType = "mainnet" | "testnet";
 
 interface NetworkInfo {
   chainId: string;
@@ -33,6 +34,7 @@ interface NetworkInfo {
     selector: string;
   };
   chainFamily: ChainFamily;
+  networkType: NetworkType;
 }
 
 interface ChainSelectorConfig {
@@ -122,6 +124,7 @@ const parseChainSelectors = (): NetworkInfo[] => {
             selector: typedSelectorData.selector.toString(),
           },
           chainFamily: config.family,
+          networkType: detectNetworkType(typedSelectorData.name),
         });
       }
 
@@ -136,6 +139,46 @@ const parseChainSelectors = (): NetworkInfo[] => {
   }
 
   return allNetworks;
+};
+
+const detectNetworkType = (networkName: string): NetworkType => {
+  const name = networkName.toLowerCase();
+
+  // Check for testnet indicators
+  const testnetIndicators = [
+    "testnet",
+    "test",
+    "devnet",
+    "dev",
+    "localnet",
+    "local",
+    "goerli",
+    "sepolia",
+    "holesky",
+    "mumbai",
+    "amoy",
+    "fuji",
+    "chapel",
+    "shasta",
+    "nile",
+    "kairos",
+    "shibuya",
+    "pangoro",
+    "cardona",
+    "puppynet",
+    "alfajores",
+    "moonbase",
+    "tatara",
+  ];
+
+  // Check if any testnet indicator is present
+  for (const indicator of testnetIndicators) {
+    if (name.includes(indicator)) {
+      return "testnet";
+    }
+  }
+
+  return "mainnet";
 };
 
 const sanitizeFilename = (name: string): string => {
@@ -156,25 +199,31 @@ const generateNetworkFiles = (networks: NetworkInfo[]): void => {
   // Create base directory
   mkdirSync(baseDir, { recursive: true });
 
-  // Group networks by family
-  const networksByFamily = networks.reduce((acc, network) => {
-    if (!acc[network.chainFamily]) {
-      acc[network.chainFamily] = [];
+  // Group networks by network type and then by family
+  const networksByTypeAndFamily = networks.reduce((acc, network) => {
+    if (!acc[network.networkType]) {
+      acc[network.networkType] = {} as Record<ChainFamily, NetworkInfo[]>;
     }
-    acc[network.chainFamily].push(network);
+    if (!acc[network.networkType][network.chainFamily]) {
+      acc[network.networkType][network.chainFamily] = [];
+    }
+    acc[network.networkType][network.chainFamily].push(network);
     return acc;
-  }, {} as Record<ChainFamily, NetworkInfo[]>);
+  }, {} as Record<NetworkType, Record<ChainFamily, NetworkInfo[]>>);
 
-  // Create directories and files for each family
-  for (const [family, familyNetworks] of Object.entries(networksByFamily)) {
-    const familyDir = join(baseDir, family);
-    mkdirSync(familyDir, { recursive: true });
+  // Create directories and files for each network type and family
+  for (const [networkType, familiesInType] of Object.entries(
+    networksByTypeAndFamily
+  )) {
+    for (const [family, familyNetworks] of Object.entries(familiesInType)) {
+      const familyDir = join(baseDir, networkType, family);
+      mkdirSync(familyDir, { recursive: true });
 
-    for (const network of familyNetworks) {
-      const filename = sanitizeFilename(network.chainSelector.name);
-      const filepath = join(familyDir, `${filename}.ts`);
+      for (const network of familyNetworks) {
+        const filename = sanitizeFilename(network.chainSelector.name);
+        const filepath = join(familyDir, `${filename}.ts`);
 
-      const fileContent = `// This file is auto-generated. Do not edit manually.
+        const fileContent = `// This file is auto-generated. Do not edit manually.
 // Generated from: https://github.com/smartcontractkit/chain-selectors
 
 import type { NetworkInfo } from "@cre/sdk/utils/chain-selectors/types";
@@ -186,25 +235,49 @@ const network: NetworkInfo = {
 		selector: "${network.chainSelector.selector}",
 	},
 	chainFamily: "${network.chainFamily}",
+	networkType: "${network.networkType}",
 } as const;
 
 export default network;
 `;
 
-      writeFileSync(filepath, fileContent);
-    }
+        writeFileSync(filepath, fileContent);
+      }
 
-    console.log(`📁 Created ${familyNetworks.length} ${family} network files`);
+      console.log(
+        `📁 Created ${familyNetworks.length} ${networkType}/${family} network files`
+      );
+    }
   }
 };
 
 const generateAllNetworksFile = (networks: NetworkInfo[]): void => {
+  // Group networks by type and family for exports
+  const mainnetNetworks = networks.filter((n) => n.networkType === "mainnet");
+  const testnetNetworks = networks.filter((n) => n.networkType === "testnet");
+
+  const mainnetByFamily = mainnetNetworks.reduce((acc, network) => {
+    if (!acc[network.chainFamily]) {
+      acc[network.chainFamily] = [];
+    }
+    acc[network.chainFamily].push(network);
+    return acc;
+  }, {} as Record<ChainFamily, NetworkInfo[]>);
+
+  const testnetByFamily = testnetNetworks.reduce((acc, network) => {
+    if (!acc[network.chainFamily]) {
+      acc[network.chainFamily] = [];
+    }
+    acc[network.chainFamily].push(network);
+    return acc;
+  }, {} as Record<ChainFamily, NetworkInfo[]>);
+
   const content = `// This file is auto-generated. Do not edit manually.
 // Generated from: https://github.com/smartcontractkit/chain-selectors
 
-import type { NetworkInfo } from "@cre/sdk/utils/chain-selectors/types";
+import type { NetworkInfo, ChainFamily } from "@cre/sdk/utils/chain-selectors/types";
 
-export const ALL_NETWORKS: NetworkInfo[] = [
+export const allNetworks: NetworkInfo[] = [
 ${networks
   .map(
     (network) => `	{
@@ -214,14 +287,59 @@ ${networks
 			selector: "${network.chainSelector.selector}",
 		},
 		chainFamily: "${network.chainFamily}",
+		networkType: "${network.networkType}",
 	},`
   )
   .join("\n")}
 ] as const;
+
+export const mainnet = {
+${Object.entries(mainnetByFamily)
+  .map(
+    ([family, networks]) => `	${family}: [
+${networks
+  .map(
+    (network) => `		{
+			chainId: "${network.chainId}",
+			chainSelector: {
+				name: "${network.chainSelector.name}",
+				selector: "${network.chainSelector.selector}",
+			},
+			chainFamily: "${network.chainFamily}",
+			networkType: "${network.networkType}",
+		},`
+  )
+  .join("\n")}
+	] as const,`
+  )
+  .join("\n")}
+} as const;
+
+export const testnet = {
+${Object.entries(testnetByFamily)
+  .map(
+    ([family, networks]) => `	${family}: [
+${networks
+  .map(
+    (network) => `		{
+			chainId: "${network.chainId}",
+			chainSelector: {
+				name: "${network.chainSelector.name}",
+				selector: "${network.chainSelector.selector}",
+			},
+			chainFamily: "${network.chainFamily}",
+			networkType: "${network.networkType}",
+		},`
+  )
+  .join("\n")}
+	] as const,`
+  )
+  .join("\n")}
+} as const;
 `;
 
   writeFileSync("src/generated/networks.ts", content);
-  console.log("📄 Created networks array file");
+  console.log("📄 Created networks array file with mainnet/testnet grouping");
 };
 
 const main = () => {
