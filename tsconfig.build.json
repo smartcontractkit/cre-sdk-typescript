@@ -1,18 +1,20 @@
 {
 	"compilerOptions": {
 		// Enable latest features
-		"lib": ["ESNext", "DOM", "DOM.Iterable"],
+		"lib": ["ESNext", "DOM"],
 		"target": "ESNext",
 		"module": "ESNext",
 		"moduleDetection": "force",
 		"jsx": "react-jsx",
 		"allowJs": true,
+		"outDir": "./dist",
+		"rootDir": "./src",
 
 		// Bundler mode
 		"moduleResolution": "bundler",
-		"allowImportingTsExtensions": true,
 		"verbatimModuleSyntax": true,
-		"noEmit": true,
+		"noEmit": false,
+		"declaration": true,
 
 		// Path aliases
 		"baseUrl": ".",
@@ -34,6 +36,7 @@
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true
 	},
-	"include": ["src/**/*", "scripts/**/*.ts"],
+
+	"include": ["src/**/*"],
 	"exclude": ["ai/**/*"]
 }
