@@ -1,0 +1,258 @@
+#!/usr/bin/env bun
+
+import { readFileSync, writeFileSync, mkdirSync, rmSync } from "node:fs";
+import { join } from "node:path";
+import { parse } from "yaml";
+import { z } from "zod";
+
+// Zod schemas for validation
+const EvmSelectorSchema = z.object({
+  selector: z.number(),
+  name: z.string().optional(),
+});
+
+const NonEvmSelectorSchema = z.object({
+  selector: z.number(),
+  name: z.string().optional(),
+});
+
+const EvmSelectorsSchema = z.object({
+  selectors: z.record(z.string(), EvmSelectorSchema),
+});
+
+const NonEvmSelectorsSchema = z.object({
+  selectors: z.record(z.string(), NonEvmSelectorSchema),
+});
+
+type ChainFamily = "evm" | "solana" | "aptos" | "sui" | "ton" | "tron";
+
+interface NetworkInfo {
+  chainId: string;
+  chainSelector: {
+    name: string;
+    selector: string;
+  };
+  chainFamily: ChainFamily;
+}
+
+interface ChainSelectorConfig {
+  family: ChainFamily;
+  filename: string;
+  schema: typeof EvmSelectorsSchema | typeof NonEvmSelectorsSchema;
+}
+
+const CHAIN_CONFIGS: ChainSelectorConfig[] = [
+  {
+    family: "evm",
+    filename: "selectors.yml",
+    schema: EvmSelectorsSchema,
+  },
+  {
+    family: "solana",
+    filename: "selectors_solana.yml",
+    schema: NonEvmSelectorsSchema,
+  },
+  {
+    family: "aptos",
+    filename: "selectors_aptos.yml",
+    schema: NonEvmSelectorsSchema,
+  },
+  {
+    family: "sui",
+    filename: "selectors_sui.yml",
+    schema: NonEvmSelectorsSchema,
+  },
+  {
+    family: "ton",
+    filename: "selectors_ton.yml",
+    schema: NonEvmSelectorsSchema,
+  },
+  {
+    family: "tron",
+    filename: "selectors_tron.yml",
+    schema: NonEvmSelectorsSchema,
+  },
+];
+
+const readYamlFile = (filename: string): string => {
+  const chainSelectorsPath = join(
+    process.cwd(),
+    "node_modules",
+    "chain-selectors",
+    filename
+  );
+  try {
+    return readFileSync(chainSelectorsPath, "utf-8");
+  } catch (error) {
+    throw new Error(`Failed to read ${filename}: ${error}`);
+  }
+};
+
+const parseChainSelectors = (): NetworkInfo[] => {
+  const allNetworks: NetworkInfo[] = [];
+
+  for (const config of CHAIN_CONFIGS) {
+    try {
+      console.log(
+        `📂 Reading ${config.family} selectors from ${config.filename}...`
+      );
+      const yamlContent = readYamlFile(config.filename);
+      const parsed = parse(yamlContent);
+      const validated = config.schema.parse(parsed);
+
+      for (const [chainId, selectorData] of Object.entries(
+        validated.selectors
+      )) {
+        const typedSelectorData = selectorData as {
+          selector: number;
+          name?: string;
+        };
+        // Skip entries without names (they might be test or incomplete entries)
+        if (!typedSelectorData.name) {
+          console.log(
+            `⚠️  Skipping ${config.family} chain ${chainId} - no name provided`
+          );
+          continue;
+        }
+
+        allNetworks.push({
+          chainId,
+          chainSelector: {
+            name: typedSelectorData.name,
+            selector: typedSelectorData.selector.toString(),
+          },
+          chainFamily: config.family,
+        });
+      }
+
+      console.log(
+        `✅ Parsed ${Object.keys(validated.selectors).length} ${
+          config.family
+        } networks`
+      );
+    } catch (error) {
+      console.error(`❌ Failed to process ${config.family}:`, error);
+    }
+  }
+
+  return allNetworks;
+};
+
+const sanitizeFilename = (name: string): string => {
+  // Replace invalid characters with dots and ensure it's a valid filename
+  return name.replace(/[^a-zA-Z0-9.-]/g, ".").replace(/\.+/g, ".");
+};
+
+const generateNetworkFiles = (networks: NetworkInfo[]): void => {
+  const baseDir = "src/generated/chain-selectors";
+
+  // Clean up existing directory
+  try {
+    rmSync(baseDir, { recursive: true, force: true });
+  } catch (error) {
+    // Directory might not exist, that's ok
+  }
+
+  // Create base directory
+  mkdirSync(baseDir, { recursive: true });
+
+  // Group networks by family
+  const networksByFamily = networks.reduce((acc, network) => {
+    if (!acc[network.chainFamily]) {
+      acc[network.chainFamily] = [];
+    }
+    acc[network.chainFamily].push(network);
+    return acc;
+  }, {} as Record<ChainFamily, NetworkInfo[]>);
+
+  // Create directories and files for each family
+  for (const [family, familyNetworks] of Object.entries(networksByFamily)) {
+    const familyDir = join(baseDir, family);
+    mkdirSync(familyDir, { recursive: true });
+
+    for (const network of familyNetworks) {
+      const filename = sanitizeFilename(network.chainSelector.name);
+      const filepath = join(familyDir, `${filename}.ts`);
+
+      const fileContent = `// This file is auto-generated. Do not edit manually.
+// Generated from: https://github.com/smartcontractkit/chain-selectors
+
+import type { NetworkInfo } from "@cre/sdk/utils/chain-selectors/types";
+
+const network: NetworkInfo = {
+	chainId: "${network.chainId}",
+	chainSelector: {
+		name: "${network.chainSelector.name}",
+		selector: "${network.chainSelector.selector}",
+	},
+	chainFamily: "${network.chainFamily}",
+} as const;
+
+export default network;
+`;
+
+      writeFileSync(filepath, fileContent);
+    }
+
+    console.log(`📁 Created ${familyNetworks.length} ${family} network files`);
+  }
+};
+
+const generateAllNetworksFile = (networks: NetworkInfo[]): void => {
+  const content = `// This file is auto-generated. Do not edit manually.
+// Generated from: https://github.com/smartcontractkit/chain-selectors
+
+import type { NetworkInfo } from "@cre/sdk/utils/chain-selectors/types";
+
+export const ALL_NETWORKS: NetworkInfo[] = [
+${networks
+  .map(
+    (network) => `	{
+		chainId: "${network.chainId}",
+		chainSelector: {
+			name: "${network.chainSelector.name}",
+			selector: "${network.chainSelector.selector}",
+		},
+		chainFamily: "${network.chainFamily}",
+	},`
+  )
+  .join("\n")}
+] as const;
+`;
+
+  writeFileSync("src/generated/networks.ts", content);
+  console.log("📄 Created networks array file");
+};
+
+const main = () => {
+  try {
+    console.log("🚀 Starting chain selectors generation...");
+
+    const networks = parseChainSelectors();
+    console.log(`📊 Total networks processed: ${networks.length}`);
+
+    // Generate individual network files
+    generateNetworkFiles(networks);
+
+    // Generate main networks array
+    generateAllNetworksFile(networks);
+
+    // Generate summary stats
+    const stats = networks.reduce((acc, network) => {
+      acc[network.chainFamily] = (acc[network.chainFamily] || 0) + 1;
+      return acc;
+    }, {} as Record<ChainFamily, number>);
+
+    console.log("📈 Summary by family:");
+    Object.entries(stats).forEach(([family, count]) => {
+      console.log(`  ${family}: ${count} networks`);
+    });
+  } catch (error) {
+    console.error("💥 Generation failed:", error);
+    process.exit(1);
+  }
+};
+
+if (import.meta.main) {
+  main();
+}

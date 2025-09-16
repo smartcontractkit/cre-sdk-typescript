@@ -1,0 +1,15 @@
+// This file is auto-generated. Do not edit manually.
+// Generated from: https://github.com/smartcontractkit/chain-selectors
+
+import type { NetworkInfo } from '../../sdk/utils/chain-selectors/types'
+
+const network: NetworkInfo = {
+	chainId: '679',
+	chainSelector: {
+		name: 'janction-testnet-sepolia',
+		selector: '5059197667603798000',
+	},
+	chainFamily: 'evm',
+} as const
+
+export default network

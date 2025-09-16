@@ -20,6 +20,7 @@
     "start": "bun --watch src/index.ts",
     "typecheck": "tsc",
     "build:generate:sdk": "bun proto:generate && bun scripts/generate-sdks.ts && BIOME_PATHS=\"src/generated src/generated-sdk\" bun biome:format",
+    "generate:chain-selectors": "bun scripts/generate-chain-selectors.ts && BIOME_PATHS=\"src/generated\" bun biome:format",
     "proto:generate": "bunx @bufbuild/buf generate",
     "proto:lint": "bunx @bufbuild/buf lint",
     "proto:format": "bunx @bufbuild/buf format --write",
@@ -38,8 +39,10 @@
     "@biomejs/biome": "2.1.3",
     "@bufbuild/buf": "1.56.0",
     "@types/bun": "1.2.21",
+    "chain-selectors": "https://github.com/smartcontractkit/chain-selectors.git#8b963095ae797a3024c8e55822cced7bf618176f",
     "fast-glob": "3.3.3",
     "ts-proto": "2.7.5",
-    "typescript": "5.9.2"
+    "typescript": "5.9.2",
+    "yaml": "2.8.1"
   }
 }

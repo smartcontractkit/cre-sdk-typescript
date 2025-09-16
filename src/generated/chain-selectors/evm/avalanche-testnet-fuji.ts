@@ -1,0 +1,15 @@
+// This file is auto-generated. Do not edit manually.
+// Generated from: https://github.com/smartcontractkit/chain-selectors
+
+import type { NetworkInfo } from '../../sdk/utils/chain-selectors/types'
+
+const network: NetworkInfo = {
+	chainId: '43113',
+	chainSelector: {
+		name: 'avalanche-testnet-fuji',
+		selector: '14767482510784807000',
+	},
+	chainFamily: 'evm',
+} as const
+
+export default network
