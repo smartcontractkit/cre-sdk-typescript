@@ -1,0 +1,65 @@
+{
+  "name": "@chainlink/cre-sdk",
+  "version": "0.0.1",
+  "type": "module",
+  "files": [
+    "dist/**/*",
+    "bin/**/*"
+  ],
+  "bin": {
+    "cre-build": "bin/cre-ts"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "exports": {
+    "utils": {
+      "default": "./dist/sdk/utils/index.js",
+      "types": "./dist/sdk/utils/index.d.ts"
+    },
+    "runtime": {
+      "default": "./dist/sdk/runtime/index.js",
+      "types": "./dist/sdk/runtime/index.d.ts"
+    },
+    "sdk": {
+      "default": "./dist/sdk/index.js",
+      "types": "./dist/sdk/index.d.ts"
+    }
+  },
+  "scripts": {
+    "check": "biome check --write",
+    "format": "biome format --write ${BIOME_PATHS:-.}",
+    "generate:chain-selectors": "bun scripts/run.ts generate-chain-selectors && BIOME_PATHS=\"src/generated\" bun format",
+    "generate:proto": "bunx @bufbuild/buf generate",
+    "generate:sdk": "bun generate:chain-selectors && bun generate:proto && bun scripts/run generate-sdks && BIOME_PATHS=\"src/generated src/generated-sdk\" bun format",
+    "lint": "biome lint --write",
+    "test": "bun test",
+    "test:standard": "./scripts/run-standard-tests.sh",
+    "typecheck": "tsc",
+    "test:standard:compile": "bun scripts/run.ts compile-standard-test",
+    "test:standard:compile:js": "bun scripts/run.ts compile-standard-test-js",
+    "test:standard:compile:wasm": "bun scripts/run.ts compile-standard-test-wasm"
+  },
+  "dependencies": {
+    "@bufbuild/protobuf": "2.6.3",
+    "@bufbuild/protoc-gen-es": "2.6.3",
+    "@standard-schema/spec": "1.0.0",
+    "viem": "2.34.0",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.2.4",
+    "@bufbuild/buf": "1.56.0",
+    "@types/bun": "1.2.21",
+    "chain-selectors": "https://github.com/smartcontractkit/chain-selectors.git#8b963095ae797a3024c8e55822cced7bf618176f",
+    "fast-glob": "3.3.3",
+    "ts-proto": "2.7.5",
+    "typescript": "5.9.2",
+    "yaml": "2.8.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "SmartContract Chainlink Limited SEZC",
+  "license": "SEE LICENSE IN LICENSE.md"
+}
