@@ -1,0 +1,131 @@
+name: Publish Main Package
+
+on:
+  release:
+    types: [published]
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g., 1.0.0)'
+        required: false
+        type: string
+      dry_run:
+        description: 'Run in dry-run mode (do not actually publish)'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  BUN_VERSION: '1.2.21'
+
+jobs:
+  build-and-publish-main:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # for npm provenance
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Update version if specified
+        if: ${{ github.event.inputs.version }}
+        run: |
+          echo "Updating version to ${{ github.event.inputs.version }}"
+          bun pm version ${{ github.event.inputs.version }}
+
+      - name: Build packages
+        run: |
+          echo "Running build-npm-tar.sh..."
+          bash build-npm-tar.sh
+
+      - name: List generated packages
+        run: |
+          echo "Generated packages:"
+          ls -la pkg/*.tgz
+
+      - name: Setup npm authentication
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+          echo "registry=https://registry.npmjs.org/" >> ~/.npmrc
+          echo "access=public" >> ~/.npmrc
+
+      - name: Verify npm authentication
+        run: bun pm whoami
+
+      - name: Publish main package
+        run: |
+          MAIN_PACKAGE=$(find pkg -name "*cre-sdk-*.tgz" | head -1)
+          if [ -n "$MAIN_PACKAGE" ]; then
+            echo "Publishing main package: $MAIN_PACKAGE"
+            if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+              echo "DRY RUN: Would publish $MAIN_PACKAGE"
+              bun publish "$MAIN_PACKAGE" --dry-run --access public
+            else
+              bun publish "$MAIN_PACKAGE" --access public
+            fi
+          else
+            echo "Main package not found!"
+            exit 1
+          fi
+
+      - name: Upload main package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: main-package
+          path: pkg/*cre-sdk-*.tgz
+          retention-days: 30
+
+      - name: Create release summary
+        if: ${{ !github.event.inputs.dry_run }}
+        run: |
+          echo "## 📦 Published Main Package" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          MAIN_PACKAGE=$(find pkg -name "*cre-sdk-*.tgz" | head -1 | xargs basename)
+          echo "- 📋 \`@chainlink/cre-sdk\` from \`$MAIN_PACKAGE\`" >> $GITHUB_STEP_SUMMARY
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Installation" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+          echo "# Using npm" >> $GITHUB_STEP_SUMMARY
+          echo "npm install @chainlink/cre-sdk" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "# Using bun" >> $GITHUB_STEP_SUMMARY
+          echo "bun add @chainlink/cre-sdk" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+  verify-main-package:
+    needs: build-and-publish-main
+    runs-on: ubuntu-latest
+    if: ${{ !github.event.inputs.dry_run }}
+    
+    steps:
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Wait for package propagation
+        run: sleep 60
+
+      - name: Verify main package installation
+        run: |
+          echo "Verifying @chainlink/cre-sdk can be installed..."
+          bun add @chainlink/cre-sdk --dry-run
+          echo "✅ Main package verification successful"
