@@ -5,6 +5,9 @@ export const main = async () => {
 
 	await $`mkdir -p dist`
 
+	await $`chmod +x ../bin/javy-arm-macos-v5.0.4`
+	// for each platform compile the plugin
+
 	await $`bun javy init-plugin plugins/javy_chainlink_sdk/target/wasm32-wasip1/release/javy_chainlink_sdk.wasm -o dist/javy-chainlink-sdk.plugin.wasm`
 
 	console.info('Done!')
