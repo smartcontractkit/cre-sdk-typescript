@@ -79,38 +79,37 @@ export function generateSdk(file: GenFile, outputDir: string) {
 			outputPathTypes.add(`type ${method.output.name}`)
 		})
 
-		// Check if we have any triggers
+		
 		const hasTriggers = service.methods.some((m) => m.methodKind === 'server_streaming')
+		const hasActions = service.methods.some((m) => m.methodKind !== 'server_streaming')
+		const modePrefix = capOption.mode === Mode.NODE ? 'Mode.NODE' : ''
 
 		// Build import statements
 		const imports = new Set<string>()
 		if (hasTriggers) {
-			imports.add('import { fromBinary, toBinary, fromJson, create } from "@bufbuild/protobuf";')
+			imports.add('import { fromJson, create } from "@bufbuild/protobuf"')
 		} else {
-			imports.add('import { fromBinary, toBinary, fromJson } from "@bufbuild/protobuf";')
+			imports.add('import { fromJson } from "@bufbuild/protobuf"')
 		}
-		imports.add(`import {
-  Mode,
-  type CapabilityResponse,
-} from "@cre/generated/sdk/v1alpha/sdk_pb";`)
-		imports.add(`import { callCapability } from "@cre/sdk/utils/capabilities/call-capability";`)
-		imports.add(`import { CapabilityError } from "@cre/sdk/utils/capabilities/capability-error";`)
 
 		// Add trigger imports if needed
 		if (hasTriggers) {
-			imports.add(`import { type Trigger } from "@cre/sdk/utils/triggers/trigger-interface";`)
-			imports.add(`import { type Any, AnySchema } from "@bufbuild/protobuf/wkt";`)
+			imports.add(`import { type Trigger } from "@cre/sdk/utils/triggers/trigger-interface"`)
+			imports.add(`import { type Any, AnySchema } from "@bufbuild/protobuf/wkt"`)
 		}
 
-		// Always import getTypeUrl when we generate Any payloads
-		imports.add(`import { getTypeUrl } from "@cre/sdk/utils/typeurl";`)
+		// TODO???
+		if (hasActions || true) {
+			imports.add(`import { type ${modePrefix}Runtime } from "@cre/sdk/runtime/runtime"`)
+		}
+
 
 		// Generate deduplicated type imports
 		typeImports.forEach((types, path) => {
 			const sortedTypes = Array.from(types).sort()
 			imports.add(`import {
   ${sortedTypes.join(',\n  ')},
-} from "${path}";`)
+} from "${path}"`)
 		})
 
 		const capabilityClassName = `${service.name}Capability`
@@ -139,7 +138,7 @@ export function generateSdk(file: GenFile, outputDir: string) {
 				}
 
 				// Generate action method
-				return generateActionMethod(method, methodName, capabilityClassName, hasChainSelector)
+				return generateActionMethod(method, methodName, capabilityClassName, hasChainSelector, modePrefix)
 			})
 			.join('\n')
 
@@ -149,14 +148,12 @@ export function generateSdk(file: GenFile, outputDir: string) {
 			.map((method) => generateTriggerClass(method, service.name))
 			.join('\n')
 
-		// Determine default mode from metadata: NODE is specifically stated, DON otherwise.
-		const defaultMode = capOption.mode === Mode.NODE ? 'Mode.NODE' : 'Mode.DON'
 
 		const [capabilityName, capabilityVersion] = capOption.capabilityId.split('@')
 
 		// Extract chainSelector support
 		let chainSelectorSupport = ''
-		let constructorParams = `private readonly mode: Mode = ${service.name}Capability.DEFAULT_MODE`
+		let constructorParams = ``
 
 		if (hasChainSelector && capOption.labels) {
 			const chainSelectorLabel = capOption.labels.ChainSelector as any
@@ -171,7 +168,7 @@ export function generateSdk(file: GenFile, outputDir: string) {
 ${Object.entries(defaults)
 	.map(([key, value]) => `    "${key}": ${value}n`)
 	.join(',\n')}
-  } as const;`
+  } as const`
 
 				constructorParams = `${constructorParams},\n    private readonly chainSelector?: bigint`
 			}
@@ -183,7 +180,6 @@ ${Object.entries(defaults)
  * ${service.name} Capability
  * 
  * Capability ID: ${capOption.capabilityId}
- * Default Mode: ${defaultMode}
  * Capability Name: ${capabilityName}
  * Capability Version: ${capabilityVersion}
  */`
@@ -194,9 +190,6 @@ ${classComment}
 export class ${capabilityClassName} {
   /** The capability ID for this service */
   static readonly CAPABILITY_ID = "${capOption.capabilityId}";
-  
-  /** The default execution mode for this capability */
-  static readonly DEFAULT_MODE = ${defaultMode};
 
   static readonly CAPABILITY_NAME = "${capabilityName}";
   static readonly CAPABILITY_VERSION = "${capabilityVersion}";

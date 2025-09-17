@@ -160,7 +160,7 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
                     }
             
                     const consensus = new ConsensusCapability()
-                    const result = await consensus.simple(consensusInput)
+                    const result = await consensus.simple(this, consensusInput)
                     const wrappedValue = Value.wrap(result)
                     
                     return unwrapOptions 

@@ -19,7 +19,7 @@ export function generateTriggerMethod(
 
 	return `
   ${methodName}(config: ${method.input.name}Json): ${triggerClassName} {
-    return new ${triggerClassName}(this.mode, config, ${capabilityClassName}.CAPABILITY_ID, "${method.name}");
+    return new ${triggerClassName}(config, ${capabilityClassName}.CAPABILITY_ID, "${method.name}");
   }`
 }
 
@@ -41,7 +41,6 @@ export function generateTriggerClass(method: DescMethod, className: string): str
 class ${triggerClassName} implements Trigger<${method.output.name}, ${method.output.name}> {
   public readonly config: ${method.input.name}
   constructor(
-    public readonly mode: Mode,
     config: ${method.input.name} | ${method.input.name}Json,
     private readonly _capabilityId: string,
     private readonly _method: string

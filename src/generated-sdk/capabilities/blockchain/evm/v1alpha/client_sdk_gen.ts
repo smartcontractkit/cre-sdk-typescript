@@ -1,13 +1,7 @@
-import { fromBinary, toBinary, fromJson, create } from "@bufbuild/protobuf";
-import {
-  Mode,
-  type CapabilityResponse,
-} from "@cre/generated/sdk/v1alpha/sdk_pb";
-import { callCapability } from "@cre/sdk/utils/capabilities/call-capability";
-import { CapabilityError } from "@cre/sdk/utils/capabilities/capability-error";
-import { type Trigger } from "@cre/sdk/utils/triggers/trigger-interface";
-import { type Any, AnySchema } from "@bufbuild/protobuf/wkt";
-import { getTypeUrl } from "@cre/sdk/utils/typeurl";
+import { fromJson, create } from "@bufbuild/protobuf"
+import { type Trigger } from "@cre/sdk/utils/triggers/trigger-interface"
+import { type Any, AnySchema } from "@bufbuild/protobuf/wkt"
+import { type Runtime } from "@cre/sdk/runtime/runtime"
 import {
   BalanceAtReplySchema,
   BalanceAtRequestSchema,
@@ -60,26 +54,22 @@ import {
   type WriteReportReply,
   type WriteReportRequest,
   type WriteReportRequestJson,
-} from "@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb";
+} from "@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb"
 import {
   EmptySchema,
   type Empty,
-} from "@bufbuild/protobuf/wkt";
+} from "@bufbuild/protobuf/wkt"
 
 /**
  * Client Capability
  * 
  * Capability ID: evm@1.0.0
- * Default Mode: Mode.DON
  * Capability Name: evm
  * Capability Version: 1.0.0
  */
 export class ClientCapability {
   /** The capability ID for this service */
   static readonly CAPABILITY_ID = "evm@1.0.0";
-  
-  /** The default execution mode for this capability */
-  static readonly DEFAULT_MODE = Mode.DON;
 
   static readonly CAPABILITY_NAME = "evm";
   static readonly CAPABILITY_VERSION = "1.0.0";
@@ -99,395 +89,205 @@ export class ClientCapability {
     "ethereum-testnet-sepolia-optimism-1": 5224473277236331295n,
     "polygon-mainnet": 4051577828743386545n,
     "polygon-testnet-amoy": 16281711391670634445n
-  } as const;
+  } as const
 
   constructor(
-    private readonly mode: Mode = ClientCapability.DEFAULT_MODE,
+    ,
     private readonly chainSelector?: bigint
   ) {}
 
-  async callContract(input: CallContractRequest |  CallContractRequestJson): Promise<CallContractReply> {
+  async callContract(runtime: Runtime<any>, input: CallContractRequest |  CallContractRequestJson): Promise<CallContractReply> {
     // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-    const value = (input as any).$typeName ? input as CallContractRequest : fromJson(CallContractRequestSchema, input as CallContractRequestJson)
-    const payload = {
-      typeUrl: getTypeUrl(CallContractRequestSchema),
-      value: toBinary(CallContractRequestSchema, value),
-    };
+    const payload = (input as any).$typeName ? input as CallContractRequest : fromJson(CallContractRequestSchema, input as CallContractRequestJson)
+    
+    
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
       ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
     
-    return callCapability({
+    return runtime.callCapability<CallContractRequest, CallContractReply>({
       capabilityId,
       method: "CallContract",
-      mode: this.mode,
       payload,
-    }).then((capabilityResponse: CapabilityResponse) => {
-      if (capabilityResponse.response.case === "error") {
-        throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId,
-          method: "CallContract",
-          mode: this.mode,
-        });
-      }
-
-      if (capabilityResponse.response.case !== "payload") {
-        throw new CapabilityError("No payload in response", {
-          capabilityId,
-          method: "CallContract",
-          mode: this.mode,
-        });
-      }
-
-      return fromBinary(CallContractReplySchema, capabilityResponse.response.value.value);
-    });
+      inputSchema: CallContractRequestSchema,
+      outputSchema: CallContractReplySchema
+    })
   }
 
-  async filterLogs(input: FilterLogsRequest |  FilterLogsRequestJson): Promise<FilterLogsReply> {
+  async filterLogs(runtime: Runtime<any>, input: FilterLogsRequest |  FilterLogsRequestJson): Promise<FilterLogsReply> {
     // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-    const value = (input as any).$typeName ? input as FilterLogsRequest : fromJson(FilterLogsRequestSchema, input as FilterLogsRequestJson)
-    const payload = {
-      typeUrl: getTypeUrl(FilterLogsRequestSchema),
-      value: toBinary(FilterLogsRequestSchema, value),
-    };
+    const payload = (input as any).$typeName ? input as FilterLogsRequest : fromJson(FilterLogsRequestSchema, input as FilterLogsRequestJson)
+    
+    
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
       ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
     
-    return callCapability({
+    return runtime.callCapability<FilterLogsRequest, FilterLogsReply>({
       capabilityId,
       method: "FilterLogs",
-      mode: this.mode,
       payload,
-    }).then((capabilityResponse: CapabilityResponse) => {
-      if (capabilityResponse.response.case === "error") {
-        throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId,
-          method: "FilterLogs",
-          mode: this.mode,
-        });
-      }
-
-      if (capabilityResponse.response.case !== "payload") {
-        throw new CapabilityError("No payload in response", {
-          capabilityId,
-          method: "FilterLogs",
-          mode: this.mode,
-        });
-      }
-
-      return fromBinary(FilterLogsReplySchema, capabilityResponse.response.value.value);
-    });
+      inputSchema: FilterLogsRequestSchema,
+      outputSchema: FilterLogsReplySchema
+    })
   }
 
-  async balanceAt(input: BalanceAtRequest |  BalanceAtRequestJson): Promise<BalanceAtReply> {
+  async balanceAt(runtime: Runtime<any>, input: BalanceAtRequest |  BalanceAtRequestJson): Promise<BalanceAtReply> {
     // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-    const value = (input as any).$typeName ? input as BalanceAtRequest : fromJson(BalanceAtRequestSchema, input as BalanceAtRequestJson)
-    const payload = {
-      typeUrl: getTypeUrl(BalanceAtRequestSchema),
-      value: toBinary(BalanceAtRequestSchema, value),
-    };
+    const payload = (input as any).$typeName ? input as BalanceAtRequest : fromJson(BalanceAtRequestSchema, input as BalanceAtRequestJson)
+    
+    
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
       ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
     
-    return callCapability({
+    return runtime.callCapability<BalanceAtRequest, BalanceAtReply>({
       capabilityId,
       method: "BalanceAt",
-      mode: this.mode,
       payload,
-    }).then((capabilityResponse: CapabilityResponse) => {
-      if (capabilityResponse.response.case === "error") {
-        throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId,
-          method: "BalanceAt",
-          mode: this.mode,
-        });
-      }
-
-      if (capabilityResponse.response.case !== "payload") {
-        throw new CapabilityError("No payload in response", {
-          capabilityId,
-          method: "BalanceAt",
-          mode: this.mode,
-        });
-      }
-
-      return fromBinary(BalanceAtReplySchema, capabilityResponse.response.value.value);
-    });
+      inputSchema: BalanceAtRequestSchema,
+      outputSchema: BalanceAtReplySchema
+    })
   }
 
-  async estimateGas(input: EstimateGasRequest |  EstimateGasRequestJson): Promise<EstimateGasReply> {
+  async estimateGas(runtime: Runtime<any>, input: EstimateGasRequest |  EstimateGasRequestJson): Promise<EstimateGasReply> {
     // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-    const value = (input as any).$typeName ? input as EstimateGasRequest : fromJson(EstimateGasRequestSchema, input as EstimateGasRequestJson)
-    const payload = {
-      typeUrl: getTypeUrl(EstimateGasRequestSchema),
-      value: toBinary(EstimateGasRequestSchema, value),
-    };
+    const payload = (input as any).$typeName ? input as EstimateGasRequest : fromJson(EstimateGasRequestSchema, input as EstimateGasRequestJson)
+    
+    
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
       ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
     
-    return callCapability({
+    return runtime.callCapability<EstimateGasRequest, EstimateGasReply>({
       capabilityId,
       method: "EstimateGas",
-      mode: this.mode,
       payload,
-    }).then((capabilityResponse: CapabilityResponse) => {
-      if (capabilityResponse.response.case === "error") {
-        throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId,
-          method: "EstimateGas",
-          mode: this.mode,
-        });
-      }
-
-      if (capabilityResponse.response.case !== "payload") {
-        throw new CapabilityError("No payload in response", {
-          capabilityId,
-          method: "EstimateGas",
-          mode: this.mode,
-        });
-      }
-
-      return fromBinary(EstimateGasReplySchema, capabilityResponse.response.value.value);
-    });
+      inputSchema: EstimateGasRequestSchema,
+      outputSchema: EstimateGasReplySchema
+    })
   }
 
-  async getTransactionByHash(input: GetTransactionByHashRequest |  GetTransactionByHashRequestJson): Promise<GetTransactionByHashReply> {
+  async getTransactionByHash(runtime: Runtime<any>, input: GetTransactionByHashRequest |  GetTransactionByHashRequestJson): Promise<GetTransactionByHashReply> {
     // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-    const value = (input as any).$typeName ? input as GetTransactionByHashRequest : fromJson(GetTransactionByHashRequestSchema, input as GetTransactionByHashRequestJson)
-    const payload = {
-      typeUrl: getTypeUrl(GetTransactionByHashRequestSchema),
-      value: toBinary(GetTransactionByHashRequestSchema, value),
-    };
+    const payload = (input as any).$typeName ? input as GetTransactionByHashRequest : fromJson(GetTransactionByHashRequestSchema, input as GetTransactionByHashRequestJson)
+    
+    
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
       ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
     
-    return callCapability({
+    return runtime.callCapability<GetTransactionByHashRequest, GetTransactionByHashReply>({
       capabilityId,
       method: "GetTransactionByHash",
-      mode: this.mode,
       payload,
-    }).then((capabilityResponse: CapabilityResponse) => {
-      if (capabilityResponse.response.case === "error") {
-        throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId,
-          method: "GetTransactionByHash",
-          mode: this.mode,
-        });
-      }
-
-      if (capabilityResponse.response.case !== "payload") {
-        throw new CapabilityError("No payload in response", {
-          capabilityId,
-          method: "GetTransactionByHash",
-          mode: this.mode,
-        });
-      }
-
-      return fromBinary(GetTransactionByHashReplySchema, capabilityResponse.response.value.value);
-    });
+      inputSchema: GetTransactionByHashRequestSchema,
+      outputSchema: GetTransactionByHashReplySchema
+    })
   }
 
-  async getTransactionReceipt(input: GetTransactionReceiptRequest |  GetTransactionReceiptRequestJson): Promise<GetTransactionReceiptReply> {
+  async getTransactionReceipt(runtime: Runtime<any>, input: GetTransactionReceiptRequest |  GetTransactionReceiptRequestJson): Promise<GetTransactionReceiptReply> {
     // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-    const value = (input as any).$typeName ? input as GetTransactionReceiptRequest : fromJson(GetTransactionReceiptRequestSchema, input as GetTransactionReceiptRequestJson)
-    const payload = {
-      typeUrl: getTypeUrl(GetTransactionReceiptRequestSchema),
-      value: toBinary(GetTransactionReceiptRequestSchema, value),
-    };
+    const payload = (input as any).$typeName ? input as GetTransactionReceiptRequest : fromJson(GetTransactionReceiptRequestSchema, input as GetTransactionReceiptRequestJson)
+    
+    
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
       ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
     
-    return callCapability({
+    return runtime.callCapability<GetTransactionReceiptRequest, GetTransactionReceiptReply>({
       capabilityId,
       method: "GetTransactionReceipt",
-      mode: this.mode,
       payload,
-    }).then((capabilityResponse: CapabilityResponse) => {
-      if (capabilityResponse.response.case === "error") {
-        throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId,
-          method: "GetTransactionReceipt",
-          mode: this.mode,
-        });
-      }
-
-      if (capabilityResponse.response.case !== "payload") {
-        throw new CapabilityError("No payload in response", {
-          capabilityId,
-          method: "GetTransactionReceipt",
-          mode: this.mode,
-        });
-      }
-
-      return fromBinary(GetTransactionReceiptReplySchema, capabilityResponse.response.value.value);
-    });
+      inputSchema: GetTransactionReceiptRequestSchema,
+      outputSchema: GetTransactionReceiptReplySchema
+    })
   }
 
-  async headerByNumber(input: HeaderByNumberRequest |  HeaderByNumberRequestJson): Promise<HeaderByNumberReply> {
+  async headerByNumber(runtime: Runtime<any>, input: HeaderByNumberRequest |  HeaderByNumberRequestJson): Promise<HeaderByNumberReply> {
     // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-    const value = (input as any).$typeName ? input as HeaderByNumberRequest : fromJson(HeaderByNumberRequestSchema, input as HeaderByNumberRequestJson)
-    const payload = {
-      typeUrl: getTypeUrl(HeaderByNumberRequestSchema),
-      value: toBinary(HeaderByNumberRequestSchema, value),
-    };
+    const payload = (input as any).$typeName ? input as HeaderByNumberRequest : fromJson(HeaderByNumberRequestSchema, input as HeaderByNumberRequestJson)
+    
+    
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
       ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
     
-    return callCapability({
+    return runtime.callCapability<HeaderByNumberRequest, HeaderByNumberReply>({
       capabilityId,
       method: "HeaderByNumber",
-      mode: this.mode,
       payload,
-    }).then((capabilityResponse: CapabilityResponse) => {
-      if (capabilityResponse.response.case === "error") {
-        throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId,
-          method: "HeaderByNumber",
-          mode: this.mode,
-        });
-      }
-
-      if (capabilityResponse.response.case !== "payload") {
-        throw new CapabilityError("No payload in response", {
-          capabilityId,
-          method: "HeaderByNumber",
-          mode: this.mode,
-        });
-      }
-
-      return fromBinary(HeaderByNumberReplySchema, capabilityResponse.response.value.value);
-    });
+      inputSchema: HeaderByNumberRequestSchema,
+      outputSchema: HeaderByNumberReplySchema
+    })
   }
 
-  async registerLogTracking(input: RegisterLogTrackingRequest |  RegisterLogTrackingRequestJson): Promise<Empty> {
+  async registerLogTracking(runtime: Runtime<any>, input: RegisterLogTrackingRequest |  RegisterLogTrackingRequestJson): Promise<Empty> {
     // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-    const value = (input as any).$typeName ? input as RegisterLogTrackingRequest : fromJson(RegisterLogTrackingRequestSchema, input as RegisterLogTrackingRequestJson)
-    const payload = {
-      typeUrl: getTypeUrl(RegisterLogTrackingRequestSchema),
-      value: toBinary(RegisterLogTrackingRequestSchema, value),
-    };
+    const payload = (input as any).$typeName ? input as RegisterLogTrackingRequest : fromJson(RegisterLogTrackingRequestSchema, input as RegisterLogTrackingRequestJson)
+    
+    
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
       ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
     
-    return callCapability({
+    return runtime.callCapability<RegisterLogTrackingRequest, Empty>({
       capabilityId,
       method: "RegisterLogTracking",
-      mode: this.mode,
       payload,
-    }).then((capabilityResponse: CapabilityResponse) => {
-      if (capabilityResponse.response.case === "error") {
-        throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId,
-          method: "RegisterLogTracking",
-          mode: this.mode,
-        });
-      }
-
-      if (capabilityResponse.response.case !== "payload") {
-        throw new CapabilityError("No payload in response", {
-          capabilityId,
-          method: "RegisterLogTracking",
-          mode: this.mode,
-        });
-      }
-
-      return fromBinary(EmptySchema, capabilityResponse.response.value.value);
-    });
+      inputSchema: RegisterLogTrackingRequestSchema,
+      outputSchema: EmptySchema
+    })
   }
 
-  async unregisterLogTracking(input: UnregisterLogTrackingRequest |  UnregisterLogTrackingRequestJson): Promise<Empty> {
+  async unregisterLogTracking(runtime: Runtime<any>, input: UnregisterLogTrackingRequest |  UnregisterLogTrackingRequestJson): Promise<Empty> {
     // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-    const value = (input as any).$typeName ? input as UnregisterLogTrackingRequest : fromJson(UnregisterLogTrackingRequestSchema, input as UnregisterLogTrackingRequestJson)
-    const payload = {
-      typeUrl: getTypeUrl(UnregisterLogTrackingRequestSchema),
-      value: toBinary(UnregisterLogTrackingRequestSchema, value),
-    };
+    const payload = (input as any).$typeName ? input as UnregisterLogTrackingRequest : fromJson(UnregisterLogTrackingRequestSchema, input as UnregisterLogTrackingRequestJson)
+    
+    
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
       ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
     
-    return callCapability({
+    return runtime.callCapability<UnregisterLogTrackingRequest, Empty>({
       capabilityId,
       method: "UnregisterLogTracking",
-      mode: this.mode,
       payload,
-    }).then((capabilityResponse: CapabilityResponse) => {
-      if (capabilityResponse.response.case === "error") {
-        throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId,
-          method: "UnregisterLogTracking",
-          mode: this.mode,
-        });
-      }
-
-      if (capabilityResponse.response.case !== "payload") {
-        throw new CapabilityError("No payload in response", {
-          capabilityId,
-          method: "UnregisterLogTracking",
-          mode: this.mode,
-        });
-      }
-
-      return fromBinary(EmptySchema, capabilityResponse.response.value.value);
-    });
+      inputSchema: UnregisterLogTrackingRequestSchema,
+      outputSchema: EmptySchema
+    })
   }
 
   logTrigger(config: FilterLogTriggerRequestJson): ClientLogTrigger {
-    return new ClientLogTrigger(this.mode, config, ClientCapability.CAPABILITY_ID, "LogTrigger");
+    return new ClientLogTrigger(config, ClientCapability.CAPABILITY_ID, "LogTrigger");
   }
 
-  async writeReport(input: WriteReportRequest |  WriteReportRequestJson): Promise<WriteReportReply> {
+  async writeReport(runtime: Runtime<any>, input: WriteReportRequest |  WriteReportRequestJson): Promise<WriteReportReply> {
     // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-    const value = (input as any).$typeName ? input as WriteReportRequest : fromJson(WriteReportRequestSchema, input as WriteReportRequestJson)
-    const payload = {
-      typeUrl: getTypeUrl(WriteReportRequestSchema),
-      value: toBinary(WriteReportRequestSchema, value),
-    };
+    const payload = (input as any).$typeName ? input as WriteReportRequest : fromJson(WriteReportRequestSchema, input as WriteReportRequestJson)
+    
+    
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
       ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
       : ClientCapability.CAPABILITY_ID;
     
-    return callCapability({
+    return runtime.callCapability<WriteReportRequest, WriteReportReply>({
       capabilityId,
       method: "WriteReport",
-      mode: this.mode,
       payload,
-    }).then((capabilityResponse: CapabilityResponse) => {
-      if (capabilityResponse.response.case === "error") {
-        throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId,
-          method: "WriteReport",
-          mode: this.mode,
-        });
-      }
-
-      if (capabilityResponse.response.case !== "payload") {
-        throw new CapabilityError("No payload in response", {
-          capabilityId,
-          method: "WriteReport",
-          mode: this.mode,
-        });
-      }
-
-      return fromBinary(WriteReportReplySchema, capabilityResponse.response.value.value);
-    });
+      inputSchema: WriteReportRequestSchema,
+      outputSchema: WriteReportReplySchema
+    })
   }
 }
 
@@ -497,7 +297,6 @@ export class ClientCapability {
 class ClientLogTrigger implements Trigger<Log, Log> {
   public readonly config: FilterLogTriggerRequest
   constructor(
-    public readonly mode: Mode,
     config: FilterLogTriggerRequest | FilterLogTriggerRequestJson,
     private readonly _capabilityId: string,
     private readonly _method: string

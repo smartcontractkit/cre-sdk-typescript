@@ -1,46 +1,36 @@
-import { fromBinary, toBinary, fromJson, create } from "@bufbuild/protobuf";
-import {
-  Mode,
-  type CapabilityResponse,
-} from "@cre/generated/sdk/v1alpha/sdk_pb";
-import { callCapability } from "@cre/sdk/utils/capabilities/call-capability";
-import { CapabilityError } from "@cre/sdk/utils/capabilities/capability-error";
-import { type Trigger } from "@cre/sdk/utils/triggers/trigger-interface";
-import { type Any, AnySchema } from "@bufbuild/protobuf/wkt";
-import { getTypeUrl } from "@cre/sdk/utils/typeurl";
+import { fromJson, create } from "@bufbuild/protobuf"
+import { type Trigger } from "@cre/sdk/utils/triggers/trigger-interface"
+import { type Any, AnySchema } from "@bufbuild/protobuf/wkt"
+import { type Runtime } from "@cre/sdk/runtime/runtime"
 import {
   ConfigSchema,
   OutputsSchema,
   type Config,
   type ConfigJson,
   type Outputs,
-} from "@cre/generated/capabilities/internal/basictrigger/v1/basic_trigger_pb";
+} from "@cre/generated/capabilities/internal/basictrigger/v1/basic_trigger_pb"
 
 /**
  * Basic Capability
  * 
  * Capability ID: basic-test-trigger@1.0.0
- * Default Mode: Mode.DON
  * Capability Name: basic-test-trigger
  * Capability Version: 1.0.0
  */
 export class BasicCapability {
   /** The capability ID for this service */
   static readonly CAPABILITY_ID = "basic-test-trigger@1.0.0";
-  
-  /** The default execution mode for this capability */
-  static readonly DEFAULT_MODE = Mode.DON;
 
   static readonly CAPABILITY_NAME = "basic-test-trigger";
   static readonly CAPABILITY_VERSION = "1.0.0";
 
 
   constructor(
-    private readonly mode: Mode = BasicCapability.DEFAULT_MODE
+    
   ) {}
 
   trigger(config: ConfigJson): BasicTrigger {
-    return new BasicTrigger(this.mode, config, BasicCapability.CAPABILITY_ID, "Trigger");
+    return new BasicTrigger(config, BasicCapability.CAPABILITY_ID, "Trigger");
   }
 }
 
@@ -50,7 +40,6 @@ export class BasicCapability {
 class BasicTrigger implements Trigger<Outputs, Outputs> {
   public readonly config: Config
   constructor(
-    public readonly mode: Mode,
     config: Config | ConfigJson,
     private readonly _capabilityId: string,
     private readonly _method: string
