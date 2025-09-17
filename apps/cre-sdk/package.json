@@ -27,6 +27,8 @@
     }
   },
   "scripts": {
+    "build": "bun build --target=node --entrypoints ./src/sdk/index.ts ./src/sdk/utils/index.ts ./src/sdk/runtime/index.ts --outdir=dist && bun build:declaration",
+    "build:declaration": "tsc --emitDeclarationOnly --project tsconfig.build.json",
     "check": "biome check --write",
     "format": "biome format --write ${BIOME_PATHS:-.}",
     "generate:chain-selectors": "bun scripts/run.ts generate-chain-selectors && BIOME_PATHS=\"src/generated\" bun format",
