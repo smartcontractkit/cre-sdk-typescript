@@ -19,7 +19,7 @@ on:
         type: boolean
 
 env:
-  BUN_VERSION: '1.87.0'
+  BUN_VERSION: '1.2.21'
 
 jobs:
   build-and-publish-main:
