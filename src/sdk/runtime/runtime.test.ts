@@ -31,7 +31,7 @@ describe('Handling runtime in TS SDK', () => {
 
 	test('switching modes should be noop when already in that mode', () => {
 		// By default we are in DON mode, but we call switchModes to confirm that's a noop
-		let rt = runtime.switchModes(Mode.DON)
+		const rt = runtime.switchModes(Mode.DON)
 		expect(rt.mode).toBe(Mode.DON)
 		expect(rt.isNodeRuntime).toBe(false)
 

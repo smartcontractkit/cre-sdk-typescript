@@ -177,7 +177,7 @@ const generateNetworkFiles = (networks: NetworkInfo[]): void => {
 	// Clean up existing directory
 	try {
 		rmSync(baseDir, { recursive: true, force: true })
-	} catch (error) {
+	} catch {
 		// Directory might not exist, that's ok
 	}
 
@@ -294,7 +294,7 @@ ${allImports.map(({ importName }) => `	${importName},`).join('\n')}
 
 export const mainnet = {
 ${Object.entries(mainnetByFamily)
-	.map(([family, networks]) => {
+	.map(([family]) => {
 		const familyImports = allImports.filter(
 			({ network }) => network.chainFamily === family && network.networkType === 'mainnet',
 		)
@@ -307,7 +307,7 @@ ${familyImports.map(({ importName }) => `		${importName},`).join('\n')}
 
 export const testnet = {
 ${Object.entries(testnetByFamily)
-	.map(([family, networks]) => {
+	.map(([family]) => {
 		const familyImports = allImports.filter(
 			({ network }) => network.chainFamily === family && network.networkType === 'testnet',
 		)
@@ -351,7 +351,7 @@ ${allImports
 // Maps by family and network type for chain selector lookups
 export const mainnetBySelectorByFamily = {
 ${Object.entries(mainnetByFamily)
-	.map(([family, networks]) => {
+	.map(([family]) => {
 		const familyImports = allImports.filter(
 			({ network }) => network.chainFamily === family && network.networkType === 'mainnet',
 		)
@@ -366,7 +366,7 @@ ${familyImports
 
 export const testnetBySelectorByFamily = {
 ${Object.entries(testnetByFamily)
-	.map(([family, networks]) => {
+	.map(([family]) => {
 		const familyImports = allImports.filter(
 			({ network }) => network.chainFamily === family && network.networkType === 'testnet',
 		)
@@ -382,7 +382,7 @@ ${familyImports
 // Maps by family and network type for name lookups
 export const mainnetByNameByFamily = {
 ${Object.entries(mainnetByFamily)
-	.map(([family, networks]) => {
+	.map(([family]) => {
 		const familyImports = allImports.filter(
 			({ network }) => network.chainFamily === family && network.networkType === 'mainnet',
 		)
@@ -397,7 +397,7 @@ ${familyImports
 
 export const testnetByNameByFamily = {
 ${Object.entries(testnetByFamily)
-	.map(([family, networks]) => {
+	.map(([family]) => {
 		const familyImports = allImports.filter(
 			({ network }) => network.chainFamily === family && network.networkType === 'testnet',
 		)

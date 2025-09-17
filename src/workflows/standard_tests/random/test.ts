@@ -1,9 +1,6 @@
-import { create } from '@bufbuild/protobuf'
 import { z } from 'zod'
 import { cre, type Runtime, type NodeRuntime } from '@cre/sdk/cre'
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
-import { AggregationType, Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import { SimpleConsensusInputsSchema } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { BasicActionCapability as NodeActionCapability } from '@cre/generated-sdk/capabilities/internal/nodeaction/v1/basicaction_sdk_gen'
 import { Int64, Value, ConsensusAggregationByFields, median } from '@cre/sdk/utils'
 
@@ -28,7 +25,7 @@ const randHandler = async (_config: Config, runtime: Runtime) => {
 			})
 
 			if (nodeResponse.outputThing < 100) {
-				log('***' + nodeRandomNumber.toString())
+				log(`***${nodeRandomNumber.toString()}`)
 			}
 
 			return new Output(new Int64(nodeResponse.outputThing))

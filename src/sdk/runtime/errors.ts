@@ -1,4 +1,4 @@
-import { Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import type { Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
 
 export class DonModeError extends Error {
 	public name: string

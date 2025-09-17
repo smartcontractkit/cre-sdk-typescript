@@ -7,7 +7,7 @@ import type {
 	CreSerializable,
 	TypeVerifier,
 } from './serializer_types'
-import { Decimal, Int64, UInt64, type Value } from './value'
+import type { Decimal, Int64, UInt64, Value } from './value'
 
 // These tests verify types are set up correctly.
 // The compilation itself is enough to validate it is correct, but it's broken into tests to make it easier to see what is tested.

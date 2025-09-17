@@ -6,7 +6,7 @@ import { NodeModeError } from '@cre/sdk/runtime/errors'
 
 const handler = async () => {
 	// First, run in node mode and do consensus - this makes the expected CallCapability call
-	var nrt: NodeRuntime | undefined = undefined
+	var nrt: NodeRuntime | undefined
 	await cre.runInNodeMode(async (nodeRuntime: NodeRuntime) => {
 		nrt = nodeRuntime
 		return 'hi'

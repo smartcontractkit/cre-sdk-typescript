@@ -2,7 +2,7 @@ import { doRequestAsync } from '@cre/sdk/utils/do-request-async'
 import { awaitAsyncRequest } from '@cre/sdk/utils/await-async-request'
 import { Mode, type CapabilityResponse } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { LazyPromise } from '@cre/sdk/utils/lazy-promise'
-import { type CallCapabilityParams } from '@cre/sdk/utils/capabilities/call-capability'
+import type { CallCapabilityParams } from '@cre/sdk/utils/capabilities/call-capability'
 
 /**
  * Dangerous call capability.

@@ -3,7 +3,7 @@ import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/ca
 import { consensusMedianAggregation } from '@cre/sdk/utils'
 
 // Doesn't matter for this test
-type Config = any
+type Config = unknown
 
 const secretAccessInNodeMode = async (_config: Config, runtime: Runtime) => {
 	try {

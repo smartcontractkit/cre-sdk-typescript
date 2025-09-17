@@ -3,14 +3,14 @@ import { create } from '@bufbuild/protobuf'
 import {
 	AggregationType,
 	ConsensusDescriptorSchema,
-	Mode,
+	type Mode,
 	type SimpleConsensusInputs,
 	type SimpleConsensusInputsJson,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { ConsensusCapability } from '@cre/generated-sdk/capabilities/internal/consensus/v1alpha/consensus_sdk_gen'
 // Mock the host bindings before importing runtime
 import { calls } from '@cre/sdk/testhelpers/mock-host-bindings'
-import { type NodeRuntime } from '@cre/sdk/runtime/runtime'
+import type { NodeRuntime } from '@cre/sdk/runtime/runtime'
 import { runInNodeMode } from '@cre/sdk/runtime/run-in-node-mode'
 import { Value, consensusIdenticalAggregation, consensusMedianAggregation } from '../utils'
 import type { Value as ProtoValue } from '@cre/generated/values/v1/values_pb'
@@ -151,7 +151,7 @@ describe('runInNodeMode', () => {
 				const result = await ba.performAction({ inputThing: true })
 				return result.adaptedThing
 			}, consensusIdenticalAggregation())()
-		}).toThrow(RegExp('.*cannot use Runtime inside RunInNodeMode.*'))
+		}).toThrow(/.*cannot use Runtime inside RunInNodeMode.*/)
 
 		// Restore the original method and global after the test
 		ConsensusCapability.prototype.simple = origSimple

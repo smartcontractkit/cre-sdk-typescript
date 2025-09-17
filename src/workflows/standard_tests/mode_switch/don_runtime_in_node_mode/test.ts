@@ -1,16 +1,15 @@
 import { cre } from '@cre/sdk/cre'
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
-import type { NodeRuntime, Runtime } from '@cre/sdk/runtime/runtime'
 import { runInNodeMode } from '@cre/sdk/runtime/run-in-node-mode'
 import { BasicActionCapability } from '@cre/generated-sdk/capabilities/internal/basicaction/v1/basicaction_sdk_gen'
 import { consensusIdenticalAggregation } from '@cre/sdk/utils'
 
 // Doesn't matter for this test
-type Config = any
+type Config = unknown
 
-const handler = async (_config: Config, runtime: Runtime) => {
+const handler = async (_config: Config) => {
 	try {
-		await runInNodeMode(async (nr: NodeRuntime) => {
+		await runInNodeMode(async () => {
 			const basicCap = new BasicActionCapability()
 			return (await basicCap.performAction({ inputThing: true })).adaptedThing
 		}, consensusIdenticalAggregation())()

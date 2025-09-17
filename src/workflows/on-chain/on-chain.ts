@@ -24,7 +24,7 @@ const configSchema = z.object({
 
 type Config = z.infer<typeof configSchema>
 
-async function fetchMathResult(nodeRuntime: NodeRuntime, config: Config): Promise<number> {
+async function fetchMathResult(_: NodeRuntime, config: Config): Promise<number> {
 	const response = await cre.utils.fetch({
 		url: config.apiUrl,
 	})

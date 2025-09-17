@@ -6,7 +6,7 @@ import { cre, type Runtime } from '@cre/sdk/cre'
 import { Int64, Value, ConsensusAggregationByFields, median } from '@cre/sdk/utils'
 
 // Doesn't matter for this test
-type Config = any
+type Config = unknown
 
 class Output {
 	constructor(public OutputThing: Int64) {}
@@ -22,7 +22,9 @@ const handler = async (_config: Config, runtime: Runtime) => {
 		async (nodeRuntime: NodeRuntime): Promise<Output> => {
 			nodeRuntime.now()
 			const nodeActionCapability = new NodeActionCapability()
-			const nodeResponse = await nodeActionCapability.performAction({ inputThing: true })
+			const nodeResponse = await nodeActionCapability.performAction({
+				inputThing: true,
+			})
 
 			return new Output(new Int64(nodeResponse.outputThing))
 		},

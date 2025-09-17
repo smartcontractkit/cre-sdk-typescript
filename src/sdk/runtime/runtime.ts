@@ -3,7 +3,7 @@ import { type Logger, logger } from '@cre/sdk/logger'
 import { DonModeError, NodeModeError } from '@cre/sdk/runtime/errors'
 import { hostBindings } from '@cre/sdk/runtime/host-bindings'
 import { getSecret } from '@cre/sdk/utils/secrets/get-secret'
-import { Rand } from '@cre/sdk/utils/random/random'
+import type { Rand } from '@cre/sdk/utils/random/random'
 import { getRand } from '@cre/sdk/utils/random/get-rand'
 import { getTimeAsDate } from '@cre/sdk/utils/time/get-time'
 

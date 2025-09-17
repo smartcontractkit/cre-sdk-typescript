@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { cre } from '@cre/sdk/cre'
-import { type NodeRuntime } from '@cre/sdk/runtime/runtime'
+import type { NodeRuntime } from '@cre/sdk/runtime/runtime'
 import { withErrorBoundary } from '@cre/sdk/utils/error-boundary'
 import { Value, consensusMedianAggregation } from '@cre/sdk/utils'
 import { runInNodeMode } from '@cre/sdk/runtime/run-in-node-mode'
@@ -12,7 +12,7 @@ const configSchema = z.object({
 
 type Config = z.infer<typeof configSchema>
 
-const fetchMathResult = async (nodeRuntime: NodeRuntime, config: Config) => {
+const fetchMathResult = async (_: NodeRuntime, config: Config) => {
 	const response = await cre.utils.fetch({
 		url: config.apiUrl,
 	})

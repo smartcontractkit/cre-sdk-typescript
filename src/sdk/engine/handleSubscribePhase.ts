@@ -7,7 +7,10 @@ import {
 import type { Workflow } from '@cre/sdk/workflow'
 import { hostBindings } from '@cre/sdk/runtime/host-bindings'
 
-export const handleSubscribePhase = <TConfig>(req: ExecuteRequest, workflow: Workflow<TConfig>) => {
+export const handleSubscribePhase = <TConfig>(
+	req: ExecuteRequest,
+	workflow: Workflow<TConfig>,
+): undefined => {
 	if (req.request.case !== 'subscribe') {
 		return
 	}
