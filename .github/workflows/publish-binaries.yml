@@ -27,6 +27,48 @@ env:
   BUN_VERSION: '1.2.21'
 
 jobs:
+  build-javy-sdk-plugin-darwin:
+    runs-on: darwin-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+      
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+          
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      
+      - name: Build Javy SDK plugin
+        run: bun run build:javy:sdk:wasm
+
+  build-javy-sdk-plugin-linux:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+      
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+          
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      
+      - name: Build Javy SDK plugin
+        run: bun run build:javy:sdk:wasm
+
   build-and-publish-binaries:
     runs-on: ubuntu-latest
     outputs:
