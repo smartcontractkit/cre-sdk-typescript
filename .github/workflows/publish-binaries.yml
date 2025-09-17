@@ -121,6 +121,7 @@ jobs:
             if [ -d "$folder" ] && [ -f "$folder/package.json" ]; then
               echo "Updating version in $folder"
               (cd "$folder" && bun pm version ${{ github.event.inputs.version }})
+              echo "Version updated in $folder -> ${{ github.event.inputs.version }}"
             fi
           done
 
@@ -198,6 +199,7 @@ jobs:
                   bun publish "$package" --dry-run --access public --verbose
                 else
                   bun publish "$package" --access public --verbose
+                  sleep 5
                 fi
               else
                 echo "Skipping $package (platform: $PLATFORM not in selection)"
