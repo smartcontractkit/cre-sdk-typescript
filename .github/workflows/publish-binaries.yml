@@ -159,16 +159,14 @@ jobs:
           echo "Generated binary packages:"
           ls -la ./pkg/*cre-build-*.tgz
 
-      - name: Setup npm authentication
-        run: |
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
-          echo "registry=https://registry.npmjs.org/" >> ~/.npmrc
-          echo "access=public" >> ~/.npmrc
-
       - name: Verify npm authentication
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: bun pm whoami
 
       - name: Publish platform-specific packages
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           SELECTED_PLATFORMS="${{ steps.platforms.outputs.selected_platforms }}"
           IFS=',' read -ra PLATFORM_ARRAY <<< "$SELECTED_PLATFORMS"
