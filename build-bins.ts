@@ -165,7 +165,7 @@ const createPlatformPackageJson = (
   cpu: string
 ): void => {
   const packageJson = {
-    name: `@chainlink/cre-build-${platformArch}`,
+    name: `@chainlink/cre-ts-${platformArch}`,
     version,
     os: [os],
     cpu: [cpu],

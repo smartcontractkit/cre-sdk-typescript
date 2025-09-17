@@ -241,8 +241,8 @@ jobs:
           echo "### Platform-Specific Installation" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
           echo "# Install specific platform binary" >> $GITHUB_STEP_SUMMARY
-          echo "npm install @chainlink/cre-build-darwin-arm64  # for macOS ARM64" >> $GITHUB_STEP_SUMMARY
-          echo "npm install @chainlink/cre-build-linux-x64     # for Linux x64" >> $GITHUB_STEP_SUMMARY
+          echo "npm install @chainlink/cre-ts-darwin-arm64  # for macOS ARM64" >> $GITHUB_STEP_SUMMARY
+          echo "npm install @chainlink/cre-ts-linux-x64     # for Linux x64" >> $GITHUB_STEP_SUMMARY
           echo "# etc..." >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
 
@@ -268,11 +268,11 @@ jobs:
           IFS=',' read -ra PLATFORM_ARRAY <<< "$SELECTED_PLATFORMS"
           
           for platform in "${PLATFORM_ARRAY[@]}"; do
-            echo "Checking @chainlink/cre-build-$platform..."
-            if bun pm view "@chainlink/cre-build-$platform" version >/dev/null 2>&1; then
-              echo "✅ @chainlink/cre-build-$platform exists"
+            echo "Checking @chainlink/cre-ts-$platform..."
+            if bun pm view "@chainlink/cre-ts-$platform" version >/dev/null 2>&1; then
+              echo "✅ @chainlink/cre-ts-$platform exists"
             else
-              echo "❌ @chainlink/cre-build-$platform not found"
+              echo "❌ @chainlink/cre-ts-$platform not found"
               exit 1
             fi
           done
