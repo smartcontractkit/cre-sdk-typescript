@@ -27,6 +27,7 @@ jobs:
     permissions:
       contents: read
       id-token: write # for npm provenance
+    environment: Publish
     
     steps:
       - name: Checkout code
