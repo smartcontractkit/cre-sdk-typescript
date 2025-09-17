@@ -111,6 +111,18 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Download Build Artifacts for darwin/arm64
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # actions/download-artifact@v4.1.8
+        with:
+          name: cre-ts-darwin-arm64
+          path: ./pkg/cli/darwin_arm64
+
+      - name: Download Build Artifacts for linux/x64
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # actions/download-artifact@v4.1.8
+        with:
+          name: cre-ts-linux-x64
+          path: ./pkg/cli/linux_x64
+
       - name: Update platform package versions
         if: ${{ github.event.inputs.version }}
         run: |
@@ -125,17 +137,6 @@ jobs:
             fi
           done
 
-      - name: Download Build Artifacts for darwin/arm64
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # actions/download-artifact@v4.1.8
-        with:
-          name: cre-ts-darwin-arm64
-          path: ./pkg/cli/darwin_arm64
-
-      - name: Download Build Artifacts for linux/x64
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # actions/download-artifact@v4.1.8
-        with:
-          name: cre-ts-linux-x64
-          path: ./pkg/cli/linux_x64
 
       - name: Build packages
         run: |

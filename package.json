@@ -1,6 +1,6 @@
 {
 	"name": "@chainlink/cre-sdk",
-	"version": "0.0.2",
+	"version": "0.0.1",
 	"type": "module",
 	"private": true,
 	"files": [
