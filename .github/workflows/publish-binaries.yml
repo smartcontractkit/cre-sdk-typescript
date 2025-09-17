@@ -1,4 +1,6 @@
 name: Publish Binary Packages
+permissions:
+  contents: read
 
 on:
   workflow_dispatch:
