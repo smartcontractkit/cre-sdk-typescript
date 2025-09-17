@@ -52,7 +52,7 @@ jobs:
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # actions/upload-artifact@v4.5.0
         with:
-          name: cre-build-darwin-arm64
+          name: cre-ts-darwin-arm64
           path: |
             pkg/cli/darwin-arm64
 
@@ -79,7 +79,7 @@ jobs:
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # actions/upload-artifact@v4.5.0
         with:
-          name: cre-build-linux-x64
+          name: cre-ts-linux-x64
           path: |
             pkg/cli/linux-x64
 
@@ -127,13 +127,13 @@ jobs:
       - name: Download Build Artifacts for darwin/arm64
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # actions/download-artifact@v4.1.8
         with:
-          name: cre-build-darwin-arm64
+          name: cre-ts-darwin-arm64
           path: ./pkg/cli/darwin_arm64
 
       - name: Download Build Artifacts for linux/x64
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # actions/download-artifact@v4.1.8
         with:
-          name: cre-build-linux-x64
+          name: cre-ts-linux-x64
           path: ./pkg/cli/linux_x64
 
       - name: Build packages
@@ -175,12 +175,12 @@ jobs:
           echo "Publishing packages for platforms: ${PLATFORM_ARRAY[@]}"
           
           # Publish selected platform-specific build packages
-          for package in pkg/*cre-build-*.tgz; do
+          for package in pkg/*cre-ts-*.tgz; do
             if [ -f "$package" ]; then
               BASENAME=$(basename "$package")
               
-              # Extract platform from filename (e.g., cre-build-darwin-arm64-0.0.1.tgz -> darwin-arm64)
-              PLATFORM=$(echo "$BASENAME" | sed 's/.*cre-build-\(.*\)-[0-9].*/\1/')
+              # Extract platform from filename (e.g., cre-ts-darwin-arm64-0.0.1.tgz -> darwin-arm64)
+              PLATFORM=$(echo "$BASENAME" | sed 's/.*cre-ts-\(.*\)-[0-9].*/\1/')
               
               # Check if this platform should be published
               SHOULD_PUBLISH=false
@@ -195,9 +195,9 @@ jobs:
                 echo "Publishing platform package: $package (platform: $PLATFORM)"
                 if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
                   echo "DRY RUN: Would publish $package"
-                  bun publish "$package" --dry-run --access public
+                  bun publish "$package" --dry-run --access public --verbose
                 else
-                  bun publish "$package" --access public
+                  bun publish "$package" --access public --verbose
                 fi
               else
                 echo "Skipping $package (platform: $PLATFORM not in selection)"
@@ -209,7 +209,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: binary-packages
-          path: pkg/*cre-build-*.tgz
+          path: pkg/*cre-ts-*.tgz
           retention-days: 30
 
       - name: Create release summary
@@ -221,10 +221,10 @@ jobs:
           SELECTED_PLATFORMS="${{ steps.platforms.outputs.selected_platforms }}"
           IFS=',' read -ra PLATFORM_ARRAY <<< "$SELECTED_PLATFORMS"
           
-          for package in pkg/*cre-build-*.tgz; do
+          for package in pkg/*cre-ts-*.tgz; do
             if [ -f "$package" ]; then
               BASENAME=$(basename "$package")
-              PLATFORM=$(echo "$BASENAME" | sed 's/.*cre-build-\(.*\)-[0-9].*/\1/')
+              PLATFORM=$(echo "$BASENAME" | sed 's/.*cre-ts-\(.*\)-[0-9].*/\1/')
               
               # Check if this platform was published
               for selected_platform in "${PLATFORM_ARRAY[@]}"; do

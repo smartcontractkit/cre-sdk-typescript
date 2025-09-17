@@ -74,9 +74,9 @@ jobs:
             echo "Publishing main package: $MAIN_PACKAGE"
             if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
               echo "DRY RUN: Would publish $MAIN_PACKAGE"
-              bun publish "$MAIN_PACKAGE" --dry-run --access public
+              bun publish "$MAIN_PACKAGE" --dry-run --access public --verbose
             else
-              bun publish "$MAIN_PACKAGE" --access public
+              bun publish "$MAIN_PACKAGE" --access public --verbose
             fi
           else
             echo "Main package not found!"
