@@ -158,7 +158,7 @@ jobs:
       - name: List generated binary packages
         run: |
           echo "Generated binary packages:"
-          ls -la ./pkg/*cre-build-*.tgz
+          ls -la ./pkg/*cre-ts-*.tgz
 
       - name: Verify npm authentication
         env:
