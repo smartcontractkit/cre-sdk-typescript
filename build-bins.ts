@@ -212,17 +212,48 @@ const buildPlatform = async (
   console.log(`✓ Built ${platformArch} binary`);
 };
 
+const getTargetPlatforms = (): PlatformConfig[] => {
+  // Parse command line arguments
+  const args = process.argv.slice(2);
+  const targetPlatform = args[0];
+
+  if (!targetPlatform) {
+    // No platform specified, build all platforms
+    console.log("No target platform specified, building all platforms...");
+    return platforms;
+  }
+
+  // Find the platform that matches the target
+  const matchedPlatforms = platforms.filter(
+    (platform) => platform.platformArch === targetPlatform
+  );
+
+  if (matchedPlatforms.length === 0) {
+    console.error(`Error: Unknown platform "${targetPlatform}"`);
+    console.error("Available platforms:");
+    platforms.forEach((platform) => {
+      console.error(`  - ${platform.platformArch}`);
+    });
+    process.exit(1);
+  }
+
+  console.log(`Building for target platform: ${targetPlatform}`);
+  return matchedPlatforms;
+};
+
 const main = async (): Promise<void> => {
   try {
     const version = getPackageVersion();
+    const targetPlatforms = getTargetPlatforms();
+    
     console.log(`Building binaries for version ${version}...`);
 
-    // Build all platforms in parallel for better performance
+    // Build target platforms in parallel for better performance
     await Promise.all(
-      platforms.map((platform) => buildPlatform(platform, version))
+      targetPlatforms.map((platform) => buildPlatform(platform, version))
     );
 
-    console.log("All platform binaries built successfully!");
+    console.log("Platform binaries built successfully!");
   } catch (error) {
     console.error("Build failed:", error);
     process.exit(1);

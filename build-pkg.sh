@@ -1,10 +1,5 @@
 bun tsc --project tsconfig.build.json
 
-bun build-bins.ts
-
-# update this script so that it builds the plugin for each platform and places it in pkg/cli/[platform]/...
-bun run build:javy:sdk:wasm
-
 mkdir -p dist/bin
 
 cp bin/* dist/bin/
