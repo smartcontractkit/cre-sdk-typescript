@@ -61,12 +61,12 @@ jobs:
 
       - name: Verify npm authentication
         env:
-          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_TOKEN: ${{ secrets. NPM_CRE_SDK_TYPESCRIPT }}
         run: bun pm whoami
 
       - name: Publish main package
         env:
-          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_TOKEN: ${{ secrets. NPM_CRE_SDK_TYPESCRIPT }}
         run: |
           MAIN_PACKAGE=$(find pkg -name "*cre-sdk-*.tgz" | head -1)
           if [ -n "$MAIN_PACKAGE" ]; then

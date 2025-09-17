@@ -161,12 +161,12 @@ jobs:
 
       - name: Verify npm authentication
         env:
-          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_TOKEN: ${{ secrets. NPM_CRE_SDK_TYPESCRIPT }}
         run: bun pm whoami
 
       - name: Publish platform-specific packages
         env:
-          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_TOKEN: ${{ secrets. NPM_CRE_SDK_TYPESCRIPT }}
         run: |
           SELECTED_PLATFORMS="${{ steps.platforms.outputs.selected_platforms }}"
           IFS=',' read -ra PLATFORM_ARRAY <<< "$SELECTED_PLATFORMS"
