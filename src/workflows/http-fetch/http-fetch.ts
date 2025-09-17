@@ -18,7 +18,6 @@ const fetchMathResult = async (nodeRuntime: NodeRuntime, config: Config) => {
 	})
 	return Number.parseFloat(response.body.trim())
 }
-	
 
 const onCronTrigger = async (config: Config) => {
 	const aggregatedValue = await runInNodeMode(fetchMathResult, consensusMedianAggregation())(config)

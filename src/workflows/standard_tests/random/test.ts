@@ -11,29 +11,32 @@ const configSchema = z.object({ config: z.string() })
 type Config = z.infer<typeof configSchema>
 
 class Output {
-	constructor(public OutputThing: Int64) { }
+	constructor(public OutputThing: Int64) {}
 }
 
 const randHandler = async (_config: Config, runtime: Runtime) => {
 	const donRandomNumber = runtime.getRand().Uint64()
 	let total = donRandomNumber
 
-	await cre.runInNodeMode(async (nodeRuntime: NodeRuntime) => {
-		const nodeRandomNumber = nodeRuntime.getRand().Uint64()
+	await cre.runInNodeMode(
+		async (nodeRuntime: NodeRuntime) => {
+			const nodeRandomNumber = nodeRuntime.getRand().Uint64()
 
-		const nodeActionCapability = new NodeActionCapability()
-		const nodeResponse = await nodeActionCapability.performAction({
-			inputThing: true,
-		})
+			const nodeActionCapability = new NodeActionCapability()
+			const nodeResponse = await nodeActionCapability.performAction({
+				inputThing: true,
+			})
 
-		if (nodeResponse.outputThing < 100) {
-			log('***' + nodeRandomNumber.toString())
-		}
+			if (nodeResponse.outputThing < 100) {
+				log('***' + nodeRandomNumber.toString())
+			}
 
-		return new Output(new Int64(nodeResponse.outputThing))
-	}, ConsensusAggregationByFields<Output>({
-			OutputThing: median
-	}).withDefault(new Output(new Int64(123))))()
+			return new Output(new Int64(nodeResponse.outputThing))
+		},
+		ConsensusAggregationByFields<Output>({
+			OutputThing: median,
+		}).withDefault(new Output(new Int64(123))),
+	)()
 
 	total += donRandomNumber
 

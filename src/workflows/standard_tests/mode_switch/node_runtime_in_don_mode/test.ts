@@ -9,7 +9,7 @@ const handler = async () => {
 	var nrt: NodeRuntime | undefined = undefined
 	await cre.runInNodeMode(async (nodeRuntime: NodeRuntime) => {
 		nrt = nodeRuntime
-		return "hi"
+		return 'hi'
 	}, consensusIdenticalAggregation())()
 
 	try {

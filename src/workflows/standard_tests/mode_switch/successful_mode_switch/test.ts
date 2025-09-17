@@ -9,7 +9,7 @@ import { Int64, Value, ConsensusAggregationByFields, median } from '@cre/sdk/uti
 type Config = any
 
 class Output {
-	constructor(public OutputThing: Int64) { }
+	constructor(public OutputThing: Int64) {}
 }
 
 const handler = async (_config: Config, runtime: Runtime) => {
@@ -18,21 +18,23 @@ const handler = async (_config: Config, runtime: Runtime) => {
 	const donResponse = await basicActionCapability.performAction(donInput)
 	runtime.now()
 
-	const consensusOutput = await cre.runInNodeMode(async (nodeRuntime: NodeRuntime): Promise<Output> => {
-		nodeRuntime.now()
-		const nodeActionCapability = new NodeActionCapability()
-		const nodeResponse = await nodeActionCapability.performAction({inputThing: true})
+	const consensusOutput = await cre.runInNodeMode(
+		async (nodeRuntime: NodeRuntime): Promise<Output> => {
+			nodeRuntime.now()
+			const nodeActionCapability = new NodeActionCapability()
+			const nodeResponse = await nodeActionCapability.performAction({ inputThing: true })
 
-		return new Output(new Int64(nodeResponse.outputThing))
-	}, ConsensusAggregationByFields<Output>({OutputThing: median}).withDefault(new Output(new Int64(123))))()
+			return new Output(new Int64(nodeResponse.outputThing))
+		},
+		ConsensusAggregationByFields<Output>({ OutputThing: median }).withDefault(
+			new Output(new Int64(123)),
+		),
+	)()
 
 	runtime.now()
 
-
 	cre.sendResponseValue(
-		Value.from(
-			`${donResponse.adaptedThing}${consensusOutput.OutputThing.value}`,
-		),
+		Value.from(`${donResponse.adaptedThing}${consensusOutput.OutputThing.value}`),
 	)
 }
 

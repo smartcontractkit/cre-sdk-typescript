@@ -2,83 +2,87 @@
 // @generated from file capabilities/internal/nodeaction/v1/node_action.proto (package capabilities.internal.nodeaction.v1, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
-import { file_tools_generator_v1alpha_cre_metadata } from "../../../../tools/generator/v1alpha/cre_metadata_pb";
-import type { Message } from "@bufbuild/protobuf";
+import type { GenFile, GenMessage, GenService } from '@bufbuild/protobuf/codegenv2'
+import { fileDesc, messageDesc, serviceDesc } from '@bufbuild/protobuf/codegenv2'
+import { file_tools_generator_v1alpha_cre_metadata } from '../../../../tools/generator/v1alpha/cre_metadata_pb'
+import type { Message } from '@bufbuild/protobuf'
 
 /**
  * Describes the file capabilities/internal/nodeaction/v1/node_action.proto.
  */
-export const file_capabilities_internal_nodeaction_v1_node_action: GenFile = /*@__PURE__*/
-  fileDesc("CjVjYXBhYmlsaXRpZXMvaW50ZXJuYWwvbm9kZWFjdGlvbi92MS9ub2RlX2FjdGlvbi5wcm90bxIjY2FwYWJpbGl0aWVzLmludGVybmFsLm5vZGVhY3Rpb24udjEiIQoKTm9kZUlucHV0cxITCgtpbnB1dF90aGluZxgBIAEoCCIjCgtOb2RlT3V0cHV0cxIUCgxvdXRwdXRfdGhpbmcYASABKAUypwEKC0Jhc2ljQWN0aW9uEnIKDVBlcmZvcm1BY3Rpb24SLy5jYXBhYmlsaXRpZXMuaW50ZXJuYWwubm9kZWFjdGlvbi52MS5Ob2RlSW5wdXRzGjAuY2FwYWJpbGl0aWVzLmludGVybmFsLm5vZGVhY3Rpb24udjEuTm9kZU91dHB1dHMaJIK1GCAIAhIcYmFzaWMtdGVzdC1ub2RlLWFjdGlvbkAxLjAuMELpAQonY29tLmNhcGFiaWxpdGllcy5pbnRlcm5hbC5ub2RlYWN0aW9uLnYxQg9Ob2RlQWN0aW9uUHJvdG9QAaICA0NJTqoCI0NhcGFiaWxpdGllcy5JbnRlcm5hbC5Ob2RlYWN0aW9uLlYxygIjQ2FwYWJpbGl0aWVzXEludGVybmFsXE5vZGVhY3Rpb25cVjHiAi9DYXBhYmlsaXRpZXNcSW50ZXJuYWxcTm9kZWFjdGlvblxWMVxHUEJNZXRhZGF0YeoCJkNhcGFiaWxpdGllczo6SW50ZXJuYWw6Ok5vZGVhY3Rpb246OlYxYgZwcm90bzM", [file_tools_generator_v1alpha_cre_metadata]);
+export const file_capabilities_internal_nodeaction_v1_node_action: GenFile =
+	/*@__PURE__*/
+	fileDesc(
+		'CjVjYXBhYmlsaXRpZXMvaW50ZXJuYWwvbm9kZWFjdGlvbi92MS9ub2RlX2FjdGlvbi5wcm90bxIjY2FwYWJpbGl0aWVzLmludGVybmFsLm5vZGVhY3Rpb24udjEiIQoKTm9kZUlucHV0cxITCgtpbnB1dF90aGluZxgBIAEoCCIjCgtOb2RlT3V0cHV0cxIUCgxvdXRwdXRfdGhpbmcYASABKAUypwEKC0Jhc2ljQWN0aW9uEnIKDVBlcmZvcm1BY3Rpb24SLy5jYXBhYmlsaXRpZXMuaW50ZXJuYWwubm9kZWFjdGlvbi52MS5Ob2RlSW5wdXRzGjAuY2FwYWJpbGl0aWVzLmludGVybmFsLm5vZGVhY3Rpb24udjEuTm9kZU91dHB1dHMaJIK1GCAIAhIcYmFzaWMtdGVzdC1ub2RlLWFjdGlvbkAxLjAuMELpAQonY29tLmNhcGFiaWxpdGllcy5pbnRlcm5hbC5ub2RlYWN0aW9uLnYxQg9Ob2RlQWN0aW9uUHJvdG9QAaICA0NJTqoCI0NhcGFiaWxpdGllcy5JbnRlcm5hbC5Ob2RlYWN0aW9uLlYxygIjQ2FwYWJpbGl0aWVzXEludGVybmFsXE5vZGVhY3Rpb25cVjHiAi9DYXBhYmlsaXRpZXNcSW50ZXJuYWxcTm9kZWFjdGlvblxWMVxHUEJNZXRhZGF0YeoCJkNhcGFiaWxpdGllczo6SW50ZXJuYWw6Ok5vZGVhY3Rpb246OlYxYgZwcm90bzM',
+		[file_tools_generator_v1alpha_cre_metadata],
+	)
 
 /**
  * @generated from message capabilities.internal.nodeaction.v1.NodeInputs
  */
-export type NodeInputs = Message<"capabilities.internal.nodeaction.v1.NodeInputs"> & {
-  /**
-   * @generated from field: bool input_thing = 1;
-   */
-  inputThing: boolean;
-};
+export type NodeInputs = Message<'capabilities.internal.nodeaction.v1.NodeInputs'> & {
+	/**
+	 * @generated from field: bool input_thing = 1;
+	 */
+	inputThing: boolean
+}
 
 /**
  * @generated from message capabilities.internal.nodeaction.v1.NodeInputs
  */
 export type NodeInputsJson = {
-  /**
-   * @generated from field: bool input_thing = 1;
-   */
-  inputThing?: boolean;
-};
+	/**
+	 * @generated from field: bool input_thing = 1;
+	 */
+	inputThing?: boolean
+}
 
 /**
  * Describes the message capabilities.internal.nodeaction.v1.NodeInputs.
  * Use `create(NodeInputsSchema)` to create a new message.
  */
-export const NodeInputsSchema: GenMessage<NodeInputs, {jsonType: NodeInputsJson}> = /*@__PURE__*/
-  messageDesc(file_capabilities_internal_nodeaction_v1_node_action, 0);
+export const NodeInputsSchema: GenMessage<NodeInputs, { jsonType: NodeInputsJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_internal_nodeaction_v1_node_action, 0)
 
 /**
  * @generated from message capabilities.internal.nodeaction.v1.NodeOutputs
  */
-export type NodeOutputs = Message<"capabilities.internal.nodeaction.v1.NodeOutputs"> & {
-  /**
-   * @generated from field: int32 output_thing = 1;
-   */
-  outputThing: number;
-};
+export type NodeOutputs = Message<'capabilities.internal.nodeaction.v1.NodeOutputs'> & {
+	/**
+	 * @generated from field: int32 output_thing = 1;
+	 */
+	outputThing: number
+}
 
 /**
  * @generated from message capabilities.internal.nodeaction.v1.NodeOutputs
  */
 export type NodeOutputsJson = {
-  /**
-   * @generated from field: int32 output_thing = 1;
-   */
-  outputThing?: number;
-};
+	/**
+	 * @generated from field: int32 output_thing = 1;
+	 */
+	outputThing?: number
+}
 
 /**
  * Describes the message capabilities.internal.nodeaction.v1.NodeOutputs.
  * Use `create(NodeOutputsSchema)` to create a new message.
  */
-export const NodeOutputsSchema: GenMessage<NodeOutputs, {jsonType: NodeOutputsJson}> = /*@__PURE__*/
-  messageDesc(file_capabilities_internal_nodeaction_v1_node_action, 1);
+export const NodeOutputsSchema: GenMessage<NodeOutputs, { jsonType: NodeOutputsJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_internal_nodeaction_v1_node_action, 1)
 
 /**
  * @generated from service capabilities.internal.nodeaction.v1.BasicAction
  */
 export const BasicAction: GenService<{
-  /**
-   * @generated from rpc capabilities.internal.nodeaction.v1.BasicAction.PerformAction
-   */
-  performAction: {
-    methodKind: "unary";
-    input: typeof NodeInputsSchema;
-    output: typeof NodeOutputsSchema;
-  },
-}> = /*@__PURE__*/
-  serviceDesc(file_capabilities_internal_nodeaction_v1_node_action, 0);
-
+	/**
+	 * @generated from rpc capabilities.internal.nodeaction.v1.BasicAction.PerformAction
+	 */
+	performAction: {
+		methodKind: 'unary'
+		input: typeof NodeInputsSchema
+		output: typeof NodeOutputsSchema
+	}
+}> = /*@__PURE__*/ serviceDesc(file_capabilities_internal_nodeaction_v1_node_action, 0)

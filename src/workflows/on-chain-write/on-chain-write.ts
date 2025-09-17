@@ -37,7 +37,10 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 	}
 
 	// Step 1: Fetch offchain data using consensus (from Part 2)
-	const offchainValue = await cre.runInNodeMode(fetchMathResult, consensusMedianAggregation())(config)
+	const offchainValue = await cre.runInNodeMode(
+		fetchMathResult,
+		consensusMedianAggregation(),
+	)(config)
 
 	runtime.logger.log('Successfully fetched offchain value')
 
