@@ -1,4 +1,6 @@
 name: Publish Binary Packages
+permissions:
+  contents: read
 
 on:
   workflow_dispatch:
@@ -27,6 +29,63 @@ env:
   BUN_VERSION: '1.2.21'
 
 jobs:
+  build-javy-sdk-plugin-darwin:
+    runs-on: darwin-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+      
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+          
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      
+      - name: Build Javy SDK plugin
+        run: bun run build-bins.ts darwin-arm64
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # actions/upload-artifact@v4.5.0
+        with:
+          name: cre-build-darwin-arm64
+          path: |
+            pkg/cli/darwin-arm64
+
+  build-javy-sdk-plugin-linux:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+      
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+          
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      
+      - name: Build Javy SDK plugin
+        run: bun run build-bins.ts linux-x64
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # actions/upload-artifact@v4.5.0
+        with:
+          name: cre-build-linux-x64
+          path: |
+            pkg/cli/linux-x64
+
+
   build-and-publish-binaries:
     runs-on: ubuntu-latest
     outputs:
@@ -62,6 +121,18 @@ jobs:
               (cd "$folder" && bun pm version ${{ github.event.inputs.version }})
             fi
           done
+
+      - name: Download Build Artifacts for darwin/arm64
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # actions/download-artifact@v4.1.8
+        with:
+          name: cre-build-darwin-arm64
+          path: ./pkg/darwin_arm64
+
+      - name: Download Build Artifacts for linux/x64
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # actions/download-artifact@v4.1.8
+        with:
+          name: cre-build-linux-x64
+          path: ./pkg/linux_x64
 
       - name: Build packages
         run: |

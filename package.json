@@ -1,6 +1,6 @@
 {
 	"name": "@chainlink/cre-sdk",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"type": "module",
 	"private": true,
 	"files": [
@@ -38,6 +38,7 @@
 		"biome:lint": "biome lint --write",
 		"build:javy:plugin": "bun scripts/run.ts compile-javy-sdk-plugin",
 		"build:javy:sdk:wasm": "bun scripts/run.ts compile-javy-with-sdk-plugin",
+		"build:javy:linux:sdk:wasm": "bun scripts/run.ts compile-javy-linux-with-sdk-plugin",
 		"build:workflows:wasm": "bun scripts/run.ts compile-to-wasm",
 		"build:workflows:js": "bun scripts/run.ts compile-to-js",
 		"build:workflows": "bun build:workflows:js && bun build:workflows:wasm",
