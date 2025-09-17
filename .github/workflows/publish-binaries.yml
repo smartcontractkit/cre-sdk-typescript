@@ -87,6 +87,9 @@ jobs:
 
 
   build-and-publish-binaries:
+    needs:
+      - build-javy-sdk-plugin-darwin
+      - build-javy-sdk-plugin-linux
     runs-on: ubuntu-latest
     outputs:
       selected_platforms: ${{ steps.platforms.outputs.selected_platforms }}
