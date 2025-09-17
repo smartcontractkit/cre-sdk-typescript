@@ -1,4 +1,4 @@
-import { Value } from '@cre/sdk/utils'
+import type { Value } from '@cre/sdk/utils'
 import { type ExecutionResult, ExecutionResultSchema } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { create, toBinary } from '@bufbuild/protobuf'
 

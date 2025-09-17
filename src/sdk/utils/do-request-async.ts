@@ -1,7 +1,7 @@
 import {
 	type CapabilityRequest,
 	CapabilityRequestSchema,
-	Mode,
+	type Mode,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { create, toBinary } from '@bufbuild/protobuf'
 import { getLastCallbackId, incrementCallbackId } from '@cre/sdk/utils/capabilities/callback-id'

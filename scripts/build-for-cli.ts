@@ -1,7 +1,7 @@
 import { $ } from 'bun'
-import { mkdir } from 'fs/promises'
-import { join } from 'path'
-import { parseArgs } from 'util'
+import { mkdir } from 'node:fs/promises'
+import { join } from 'node:path'
+import { parseArgs } from 'node:util'
 
 const { values } = parseArgs({
 	args: Bun.argv,

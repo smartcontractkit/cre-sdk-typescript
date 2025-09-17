@@ -1,12 +1,9 @@
 import { create, toJson } from '@bufbuild/protobuf'
-import {
-	Mode,
-	SimpleConsensusInputsSchema,
-} from '@cre/generated/sdk/v1alpha/sdk_pb'
+import { Mode, SimpleConsensusInputsSchema } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { ConsensusCapability } from '@cre/generated-sdk/capabilities/internal/consensus/v1alpha/consensus_sdk_gen'
 import { runtime, type NodeRuntime } from '@cre/sdk/runtime/runtime'
 import type { UnwrapOptions, ConsensusAggregation, CreSerializable, PrimitiveTypes } from '../utils'
-import { Value  } from '../utils'
+import { Value } from '../utils'
 
 /**
  * Runs the provided builder inside Node mode and returns the consensus result Value.
@@ -20,22 +17,28 @@ import { Value  } from '../utils'
 export function runInNodeMode<TArgs extends any[], TOutput>(
 	fn: (nodeRuntime: NodeRuntime, ...args: TArgs) => Promise<TOutput> | TOutput,
 	consesusAggretation: ConsensusAggregation<TOutput, true>,
-	unwrapOptions?: TOutput extends PrimitiveTypes ? never : UnwrapOptions<TOutput>
+	unwrapOptions?: TOutput extends PrimitiveTypes ? never : UnwrapOptions<TOutput>,
 ): (...args: TArgs) => Promise<TOutput> {
 	return async (...args: TArgs) => {
 		const nodeRuntime: NodeRuntime = runtime.switchModes(Mode.NODE)
 
-		const consensusInput = create(SimpleConsensusInputsSchema, { descriptors: consesusAggretation.descriptor })
+		const consensusInput = create(SimpleConsensusInputsSchema, {
+			descriptors: consesusAggretation.descriptor,
+		})
 		if (consesusAggretation.defaultValue) {
 			// This cast is safe, since ConsensusAggregation can only have true its second argument if T extends CreSerializable<TOutput>
-			consensusInput.default = Value.from(consesusAggretation.defaultValue as CreSerializable<TOutput>).proto()
+			consensusInput.default = Value.from(
+				consesusAggretation.defaultValue as CreSerializable<TOutput>,
+			).proto()
 		}
 
 		try {
 			const observation = await fn(nodeRuntime, ...args)
 			// This cast is safe, since ConsensusAggregation can only have true its second argument if T extends CreSerializable<TOutput>
-			consensusInput.observation = { case: 'value', value: Value.from(observation as CreSerializable<TOutput>).proto()  }
-		
+			consensusInput.observation = {
+				case: 'value',
+				value: Value.from(observation as CreSerializable<TOutput>).proto(),
+			}
 		} catch (e: any) {
 			consensusInput.observation = { case: 'error', value: e.message || String(e) }
 		} finally {
@@ -46,9 +49,9 @@ export function runInNodeMode<TArgs extends any[], TOutput>(
 		const consensus = new ConsensusCapability()
 		const result = await consensus.simple(consensusInput)
 		const wrappedValue = Value.wrap(result)
-		
-		return unwrapOptions 
+
+		return unwrapOptions
 			? wrappedValue.unwrapToType(unwrapOptions)
-			: wrappedValue.unwrap() as TOutput
+			: (wrappedValue.unwrap() as TOutput)
 	}
 }

@@ -1,3 +1,3 @@
-export * from "./types";
-export * from "./getAllNetworks";
-export * from "./getNetwork";
+export * from './types'
+export * from './getAllNetworks'
+export * from './getNetwork'

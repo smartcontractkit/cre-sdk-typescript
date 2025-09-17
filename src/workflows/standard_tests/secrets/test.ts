@@ -4,7 +4,7 @@ import { SecretsError } from '@cre/sdk/utils/secrets-error'
 import { Value } from '@cre/sdk/utils'
 
 // Doesn't matter for this test
-type Config = any
+type Config = unknown
 
 const handleSecret = async (_config: Config, runtime: Runtime) => {
 	try {

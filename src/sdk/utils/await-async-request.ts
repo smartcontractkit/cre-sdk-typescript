@@ -5,7 +5,7 @@ import {
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { create, toBinary, fromBinary } from '@bufbuild/protobuf'
 import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
-import { Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import type { Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { hostBindings } from '@cre/sdk/runtime/host-bindings'
 
 type Params = {

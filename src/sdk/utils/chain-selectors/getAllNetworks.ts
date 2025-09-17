@@ -1,4 +1,4 @@
-import type { NetworkInfo } from "./types";
-import { allNetworks } from "@cre/generated/networks";
+import type { NetworkInfo } from './types'
+import { allNetworks } from '@cre/generated/networks'
 
-export const getAllNetworks = (): NetworkInfo[] => allNetworks;
+export const getAllNetworks = (): NetworkInfo[] => allNetworks
