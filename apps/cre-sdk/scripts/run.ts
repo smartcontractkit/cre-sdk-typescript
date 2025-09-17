@@ -4,6 +4,7 @@ const availableScripts = [
   "compile-standard-test", // bundles JS and WASM compilation into single script
   "compile-standard-test-js",
   "compile-standard-test-wasm",
+  "compile-all-standard-tests",
 
   "generate-chain-selectors",
   "generate-sdks",

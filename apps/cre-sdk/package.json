@@ -37,10 +37,11 @@
     "lint": "biome lint --write",
     "test": "bun test",
     "test:standard": "./scripts/run-standard-tests.sh",
-    "typecheck": "tsc",
     "test:standard:compile": "bun scripts/run.ts compile-standard-test",
+    "test:standard:compile:all": "bun scripts/run.ts compile-all-standard-tests",
     "test:standard:compile:js": "bun scripts/run.ts compile-standard-test-js",
-    "test:standard:compile:wasm": "bun scripts/run.ts compile-standard-test-wasm"
+    "test:standard:compile:wasm": "bun scripts/run.ts compile-standard-test-wasm",
+    "typecheck": "tsc"
   },
   "dependencies": {
     "@bufbuild/protobuf": "2.6.3",

@@ -6,6 +6,9 @@ TEST_PATTERN ?= ^TestStandard
 standard_tests:
 	@echo "Downloading standard test version $(COMMON_VERSION)"
 	mkdir -p .tools
+	mkdir -p .temp/standard_tests
+	@echo "Copying Makefile for JIT compilation..."
+	@cp src/standard_tests/Makefile .temp/standard_tests/
 	@go mod download -json $(MODULE)@$(COMMON_VERSION) >/dev/null
 	@mod_dir=$$(go list -m -f '{{.Dir}}' $(MODULE)@$(COMMON_VERSION)); \
 	abs_dir=$$(cd .tools && pwd); \
