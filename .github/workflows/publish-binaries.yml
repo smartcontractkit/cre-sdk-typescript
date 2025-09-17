@@ -127,13 +127,13 @@ jobs:
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # actions/download-artifact@v4.1.8
         with:
           name: cre-build-darwin-arm64
-          path: ./pkg/darwin_arm64
+          path: ./pkg/cli/darwin_arm64
 
       - name: Download Build Artifacts for linux/x64
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # actions/download-artifact@v4.1.8
         with:
           name: cre-build-linux-x64
-          path: ./pkg/linux_x64
+          path: ./pkg/cli/linux_x64
 
       - name: Build packages
         run: |
@@ -157,7 +157,7 @@ jobs:
       - name: List generated binary packages
         run: |
           echo "Generated binary packages:"
-          ls -la pkg/*cre-build-*.tgz
+          ls -la ./pkg/*cre-build-*.tgz
 
       - name: Setup npm authentication
         run: |
