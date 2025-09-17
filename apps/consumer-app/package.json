@@ -1,5 +1,5 @@
 {
-  "name": "@chainlink/consumer-app",
+  "name": "@/consumer-app",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -13,6 +13,6 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@chainlink/cre-sdk": "0.0.1"
+    "@chainlink/cre-sdk": "workspace:*"
   }
 }

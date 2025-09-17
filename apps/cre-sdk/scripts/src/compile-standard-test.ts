@@ -1,9 +1,9 @@
 import { $ } from "bun";
 
 export const main = async () => {
-  const standardTestArg = process.argv[3];
+  const args = process.argv.slice(3);
 
-  if (!standardTestArg) {
+  if (args.length === 0) {
     console.error("Usage: bun test:standard:compile <standard-test-name>");
     console.error("Example: bun test:standard:compile secrets");
     console.error(
@@ -15,15 +15,16 @@ export const main = async () => {
     process.exit(1);
   }
 
-  console.info(`🚀 Compiling standard test: ${standardTestArg}`);
+  const testDisplayName = args.length === 1 ? args[0] : `${args[0]}/${args[1]}`;
+  console.info(`🚀 Compiling standard test: ${testDisplayName}`);
 
   // Build JS
   console.info("\n📦 Step 1: Compiling JS...");
-  await $`bun test:standard:compile:js ${standardTestArg}`;
+  await $`bun test:standard:compile:js ${args}`;
 
   // Build WASM
   console.info("\n🔨 Step 2: Compiling to WASM...");
-  await $`bun test:standard:compile:wasm ${standardTestArg}`;
+  await $`bun test:standard:compile:wasm ${args}`;
 
-  console.info(`\n✅ Test '${standardTestArg}' built successfully!`);
+  console.info(`\n✅ Test '${testDisplayName}' built successfully!`);
 };

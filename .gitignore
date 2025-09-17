@@ -180,3 +180,5 @@ plugins/javy_chainlink_sdk/target/
 .tools
 
 pkg
+
+.turbo

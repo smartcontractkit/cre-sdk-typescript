@@ -62,8 +62,8 @@ export const main = async () => {
    * -C wit-world=workflow — specifies the WIT world name (world "workflow" which is defined in the .wit file).
    * -C plugin=... — uses your custom runtime (bundled javy chainlink sdk plugin)
    */
-  // TODO: use the one from plugin package
-  await $`bun javy build -C wit=src/workflows/workflow.wit -C wit-world=workflow -C plugin=dist/javy-chainlink-sdk.plugin.wasm ${jsFile} -o ${wasmFile}`;
+  // await $`bun javy build -C wit=src/workflows/workflow.wit -C wit-world=workflow -C plugin=dist/javy-chainlink-sdk.plugin.wasm ${jsFile} -o ${wasmFile}`;
+  await $`bun cre-compile-workflow ${jsFile} ${wasmFile}`;
 
   console.info(`✅ Compiled: ${wasmFile}`);
 };

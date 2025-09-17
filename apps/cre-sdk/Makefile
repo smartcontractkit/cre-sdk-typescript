@@ -13,7 +13,7 @@ standard_tests:
 	( cd $$mod_dir/pkg/workflows/wasm/host && go test -c -o $$abs_dir/host.test . ); \
 	echo "Running standard tests"; \
 	$$abs_dir/host.test -test.v -test.run $(TEST_PATTERN) \
-	-path=dist/standard_tests \
+	-path=.temp/standard_tests \
 	-test.skip=""
 
 # Run a single test by name

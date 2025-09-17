@@ -1,5 +1,0 @@
-package local:main;
-
-world workflow {
-  export main: func();
-}
