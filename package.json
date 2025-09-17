@@ -1,88 +1,89 @@
 {
-  "name": "@chainlink/cre-sdk",
-  "version": "0.0.2",
-  "type": "module",
-  "private": true,
-  "files": [
-    "dist/**/*",
-    "bin/**/*",
-    "install.js"
-  ],
-  "include": [
-    "bin/**/*",
-    "install.js"
-  ],
-  "bin": {
-    "cre-build": "bin/cre-ts"
-  },
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "typings": "dist/index.d.ts",
-  "exports": {
-    "utils": {
-      "default": "./dist/sdk/utils/index.js",
-      "types": "./dist/sdk/utils/index.d.ts"
-    },
-    "runtime": {
-      "default": "./dist/sdk/runtime/index.js",
-      "types": "./dist/sdk/runtime/index.d.ts"
-    },
-    "sdk": {
-      "default": "./dist/sdk/index.js",
-      "types": "./dist/sdk/index.d.ts"
-    }
-  },
-  "scripts": {
-    "biome:check": "biome check --write",
-    "biome:format": "biome format --write ${BIOME_PATHS:-.}",
-    "biome:lint": "biome lint --write",
-    "build:javy:plugin": "bun scripts/run.ts compile-javy-sdk-plugin",
-    "build:javy:sdk:wasm": "bun scripts/run.ts compile-javy-with-sdk-plugin",
-    "build:workflows:wasm": "bun scripts/run.ts compile-to-wasm",
-    "build:workflows:js": "bun scripts/run.ts compile-to-js",
-    "build:workflows": "bun build:workflows:js && bun build:workflows:wasm",
-    "build:workflow:single:js": "bun scripts/run.ts build-single-workflow-js",
-    "build:workflow:single:wasm": "bun scripts/run.ts compile-single-workflow-to-wasm",
-    "build:workflow:single": "bun scripts/run.ts build-single-workflow",
-    "build:all": "bun typecheck && bun build.ts",
-    "javy": "./bin/javy-arm-macos-v5.0.4",
-    "javy:linux": "./bin/javy-arm-linux-v5.0.4",
-    "start": "bun --watch src/index.ts",
-    "typecheck": "tsc",
-    "build:generate:sdk": "bun build:generate:chain-selectors && bun proto:generate && bun scripts/generate-sdks.ts && BIOME_PATHS=\"src/generated src/generated-sdk\" bun biome:format",
-    "build:generate:chain-selectors": "bun scripts/generate-chain-selectors.ts && BIOME_PATHS=\"src/generated\" bun biome:format",
-    "proto:generate": "bunx @bufbuild/buf generate",
-    "proto:lint": "bunx @bufbuild/buf lint",
-    "proto:format": "bunx @bufbuild/buf format --write",
-    "test": "bun test",
-    "test:standard": "./scripts/run-standard-tests.sh",
-    "build": "bun build --target=node --entrypoints ./src/sdk/index.ts ./src/sdk/utils/index.ts ./src/sdk/runtime/index.ts --outdir=dist && bun run build:declaration && bun run build:cli",
-    "build:cli": "bun build ./scripts/run.ts --target=bun-darwin-arm64 --compile --outfile dist/bin/cre-build-darwin-arm64 && chmod +x dist/bin/cre-build-darwin-arm64 && cp bin/* dist/bin/",
-    "build:declaration": "tsc --emitDeclarationOnly --project tsconfig.types.json",
-    "postbuild": "rimraf tsconfig.types.tsbuildinfo && cp package.json dist/package.json"
-  },
-  "dependencies": {
-    "@bufbuild/protobuf": "2.6.3",
-    "@bufbuild/protoc-gen-es": "2.6.3",
-    "@standard-schema/spec": "1.0.0",
-    "rxjs": "7.8.2",
-    "viem": "2.34.0",
-    "zod": "3.25.76"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "2.2.4",
-    "@bufbuild/buf": "1.56.0",
-    "@types/bun": "1.2.21",
-    "chain-selectors": "https://github.com/smartcontractkit/chain-selectors.git#8b963095ae797a3024c8e55822cced7bf618176f",
-    "fast-glob": "3.3.3",
-    "ts-proto": "2.7.5",
-    "typescript": "5.9.2",
-    "yaml": "2.8.1",
-    "rimraf": "6.0.1"
-  },
-  "optionalDependencies": {
-    "@chainlink/cre-ts-linux-x64": "0.0.1",
-    "@chainlink/cre-ts-linux-arm": "0.0.1",
-    "@chainlink/cre-ts-windows-x64": "0.0.1"
-  }
+	"name": "@chainlink/cre-sdk",
+	"version": "0.0.2",
+	"type": "module",
+	"private": true,
+	"files": [
+		"dist/**/*",
+		"bin/**/*",
+		"install.js"
+	],
+	"include": [
+		"bin/**/*",
+		"install.js"
+	],
+	"bin": {
+		"cre-build": "bin/cre-ts"
+	},
+	"main": "dist/index.js",
+	"module": "dist/index.js",
+	"typings": "dist/index.d.ts",
+	"exports": {
+		"utils": {
+			"default": "./dist/sdk/utils/index.js",
+			"types": "./dist/sdk/utils/index.d.ts"
+		},
+		"runtime": {
+			"default": "./dist/sdk/runtime/index.js",
+			"types": "./dist/sdk/runtime/index.d.ts"
+		},
+		"sdk": {
+			"default": "./dist/sdk/index.js",
+			"types": "./dist/sdk/index.d.ts"
+		}
+	},
+	"scripts": {
+		"biome:check": "biome check --write",
+		"biome:format": "biome format --write ${BIOME_PATHS:-.}",
+		"biome:lint": "biome lint --write",
+		"build:javy:plugin": "bun scripts/run.ts compile-javy-sdk-plugin",
+		"build:javy:sdk:wasm": "bun scripts/run.ts compile-javy-with-sdk-plugin",
+		"build:javy:linux:sdk:wasm": "bun scripts/run.ts compile-javy-linux-with-sdk-plugin",
+		"build:workflows:wasm": "bun scripts/run.ts compile-to-wasm",
+		"build:workflows:js": "bun scripts/run.ts compile-to-js",
+		"build:workflows": "bun build:workflows:js && bun build:workflows:wasm",
+		"build:workflow:single:js": "bun scripts/run.ts build-single-workflow-js",
+		"build:workflow:single:wasm": "bun scripts/run.ts compile-single-workflow-to-wasm",
+		"build:workflow:single": "bun scripts/run.ts build-single-workflow",
+		"build:all": "bun typecheck && bun build.ts",
+		"javy": "./bin/javy-arm-macos-v5.0.4",
+		"javy:linux": "./bin/javy-arm-linux-v5.0.4",
+		"start": "bun --watch src/index.ts",
+		"typecheck": "tsc",
+		"build:generate:sdk": "bun build:generate:chain-selectors && bun proto:generate && bun scripts/generate-sdks.ts && BIOME_PATHS=\"src/generated src/generated-sdk\" bun biome:format",
+		"build:generate:chain-selectors": "bun scripts/generate-chain-selectors.ts && BIOME_PATHS=\"src/generated\" bun biome:format",
+		"proto:generate": "bunx @bufbuild/buf generate",
+		"proto:lint": "bunx @bufbuild/buf lint",
+		"proto:format": "bunx @bufbuild/buf format --write",
+		"test": "bun test",
+		"test:standard": "./scripts/run-standard-tests.sh",
+		"build": "bun build --target=node --entrypoints ./src/sdk/index.ts ./src/sdk/utils/index.ts ./src/sdk/runtime/index.ts --outdir=dist && bun run build:declaration && bun run build:cli",
+		"build:cli": "bun build ./scripts/run.ts --target=bun-darwin-arm64 --compile --outfile dist/bin/cre-build-darwin-arm64 && chmod +x dist/bin/cre-build-darwin-arm64 && cp bin/* dist/bin/",
+		"build:declaration": "tsc --emitDeclarationOnly --project tsconfig.types.json",
+		"postbuild": "rimraf tsconfig.types.tsbuildinfo && cp package.json dist/package.json"
+	},
+	"dependencies": {
+		"@bufbuild/protobuf": "2.6.3",
+		"@bufbuild/protoc-gen-es": "2.6.3",
+		"@standard-schema/spec": "1.0.0",
+		"rxjs": "7.8.2",
+		"viem": "2.34.0",
+		"zod": "3.25.76"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.2.4",
+		"@bufbuild/buf": "1.56.0",
+		"@types/bun": "1.2.21",
+		"chain-selectors": "https://github.com/smartcontractkit/chain-selectors.git#8b963095ae797a3024c8e55822cced7bf618176f",
+		"fast-glob": "3.3.3",
+		"ts-proto": "2.7.5",
+		"typescript": "5.9.2",
+		"yaml": "2.8.1",
+		"rimraf": "6.0.1"
+	},
+	"optionalDependencies": {
+		"@chainlink/cre-ts-linux-x64": "0.0.1",
+		"@chainlink/cre-ts-linux-arm": "0.0.1",
+		"@chainlink/cre-ts-windows-x64": "0.0.1"
+	}
 }
