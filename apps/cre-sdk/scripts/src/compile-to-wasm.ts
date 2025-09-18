@@ -6,10 +6,14 @@ import { mkdir } from "node:fs/promises";
 const isJsFile = (p: string) =>
   [".js", ".mjs", ".cjs"].includes(path.extname(p).toLowerCase());
 
-export const main = async () => {
-  const args = process.argv.slice(3);
+export const main = async (inputFile?: string, outputFile?: string) => {
+  const cliArgs = process.argv.slice(3);
 
-  if (args.length === 0) {
+  // Resolve input/output from params or CLI
+  const inputPath = inputFile ?? cliArgs[0];
+  const outputPathArg = outputFile ?? cliArgs[1];
+
+  if (!inputPath) {
     console.error(
       "Usage: bun compile:js-to-wasm <path/to/input.(js|mjs|cjs)> [path/to/output.wasm]"
     );
@@ -21,7 +25,6 @@ export const main = async () => {
     process.exit(1);
   }
 
-  const inputPath = args[0];
   const resolvedInput = path.resolve(inputPath);
 
   if (!isJsFile(resolvedInput)) {
@@ -33,22 +36,26 @@ export const main = async () => {
     process.exit(1);
   }
 
-  // Default output: same directory, same basename, .wasm extension
+  // Default output = same dir, same basename, .wasm extension
   const defaultOut = path.join(
     path.dirname(resolvedInput),
     path.basename(resolvedInput).replace(/\.(m|c)?js$/i, ".wasm")
   );
-  const outputPath = args[1] ? path.resolve(args[1]) : defaultOut;
+  const resolvedOutput = outputPathArg
+    ? path.resolve(outputPathArg)
+    : defaultOut;
 
   // Ensure output directory exists
-  await mkdir(path.dirname(outputPath), { recursive: true });
+  await mkdir(path.dirname(resolvedOutput), { recursive: true });
 
   console.info(`🔨 Compiling to WASM`);
   console.info(`📁 Input:  ${resolvedInput}`);
-  console.info(`🎯 Output: ${outputPath}`);
+  console.info(`🎯 Output: ${resolvedOutput}`);
 
-  // Uses your CRE wrapper to compile to WASM
-  await $`bun cre-compile-workflow ${resolvedInput} ${outputPath}`;
+  // Run compilation
+  await $`bun cre-compile-workflow ${resolvedInput} ${resolvedOutput}`;
 
-  console.info(`✅ Compiled: ${outputPath}`);
+  console.info(`✅ Compiled: ${resolvedOutput}`);
+
+  return resolvedOutput;
 };

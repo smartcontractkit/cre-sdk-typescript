@@ -1,80 +1,79 @@
-import { $ } from "bun";
-import fg from "fast-glob";
+// compile-all-standard-tests.ts
 import path from "node:path";
+import fg from "fast-glob";
+import { main as compileWorkflow } from "./compile-workflow";
 
-export const main = async () => {
+/** Mirror the input file under .temp/<original path> and swap extension to .wasm */
+export function toTempMirrorWasmPath(inputPath: string) {
+  const resolved = path.resolve(inputPath);
+  const relFromCwd = path.relative(process.cwd(), resolved);
+  const mirrored = path.join(".temp", relFromCwd);
+  return mirrored.replace(/\.[^.]+$/, ".wasm");
+}
+
+export const main = async (baseDir?: string, pattern?: string) => {
+  // CLI fallback: bun test:standard:compile:all [baseDir] [pattern]
+  const args = process.argv.slice(3);
+  const root = baseDir ?? args[0] ?? "src/standard_tests";
+  const glob = pattern ?? args[1] ?? "**/test.ts";
+
   console.info("🚀 Compiling all standard tests...\n");
+  console.info(`📂 Root:    ${path.resolve(root)}`);
+  console.info(`🔎 Pattern: ${glob}\n`);
 
-  // Find all test.ts files in standard_tests
-  const testFiles = await fg("src/standard_tests/**/test.ts");
+  // Find all test.ts files
+  const files = await fg(`${root.replace(/\\/g, "/")}/${glob}`, { dot: false });
 
-  if (testFiles.length === 0) {
+  if (files.length === 0) {
     console.error("❌ No standard test files found");
     process.exit(1);
   }
 
-  const testTargets: Array<{ name: string; args: string[] }> = [];
-
-  // Parse test files to determine compilation targets
-  for (const testFile of testFiles) {
-    const relativePath = testFile
-      .replace("src/standard_tests/", "")
-      .replace("/test.ts", "");
-    const pathParts = relativePath.split("/");
-
-    if (pathParts.length === 1) {
-      // Single level test (e.g., "secrets")
-      testTargets.push({
-        name: pathParts[0],
-        args: [pathParts[0]],
-      });
-    } else if (pathParts.length === 2) {
-      // Nested test (e.g., "mode_switch/successful_mode_switch")
-      testTargets.push({
-        name: `${pathParts[0]}/${pathParts[1]}`,
-        args: [pathParts[0], pathParts[1]],
-      });
-    } else {
-      console.warn(`⚠️  Skipping deeply nested test: ${relativePath}`);
-    }
-  }
-
-  console.info(`📋 Found ${testTargets.length} tests to compile:`);
-  for (const target of testTargets) {
-    console.info(`   • ${target.name}`);
-  }
+  console.info(`📋 Found ${files.length} test(s):`);
+  for (const f of files) console.info(`   • ${f}`);
   console.info("");
 
-  let successCount = 0;
-  let failureCount = 0;
+  let success = 0;
+  let failed = 0;
   const failures: string[] = [];
 
-  // Compile each test
-  for (const target of testTargets) {
+  // Sequential for readable logs (switch to Promise.allSettled for parallel if desired)
+  for (const testPath of files) {
+    const rel = path.relative(process.cwd(), testPath);
+    const wasmOut = toTempMirrorWasmPath(testPath);
+
     try {
-      console.info(`🔨 Compiling: ${target.name}`);
-      await $`bun test:standard:compile ${target.args}`;
-      successCount++;
-      console.info(`✅ Success: ${target.name}\n`);
-    } catch (error) {
-      failureCount++;
-      failures.push(target.name);
-      console.error(`❌ Failed: ${target.name}`);
-      console.error(`   Error: ${error}\n`);
+      console.info(`🔨 Compiling: ${rel}`);
+      console.info(`   → Output:  ${path.relative(process.cwd(), wasmOut)}`);
+      await compileWorkflow(testPath, wasmOut);
+      console.info(`✅ Success:   ${rel}\n`);
+      success++;
+    } catch (err) {
+      console.error(`❌ Failed:    ${rel}`);
+      console.error(`   Error: ${err}\n`);
+      failed++;
+      failures.push(rel);
     }
   }
 
   // Summary
   console.info("📊 Compilation Summary:");
-  console.info(`   ✅ Successful: ${successCount}`);
-  console.info(`   ❌ Failed: ${failureCount}`);
+  console.info(`   ✅ Successful: ${success}`);
+  console.info(`   ❌ Failed:     ${failed}`);
 
   if (failures.length > 0) {
-    console.info(`   Failed tests: ${failures.join(", ")}`);
+    console.info("   Failed tests:");
+    for (const f of failures) console.info(`   • ${f}`);
     process.exit(1);
   }
 
-  console.info(
-    `\n🎉 All ${successCount} standard tests compiled successfully!`
-  );
+  console.info(`\n🎉 All ${success} standard tests compiled successfully!`);
 };
+
+// Allow direct CLI usage
+if (import.meta.main) {
+  main().catch((e) => {
+    console.error(e);
+    process.exit(1);
+  });
+}

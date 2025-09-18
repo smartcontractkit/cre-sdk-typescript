@@ -44,6 +44,8 @@
     "build:declaration": "tsc --emitDeclarationOnly --project tsconfig.build.json",
     "compile:ts-to-js": "bun scripts/run.ts compile-to-js",
     "compile:js-to-wasm": "bun scripts/run.ts compile-to-wasm",
+    "compile:workflow": "bun scripts/run.ts compile-workflow",
+    "compile:all-standard-tests": "bun scripts/run.ts compile-all-standard-tests",
     "check": "biome check --write",
     "format": "biome format --write ${BIOME_PATHS:-.}",
     "generate:chain-selectors": "bun scripts/run.ts generate-chain-selectors && BIOME_PATHS=\"src/generated\" bun format",
@@ -52,8 +54,6 @@
     "lint": "biome lint --write",
     "test": "bun test",
     "test:standard": "./scripts/run-standard-tests.sh",
-    "test:standard:compile": "bun scripts/run.ts compile-standard-test",
-    "test:standard:compile:all": "bun scripts/run.ts compile-all-standard-tests",
     "typecheck": "tsc"
   },
   "dependencies": {

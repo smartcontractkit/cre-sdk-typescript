@@ -3,10 +3,8 @@
 const availableScripts = [
   "compile-to-js",
   "compile-to-wasm",
-  "compile-standard-test", // bundles JS and WASM compilation into single script
-  "compile-standard-test-js",
-  "compile-standard-test-wasm",
-  "compile-all-standard-tests",
+  "compile-workflow", // TS -> JS -> WASM compilation in single script
+  "compile-all-standard-tests", // Do the above but for all standard tests
 
   "generate-chain-selectors",
   "generate-sdks",
