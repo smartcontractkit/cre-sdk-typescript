@@ -46,30 +46,30 @@ export class ConsensusCapability {
 		}
 		const capabilityId = ConsensusCapability.CAPABILITY_ID
 
-		return callCapability({
+		const capabilityResponse = await callCapability({
 			capabilityId,
 			method: 'Simple',
 			mode: this.mode,
 			payload,
-		}).then((capabilityResponse: CapabilityResponse) => {
-			if (capabilityResponse.response.case === 'error') {
-				throw new CapabilityError(capabilityResponse.response.value, {
-					capabilityId,
-					method: 'Simple',
-					mode: this.mode,
-				})
-			}
-
-			if (capabilityResponse.response.case !== 'payload') {
-				throw new CapabilityError('No payload in response', {
-					capabilityId,
-					method: 'Simple',
-					mode: this.mode,
-				})
-			}
-
-			return fromBinary(ValueSchema, capabilityResponse.response.value.value)
 		})
+
+		if (capabilityResponse.response.case === 'error') {
+			throw new CapabilityError(capabilityResponse.response.value, {
+				capabilityId,
+				method: 'Simple',
+				mode: this.mode,
+			})
+		}
+
+		if (capabilityResponse.response.case !== 'payload') {
+			throw new CapabilityError('No payload in response', {
+				capabilityId,
+				method: 'Simple',
+				mode: this.mode,
+			})
+		}
+
+		return fromBinary(ValueSchema, capabilityResponse.response.value.value)
 	}
 
 	async report(input: ReportRequest | ReportRequestJson): Promise<ReportResponse> {
@@ -83,29 +83,29 @@ export class ConsensusCapability {
 		}
 		const capabilityId = ConsensusCapability.CAPABILITY_ID
 
-		return callCapability({
+		const capabilityResponse = await callCapability({
 			capabilityId,
 			method: 'Report',
 			mode: this.mode,
 			payload,
-		}).then((capabilityResponse: CapabilityResponse) => {
-			if (capabilityResponse.response.case === 'error') {
-				throw new CapabilityError(capabilityResponse.response.value, {
-					capabilityId,
-					method: 'Report',
-					mode: this.mode,
-				})
-			}
-
-			if (capabilityResponse.response.case !== 'payload') {
-				throw new CapabilityError('No payload in response', {
-					capabilityId,
-					method: 'Report',
-					mode: this.mode,
-				})
-			}
-
-			return fromBinary(ReportResponseSchema, capabilityResponse.response.value.value)
 		})
+
+		if (capabilityResponse.response.case === 'error') {
+			throw new CapabilityError(capabilityResponse.response.value, {
+				capabilityId,
+				method: 'Report',
+				mode: this.mode,
+			})
+		}
+
+		if (capabilityResponse.response.case !== 'payload') {
+			throw new CapabilityError('No payload in response', {
+				capabilityId,
+				method: 'Report',
+				mode: this.mode,
+			})
+		}
+
+		return fromBinary(ReportResponseSchema, capabilityResponse.response.value.value)
 	}
 }

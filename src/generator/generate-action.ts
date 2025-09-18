@@ -32,30 +32,30 @@ export function generateActionMethod(
       typeUrl: getTypeUrl(${method.input.name}Schema),
       value: toBinary(${method.input.name}Schema, value),
     };${capabilityIdLogic}
-    
-    return callCapability({
+
+    const capabilityResponse = await callCapability({
       capabilityId,
       method: "${method.name}",
       mode: this.mode,
-      payload,
-    }).then((capabilityResponse: CapabilityResponse) => {
-      if (capabilityResponse.response.case === "error") {
-        throw new CapabilityError(capabilityResponse.response.value, {
-          capabilityId,
-          method: "${method.name}",
-          mode: this.mode,
-        });
-      }
-
-      if (capabilityResponse.response.case !== "payload") {
-        throw new CapabilityError("No payload in response", {
-          capabilityId,
-          method: "${method.name}",
-          mode: this.mode,
-        });
-      }
-
-      return fromBinary(${method.output.name}Schema, capabilityResponse.response.value.value);
+      payload
     });
+
+    if (capabilityResponse.response.case === 'error') {
+      throw new CapabilityError(capabilityResponse.response.value, {
+        capabilityId,
+        method: "${method.name}",
+        mode: this.mode,
+      })
+    }
+
+    if (capabilityResponse.response.case !== 'payload') {
+      throw new CapabilityError('No payload in response', {
+        capabilityId,
+        method: "${method.name}",
+        mode: this.mode,
+      })
+    }
+
+    return fromBinary(${method.output.name}Schema, capabilityResponse.response.value.value)
   }`
 }
