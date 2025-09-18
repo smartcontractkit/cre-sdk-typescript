@@ -7,11 +7,9 @@ import {
   mkdirSync,
   chmodSync,
   accessSync,
-  openSync,
-  closeSync,
   unlinkSync,
   renameSync,
-  constants,
+  copyFileSync,
 } from "node:fs";
 import { join } from "node:path";
 import { createHash } from "node:crypto";
@@ -200,8 +198,20 @@ const buildPlatform = async (
   // Download Javy binary if available for this platform
   if (javyAsset) {
     const javyFileName = `${javyAsset.name}-${javyVersion}`;
-    const javyPath = join(platformDir, javyFileName);
+    const javyPath = join(platformDir, javyAsset.outName);
     await downloadJavy(javyAsset, javyPath);
+
+
+    // copy chainlink javy plugin to platformDir
+    const chainlinkJavyPluginPath = join(process.cwd(), "plugins/javy_chainlink_sdk/target/wasm32-wasip1/release/javy_chainlink_sdk.wasm");
+    copyFileSync(chainlinkJavyPluginPath, join(platformDir, "javy_chainlink_sdk.wasm"));
+  
+    const COMPILE_JAVY_OUTPUT_PATH = join(platformDir, "javy_chainlink_sdk.plugin.wasm");
+    // compile the sdk with javy plugin
+    await $`${javyPath} init-plugin ${chainlinkJavyPluginPath} -o ${COMPILE_JAVY_OUTPUT_PATH}`
+
+
+    unlinkSync(join(platformDir, "javy_chainlink_sdk.wasm"));
   } else {
     console.log(`  ⚠ No Javy binary available for ${platformArch}`);
   }
