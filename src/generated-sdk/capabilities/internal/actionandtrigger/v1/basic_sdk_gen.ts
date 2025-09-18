@@ -44,7 +44,7 @@ export class BasicCapability {
     private readonly mode: Mode = BasicCapability.DEFAULT_MODE
   ) {}
 
-  async action(input: Input |  InputJson): Promise<Output> {
+  action(input: Input |  InputJson): Promise<Output> {
     // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
     const value = (input as any).$typeName ? input as Input : fromJson(InputSchema, input as InputJson)
     const payload = {

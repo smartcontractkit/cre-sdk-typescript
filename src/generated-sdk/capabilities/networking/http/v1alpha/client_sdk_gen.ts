@@ -37,7 +37,7 @@ export class ClientCapability {
     private readonly mode: Mode = ClientCapability.DEFAULT_MODE
   ) {}
 
-  async sendRequest(input: Request |  RequestJson): Promise<Response> {
+  sendRequest(input: Request |  RequestJson): Promise<Response> {
     // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
     const value = (input as any).$typeName ? input as Request : fromJson(RequestSchema, input as RequestJson)
     const payload = {

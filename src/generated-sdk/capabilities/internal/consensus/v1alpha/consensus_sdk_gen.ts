@@ -44,7 +44,7 @@ export class ConsensusCapability {
     private readonly mode: Mode = ConsensusCapability.DEFAULT_MODE
   ) {}
 
-  async simple(input: SimpleConsensusInputs |  SimpleConsensusInputsJson): Promise<Value> {
+  simple(input: SimpleConsensusInputs |  SimpleConsensusInputsJson): Promise<Value> {
     // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
     const value = (input as any).$typeName ? input as SimpleConsensusInputs : fromJson(SimpleConsensusInputsSchema, input as SimpleConsensusInputsJson)
     const payload = {
@@ -79,7 +79,7 @@ export class ConsensusCapability {
     });
   }
 
-  async report(input: ReportRequest |  ReportRequestJson): Promise<ReportResponse> {
+  report(input: ReportRequest |  ReportRequestJson): Promise<ReportResponse> {
     // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
     const value = (input as any).$typeName ? input as ReportRequest : fromJson(ReportRequestSchema, input as ReportRequestJson)
     const payload = {

@@ -15,10 +15,10 @@ type Params = {
 }
 
 // Implementation signature (general fallback)
-export async function awaitAsyncRequest(
+export function awaitAsyncRequest(
 	callbackId: number,
 	{ capabilityId, method, mode }: Params,
-): Promise<CapabilityResponse> {
+): CapabilityResponse {
 	// Create proper AwaitCapabilitiesRequest protobuf message
 	const awaitRequest = create(AwaitCapabilitiesRequestSchema, {
 		ids: [callbackId],

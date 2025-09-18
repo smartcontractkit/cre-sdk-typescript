@@ -40,7 +40,7 @@ export function callCapability({
 		payload,
 	})
 
-	return new LazyPromise(async () => {
+	return new LazyPromise(() => {
 		return awaitAsyncRequest(callbackId, {
 			capabilityId,
 			method,

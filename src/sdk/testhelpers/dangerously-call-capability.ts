@@ -24,7 +24,7 @@ export function dangerouslyCallCapability({
 		payload,
 	})
 
-	return new LazyPromise(async () => {
+	return new LazyPromise(() => {
 		return awaitAsyncRequest(callbackId, {
 			capabilityId,
 			method,
