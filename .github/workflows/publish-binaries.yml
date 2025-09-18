@@ -46,9 +46,6 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
       
-      - name: Get the chainlink javy plugin
-        run: bun run build:javy:plugin
-
       - name: Build Javy SDK plugin
         run: bun run build-bins.ts darwin-arm64
 
@@ -76,9 +73,6 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Get the chainlink javy plugin
-        run: bun run build:javy:plugin
-      
       - name: Build Javy SDK plugin
         run: bun run build-bins.ts linux-x64
 

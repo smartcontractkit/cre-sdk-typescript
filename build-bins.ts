@@ -203,7 +203,7 @@ const buildPlatform = async (
 
 
     // copy chainlink javy plugin to platformDir
-    const chainlinkJavyPluginPath = join(process.cwd(), "plugins/javy_chainlink_sdk/target/wasm32-wasip1/release/javy_chainlink_sdk.wasm");
+    const chainlinkJavyPluginPath = join(process.cwd(), "cli/javy_chainlink_sdk.wasm");
     copyFileSync(chainlinkJavyPluginPath, join(platformDir, "javy_chainlink_sdk.wasm"));
   
     const COMPILE_JAVY_OUTPUT_PATH = join(platformDir, "javy_chainlink_sdk.plugin.wasm");
