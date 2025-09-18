@@ -1,6 +1,8 @@
 #!/usr/bin/env bun
 
 const availableScripts = [
+  "compile-to-js",
+  "compile-to-wasm",
   "compile-standard-test", // bundles JS and WASM compilation into single script
   "compile-standard-test-js",
   "compile-standard-test-wasm",

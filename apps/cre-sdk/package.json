@@ -7,7 +7,7 @@
     "bin/**/*"
   ],
   "bin": {
-    "cre-build": "bin/cre-ts"
+    "cre-compile": "bin/cre-compile"
   },
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -35,8 +35,15 @@
     }
   },
   "scripts": {
-    "build": "bun build --target=node --entrypoints ./src/sdk/index.ts ./src/sdk/utils/index.ts ./src/sdk/runtime/index.ts --outdir=dist && bun build:declaration",
+    "build": "bun build --target=node --entrypoints ./src/sdk/index.ts ./src/sdk/utils/index.ts ./src/sdk/runtime/index.ts --outdir=dist && bun build:declaration && bun build:cli",
+    "build:cli": "bun build --compile ./src/cli/cre-compile.ts --outfile=bin/cre-compile",
+    "build:cli:cross": "bun build:cli:linux && bun build:cli:macos && bun build:cli:windows",
+    "build:cli:linux": "bun build --compile --target=bun-linux-x64 ./src/cli/cre-compile.ts --outfile=bin/cre-compile-linux",
+    "build:cli:macos": "bun build --compile --target=bun-darwin-arm64 ./src/cli/cre-compile.ts --outfile=bin/cre-compile-macos",
+    "build:cli:windows": "bun build --compile --target=bun-windows-x64 ./src/cli/cre-compile.ts --outfile=bin/cre-compile-windows.exe",
     "build:declaration": "tsc --emitDeclarationOnly --project tsconfig.build.json",
+    "compile:ts-to-js": "bun scripts/run.ts compile-to-js",
+    "compile:js-to-wasm": "bun scripts/run.ts compile-to-wasm",
     "check": "biome check --write",
     "format": "biome format --write ${BIOME_PATHS:-.}",
     "generate:chain-selectors": "bun scripts/run.ts generate-chain-selectors && BIOME_PATHS=\"src/generated\" bun format",
@@ -47,8 +54,6 @@
     "test:standard": "./scripts/run-standard-tests.sh",
     "test:standard:compile": "bun scripts/run.ts compile-standard-test",
     "test:standard:compile:all": "bun scripts/run.ts compile-all-standard-tests",
-    "test:standard:compile:js": "bun scripts/run.ts compile-standard-test-js",
-    "test:standard:compile:wasm": "bun scripts/run.ts compile-standard-test-wasm",
     "typecheck": "tsc"
   },
   "dependencies": {
