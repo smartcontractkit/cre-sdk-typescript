@@ -24,6 +24,3 @@ echo "Updated package.json with postinstall script"
 
 cp package.json dist/package.json
 echo "Copied package.json to dist"
-
-bun run build:javy:plugin
-bun run build:javy:sdk:wasm
