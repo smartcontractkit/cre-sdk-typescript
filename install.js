@@ -17,7 +17,7 @@ const BINARY_DISTRIBUTION_PACKAGES = {
 }
 
 // Adjust the version you want to install. You can also make this dynamic.
-const BINARY_DISTRIBUTION_VERSION = '0.0.3'
+const BINARY_DISTRIBUTION_VERSION = '0.0.5'
 
 // Windows binaries end with .exe so we need to special case them.
 const binaryName = process.platform === 'win32' ? 'cre-build.exe' : 'cre-build'
@@ -29,7 +29,7 @@ const platformSpecificPackageName =
   BINARY_DISTRIBUTION_PACKAGES[`${process.platform}-${process.arch}`]
 
 // Compute the path we want to emit the fallback binary to
-const fallbackBinaryPath = path.join(__dirname, binaryName)
+const fallbackBinaryPath = (binaryName) => path.join(__dirname, binaryName)
 
 function makeRequest(url) {
   return new Promise((resolve, reject) => {
@@ -96,21 +96,25 @@ async function downloadBinaryFromNpm() {
 
   const tarballBuffer = zlib.unzipSync(tarballDownloadBuffer)
 
-  console.log(`Extracting binary to: ${fallbackBinaryPath}`)
-
+  console.log(`Extracting binary ${binaryName} to: ${fallbackBinaryPath}`)
   // Extract binary from package and write to disk
   fs.writeFileSync(
-    fallbackBinaryPath,
+    fallbackBinaryPath(binaryName),
     extractFileFromTarball(tarballBuffer, `package/bin/${binaryName}`),
     { mode: 0o755 } // Make binary file executable
   )
+
+  console.log(`Extracting binary ${javyBinary} to: ${fallbackBinaryPath}`)
   fs.writeFileSync(
-    fallbackBinaryPath,
+    fallbackBinaryPath(javyBinary),
     extractFileFromTarball(tarballBuffer, `package/bin/${javyBinary}`),
     { mode: 0o755 } // Make binary file executable
   )
+
+  console.log(`Extracting binary ${javyPluginWasm} to: ${fallbackBinaryPath}`)
+
   fs.writeFileSync(
-    fallbackBinaryPath,
+    fallbackBinaryPath(javyPluginWasm),
     extractFileFromTarball(tarballBuffer, `package/bin/${javyPluginWasm}`),
     { mode: 0o755 } // Make binary file executable
   )
@@ -122,6 +126,7 @@ function isPlatformSpecificPackageInstalled() {
     require.resolve(`${platformSpecificPackageName}/bin/${binaryName}`)
     return true
   } catch (e) {
+    onsole.error(`Could not resolve platform-specific package: ${platformSpecificPackageName}. Falling back to manual download. Error:`, e.message);
     return false
   }
 }

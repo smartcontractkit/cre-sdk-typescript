@@ -2,6 +2,10 @@ import { execFileSync } from 'node:child_process'
 import path from 'node:path'
 import fg from 'fast-glob'
 
+const getPackagePath = (fileName: string) => {
+	return path.join(process.cwd(), 'node_modules', '@chainlink', 'cre-sdk', fileName)
+}
+
 export const main = async () => {
 	console.info('\n\n---> Compile JS workflows to WASM \n\n')
 
@@ -14,12 +18,9 @@ export const main = async () => {
 
 		console.log(`\n\n🔨 Building WASM for: ${jsFile}`)
 
-		const javyBinary =
-			process.platform === 'darwin'
-				? './.bin/javy-arm-macos-v5.0.4'
-				: './.bin/javy-arm-linux-v5.0.4'
-
-		const javyPath = path.join(process.cwd(), 'node_modules', javyBinary)
+		const javyPath = getPackagePath('javy')
+		const javyPluginPath = getPackagePath('javy-chainlink-sdk.plugin.wasm')
+		const workflowWitPath = getPackagePath('dist/workflow.wit')
 
 		/**
 		 * -C wit=src/workflows/workflow.wit — points to the WIT file (definition of what will be available for the Host).
@@ -32,11 +33,11 @@ export const main = async () => {
 			[
 				'build',
 				'-C',
-				'wit=src/workflows/workflow.wit',
+				`wit=${workflowWitPath}`,
 				'-C',
 				'wit-world=workflow',
 				'-C',
-				'plugin=node_modules/@chainlink/cre-sdk/javy-chainlink-sdk.plugin.wasm',
+				`plugin=${javyPluginPath}`,
 				jsFile,
 				'-o',
 				wasmFile,

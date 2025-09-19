@@ -82,6 +82,8 @@
 		"rimraf": "6.0.1"
 	},
 	"optionalDependencies": {
+		"@chainlink/cre-ts-darwin-x64": "0.0.1",
+		"@chainlink/cre-ts-darwin-arm": "0.0.1",
 		"@chainlink/cre-ts-linux-x64": "0.0.1",
 		"@chainlink/cre-ts-linux-arm": "0.0.1",
 		"@chainlink/cre-ts-windows-x64": "0.0.1"
