@@ -2,46 +2,21 @@
   "name": "@chainlink/cre-sdk",
   "version": "0.0.1",
   "type": "module",
-  "files": [
-    "dist/**/*",
-    "bin/**/*"
-  ],
-  "bin": {
-    "cre-compile": "bin/cre-compile"
-  },
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "src/index.ts",
   "exports": {
-    ".": {
-      "default": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    },
-    "./utils": {
-      "default": "./dist/utils/index.js",
-      "types": "./dist/utils/index.d.ts"
-    },
-    "./utils/*": {
-      "default": "./dist/sdk/utils/*.js",
-      "types": "./dist/sdk/utils/*.d.ts"
-    },
-    "./runtime": {
-      "default": "./dist/runtime/index.js",
-      "types": "./dist/runtime/index.d.ts"
-    },
-    "./runtime/*": {
-      "default": "./dist/sdk/runtime/*.js",
-      "types": "./dist/sdk/runtime/*.d.ts"
-    }
+    ".": "./src/index.ts"
   },
+  "bin": {
+    "cre-compile": "bin/cre-compile.ts"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "package.json",
+    "README.md",
+    "LICENSE.md"
+  ],
   "scripts": {
-    "build": "bun build --target=node --entrypoints ./src/sdk/index.ts ./src/sdk/utils/index.ts ./src/sdk/runtime/index.ts --outdir=dist && bun build:declaration && bun build:cli",
-    "build:cli": "bun build --compile ./src/cli/cre-compile.ts --outfile=bin/cre-compile",
-    "build:cli:cross": "bun build:cli:linux && bun build:cli:macos && bun build:cli:windows",
-    "build:cli:linux": "bun build --compile --target=bun-linux-x64 ./src/cli/cre-compile.ts --outfile=bin/cre-compile-linux",
-    "build:cli:macos": "bun build --compile --target=bun-darwin-arm64 ./src/cli/cre-compile.ts --outfile=bin/cre-compile-macos",
-    "build:cli:windows": "bun build --compile --target=bun-windows-x64 ./src/cli/cre-compile.ts --outfile=bin/cre-compile-windows.exe",
-    "build:declaration": "tsc --emitDeclarationOnly --project tsconfig.build.json",
     "compile:ts-to-js": "bun scripts/run.ts compile-to-js",
     "compile:js-to-wasm": "bun scripts/run.ts compile-to-wasm",
     "compile:workflow": "bun scripts/run.ts compile-workflow",
@@ -78,5 +53,8 @@
     "access": "public"
   },
   "author": "SmartContract Chainlink Limited SEZC",
-  "license": "SEE LICENSE IN LICENSE.md"
+  "license": "SEE LICENSE IN LICENSE.md",
+  "engines": {
+    "bun": ">=1.2.21"
+  }
 }

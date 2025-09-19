@@ -8,7 +8,6 @@
     "typescript": "5.9.2"
   },
   "scripts": {
-    "build": "turbo run build",
     "check": "turbo run check",
     "format": "turbo run format",
     "lint": "turbo run lint",
