@@ -1,6 +1,6 @@
 import { fromJson, create } from "@bufbuild/protobuf"
 import { type Trigger } from "@cre/sdk/utils/triggers/trigger-interface"
-import { type Any, AnySchema } from "@bufbuild/protobuf/wkt"
+import { type Any, AnySchema, anyPack } from "@bufbuild/protobuf/wkt"
 import { type Runtime } from "@cre/sdk/runtime/runtime"
 import {
   BalanceAtReplySchema,
@@ -92,7 +92,6 @@ export class ClientCapability {
   } as const
 
   constructor(
-    ,
     private readonly chainSelector?: bigint
   ) {}
 
@@ -318,10 +317,7 @@ class ClientLogTrigger implements Trigger<Log, Log> {
   }
 
   configAsAny(): Any {
-    return create(AnySchema, {
-      typeUrl: getTypeUrl(FilterLogTriggerRequestSchema),
-      value: toBinary(FilterLogTriggerRequestSchema, this.config),
-    });
+    return anyPack(FilterLogTriggerRequestSchema, this.config);
   }
 
   /**

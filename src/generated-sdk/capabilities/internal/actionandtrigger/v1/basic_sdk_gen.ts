@@ -1,6 +1,6 @@
 import { fromJson, create } from "@bufbuild/protobuf"
 import { type Trigger } from "@cre/sdk/utils/triggers/trigger-interface"
-import { type Any, AnySchema } from "@bufbuild/protobuf/wkt"
+import { type Any, AnySchema, anyPack } from "@bufbuild/protobuf/wkt"
 import { type Runtime } from "@cre/sdk/runtime/runtime"
 import {
   ConfigSchema,
@@ -82,10 +82,7 @@ class BasicTrigger implements Trigger<TriggerEvent, TriggerEvent> {
   }
 
   configAsAny(): Any {
-    return create(AnySchema, {
-      typeUrl: getTypeUrl(ConfigSchema),
-      value: toBinary(ConfigSchema, this.config),
-    });
+    return anyPack(ConfigSchema, this.config);
   }
 
   /**

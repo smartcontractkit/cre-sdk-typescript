@@ -1,6 +1,6 @@
-import { writeFileSync, mkdirSync } from 'node:fs'
-import { join, dirname } from 'node:path'
-import { getExtension, type DescService } from '@bufbuild/protobuf'
+import { mkdirSync, writeFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { type DescService, getExtension } from '@bufbuild/protobuf'
 import type { GenFile } from '@bufbuild/protobuf/codegenv2'
 import { Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import type { CapabilityMetadata } from '@cre/generated/tools/generator/v1alpha/cre_metadata_pb'
@@ -94,7 +94,7 @@ export function generateSdk(file: GenFile, outputDir: string) {
 		// Add trigger imports if needed
 		if (hasTriggers) {
 			imports.add(`import { type Trigger } from "@cre/sdk/utils/triggers/trigger-interface"`)
-			imports.add(`import { type Any, AnySchema } from "@bufbuild/protobuf/wkt"`)
+			imports.add(`import { type Any, AnySchema, anyPack } from "@bufbuild/protobuf/wkt"`)
 		}
 
 		// TODO???
@@ -156,7 +156,7 @@ export function generateSdk(file: GenFile, outputDir: string) {
 
 		// Extract chainSelector support
 		let chainSelectorSupport = ''
-		let constructorParams = ``
+		const constructorParams: string[] = []
 
 		if (hasChainSelector && capOption.labels) {
 			const chainSelectorLabel = capOption.labels.ChainSelector as any
@@ -173,7 +173,7 @@ ${Object.entries(defaults)
 	.join(',\n')}
   } as const`
 
-				constructorParams = `${constructorParams},\n    private readonly chainSelector?: bigint`
+				constructorParams.push('private readonly chainSelector?: bigint')
 			}
 		}
 
@@ -199,7 +199,7 @@ export class ${capabilityClassName} {
 ${chainSelectorSupport}
 
   constructor(
-    ${constructorParams}
+    ${constructorParams.join(',\n    ')}
   ) {}
 ${methods}
 }

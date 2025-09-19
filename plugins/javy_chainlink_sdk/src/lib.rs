@@ -27,7 +27,7 @@ unsafe extern "C" {
 
     // Mode switching and versioning
     fn switch_modes(mode: i32);
-    fn version_v2();
+    fn version_v2_typescript();
 
     // Random seed generation
     fn random_seed(mode: i32) -> i64;
@@ -84,6 +84,9 @@ pub unsafe extern "C" fn initialize_runtime() {
 
     javy_plugin_api::initialize_runtime(config, |runtime| {
         runtime.context().with(|ctx| {
+            static mut CURRENT_MODE: i32 = 0;
+            
+
             // callCapability(data: Uint8Array | ArrayBuffer | Base64 string) -> i64
             ctx.globals()
                 .set(
@@ -214,7 +217,10 @@ pub unsafe extern "C" fn initialize_runtime() {
                 .set(
                     "switchModes",
                     Func::from(|mode: i32| {
-                        unsafe { switch_modes(mode) };
+                        unsafe { 
+                            CURRENT_MODE = mode;
+                            switch_modes(mode);
+                        };
                     }),
                 )
                 .unwrap();
@@ -224,7 +230,7 @@ pub unsafe extern "C" fn initialize_runtime() {
                 .set(
                     "versionV2",
                     Func::from(|| {
-                        unsafe { version_v2() };
+                        unsafe { version_v2_typescript() };
                     }),
                 )
                 .unwrap();

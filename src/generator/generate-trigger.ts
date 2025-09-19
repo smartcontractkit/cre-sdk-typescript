@@ -62,10 +62,7 @@ class ${triggerClassName} implements Trigger<${method.output.name}, ${method.out
   }
 
   configAsAny(): Any {
-    return create(AnySchema, {
-      typeUrl: getTypeUrl(${method.input.name}Schema),
-      value: toBinary(${method.input.name}Schema, this.config),
-    });
+    return anyPack(${method.input.name}Schema, this.config);
   }
 
   /**
