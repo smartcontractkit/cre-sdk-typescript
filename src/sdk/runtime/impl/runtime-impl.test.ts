@@ -47,7 +47,7 @@ import {
 	Value,
 } from '@cre/sdk/utils'
 import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
-import { NodeModeError } from '../errors'
+import { DonModeError, NodeModeError } from '../errors'
 import { type RuntimeHelpers, RuntimeImpl } from './runtime-impl'
 
 // Helper function to create a RuntimeHelpers mock with error-throwing defaults
@@ -352,7 +352,7 @@ describe('test run in node mode', () => {
 	test('failed consensus', async () => {
 		const anyError = 'error'
 		const helpers = createRuntimeHelpersMock({
-			switchModes: mock((mode: Mode) => {}),
+			switchModes: mock((_: Mode) => {}),
 		})
 
 		ConsensusCapability.prototype.simple = mock(
@@ -378,7 +378,7 @@ describe('test run in node mode', () => {
 		expect(result).rejects.toThrow(new Error(anyError))
 	})
 
-	test('don runtime in node mode fails', async () => {
+	test('node runtime in don mode fails', async () => {
 		const helpers = createRuntimeHelpersMock({
 			switchModes: mock((_: Mode) => {}),
 			call: mock((_: CapabilityRequest) => {
@@ -406,142 +406,39 @@ describe('test run in node mode', () => {
 			capability.performAction(nrt!, create(NodeInputsSchema, { inputThing: true })),
 		).rejects.toThrow(new NodeModeError())
 	})
+
+	test('don runtime in node mode fails', async () => {
+		const helpers = createRuntimeHelpersMock({
+			switchModes: mock((_: Mode) => {}),
+		})
+
+		ConsensusCapability.prototype.simple = mock(
+			(_: Runtime<any>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
+				expect(inputs.default).toBeUndefined()
+				expect(inputs.descriptors).toEqual(
+					create(ConsensusDescriptorSchema, {
+						descriptor: { case: 'aggregation', value: AggregationType.MEDIAN },
+					}),
+				)
+				expect((inputs as any).$typeName).not.toBeUndefined()
+				const inputsProto = inputs as SimpleConsensusInputs
+				expect(inputsProto.observation.case).toEqual('error')
+				expect(inputsProto.observation.value).toEqual(new DonModeError().message)
+				return Promise.reject(new DonModeError())
+			},
+		)
+
+		const runtime = new RuntimeImpl<any>({}, 1, helpers, anyMaxSize)
+		const result = runtime.runInNodeMode(async (_: NodeRuntime<any>) => {
+			const capability = new BasicActionCapability()
+			await capability.performAction(runtime, create(InputsSchema, { inputThing: true }))
+			return 0
+		}, consensusMedianAggregation())()
+		expect(result).rejects.toThrow(new DonModeError())
+	})
 })
 
 /*
-
-func TestDonRuntime_RunInNodeMode(t *testing.T) {
-
-	t.Run("Node runtime in Don mode fails", func(t *testing.T) {
-		nodeCapability, err := nodeactionmock.NewBasicActionCapability(t)
-		require.NoError(t, err)
-		nodeCapability.PerformAction = func(_ context.Context, _ *nodeaction.NodeInputs) (*nodeaction.NodeOutputs, error) {
-			assert.Fail(t, "node capability should not be called")
-			return nil, fmt.Errorf("should not be called")
-		}
-
-		test := func(config string, rt cre.Runtime, input *basictrigger.Outputs) (*nodeaction.NodeOutputs, error) {
-			var nrt cre.NodeRuntime
-			cre.RunInNodeMode(config, rt, func(_ string, nodeRuntime cre.NodeRuntime) (int32, error) {
-				nrt = nodeRuntime
-				return 0, err
-			}, cre.ConsensusMedianAggregation[int32]())
-			na := nodeaction.BasicAction{}
-			return na.PerformAction(nrt, &nodeaction.NodeInputs{InputThing: true}).Await()
-		}
-
-		_, err = testRuntime(t, test)
-		assert.Equal(t, cre.NodeModeCallInDonMode(), err)
-	})
-
-	t.Run("Don runtime in Node mode fails", func(t *testing.T) {
-		capability, err := basicactionmock.NewBasicActionCapability(t)
-		require.NoError(t, err)
-		capability.PerformAction = func(_ context.Context, _ *basicaction.Inputs) (*basicaction.Outputs, error) {
-			assert.Fail(t, "should not be called")
-			return nil, errors.New("should not be called")
-		}
-
-		test := func(config string, rt cre.Runtime, input *basictrigger.Outputs) (int32, error) {
-			consensus := cre.RunInNodeMode(config, rt, func(_ string, nodeRuntime cre.NodeRuntime) (int32, error) {
-				action := basicaction.BasicAction{}
-				_, err := action.PerformAction(rt, &basicaction.Inputs{InputThing: true}).Await()
-				return 0, err
-			}, cre.ConsensusMedianAggregation[int32]())
-
-			return consensus.Await()
-		}
-		_, err = testRuntime(t, test)
-		assert.Equal(t, cre.DonModeCallInNodeMode(), err)
-	})
-}
-
-func testRuntime[T any](t *testing.T, testFn func(config string, rt cre.Runtime, _ *basictrigger.Outputs) (T, error)) (any, error) {
-	runtime := testutils.NewRuntime(t, map[string]string{})
-	return testFn(anyEnvConfig, runtime, anyTrigger)
-}
-
-type consensusValues[T any] struct {
-	GiveObservation T
-	GiveErr         error
-	WantResponse    T
-}
-
-func mockSimpleConsensus[T any](t *testing.T, values *consensusValues[T]) {
-	consensus, err := consensusmock.NewConsensusCapability(t)
-	require.NoError(t, err)
-
-	consensus.Simple = func(ctx context.Context, input *sdk.SimpleConsensusInputs) (*valuespb.Value, error) {
-		return handleSimpleConsensusRequest(t, values, input)
-	}
-}
-
-// handleSimpleConsensusRequest is a private helper to process the gRPC request
-// It extracts and validates inputs, and constructs the response based on generic types.
-func handleSimpleConsensusRequest[T any](
-	t *testing.T,
-	values *consensusValues[T],
-	input *sdk.SimpleConsensusInputs,
-) (*valuespb.Value, error) {
-	// 1. Initial Validation: Default input value
-	assert.Nil(t, input.Default.Value, "Default input value should be nil") // Added custom message
-
-	// 2. Validate Descriptor Type
-	switch d := input.Descriptors.Descriptor_.(type) {
-	case *sdk.ConsensusDescriptor_Aggregation:
-		assert.Equal(t, sdk.AggregationType_AGGREGATION_TYPE_MEDIAN, d.Aggregation, "Descriptor aggregation type mismatch") // Added custom message
-	default:
-		assert.Fail(t, "unexpected descriptor type: %T", d)
-		return nil, errors.New("unsupported descriptor type") // Return early on fail
-	}
-
-	// 3. Handle Observation Type
-	switch o := input.Observation.(type) {
-	case *sdk.SimpleConsensusInputs_Value:
-		// Handle value observation
-		return handleSimpleConsensusValueObservation(t, values, o.Value)
-	case *sdk.SimpleConsensusInputs_Error:
-		// Handle error observation
-		assert.Equal(t, values.GiveErr.Error(), o.Error, "Error observation message mismatch")
-		return nil, values.GiveErr
-	default:
-		// Unexpected top-level observation type
-		require.Fail(t, fmt.Sprintf("unexpected observation type: %T", o))
-		return nil, errors.New("unsupported observation type")
-	}
-}
-
-// handleSimpleConsensusValueObservation processes the value observation part of the input.
-func handleSimpleConsensusValueObservation[T any](
-	t *testing.T,
-	values *consensusValues[T],
-	obsValue *valuespb.Value, // The actual *valuespb.Value from the observation
-) (*valuespb.Value, error) {
-	assert.Nil(t, values.GiveErr, "Expected no error from consensusValues, but GiveErr is not nil")
-	wrappedExpectedObs, err := vals.Wrap(values.GiveObservation)
-	require.NoError(t, err)
-
-	assert.True(t, proto.Equal(vals.Proto(wrappedExpectedObs), obsValue))
-	wrapped, err := vals.Wrap(values.WantResponse)
-	require.NoError(t, err, "Failed to wrap the observation value")
-	return vals.Proto(wrapped), nil
-}
-
-type awaitOverride struct {
-	sdkimpl.RuntimeHelpers
-	await func(request *sdk.AwaitCapabilitiesRequest, maxResponseSize uint64) (*sdk.AwaitCapabilitiesResponse, error)
-}
-
-func (a *awaitOverride) Await(request *sdk.AwaitCapabilitiesRequest, maxResponseSize uint64) (*sdk.AwaitCapabilitiesResponse, error) {
-	return a.await(request, maxResponseSize)
-}
-*/
-
-/*
-
-MOVE
-
-
 
 func TestRuntime_Rand(t *testing.T) {
 	t.Run("random delegates", func(t *testing.T) {
