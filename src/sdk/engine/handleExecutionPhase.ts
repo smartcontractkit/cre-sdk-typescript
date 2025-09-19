@@ -9,7 +9,7 @@ export const handleExecutionPhase = async <TConfig>(
 	workflow: Workflow<TConfig>,
 	config: TConfig,
 	runtime: Runtime,
-): Promise<CapabilityResponse | void> => {
+): Promise<CapabilityResponse | undefined> => {
 	if (req.request.case !== 'trigger') {
 		return
 	}

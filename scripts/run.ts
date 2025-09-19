@@ -3,6 +3,7 @@
 const availableScripts = [
 	'compile-javy-sdk-plugin',
 	'compile-javy-with-sdk-plugin',
+	'compile-javy-linux-with-sdk-plugin',
 	'compile-to-js',
 	'compile-to-wasm',
 	'build-single-workflow-js',

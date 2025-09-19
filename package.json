@@ -38,6 +38,7 @@
 		"biome:lint": "biome lint --write",
 		"build:javy:plugin": "bun scripts/run.ts compile-javy-sdk-plugin",
 		"build:javy:sdk:wasm": "bun scripts/run.ts compile-javy-with-sdk-plugin",
+		"build:javy:linux:sdk:wasm": "bun scripts/run.ts compile-javy-linux-with-sdk-plugin",
 		"build:workflows:wasm": "bun scripts/run.ts compile-to-wasm",
 		"build:workflows:js": "bun scripts/run.ts compile-to-js",
 		"build:workflows": "bun build:workflows:js && bun build:workflows:wasm",
@@ -70,7 +71,7 @@
 		"zod": "3.25.76"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.1.3",
+		"@biomejs/biome": "2.2.4",
 		"@bufbuild/buf": "1.56.0",
 		"@types/bun": "1.2.21",
 		"chain-selectors": "https://github.com/smartcontractkit/chain-selectors.git#8b963095ae797a3024c8e55822cced7bf618176f",
@@ -81,6 +82,8 @@
 		"rimraf": "6.0.1"
 	},
 	"optionalDependencies": {
+		"@chainlink/cre-ts-darwin-x64": "0.0.1",
+		"@chainlink/cre-ts-darwin-arm": "0.0.1",
 		"@chainlink/cre-ts-linux-x64": "0.0.1",
 		"@chainlink/cre-ts-linux-arm": "0.0.1",
 		"@chainlink/cre-ts-windows-x64": "0.0.1"
