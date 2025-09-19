@@ -103,6 +103,11 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
     getNextCallId(): number {
         return this.nextCallId
     }
+
+    now(): Date {
+        // ns to ms
+        return new Date(this.helpers.now() / 1000000)
+    }
 }
 
 export class NodeRuntimeImpl<C> extends BaseRuntimeImpl<C> implements NodeRuntime<C>{
@@ -215,4 +220,6 @@ export interface RuntimeHelpers {
     awaitSecrets(request: AwaitSecretsRequest, maxResponseSize: number): AwaitSecretsResponse
     
     switchModes(mode: Mode): void
+
+    now(): number
 }

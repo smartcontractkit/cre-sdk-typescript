@@ -21,6 +21,9 @@ class WasmRuntimeHelpers implements RuntimeHelpers {
     private static instance: WasmRuntimeHelpers;
     
     private constructor() {}
+    now(): number {
+        return hostBindings.now()
+    }
     
     public static getInstance(): WasmRuntimeHelpers {
         if (!WasmRuntimeHelpers.instance) {

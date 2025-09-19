@@ -19,6 +19,8 @@ export type BaseRuntime<C> = {
 	callCapability<I extends Message, O extends Message>(
 		params: CallCapabilityParams<I, O>
 	): Promise<O>
+
+	now(): Date
 }
 
 export type Runtime<C> = BaseRuntime<C> & {

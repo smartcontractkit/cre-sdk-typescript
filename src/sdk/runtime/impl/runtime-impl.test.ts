@@ -4,15 +4,15 @@ import { OutputsSchema as TriggerOutputsSchema } from "@cre/generated/capabiliti
 import { BasicActionCapability } from '@cre/generated-sdk/capabilities/internal/basicaction/v1/basicaction_sdk_gen'
 import { BasicCapability } from '@cre/generated-sdk/capabilities/internal/actionandtrigger/v1/basic_sdk_gen'
 import { RuntimeImpl, type RuntimeHelpers } from './runtime-impl'
-import { type CapabilityRequest, type AwaitCapabilitiesRequest, type AwaitCapabilitiesResponse, type GetSecretsRequest, type AwaitSecretsRequest, type AwaitSecretsResponse, type Mode, type CapabilityResponse, CapabilityResponseSchema, AwaitCapabilitiesResponseSchema } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import { type CapabilityRequest, type AwaitCapabilitiesRequest, type AwaitCapabilitiesResponse, type GetSecretsRequest, type AwaitSecretsRequest, type AwaitSecretsResponse, type Mode, type CapabilityResponse, CapabilityResponseSchema, AwaitCapabilitiesResponseSchema, type SimpleConsensusInputs, type SimpleConsensusInputsJson } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { InputsSchema, OutputsSchema } from '@cre/generated/capabilities/internal/basicaction/v1/basic_action_pb'
 import { InputSchema, OutputSchema as OutputSchema } from '@cre/generated/capabilities/internal/actionandtrigger/v1/action_and_trigger_pb'
 import { anyPack, ValueSchema, type Any } from '@bufbuild/protobuf/wkt'
 import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
+import { ConsensusCapability } from '@cre/generated-sdk/capabilities/internal/consensus/v1alpha/consensus_sdk_gen'
+import type { Runtime } from '@cre/sdk/cre'
+import { Value } from '@cre/sdk/utils'
 
-const anyTrigger = create(TriggerOutputsSchema, {coolOutput: "cool"})
-
-const anyEnvConfig = "env_config"
 
 // Helper function to create a RuntimeHelpers mock with error-throwing defaults
 function createRuntimeHelpersMock(overrides: Partial<RuntimeHelpers> = {}): RuntimeHelpers {
@@ -22,15 +22,17 @@ function createRuntimeHelpersMock(overrides: Partial<RuntimeHelpers> = {}): Runt
         await: mock(() => { throw new Error('Method not implemented: await') }),
         getSecrets: mock(() => { throw new Error('Method not implemented: getSecrets') }),
         awaitSecrets: mock(() => { throw new Error('Method not implemented: awaitSecrets') }),
-        switchModes: mock(() => { throw new Error('Method not implemented: switchModes') })
+		switchModes: mock(() => { throw new Error('Method not implemented: switchModes') })
+		now: mock(() => { throw new Error('Method not implemented: now') })
     }
 
     // Return a merged object with overrides taking precedence
     return { ...defaultMock, ...overrides }
 }
 
+const anyMaxSize = 1024 * 1024
+
 describe('test runtime', () => {
-	const anyMaxSize = 1024 * 1024
     describe('test call capability', () => {
 		test.skip('runs async - proper async implementation in progress', async () => {
 		
@@ -153,84 +155,56 @@ describe('test runtime', () => {
 
 			expect(call1).rejects.toThrow(new CapabilityError(anyError, { callbackId: 1, capabilityId: BasicActionCapability.CAPABILITY_ID, method: "PerformAction" }))
 		})
+
+		test('await missing response', async () => {
+			const helpers = createRuntimeHelpersMock({
+				call: mock((_: CapabilityRequest) => {
+					return true
+				}),
+				await: mock((_: AwaitCapabilitiesRequest) => {
+					return create(AwaitCapabilitiesResponseSchema, { responses: {} })
+				})
+			})
+
+			const runtime = new RuntimeImpl<any>({}, 1, helpers, anyMaxSize)
+			const workflowAction1 = new BasicActionCapability()
+			const call1 = workflowAction1.performAction(runtime, create(InputsSchema, { inputThing: true }))
+
+			expect(call1).rejects.toThrow(new CapabilityError("No response found for callback ID 1", { callbackId: 1, capabilityId: BasicActionCapability.CAPABILITY_ID, method: "PerformAction" }))
+		})
     })
 })
 
-/*
+describe('test now conversts to date', () => {
+	test('now converts to date', () => {
+		const helpers = createRuntimeHelpersMock({
+			now: mock(() => 1716153600000 / 1000000)
+		})
 
-func TestRuntime_CallCapability(t *testing.T) {
-
-
-
-	t.Run("await missing response", func(t *testing.T) {
-		action, err := basicactionmock.NewBasicActionCapability(t)
-		require.NoError(t, err)
-
-		action.PerformAction = func(ctx context.Context, input *basicaction.Inputs) (*basicaction.Outputs, error) {
-			return &basicaction.Outputs{AdaptedThing: "ok"}, nil
-		}
-
-		capability := &basicaction.BasicAction{}
-
-		test := func(_ string, rt cre.Runtime, _ *basictrigger.Outputs) (string, error) {
-			drt := rt.(*testutils.TestRuntime)
-			drt.RuntimeHelpers = &awaitOverride{
-				RuntimeHelpers: drt.RuntimeHelpers,
-				await: func(request *sdk.AwaitCapabilitiesRequest, maxResponseSize uint64) (*sdk.AwaitCapabilitiesResponse, error) {
-					return &sdk.AwaitCapabilitiesResponse{Responses: map[int32]*sdk.CapabilityResponse{}}, nil
-				},
-			}
-			_, err := capability.PerformAction(rt, &basicaction.Inputs{InputThing: true}).Await()
-			return "", err
-		}
-
-		_, err = testRuntime(t, test)
-		assert.Error(t, err)
+		const runtime = new RuntimeImpl<any>({}, 1, helpers, anyMaxSize)
+		const now = runtime.now()
+		expect(now).toEqual(new Date(1716153600000))
 	})
-}
+})
 
-func TestRuntime_Rand(t *testing.T) {
-	t.Run("random delegates", func(t *testing.T) {
-		runtime := testutils.NewRuntime(t, map[string]string{})
-		runtime.SetRandomSource(rand.NewSource(1))
-		r, err := runtime.Rand()
-		require.NoError(t, err)
-		result := r.Uint64()
-		assert.Equal(t, rand.New(rand.NewSource(1)).Uint64(), result)
-	})
+describe('test run in node mode', () => {
+	test('successful consensus', () => {
+		const helpers = createRuntimeHelpersMock({
+			
+		})
 
-	t.Run("random does not allow use in the wrong mode", func(t *testing.T) {
-		test := func(config string, rt cre.Runtime, _ *basictrigger.Outputs) (uint64, error) {
-			return cre.RunInNodeMode(config, rt, func(string, cre.NodeRuntime) (uint64, error) {
-				if _, err := rt.Rand(); err != nil {
-					return 0, err
-				}
+		const anyObservation = 10
+		const anyMedian = 11
 
-				return 0, fmt.Errorf("should not be called in node mode")
-			}, cre.ConsensusMedianAggregation[uint64]()).Await()
-		}
-
-		_, err := testRuntime(t, test)
-		require.Error(t, err)
-	})
-
-	t.Run("returned random panics if you use it in the wrong mode ", func(t *testing.T) {
-		assert.Panics(t, func() {
-			test := func(config string, rt cre.Runtime, _ *basictrigger.Outputs) (uint64, error) {
-				r, err := rt.Rand()
-				if err != nil {
-					return 0, err
-				}
-				return cre.RunInNodeMode(config, rt, func(_ string, _ cre.NodeRuntime) (uint64, error) {
-					r.Uint64()
-					return 0, fmt.Errorf("should not be called in node mode")
-				}, cre.ConsensusMedianAggregation[uint64]()).Await()
-			}
-
-			_, _ = testRuntime(t, test)
+		ConsensusCapability.prototype.simple = mock((_: Runtime<any>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
+			expect(inputs.observation.case).toEqual('value')
+			expect(Value.wrap(inputs.observation.value).unwrapToType<number>()).toEqual(anyObservation)
+			return Promise.resolve(Value.from(anyMedian).proto())
 		})
 	})
-}
+})
+
+/*
 
 func TestDonRuntime_RunInNodeMode(t *testing.T) {
 	t.Run("Successful consensus", func(t *testing.T) {
@@ -398,3 +372,55 @@ func (a *awaitOverride) Await(request *sdk.AwaitCapabilitiesRequest, maxResponse
 	return a.await(request, maxResponseSize)
 }
 */
+
+
+
+/*
+
+MOVE
+
+
+
+func TestRuntime_Rand(t *testing.T) {
+	t.Run("random delegates", func(t *testing.T) {
+		runtime := testutils.NewRuntime(t, map[string]string{})
+		runtime.SetRandomSource(rand.NewSource(1))
+		r, err := runtime.Rand()
+		require.NoError(t, err)
+		result := r.Uint64()
+		assert.Equal(t, rand.New(rand.NewSource(1)).Uint64(), result)
+	})
+
+	t.Run("random does not allow use in the wrong mode", func(t *testing.T) {
+		test := func(config string, rt cre.Runtime, _ *basictrigger.Outputs) (uint64, error) {
+			return cre.RunInNodeMode(config, rt, func(string, cre.NodeRuntime) (uint64, error) {
+				if _, err := rt.Rand(); err != nil {
+					return 0, err
+				}
+
+				return 0, fmt.Errorf("should not be called in node mode")
+			}, cre.ConsensusMedianAggregation[uint64]()).Await()
+		}
+
+		_, err := testRuntime(t, test)
+		require.Error(t, err)
+	})
+
+	t.Run("returned random panics if you use it in the wrong mode ", func(t *testing.T) {
+		assert.Panics(t, func() {
+			test := func(config string, rt cre.Runtime, _ *basictrigger.Outputs) (uint64, error) {
+				r, err := rt.Rand()
+				if err != nil {
+					return 0, err
+				}
+				return cre.RunInNodeMode(config, rt, func(_ string, _ cre.NodeRuntime) (uint64, error) {
+					r.Uint64()
+					return 0, fmt.Errorf("should not be called in node mode")
+				}, cre.ConsensusMedianAggregation[uint64]()).Await()
+			}
+
+			_, _ = testRuntime(t, test)
+		})
+	})
+}
+	*/
