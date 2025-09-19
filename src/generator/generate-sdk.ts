@@ -1,16 +1,16 @@
 import { writeFileSync, mkdirSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { getExtension, type DescService } from '@bufbuild/protobuf'
+import type { GenFile } from '@bufbuild/protobuf/codegenv2'
+import { Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import type { CapabilityMetadata } from '@cre/generated/tools/generator/v1alpha/cre_metadata_pb'
 import {
 	capability,
 	method as methodOption,
 } from '@cre/generated/tools/generator/v1alpha/cre_metadata_pb'
-import { Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import type { GenFile } from '@bufbuild/protobuf/codegenv2'
-import type { CapabilityMetadata } from '@cre/generated/tools/generator/v1alpha/cre_metadata_pb'
 import { generateActionMethod } from './generate-action'
-import { generateTriggerMethod, generateTriggerClass } from './generate-trigger'
-import { lowerCaseFirstLetter, getImportPathForFile } from './utils'
+import { generateTriggerClass, generateTriggerMethod } from './generate-trigger'
+import { getImportPathForFile, lowerCaseFirstLetter } from './utils'
 
 const getCapabilityServiceOptions = (service: DescService): CapabilityMetadata | false => {
 	if (!service.proto.options) {
@@ -79,10 +79,9 @@ export function generateSdk(file: GenFile, outputDir: string) {
 			outputPathTypes.add(`type ${method.output.name}`)
 		})
 
-		
 		const hasTriggers = service.methods.some((m) => m.methodKind === 'server_streaming')
 		const hasActions = service.methods.some((m) => m.methodKind !== 'server_streaming')
-		const modePrefix = capOption.mode === Mode.NODE ? 'Mode.NODE' : ''
+		const modePrefix = capOption.mode === Mode.NODE ? 'Node' : ''
 
 		// Build import statements
 		const imports = new Set<string>()
@@ -102,7 +101,6 @@ export function generateSdk(file: GenFile, outputDir: string) {
 		if (hasActions || true) {
 			imports.add(`import { type ${modePrefix}Runtime } from "@cre/sdk/runtime/runtime"`)
 		}
-
 
 		// Generate deduplicated type imports
 		typeImports.forEach((types, path) => {
@@ -138,7 +136,13 @@ export function generateSdk(file: GenFile, outputDir: string) {
 				}
 
 				// Generate action method
-				return generateActionMethod(method, methodName, capabilityClassName, hasChainSelector, modePrefix)
+				return generateActionMethod(
+					method,
+					methodName,
+					capabilityClassName,
+					hasChainSelector,
+					modePrefix,
+				)
 			})
 			.join('\n')
 
@@ -147,7 +151,6 @@ export function generateSdk(file: GenFile, outputDir: string) {
 			.filter((method) => method.methodKind === 'server_streaming')
 			.map((method) => generateTriggerClass(method, service.name))
 			.join('\n')
-
 
 		const [capabilityName, capabilityVersion] = capOption.capabilityId.split('@')
 

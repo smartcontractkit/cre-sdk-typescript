@@ -1,5 +1,5 @@
 import { fromJson } from "@bufbuild/protobuf"
-import { type Mode.NODERuntime } from "@cre/sdk/runtime/runtime"
+import { type NodeRuntime } from "@cre/sdk/runtime/runtime"
 import {
   NodeInputsSchema,
   NodeOutputsSchema,
@@ -27,7 +27,7 @@ export class BasicActionCapability {
     
   ) {}
 
-  async performAction(runtime: Mode.NODERuntime<any>, input: NodeInputs |  NodeInputsJson): Promise<NodeOutputs> {
+  async performAction(runtime: NodeRuntime<any>, input: NodeInputs |  NodeInputsJson): Promise<NodeOutputs> {
     // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
     const payload = (input as any).$typeName ? input as NodeInputs : fromJson(NodeInputsSchema, input as NodeInputsJson)
     

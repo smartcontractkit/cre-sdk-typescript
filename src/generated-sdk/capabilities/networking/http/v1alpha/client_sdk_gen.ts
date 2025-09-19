@@ -1,5 +1,5 @@
 import { fromJson } from "@bufbuild/protobuf"
-import { type Mode.NODERuntime } from "@cre/sdk/runtime/runtime"
+import { type NodeRuntime } from "@cre/sdk/runtime/runtime"
 import {
   RequestSchema,
   ResponseSchema,
@@ -27,7 +27,7 @@ export class ClientCapability {
     
   ) {}
 
-  async sendRequest(runtime: Mode.NODERuntime<any>, input: Request |  RequestJson): Promise<Response> {
+  async sendRequest(runtime: NodeRuntime<any>, input: Request |  RequestJson): Promise<Response> {
     // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
     const payload = (input as any).$typeName ? input as Request : fromJson(RequestSchema, input as RequestJson)
     

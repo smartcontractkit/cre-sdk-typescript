@@ -1,7 +1,7 @@
 import type { Message } from "@bufbuild/protobuf"
 import type { GenMessage } from "@bufbuild/protobuf/codegenv2";
 import type { SecretRequest, Secret } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import type { ConsensusAggregation, PrimitiveTypes, UnwrapOptions } from "@cre/sdk/utils";
+import type { ConsensusAggregation, PrimitiveTypes, UnwrapOptions } from "@cre/sdk/utils"
 
 
 export type CallCapabilityParams<I extends Message, O extends Message> = {
