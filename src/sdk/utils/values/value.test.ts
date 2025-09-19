@@ -1,15 +1,15 @@
 import { describe, expect, test } from 'bun:test'
+import { create } from '@bufbuild/protobuf'
+import { FieldMaskSchema, TimestampSchema, timestampDate } from '@bufbuild/protobuf/wkt'
 import type { Value as ProtoValue } from '@cre/generated/values/v1/values_pb'
 import {
-	ValueSchema,
 	BigIntSchema,
-	MapSchema,
-	ListSchema,
 	DecimalSchema,
+	ListSchema,
+	MapSchema,
+	ValueSchema,
 } from '@cre/generated/values/v1/values_pb'
 import { Decimal, Int64, UInt64, Value } from './value'
-import { timestampDate, TimestampSchema, FieldMaskSchema } from '@bufbuild/protobuf/wkt'
-import { create } from '@bufbuild/protobuf'
 
 const bytesToBigIntBE = (bytes: Uint8Array): bigint => {
 	let out = 0n
@@ -395,6 +395,17 @@ describe('val helpers', () => {
 		const unwrapped = val.unwrapToType({ schema: personSchema })
 		expect(unwrapped).toEqual(person)
 		expect(schemaCalled).toBe(true)
+	})
+
+	test('unwrapToType primitives values', () => {
+		const val = Value.from(123)
+		const unwrapped = val.unwrapToType<number>({ instance: 0 })
+		expect(unwrapped).toEqual(123)
+	})
+
+	test('unwrapToType wrong primitive type throws', () => {
+		const val = Value.from(123)
+		expect(() => val.unwrapToType<string>({ instance: 'a' })).toThrow()
 	})
 
 	test('from object with constructor', () => {
