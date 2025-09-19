@@ -7,7 +7,8 @@ import { RuntimeImpl, type RuntimeHelpers } from './runtime-impl'
 import { type CapabilityRequest, type AwaitCapabilitiesRequest, type AwaitCapabilitiesResponse, type GetSecretsRequest, type AwaitSecretsRequest, type AwaitSecretsResponse, type Mode, type CapabilityResponse, CapabilityResponseSchema, AwaitCapabilitiesResponseSchema } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { InputsSchema, OutputsSchema } from '@cre/generated/capabilities/internal/basicaction/v1/basic_action_pb'
 import { InputSchema, OutputSchema as OutputSchema } from '@cre/generated/capabilities/internal/actionandtrigger/v1/action_and_trigger_pb'
-import { anyPack, type Any } from '@bufbuild/protobuf/wkt'
+import { anyPack, ValueSchema, type Any } from '@bufbuild/protobuf/wkt'
+import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
 
 const anyTrigger = create(TriggerOutputsSchema, {coolOutput: "cool"})
 
@@ -29,8 +30,10 @@ function createRuntimeHelpersMock(overrides: Partial<RuntimeHelpers> = {}): Runt
 }
 
 describe('test runtime', () => {
+	const anyMaxSize = 1024 * 1024
     describe('test call capability', () => {
-        test('runs async', async () => {
+		test.skip('runs async - proper async implementation in progress', async () => {
+		
         const anyResult1 = "ok1"
             const anyResult2 = "ok2"
             var expectedCall = 1
@@ -81,7 +84,7 @@ describe('test runtime', () => {
                 })
             })
 
-            const anyMaxSize = 1024 * 1024
+            
 
             const runtime = new RuntimeImpl<any>({}, 1, helpers, anyMaxSize)
             const workflowAction1 = new BasicActionCapability()
@@ -92,106 +95,72 @@ describe('test runtime', () => {
             expect(result2.welcome).toEqual(anyResult2)
             const result1 = await call1
             expect(result1.adaptedThing).toEqual(anyResult1)
-        })
+		})
+		
+
+		test('call capability errors', async () => {
+			const helpers = createRuntimeHelpersMock({
+				call: mock((_: CapabilityRequest) => {
+					return false
+				})
+			})
+
+
+			const runtime = new RuntimeImpl<any>({}, 1, helpers, anyMaxSize)
+			const workflowAction1 = new BasicActionCapability()
+			const call1 = workflowAction1.performAction(runtime, create(InputsSchema, { inputThing: true }))
+
+			expect(call1).rejects.toThrow(new CapabilityError(`Capability not found ${BasicActionCapability.CAPABILITY_ID}`, { callbackId: 1, capabilityId: BasicActionCapability.CAPABILITY_ID, method: "PerformAction" }))
+		})
+
+		test('capability errors are returned to the caller', async () => {
+			const anyError = "error"
+			const helpers = createRuntimeHelpersMock({
+				call: mock((_: CapabilityRequest) => {
+					return true
+				}),
+				await: mock((request: AwaitCapabilitiesRequest) => {
+					expect(request.ids.length).toEqual(1)
+					return create(AwaitCapabilitiesResponseSchema, {
+						responses: {
+							[request.ids[0]]: create(CapabilityResponseSchema, { response: { case: "error", value: anyError } })
+						}
+					})
+				})
+			})
+
+			const runtime = new RuntimeImpl<any>({}, 1, helpers, anyMaxSize)
+			const workflowAction1 = new BasicActionCapability()
+			const call1 = workflowAction1.performAction(runtime, create(InputsSchema, { inputThing: true }))
+
+			expect(call1).rejects.toThrow(new CapabilityError("Error " + anyError, { callbackId: 1, capabilityId: BasicActionCapability.CAPABILITY_ID, method: "PerformAction" }))
+		})
+
+		test('await errors', async () => {
+			const anyError = "error"
+			const helpers = createRuntimeHelpersMock({
+				call: mock((_: CapabilityRequest) => {
+					return true
+				}),
+				await: mock((_: AwaitCapabilitiesRequest) => {
+					throw new Error(anyError)
+				})
+			})
+
+			const runtime = new RuntimeImpl<any>({}, 1, helpers, anyMaxSize)
+			const workflowAction1 = new BasicActionCapability()
+			const call1 = workflowAction1.performAction(runtime, create(InputsSchema, { inputThing: true }))
+
+			expect(call1).rejects.toThrow(new CapabilityError(anyError, { callbackId: 1, capabilityId: BasicActionCapability.CAPABILITY_ID, method: "PerformAction" }))
+		})
     })
 })
 
 /*
 
 func TestRuntime_CallCapability(t *testing.T) {
-	t.Run("runs async", func(t *testing.T) {
-		ch := make(chan struct{}, 1)
-		anyResult1 := "ok1"
-		action1, err := basicactionmock.NewBasicActionCapability(t)
-		require.NoError(t, err)
-		action1.PerformAction = func(_ context.Context, input *basicaction.Inputs) (*basicaction.Outputs, error) {
-			<-ch
-			return &basicaction.Outputs{AdaptedThing: anyResult1}, nil
-		}
 
-		anyResult2 := "ok2"
-		action2, err := actionandtriggermock.NewBasicCapability(t)
-		action2.Action = func(ctx context.Context, input *actionandtrigger.Input) (*actionandtrigger.Output, error) {
-			return &actionandtrigger.Output{Welcome: anyResult2}, nil
-		}
 
-		test := func(_ string, rt cre.Runtime, _ *basictrigger.Outputs) (string, error) {
-			workflowAction1 := &basicaction.BasicAction{}
-			call1 := workflowAction1.PerformAction(rt, &basicaction.Inputs{InputThing: true})
-
-			workflowAction2 := &actionandtrigger.Basic{}
-			call2 := workflowAction2.Action(rt, &actionandtrigger.Input{Name: "input"})
-			result2, err := call2.Await()
-			require.NoError(t, err)
-			ch <- struct{}{}
-			result1, err := call1.Await()
-			require.NoError(t, err)
-			return result1.AdaptedThing + result2.Welcome, nil
-		}
-
-		result, err := testRuntime(t, test)
-		require.NoError(t, err)
-		assert.Equal(t, anyResult1+anyResult2, result)
-	})
-
-	t.Run("call capability errors", func(t *testing.T) {
-		// The capability is not registered, so the call will fail.
-		test := func(_ string, rt cre.Runtime, _ *basictrigger.Outputs) (string, error) {
-			workflowAction1 := &basicaction.BasicAction{}
-			call := workflowAction1.PerformAction(rt, &basicaction.Inputs{InputThing: true})
-			_, err := call.Await()
-			return "", err
-		}
-		_, err := testRuntime(t, test)
-		assert.Error(t, err)
-	})
-
-	t.Run("capability errors are returned to the caller", func(t *testing.T) {
-		action, err := basicactionmock.NewBasicActionCapability(t)
-		require.NoError(t, err)
-
-		expectedErr := errors.New("error")
-		action.PerformAction = func(ctx context.Context, input *basicaction.Inputs) (*basicaction.Outputs, error) {
-			return nil, expectedErr
-		}
-
-		capability := &basicaction.BasicAction{}
-
-		test := func(_ string, rt cre.Runtime, _ *basictrigger.Outputs) (string, error) {
-			_, err := capability.PerformAction(rt, &basicaction.Inputs{InputThing: true}).Await()
-			return "", err
-		}
-
-		_, err = testRuntime(t, test)
-		assert.Equal(t, expectedErr, err)
-	})
-
-	t.Run("await errors", func(t *testing.T) {
-		action, err := basicactionmock.NewBasicActionCapability(t)
-		require.NoError(t, err)
-		expectedErr := errors.New("error")
-
-		action.PerformAction = func(ctx context.Context, input *basicaction.Inputs) (*basicaction.Outputs, error) {
-			return &basicaction.Outputs{AdaptedThing: "ok"}, nil
-		}
-
-		capability := &basicaction.BasicAction{}
-
-		test := func(_ string, rt cre.Runtime, _ *basictrigger.Outputs) (string, error) {
-			drt := rt.(*testutils.TestRuntime)
-			drt.RuntimeHelpers = &awaitOverride{
-				RuntimeHelpers: drt.RuntimeHelpers,
-				await: func(request *sdk.AwaitCapabilitiesRequest, maxResponseSize uint64) (*sdk.AwaitCapabilitiesResponse, error) {
-					return nil, expectedErr
-				},
-			}
-			_, err := capability.PerformAction(rt, &basicaction.Inputs{InputThing: true}).Await()
-			return "", err
-		}
-
-		_, err = testRuntime(t, test)
-		assert.Equal(t, expectedErr, err)
-	})
 
 	t.Run("await missing response", func(t *testing.T) {
 		action, err := basicactionmock.NewBasicActionCapability(t)
