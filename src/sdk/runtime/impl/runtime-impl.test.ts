@@ -40,7 +40,12 @@ import { BasicActionCapability } from '@cre/generated-sdk/capabilities/internal/
 import { ConsensusCapability } from '@cre/generated-sdk/capabilities/internal/consensus/v1alpha/consensus_sdk_gen'
 import { BasicActionCapability as NodeActionCapability } from '@cre/generated-sdk/capabilities/internal/nodeaction/v1/basicaction_sdk_gen'
 import type { NodeRuntime, Runtime } from '@cre/sdk/cre'
-import { ConsensusAggregationByFields, median, Value } from '@cre/sdk/utils'
+import {
+	ConsensusAggregationByFields,
+	consensusMedianAggregation,
+	median,
+	Value,
+} from '@cre/sdk/utils'
 import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
 import { type RuntimeHelpers, RuntimeImpl } from './runtime-impl'
 
@@ -282,20 +287,19 @@ describe('test run in node mode', () => {
 			(_: Runtime<any>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
 				expect(modes).toEqual([Mode.NODE, Mode.DON])
 				expect(inputs.default).toBeUndefined()
-				expect(inputs.descriptors).toEqual(
-					create(ConsensusDescriptorSchema, {
-						descriptor: {
-							case: 'fieldsMap',
-							value: create(FieldsMapSchema, {
-								fields: {
-									outputThing: create(ConsensusDescriptorSchema, {
-										descriptor: { case: 'aggregation', value: AggregationType.MEDIAN },
-									}),
-								},
-							}),
-						},
-					}),
-				)
+				const consensusDescriptor = create(ConsensusDescriptorSchema, {
+					descriptor: {
+						case: 'fieldsMap',
+						value: create(FieldsMapSchema, {
+							fields: {
+								outputThing: create(ConsensusDescriptorSchema, {
+									descriptor: { case: 'aggregation', value: AggregationType.MEDIAN },
+								}),
+							},
+						}),
+					},
+				})
+				expect(inputs.descriptors).toEqual(consensusDescriptor)
 				expect((inputs as any).$typeName).not.toBeUndefined()
 				const inputsProto = inputs as SimpleConsensusInputs
 				expect(inputsProto.observation.case).toEqual('value')
@@ -331,37 +335,41 @@ describe('test run in node mode', () => {
 
 		expect(result.outputThing).toEqual(anyMedian)
 	})
+
+	test('failed consensus', async () => {
+		const anyError = 'error'
+		const helpers = createRuntimeHelpersMock({
+			switchModes: mock((mode: Mode) => {}),
+		})
+
+		ConsensusCapability.prototype.simple = mock(
+			(_: Runtime<any>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
+				expect(inputs.default).toBeUndefined()
+				expect(inputs.descriptors).toEqual(
+					create(ConsensusDescriptorSchema, {
+						descriptor: { case: 'aggregation', value: AggregationType.MEDIAN },
+					}),
+				)
+				expect((inputs as any).$typeName).not.toBeUndefined()
+				const inputsProto = inputs as SimpleConsensusInputs
+				expect(inputsProto.observation.case).toEqual('error')
+				expect(inputsProto.observation.value).toEqual('Error ' + anyError)
+				return Promise.reject(new Error(anyError))
+			},
+		)
+
+		const runtime = new RuntimeImpl<any>({}, 1, helpers, anyMaxSize)
+		const result = runtime.runInNodeMode(async (nodeRuntime: NodeRuntime<any>) => {
+			throw new Error(anyError)
+		}, consensusMedianAggregation())()
+		expect(result).rejects.toThrow(new Error(anyError))
+	})
 })
 
 /*
 
 func TestDonRuntime_RunInNodeMode(t *testing.T) {
-	t.Run("Successful consensus", func(t *testing.T) {
-		nodeMock, err := nodeactionmock.NewBasicActionCapability(t)
-		require.NoError(t, err)
-		anyObservation := int32(10)
-		anyMedian := int64(11)
-		nodeMock.PerformAction = func(ctx context.Context, input *nodeaction.NodeInputs) (*nodeaction.NodeOutputs, error) {
-			return &nodeaction.NodeOutputs{OutputThing: anyObservation}, nil
-		}
-
-		mockSimpleConsensus(t, &consensusValues[int64]{GiveObservation: int64(anyObservation), WantResponse: anyMedian})
-
-		test := func(config string, rt cre.Runtime, _ *basictrigger.Outputs) (int64, error) {
-			result, err := cre.RunInNodeMode(config, rt, func(_ string, runtime cre.NodeRuntime) (int64, error) {
-				capability := &nodeaction.BasicAction{}
-				value, err := capability.PerformAction(runtime, &nodeaction.NodeInputs{InputThing: true}).Await()
-				require.NoError(t, err)
-				return int64(value.OutputThing), nil
-			}, cre.ConsensusMedianAggregation[int64]()).Await()
-			return result, err
-		}
-
-		result, err := testRuntime(t, test)
-		require.NoError(t, err)
-		assert.Equal(t, anyMedian, result)
-	})
-
+	
 	t.Run("Failed consensus", func(t *testing.T) {
 		anyError := errors.New("error")
 
