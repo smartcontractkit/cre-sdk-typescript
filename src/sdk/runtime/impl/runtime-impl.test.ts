@@ -1,6 +1,6 @@
-import { describe, expect, mock, test } from 'bun:test'
-import { create, type Message } from '@bufbuild/protobuf'
-import { type Any, anyPack, ValueSchema } from '@bufbuild/protobuf/wkt'
+import { afterEach, describe, expect, mock, test } from 'bun:test'
+import { create } from '@bufbuild/protobuf'
+import { type Any, anyPack } from '@bufbuild/protobuf/wkt'
 import {
 	InputSchema,
 	type Output,
@@ -47,6 +47,7 @@ import {
 	Value,
 } from '@cre/sdk/utils'
 import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
+import { NodeModeError } from '../errors'
 import { type RuntimeHelpers, RuntimeImpl } from './runtime-impl'
 
 // Helper function to create a RuntimeHelpers mock with error-throwing defaults
@@ -78,6 +79,18 @@ function createRuntimeHelpersMock(overrides: Partial<RuntimeHelpers> = {}): Runt
 }
 
 const anyMaxSize = 1024 * 1024
+
+// Store original prototypes for manual restoration
+const originalConsensusSimple = ConsensusCapability.prototype.simple
+const originalNodeActionPerformAction = NodeActionCapability.prototype.performAction
+
+afterEach(() => {
+	// Restore all mocks after each test
+	mock.restore()
+	// Manually restore prototype methods
+	ConsensusCapability.prototype.simple = originalConsensusSimple
+	NodeActionCapability.prototype.performAction = originalNodeActionPerformAction
+})
 
 describe('test runtime', () => {
 	describe('test call capability', () => {
@@ -315,7 +328,7 @@ describe('test run in node mode', () => {
 		)
 
 		NodeActionCapability.prototype.performAction = mock(
-			(runtime: NodeRuntime<any>, input: NodeInputs | NodeInputsJson) => {
+			(_: NodeRuntime<any>, __: NodeInputs | NodeInputsJson) => {
 				expect(modes).toEqual([Mode.NODE])
 				return Promise.resolve(create(NodeOutputsSchema, { outputThing: anyObservation }))
 			},
@@ -364,26 +377,40 @@ describe('test run in node mode', () => {
 		}, consensusMedianAggregation())()
 		expect(result).rejects.toThrow(new Error(anyError))
 	})
+
+	test('don runtime in node mode fails', async () => {
+		const helpers = createRuntimeHelpersMock({
+			switchModes: mock((_: Mode) => {}),
+			call: mock((_: CapabilityRequest) => {
+				expect(false).toBe(true)
+				return false
+			}),
+		})
+
+		ConsensusCapability.prototype.simple = mock(
+			(_: Runtime<any>, __: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
+				return Promise.resolve(Value.from(0).proto())
+			},
+		)
+
+		const runtime = new RuntimeImpl<any>({}, 1, helpers, anyMaxSize)
+		var nrt: NodeRuntime<any> | undefined
+		await runtime.runInNodeMode(async (nodeRuntime: NodeRuntime<any>) => {
+			nrt = nodeRuntime
+			return 0
+		}, consensusMedianAggregation())()
+
+		const capability = new NodeActionCapability()
+		expect(nrt).toBeDefined()
+		expect(
+			capability.performAction(nrt!, create(NodeInputsSchema, { inputThing: true })),
+		).rejects.toThrow(new NodeModeError())
+	})
 })
 
 /*
 
 func TestDonRuntime_RunInNodeMode(t *testing.T) {
-	
-	t.Run("Failed consensus", func(t *testing.T) {
-		anyError := errors.New("error")
-
-		mockSimpleConsensus(t, &consensusValues[int64]{GiveErr: anyError})
-
-		test := func(config string, rt cre.Runtime, _ *basictrigger.Outputs) (int64, error) {
-			return cre.RunInNodeMode(config, rt, func(_ string, _ cre.NodeRuntime) (int64, error) {
-				return int64(0), anyError
-			}, cre.ConsensusMedianAggregation[int64]()).Await()
-		}
-
-		_, err := testRuntime(t, test)
-		require.ErrorContains(t, err, anyError.Error())
-	})
 
 	t.Run("Node runtime in Don mode fails", func(t *testing.T) {
 		nodeCapability, err := nodeactionmock.NewBasicActionCapability(t)
