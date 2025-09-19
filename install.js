@@ -17,12 +17,12 @@ const BINARY_DISTRIBUTION_PACKAGES = {
 }
 
 // Adjust the version you want to install. You can also make this dynamic.
-const BINARY_DISTRIBUTION_VERSION = '0.0.3'
+const BINARY_DISTRIBUTION_VERSION = '0.0.6'
 
 // Windows binaries end with .exe so we need to special case them.
 const binaryName = process.platform === 'win32' ? 'cre-build.exe' : 'cre-build'
 const javyBinary = process.platform === 'win32' ? 'javy.exe' : 'javy'
-const javyPluginWasm = "javy_chainlink_sdk.plugin.wasm"
+const javyPluginWasm = "javy-chainlink-sdk.plugin.wasm"
 
 // Determine package name for this platform
 const platformSpecificPackageName =
@@ -122,6 +122,7 @@ function isPlatformSpecificPackageInstalled() {
     require.resolve(`${platformSpecificPackageName}/bin/${binaryName}`)
     return true
   } catch (e) {
+    console.error(`Could not resolve platform-specific package: ${platformSpecificPackageName}. Falling back to manual download. Error:`, e.message);
     return false
   }
 }

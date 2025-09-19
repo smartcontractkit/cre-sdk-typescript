@@ -23,7 +23,7 @@ function getBinaryPath() {
 
   try {
     // Resolving will fail if the optionalDependency was not installed
-    return resolve(`node_modules/${platformSpecificPackageName}/bin/${binaryName}`)
+    return resolve(`node_modules/@chainlink/cre-sdk/${binaryName}`)
   } catch (e) {
     return join(__dirname, binaryName)
   }
