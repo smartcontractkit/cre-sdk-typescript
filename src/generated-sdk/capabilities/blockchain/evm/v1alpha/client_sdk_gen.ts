@@ -2,7 +2,7 @@ import { fromBinary, toBinary, fromJson, create } from '@bufbuild/protobuf'
 import { Mode, type CapabilityResponse } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { callCapability } from '@cre/sdk/utils/capabilities/call-capability'
 import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
-import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
+import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 import { type Any, AnySchema } from '@bufbuild/protobuf/wkt'
 import { getTypeUrl } from '@cre/sdk/utils/typeurl'
 import {
@@ -116,30 +116,30 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		return callCapability({
+		const capabilityResponse = await callCapability({
 			capabilityId,
 			method: 'CallContract',
 			mode: this.mode,
 			payload,
-		}).then((capabilityResponse: CapabilityResponse) => {
-			if (capabilityResponse.response.case === 'error') {
-				throw new CapabilityError(capabilityResponse.response.value, {
-					capabilityId,
-					method: 'CallContract',
-					mode: this.mode,
-				})
-			}
-
-			if (capabilityResponse.response.case !== 'payload') {
-				throw new CapabilityError('No payload in response', {
-					capabilityId,
-					method: 'CallContract',
-					mode: this.mode,
-				})
-			}
-
-			return fromBinary(CallContractReplySchema, capabilityResponse.response.value.value)
 		})
+
+		if (capabilityResponse.response.case === 'error') {
+			throw new CapabilityError(capabilityResponse.response.value, {
+				capabilityId,
+				method: 'CallContract',
+				mode: this.mode,
+			})
+		}
+
+		if (capabilityResponse.response.case !== 'payload') {
+			throw new CapabilityError('No payload in response', {
+				capabilityId,
+				method: 'CallContract',
+				mode: this.mode,
+			})
+		}
+
+		return fromBinary(CallContractReplySchema, capabilityResponse.response.value.value)
 	}
 
 	async filterLogs(input: FilterLogsRequest | FilterLogsRequestJson): Promise<FilterLogsReply> {
@@ -156,30 +156,30 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		return callCapability({
+		const capabilityResponse = await callCapability({
 			capabilityId,
 			method: 'FilterLogs',
 			mode: this.mode,
 			payload,
-		}).then((capabilityResponse: CapabilityResponse) => {
-			if (capabilityResponse.response.case === 'error') {
-				throw new CapabilityError(capabilityResponse.response.value, {
-					capabilityId,
-					method: 'FilterLogs',
-					mode: this.mode,
-				})
-			}
-
-			if (capabilityResponse.response.case !== 'payload') {
-				throw new CapabilityError('No payload in response', {
-					capabilityId,
-					method: 'FilterLogs',
-					mode: this.mode,
-				})
-			}
-
-			return fromBinary(FilterLogsReplySchema, capabilityResponse.response.value.value)
 		})
+
+		if (capabilityResponse.response.case === 'error') {
+			throw new CapabilityError(capabilityResponse.response.value, {
+				capabilityId,
+				method: 'FilterLogs',
+				mode: this.mode,
+			})
+		}
+
+		if (capabilityResponse.response.case !== 'payload') {
+			throw new CapabilityError('No payload in response', {
+				capabilityId,
+				method: 'FilterLogs',
+				mode: this.mode,
+			})
+		}
+
+		return fromBinary(FilterLogsReplySchema, capabilityResponse.response.value.value)
 	}
 
 	async balanceAt(input: BalanceAtRequest | BalanceAtRequestJson): Promise<BalanceAtReply> {
@@ -196,30 +196,30 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		return callCapability({
+		const capabilityResponse = await callCapability({
 			capabilityId,
 			method: 'BalanceAt',
 			mode: this.mode,
 			payload,
-		}).then((capabilityResponse: CapabilityResponse) => {
-			if (capabilityResponse.response.case === 'error') {
-				throw new CapabilityError(capabilityResponse.response.value, {
-					capabilityId,
-					method: 'BalanceAt',
-					mode: this.mode,
-				})
-			}
-
-			if (capabilityResponse.response.case !== 'payload') {
-				throw new CapabilityError('No payload in response', {
-					capabilityId,
-					method: 'BalanceAt',
-					mode: this.mode,
-				})
-			}
-
-			return fromBinary(BalanceAtReplySchema, capabilityResponse.response.value.value)
 		})
+
+		if (capabilityResponse.response.case === 'error') {
+			throw new CapabilityError(capabilityResponse.response.value, {
+				capabilityId,
+				method: 'BalanceAt',
+				mode: this.mode,
+			})
+		}
+
+		if (capabilityResponse.response.case !== 'payload') {
+			throw new CapabilityError('No payload in response', {
+				capabilityId,
+				method: 'BalanceAt',
+				mode: this.mode,
+			})
+		}
+
+		return fromBinary(BalanceAtReplySchema, capabilityResponse.response.value.value)
 	}
 
 	async estimateGas(input: EstimateGasRequest | EstimateGasRequestJson): Promise<EstimateGasReply> {
@@ -236,30 +236,30 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		return callCapability({
+		const capabilityResponse = await callCapability({
 			capabilityId,
 			method: 'EstimateGas',
 			mode: this.mode,
 			payload,
-		}).then((capabilityResponse: CapabilityResponse) => {
-			if (capabilityResponse.response.case === 'error') {
-				throw new CapabilityError(capabilityResponse.response.value, {
-					capabilityId,
-					method: 'EstimateGas',
-					mode: this.mode,
-				})
-			}
-
-			if (capabilityResponse.response.case !== 'payload') {
-				throw new CapabilityError('No payload in response', {
-					capabilityId,
-					method: 'EstimateGas',
-					mode: this.mode,
-				})
-			}
-
-			return fromBinary(EstimateGasReplySchema, capabilityResponse.response.value.value)
 		})
+
+		if (capabilityResponse.response.case === 'error') {
+			throw new CapabilityError(capabilityResponse.response.value, {
+				capabilityId,
+				method: 'EstimateGas',
+				mode: this.mode,
+			})
+		}
+
+		if (capabilityResponse.response.case !== 'payload') {
+			throw new CapabilityError('No payload in response', {
+				capabilityId,
+				method: 'EstimateGas',
+				mode: this.mode,
+			})
+		}
+
+		return fromBinary(EstimateGasReplySchema, capabilityResponse.response.value.value)
 	}
 
 	async getTransactionByHash(
@@ -278,30 +278,30 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		return callCapability({
+		const capabilityResponse = await callCapability({
 			capabilityId,
 			method: 'GetTransactionByHash',
 			mode: this.mode,
 			payload,
-		}).then((capabilityResponse: CapabilityResponse) => {
-			if (capabilityResponse.response.case === 'error') {
-				throw new CapabilityError(capabilityResponse.response.value, {
-					capabilityId,
-					method: 'GetTransactionByHash',
-					mode: this.mode,
-				})
-			}
-
-			if (capabilityResponse.response.case !== 'payload') {
-				throw new CapabilityError('No payload in response', {
-					capabilityId,
-					method: 'GetTransactionByHash',
-					mode: this.mode,
-				})
-			}
-
-			return fromBinary(GetTransactionByHashReplySchema, capabilityResponse.response.value.value)
 		})
+
+		if (capabilityResponse.response.case === 'error') {
+			throw new CapabilityError(capabilityResponse.response.value, {
+				capabilityId,
+				method: 'GetTransactionByHash',
+				mode: this.mode,
+			})
+		}
+
+		if (capabilityResponse.response.case !== 'payload') {
+			throw new CapabilityError('No payload in response', {
+				capabilityId,
+				method: 'GetTransactionByHash',
+				mode: this.mode,
+			})
+		}
+
+		return fromBinary(GetTransactionByHashReplySchema, capabilityResponse.response.value.value)
 	}
 
 	async getTransactionReceipt(
@@ -320,30 +320,30 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		return callCapability({
+		const capabilityResponse = await callCapability({
 			capabilityId,
 			method: 'GetTransactionReceipt',
 			mode: this.mode,
 			payload,
-		}).then((capabilityResponse: CapabilityResponse) => {
-			if (capabilityResponse.response.case === 'error') {
-				throw new CapabilityError(capabilityResponse.response.value, {
-					capabilityId,
-					method: 'GetTransactionReceipt',
-					mode: this.mode,
-				})
-			}
-
-			if (capabilityResponse.response.case !== 'payload') {
-				throw new CapabilityError('No payload in response', {
-					capabilityId,
-					method: 'GetTransactionReceipt',
-					mode: this.mode,
-				})
-			}
-
-			return fromBinary(GetTransactionReceiptReplySchema, capabilityResponse.response.value.value)
 		})
+
+		if (capabilityResponse.response.case === 'error') {
+			throw new CapabilityError(capabilityResponse.response.value, {
+				capabilityId,
+				method: 'GetTransactionReceipt',
+				mode: this.mode,
+			})
+		}
+
+		if (capabilityResponse.response.case !== 'payload') {
+			throw new CapabilityError('No payload in response', {
+				capabilityId,
+				method: 'GetTransactionReceipt',
+				mode: this.mode,
+			})
+		}
+
+		return fromBinary(GetTransactionReceiptReplySchema, capabilityResponse.response.value.value)
 	}
 
 	async headerByNumber(
@@ -362,30 +362,30 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		return callCapability({
+		const capabilityResponse = await callCapability({
 			capabilityId,
 			method: 'HeaderByNumber',
 			mode: this.mode,
 			payload,
-		}).then((capabilityResponse: CapabilityResponse) => {
-			if (capabilityResponse.response.case === 'error') {
-				throw new CapabilityError(capabilityResponse.response.value, {
-					capabilityId,
-					method: 'HeaderByNumber',
-					mode: this.mode,
-				})
-			}
-
-			if (capabilityResponse.response.case !== 'payload') {
-				throw new CapabilityError('No payload in response', {
-					capabilityId,
-					method: 'HeaderByNumber',
-					mode: this.mode,
-				})
-			}
-
-			return fromBinary(HeaderByNumberReplySchema, capabilityResponse.response.value.value)
 		})
+
+		if (capabilityResponse.response.case === 'error') {
+			throw new CapabilityError(capabilityResponse.response.value, {
+				capabilityId,
+				method: 'HeaderByNumber',
+				mode: this.mode,
+			})
+		}
+
+		if (capabilityResponse.response.case !== 'payload') {
+			throw new CapabilityError('No payload in response', {
+				capabilityId,
+				method: 'HeaderByNumber',
+				mode: this.mode,
+			})
+		}
+
+		return fromBinary(HeaderByNumberReplySchema, capabilityResponse.response.value.value)
 	}
 
 	async registerLogTracking(
@@ -404,30 +404,30 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		return callCapability({
+		const capabilityResponse = await callCapability({
 			capabilityId,
 			method: 'RegisterLogTracking',
 			mode: this.mode,
 			payload,
-		}).then((capabilityResponse: CapabilityResponse) => {
-			if (capabilityResponse.response.case === 'error') {
-				throw new CapabilityError(capabilityResponse.response.value, {
-					capabilityId,
-					method: 'RegisterLogTracking',
-					mode: this.mode,
-				})
-			}
-
-			if (capabilityResponse.response.case !== 'payload') {
-				throw new CapabilityError('No payload in response', {
-					capabilityId,
-					method: 'RegisterLogTracking',
-					mode: this.mode,
-				})
-			}
-
-			return fromBinary(EmptySchema, capabilityResponse.response.value.value)
 		})
+
+		if (capabilityResponse.response.case === 'error') {
+			throw new CapabilityError(capabilityResponse.response.value, {
+				capabilityId,
+				method: 'RegisterLogTracking',
+				mode: this.mode,
+			})
+		}
+
+		if (capabilityResponse.response.case !== 'payload') {
+			throw new CapabilityError('No payload in response', {
+				capabilityId,
+				method: 'RegisterLogTracking',
+				mode: this.mode,
+			})
+		}
+
+		return fromBinary(EmptySchema, capabilityResponse.response.value.value)
 	}
 
 	async unregisterLogTracking(
@@ -446,30 +446,30 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		return callCapability({
+		const capabilityResponse = await callCapability({
 			capabilityId,
 			method: 'UnregisterLogTracking',
 			mode: this.mode,
 			payload,
-		}).then((capabilityResponse: CapabilityResponse) => {
-			if (capabilityResponse.response.case === 'error') {
-				throw new CapabilityError(capabilityResponse.response.value, {
-					capabilityId,
-					method: 'UnregisterLogTracking',
-					mode: this.mode,
-				})
-			}
-
-			if (capabilityResponse.response.case !== 'payload') {
-				throw new CapabilityError('No payload in response', {
-					capabilityId,
-					method: 'UnregisterLogTracking',
-					mode: this.mode,
-				})
-			}
-
-			return fromBinary(EmptySchema, capabilityResponse.response.value.value)
 		})
+
+		if (capabilityResponse.response.case === 'error') {
+			throw new CapabilityError(capabilityResponse.response.value, {
+				capabilityId,
+				method: 'UnregisterLogTracking',
+				mode: this.mode,
+			})
+		}
+
+		if (capabilityResponse.response.case !== 'payload') {
+			throw new CapabilityError('No payload in response', {
+				capabilityId,
+				method: 'UnregisterLogTracking',
+				mode: this.mode,
+			})
+		}
+
+		return fromBinary(EmptySchema, capabilityResponse.response.value.value)
 	}
 
 	logTrigger(config: FilterLogTriggerRequestJson): ClientLogTrigger {
@@ -490,30 +490,30 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		return callCapability({
+		const capabilityResponse = await callCapability({
 			capabilityId,
 			method: 'WriteReport',
 			mode: this.mode,
 			payload,
-		}).then((capabilityResponse: CapabilityResponse) => {
-			if (capabilityResponse.response.case === 'error') {
-				throw new CapabilityError(capabilityResponse.response.value, {
-					capabilityId,
-					method: 'WriteReport',
-					mode: this.mode,
-				})
-			}
-
-			if (capabilityResponse.response.case !== 'payload') {
-				throw new CapabilityError('No payload in response', {
-					capabilityId,
-					method: 'WriteReport',
-					mode: this.mode,
-				})
-			}
-
-			return fromBinary(WriteReportReplySchema, capabilityResponse.response.value.value)
 		})
+
+		if (capabilityResponse.response.case === 'error') {
+			throw new CapabilityError(capabilityResponse.response.value, {
+				capabilityId,
+				method: 'WriteReport',
+				mode: this.mode,
+			})
+		}
+
+		if (capabilityResponse.response.case !== 'payload') {
+			throw new CapabilityError('No payload in response', {
+				capabilityId,
+				method: 'WriteReport',
+				mode: this.mode,
+			})
+		}
+
+		return fromBinary(WriteReportReplySchema, capabilityResponse.response.value.value)
 	}
 }
 

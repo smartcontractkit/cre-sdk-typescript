@@ -2,7 +2,7 @@ import { fromBinary, toBinary, fromJson, create } from '@bufbuild/protobuf'
 import { Mode, type CapabilityResponse } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { callCapability } from '@cre/sdk/utils/capabilities/call-capability'
 import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
-import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
+import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 import { type Any, AnySchema } from '@bufbuild/protobuf/wkt'
 import { getTypeUrl } from '@cre/sdk/utils/typeurl'
 import {
