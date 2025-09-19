@@ -353,7 +353,7 @@ describe('test run in node mode', () => {
 				expect((inputs as any).$typeName).not.toBeUndefined()
 				const inputsProto = inputs as SimpleConsensusInputs
 				expect(inputsProto.observation.case).toEqual('error')
-				expect(inputsProto.observation.value).toEqual('Error ' + anyError)
+				expect(inputsProto.observation.value).toEqual(anyError)
 				return Promise.reject(new Error(anyError))
 			},
 		)
