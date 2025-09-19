@@ -301,10 +301,12 @@ describe('test run in node mode', () => {
 				expect(inputsProto.observation.case).toEqual('value')
 				expect(
 					Value.wrap(inputsProto.observation.value as ProtoValue).unwrapToType({
-						factory: () => 0,
-					}),
+						factory: () => create(NodeOutputsSchema),
+					}).outputThing,
 				).toEqual(anyObservation)
-				return Promise.resolve(Value.from(anyMedian).proto())
+				return Promise.resolve(
+					Value.from(create(NodeOutputsSchema, { outputThing: anyMedian })).proto(),
+				)
 			},
 		)
 
