@@ -37,7 +37,7 @@ describe('runInNodeMode', () => {
 		// spy on consensus.simple
 		const origSimple = ConsensusCapability.prototype.simple
 		ConsensusCapability.prototype.simple = mock(
-			async (inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
+			(inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
 				calls.push('CONSENSUS_SIMPLE')
 
 				// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
@@ -55,7 +55,7 @@ describe('runInNodeMode', () => {
 				})
 				expect(castedInputs.descriptors).toEqual(expectedDescriptor)
 
-				return Value.from(anyResult).proto()
+				return { result: async () => Value.from(anyResult).proto() }
 			},
 		)
 
@@ -81,7 +81,7 @@ describe('runInNodeMode', () => {
 		// spy on consensus.simple
 		const origSimple = ConsensusCapability.prototype.simple
 		ConsensusCapability.prototype.simple = mock(
-			async (inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
+			(inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
 				calls.push('CONSENSUS_SIMPLE')
 
 				// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
@@ -99,7 +99,7 @@ describe('runInNodeMode', () => {
 				})
 				expect(castedInputs.descriptors).toEqual(expectedDescriptor)
 
-				return Value.from(anyResult).proto()
+				return { result: async () => Value.from(anyResult).proto() }
 			},
 		)
 
@@ -123,7 +123,7 @@ describe('runInNodeMode', () => {
 		// spy on consensus.simple
 		const origSimple = ConsensusCapability.prototype.simple
 		ConsensusCapability.prototype.simple = mock(
-			async (inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
+			(inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
 				calls.push('CONSENSUS_SIMPLE')
 
 				// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
@@ -148,7 +148,7 @@ describe('runInNodeMode', () => {
 		expect(async () => {
 			await runInNodeMode(async (_: NodeRuntime) => {
 				const ba = new BasicActionCapability()
-				const result = await ba.performAction({ inputThing: true })
+				const result = await ba.performAction({ inputThing: true }).result()
 				return result.adaptedThing
 			}, consensusIdenticalAggregation())()
 		}).toThrow(/.*cannot use Runtime inside RunInNodeMode.*/)

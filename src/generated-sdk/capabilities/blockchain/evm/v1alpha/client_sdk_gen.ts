@@ -100,9 +100,9 @@ export class ClientCapability {
 		private readonly chainSelector?: bigint,
 	) {}
 
-	async callContract(
-		input: CallContractRequest | CallContractRequestJson,
-	): Promise<CallContractReply> {
+	callContract(input: CallContractRequest | CallContractRequestJson): {
+		result: () => Promise<CallContractReply>
+	} {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const value = (input as any).$typeName
 			? (input as CallContractRequest)
@@ -116,33 +116,41 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		const capabilityResponse = await callCapability({
+		const capabilityResponse = callCapability({
 			capabilityId,
 			method: 'CallContract',
 			mode: this.mode,
 			payload,
 		})
 
-		if (capabilityResponse.response.case === 'error') {
-			throw new CapabilityError(capabilityResponse.response.value, {
-				capabilityId,
-				method: 'CallContract',
-				mode: this.mode,
-			})
-		}
+		return {
+			result: async () => {
+				const { response } = await capabilityResponse.result()
 
-		if (capabilityResponse.response.case !== 'payload') {
-			throw new CapabilityError('No payload in response', {
-				capabilityId,
-				method: 'CallContract',
-				mode: this.mode,
-			})
-		}
+				if (response.case === 'error') {
+					throw new CapabilityError(response.value, {
+						capabilityId,
+						method: 'CallContract',
+						mode: this.mode,
+					})
+				}
 
-		return fromBinary(CallContractReplySchema, capabilityResponse.response.value.value)
+				if (response.case !== 'payload') {
+					throw new CapabilityError('No payload in response', {
+						capabilityId,
+						method: 'CallContract',
+						mode: this.mode,
+					})
+				}
+
+				return fromBinary(CallContractReplySchema, response.value.value)
+			},
+		}
 	}
 
-	async filterLogs(input: FilterLogsRequest | FilterLogsRequestJson): Promise<FilterLogsReply> {
+	filterLogs(input: FilterLogsRequest | FilterLogsRequestJson): {
+		result: () => Promise<FilterLogsReply>
+	} {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const value = (input as any).$typeName
 			? (input as FilterLogsRequest)
@@ -156,33 +164,41 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		const capabilityResponse = await callCapability({
+		const capabilityResponse = callCapability({
 			capabilityId,
 			method: 'FilterLogs',
 			mode: this.mode,
 			payload,
 		})
 
-		if (capabilityResponse.response.case === 'error') {
-			throw new CapabilityError(capabilityResponse.response.value, {
-				capabilityId,
-				method: 'FilterLogs',
-				mode: this.mode,
-			})
-		}
+		return {
+			result: async () => {
+				const { response } = await capabilityResponse.result()
 
-		if (capabilityResponse.response.case !== 'payload') {
-			throw new CapabilityError('No payload in response', {
-				capabilityId,
-				method: 'FilterLogs',
-				mode: this.mode,
-			})
-		}
+				if (response.case === 'error') {
+					throw new CapabilityError(response.value, {
+						capabilityId,
+						method: 'FilterLogs',
+						mode: this.mode,
+					})
+				}
 
-		return fromBinary(FilterLogsReplySchema, capabilityResponse.response.value.value)
+				if (response.case !== 'payload') {
+					throw new CapabilityError('No payload in response', {
+						capabilityId,
+						method: 'FilterLogs',
+						mode: this.mode,
+					})
+				}
+
+				return fromBinary(FilterLogsReplySchema, response.value.value)
+			},
+		}
 	}
 
-	async balanceAt(input: BalanceAtRequest | BalanceAtRequestJson): Promise<BalanceAtReply> {
+	balanceAt(input: BalanceAtRequest | BalanceAtRequestJson): {
+		result: () => Promise<BalanceAtReply>
+	} {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const value = (input as any).$typeName
 			? (input as BalanceAtRequest)
@@ -196,33 +212,41 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		const capabilityResponse = await callCapability({
+		const capabilityResponse = callCapability({
 			capabilityId,
 			method: 'BalanceAt',
 			mode: this.mode,
 			payload,
 		})
 
-		if (capabilityResponse.response.case === 'error') {
-			throw new CapabilityError(capabilityResponse.response.value, {
-				capabilityId,
-				method: 'BalanceAt',
-				mode: this.mode,
-			})
-		}
+		return {
+			result: async () => {
+				const { response } = await capabilityResponse.result()
 
-		if (capabilityResponse.response.case !== 'payload') {
-			throw new CapabilityError('No payload in response', {
-				capabilityId,
-				method: 'BalanceAt',
-				mode: this.mode,
-			})
-		}
+				if (response.case === 'error') {
+					throw new CapabilityError(response.value, {
+						capabilityId,
+						method: 'BalanceAt',
+						mode: this.mode,
+					})
+				}
 
-		return fromBinary(BalanceAtReplySchema, capabilityResponse.response.value.value)
+				if (response.case !== 'payload') {
+					throw new CapabilityError('No payload in response', {
+						capabilityId,
+						method: 'BalanceAt',
+						mode: this.mode,
+					})
+				}
+
+				return fromBinary(BalanceAtReplySchema, response.value.value)
+			},
+		}
 	}
 
-	async estimateGas(input: EstimateGasRequest | EstimateGasRequestJson): Promise<EstimateGasReply> {
+	estimateGas(input: EstimateGasRequest | EstimateGasRequestJson): {
+		result: () => Promise<EstimateGasReply>
+	} {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const value = (input as any).$typeName
 			? (input as EstimateGasRequest)
@@ -236,35 +260,41 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		const capabilityResponse = await callCapability({
+		const capabilityResponse = callCapability({
 			capabilityId,
 			method: 'EstimateGas',
 			mode: this.mode,
 			payload,
 		})
 
-		if (capabilityResponse.response.case === 'error') {
-			throw new CapabilityError(capabilityResponse.response.value, {
-				capabilityId,
-				method: 'EstimateGas',
-				mode: this.mode,
-			})
-		}
+		return {
+			result: async () => {
+				const { response } = await capabilityResponse.result()
 
-		if (capabilityResponse.response.case !== 'payload') {
-			throw new CapabilityError('No payload in response', {
-				capabilityId,
-				method: 'EstimateGas',
-				mode: this.mode,
-			})
-		}
+				if (response.case === 'error') {
+					throw new CapabilityError(response.value, {
+						capabilityId,
+						method: 'EstimateGas',
+						mode: this.mode,
+					})
+				}
 
-		return fromBinary(EstimateGasReplySchema, capabilityResponse.response.value.value)
+				if (response.case !== 'payload') {
+					throw new CapabilityError('No payload in response', {
+						capabilityId,
+						method: 'EstimateGas',
+						mode: this.mode,
+					})
+				}
+
+				return fromBinary(EstimateGasReplySchema, response.value.value)
+			},
+		}
 	}
 
-	async getTransactionByHash(
-		input: GetTransactionByHashRequest | GetTransactionByHashRequestJson,
-	): Promise<GetTransactionByHashReply> {
+	getTransactionByHash(input: GetTransactionByHashRequest | GetTransactionByHashRequestJson): {
+		result: () => Promise<GetTransactionByHashReply>
+	} {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const value = (input as any).$typeName
 			? (input as GetTransactionByHashRequest)
@@ -278,35 +308,41 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		const capabilityResponse = await callCapability({
+		const capabilityResponse = callCapability({
 			capabilityId,
 			method: 'GetTransactionByHash',
 			mode: this.mode,
 			payload,
 		})
 
-		if (capabilityResponse.response.case === 'error') {
-			throw new CapabilityError(capabilityResponse.response.value, {
-				capabilityId,
-				method: 'GetTransactionByHash',
-				mode: this.mode,
-			})
-		}
+		return {
+			result: async () => {
+				const { response } = await capabilityResponse.result()
 
-		if (capabilityResponse.response.case !== 'payload') {
-			throw new CapabilityError('No payload in response', {
-				capabilityId,
-				method: 'GetTransactionByHash',
-				mode: this.mode,
-			})
-		}
+				if (response.case === 'error') {
+					throw new CapabilityError(response.value, {
+						capabilityId,
+						method: 'GetTransactionByHash',
+						mode: this.mode,
+					})
+				}
 
-		return fromBinary(GetTransactionByHashReplySchema, capabilityResponse.response.value.value)
+				if (response.case !== 'payload') {
+					throw new CapabilityError('No payload in response', {
+						capabilityId,
+						method: 'GetTransactionByHash',
+						mode: this.mode,
+					})
+				}
+
+				return fromBinary(GetTransactionByHashReplySchema, response.value.value)
+			},
+		}
 	}
 
-	async getTransactionReceipt(
-		input: GetTransactionReceiptRequest | GetTransactionReceiptRequestJson,
-	): Promise<GetTransactionReceiptReply> {
+	getTransactionReceipt(input: GetTransactionReceiptRequest | GetTransactionReceiptRequestJson): {
+		result: () => Promise<GetTransactionReceiptReply>
+	} {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const value = (input as any).$typeName
 			? (input as GetTransactionReceiptRequest)
@@ -320,35 +356,41 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		const capabilityResponse = await callCapability({
+		const capabilityResponse = callCapability({
 			capabilityId,
 			method: 'GetTransactionReceipt',
 			mode: this.mode,
 			payload,
 		})
 
-		if (capabilityResponse.response.case === 'error') {
-			throw new CapabilityError(capabilityResponse.response.value, {
-				capabilityId,
-				method: 'GetTransactionReceipt',
-				mode: this.mode,
-			})
-		}
+		return {
+			result: async () => {
+				const { response } = await capabilityResponse.result()
 
-		if (capabilityResponse.response.case !== 'payload') {
-			throw new CapabilityError('No payload in response', {
-				capabilityId,
-				method: 'GetTransactionReceipt',
-				mode: this.mode,
-			})
-		}
+				if (response.case === 'error') {
+					throw new CapabilityError(response.value, {
+						capabilityId,
+						method: 'GetTransactionReceipt',
+						mode: this.mode,
+					})
+				}
 
-		return fromBinary(GetTransactionReceiptReplySchema, capabilityResponse.response.value.value)
+				if (response.case !== 'payload') {
+					throw new CapabilityError('No payload in response', {
+						capabilityId,
+						method: 'GetTransactionReceipt',
+						mode: this.mode,
+					})
+				}
+
+				return fromBinary(GetTransactionReceiptReplySchema, response.value.value)
+			},
+		}
 	}
 
-	async headerByNumber(
-		input: HeaderByNumberRequest | HeaderByNumberRequestJson,
-	): Promise<HeaderByNumberReply> {
+	headerByNumber(input: HeaderByNumberRequest | HeaderByNumberRequestJson): {
+		result: () => Promise<HeaderByNumberReply>
+	} {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const value = (input as any).$typeName
 			? (input as HeaderByNumberRequest)
@@ -362,35 +404,41 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		const capabilityResponse = await callCapability({
+		const capabilityResponse = callCapability({
 			capabilityId,
 			method: 'HeaderByNumber',
 			mode: this.mode,
 			payload,
 		})
 
-		if (capabilityResponse.response.case === 'error') {
-			throw new CapabilityError(capabilityResponse.response.value, {
-				capabilityId,
-				method: 'HeaderByNumber',
-				mode: this.mode,
-			})
-		}
+		return {
+			result: async () => {
+				const { response } = await capabilityResponse.result()
 
-		if (capabilityResponse.response.case !== 'payload') {
-			throw new CapabilityError('No payload in response', {
-				capabilityId,
-				method: 'HeaderByNumber',
-				mode: this.mode,
-			})
-		}
+				if (response.case === 'error') {
+					throw new CapabilityError(response.value, {
+						capabilityId,
+						method: 'HeaderByNumber',
+						mode: this.mode,
+					})
+				}
 
-		return fromBinary(HeaderByNumberReplySchema, capabilityResponse.response.value.value)
+				if (response.case !== 'payload') {
+					throw new CapabilityError('No payload in response', {
+						capabilityId,
+						method: 'HeaderByNumber',
+						mode: this.mode,
+					})
+				}
+
+				return fromBinary(HeaderByNumberReplySchema, response.value.value)
+			},
+		}
 	}
 
-	async registerLogTracking(
-		input: RegisterLogTrackingRequest | RegisterLogTrackingRequestJson,
-	): Promise<Empty> {
+	registerLogTracking(input: RegisterLogTrackingRequest | RegisterLogTrackingRequestJson): {
+		result: () => Promise<Empty>
+	} {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const value = (input as any).$typeName
 			? (input as RegisterLogTrackingRequest)
@@ -404,35 +452,41 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		const capabilityResponse = await callCapability({
+		const capabilityResponse = callCapability({
 			capabilityId,
 			method: 'RegisterLogTracking',
 			mode: this.mode,
 			payload,
 		})
 
-		if (capabilityResponse.response.case === 'error') {
-			throw new CapabilityError(capabilityResponse.response.value, {
-				capabilityId,
-				method: 'RegisterLogTracking',
-				mode: this.mode,
-			})
-		}
+		return {
+			result: async () => {
+				const { response } = await capabilityResponse.result()
 
-		if (capabilityResponse.response.case !== 'payload') {
-			throw new CapabilityError('No payload in response', {
-				capabilityId,
-				method: 'RegisterLogTracking',
-				mode: this.mode,
-			})
-		}
+				if (response.case === 'error') {
+					throw new CapabilityError(response.value, {
+						capabilityId,
+						method: 'RegisterLogTracking',
+						mode: this.mode,
+					})
+				}
 
-		return fromBinary(EmptySchema, capabilityResponse.response.value.value)
+				if (response.case !== 'payload') {
+					throw new CapabilityError('No payload in response', {
+						capabilityId,
+						method: 'RegisterLogTracking',
+						mode: this.mode,
+					})
+				}
+
+				return fromBinary(EmptySchema, response.value.value)
+			},
+		}
 	}
 
-	async unregisterLogTracking(
-		input: UnregisterLogTrackingRequest | UnregisterLogTrackingRequestJson,
-	): Promise<Empty> {
+	unregisterLogTracking(input: UnregisterLogTrackingRequest | UnregisterLogTrackingRequestJson): {
+		result: () => Promise<Empty>
+	} {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const value = (input as any).$typeName
 			? (input as UnregisterLogTrackingRequest)
@@ -446,37 +500,45 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		const capabilityResponse = await callCapability({
+		const capabilityResponse = callCapability({
 			capabilityId,
 			method: 'UnregisterLogTracking',
 			mode: this.mode,
 			payload,
 		})
 
-		if (capabilityResponse.response.case === 'error') {
-			throw new CapabilityError(capabilityResponse.response.value, {
-				capabilityId,
-				method: 'UnregisterLogTracking',
-				mode: this.mode,
-			})
-		}
+		return {
+			result: async () => {
+				const { response } = await capabilityResponse.result()
 
-		if (capabilityResponse.response.case !== 'payload') {
-			throw new CapabilityError('No payload in response', {
-				capabilityId,
-				method: 'UnregisterLogTracking',
-				mode: this.mode,
-			})
-		}
+				if (response.case === 'error') {
+					throw new CapabilityError(response.value, {
+						capabilityId,
+						method: 'UnregisterLogTracking',
+						mode: this.mode,
+					})
+				}
 
-		return fromBinary(EmptySchema, capabilityResponse.response.value.value)
+				if (response.case !== 'payload') {
+					throw new CapabilityError('No payload in response', {
+						capabilityId,
+						method: 'UnregisterLogTracking',
+						mode: this.mode,
+					})
+				}
+
+				return fromBinary(EmptySchema, response.value.value)
+			},
+		}
 	}
 
 	logTrigger(config: FilterLogTriggerRequestJson): ClientLogTrigger {
 		return new ClientLogTrigger(this.mode, config, ClientCapability.CAPABILITY_ID, 'LogTrigger')
 	}
 
-	async writeReport(input: WriteReportRequest | WriteReportRequestJson): Promise<WriteReportReply> {
+	writeReport(input: WriteReportRequest | WriteReportRequestJson): {
+		result: () => Promise<WriteReportReply>
+	} {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const value = (input as any).$typeName
 			? (input as WriteReportRequest)
@@ -490,30 +552,36 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		const capabilityResponse = await callCapability({
+		const capabilityResponse = callCapability({
 			capabilityId,
 			method: 'WriteReport',
 			mode: this.mode,
 			payload,
 		})
 
-		if (capabilityResponse.response.case === 'error') {
-			throw new CapabilityError(capabilityResponse.response.value, {
-				capabilityId,
-				method: 'WriteReport',
-				mode: this.mode,
-			})
-		}
+		return {
+			result: async () => {
+				const { response } = await capabilityResponse.result()
 
-		if (capabilityResponse.response.case !== 'payload') {
-			throw new CapabilityError('No payload in response', {
-				capabilityId,
-				method: 'WriteReport',
-				mode: this.mode,
-			})
-		}
+				if (response.case === 'error') {
+					throw new CapabilityError(response.value, {
+						capabilityId,
+						method: 'WriteReport',
+						mode: this.mode,
+					})
+				}
 
-		return fromBinary(WriteReportReplySchema, capabilityResponse.response.value.value)
+				if (response.case !== 'payload') {
+					throw new CapabilityError('No payload in response', {
+						capabilityId,
+						method: 'WriteReport',
+						mode: this.mode,
+					})
+				}
+
+				return fromBinary(WriteReportReplySchema, response.value.value)
+			},
+		}
 	}
 }
 

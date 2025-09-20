@@ -71,7 +71,7 @@ export const creFetch = async (input: CreFetchRequest) => {
 	const validatedInput = creFetchRequestSchema.parse(input)
 	const httpClient = new cre.capabilities.HTTPClient()
 
-	const resp = await httpClient.sendRequest(validatedInput)
+	const resp = await httpClient.sendRequest(validatedInput).result()
 
 	return {
 		statusCode: resp.statusCode,

@@ -20,9 +20,11 @@ const randHandler = async (_config: Config, runtime: Runtime) => {
 			const nodeRandomNumber = nodeRuntime.getRand().Uint64()
 
 			const nodeActionCapability = new NodeActionCapability()
-			const nodeResponse = await nodeActionCapability.performAction({
-				inputThing: true,
-			})
+			const nodeResponse = await nodeActionCapability
+				.performAction({
+					inputThing: true,
+				})
+				.result()
 
 			if (nodeResponse.outputThing < 100) {
 				log(`***${nodeRandomNumber.toString()}`)

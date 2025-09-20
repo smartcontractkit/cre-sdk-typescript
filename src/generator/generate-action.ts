@@ -25,7 +25,7 @@ export function generateActionMethod(
     const capabilityId = ${capabilityClassName}.CAPABILITY_ID;`
 
 	return `
-  async ${methodName}(input: ${method.input.name} |  ${method.input.name}Json): Promise<${method.output.name}> {
+  ${methodName}(input: ${method.input.name} |  ${method.input.name}Json): {result: () => Promise<${method.output.name}>} {
     // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
     const value = (input as any).$typeName ? input as ${method.input.name} : fromJson(${method.input.name}Schema, input as ${method.input.name}Json)
     const payload = {
@@ -33,29 +33,35 @@ export function generateActionMethod(
       value: toBinary(${method.input.name}Schema, value),
     };${capabilityIdLogic}
 
-    const capabilityResponse = await callCapability({
+    const capabilityResponse = callCapability({
       capabilityId,
       method: "${method.name}",
       mode: this.mode,
       payload
     });
 
-    if (capabilityResponse.response.case === 'error') {
-      throw new CapabilityError(capabilityResponse.response.value, {
-        capabilityId,
-        method: "${method.name}",
-        mode: this.mode,
-      })
-    }
+    return {
+      result: async () => {
+        const {response} = await capabilityResponse.result();
 
-    if (capabilityResponse.response.case !== 'payload') {
-      throw new CapabilityError('No payload in response', {
-        capabilityId,
-        method: "${method.name}",
-        mode: this.mode,
-      })
-    }
+        if (response.case === 'error') {
+          throw new CapabilityError(response.value, {
+            capabilityId,
+            method: "${method.name}",
+            mode: this.mode,
+          })
+        }
 
-    return fromBinary(${method.output.name}Schema, capabilityResponse.response.value.value)
+        if (response.case !== 'payload') {
+          throw new CapabilityError('No payload in response', {
+            capabilityId,
+            method: "${method.name}",
+            mode: this.mode,
+          })
+        }
+
+        return fromBinary(${method.output.name}Schema, response.value.value)
+      }
+    }
   }`
 }

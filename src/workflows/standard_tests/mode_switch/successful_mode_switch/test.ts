@@ -15,16 +15,18 @@ class Output {
 const handler = async (_config: Config, runtime: Runtime) => {
 	const donInput = { inputThing: true }
 	const basicActionCapability = new BasicActionCapability()
-	const donResponse = await basicActionCapability.performAction(donInput)
+	const donResponse = await basicActionCapability.performAction(donInput).result()
 	runtime.now()
 
 	const consensusOutput = await cre.runInNodeMode(
 		async (nodeRuntime: NodeRuntime): Promise<Output> => {
 			nodeRuntime.now()
 			const nodeActionCapability = new NodeActionCapability()
-			const nodeResponse = await nodeActionCapability.performAction({
-				inputThing: true,
-			})
+			const nodeResponse = await nodeActionCapability
+				.performAction({
+					inputThing: true,
+				})
+				.result()
 
 			return new Output(new Int64(nodeResponse.outputThing))
 		},

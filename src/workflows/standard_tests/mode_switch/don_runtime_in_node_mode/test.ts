@@ -11,7 +11,7 @@ const handler = async (_config: Config) => {
 	try {
 		await runInNodeMode(async () => {
 			const basicCap = new BasicActionCapability()
-			return (await basicCap.performAction({ inputThing: true })).adaptedThing
+			return (await basicCap.performAction({ inputThing: true }).result()).adaptedThing
 		}, consensusIdenticalAggregation())()
 	} catch (e) {
 		cre.sendError(e as Error)
