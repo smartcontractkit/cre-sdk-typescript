@@ -17,7 +17,7 @@ const fixImports = async () => {
 		const content = await readFile(file, 'utf-8')
 
 		// Replace @cre/* imports with relative paths
-		const fixedContent = content.replace(/@cre\/([^'"]*)/g, (match, path) => {
+		const fixedContent = content.replace(/@cre\/([^'"]*)/g, (_, path) => {
 			// Convert @cre/sdk/utils to relative path from current file
 			const currentDir = dirname(file)
 			const targetPath = join(process.cwd(), 'dist', path)
