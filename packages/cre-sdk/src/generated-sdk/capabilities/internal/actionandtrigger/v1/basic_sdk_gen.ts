@@ -1,22 +1,22 @@
-import { fromBinary, toBinary, fromJson, create } from '@bufbuild/protobuf'
-import { Mode, type CapabilityResponse } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import { create, fromBinary, fromJson, toBinary } from '@bufbuild/protobuf'
+import { type Any, AnySchema } from '@bufbuild/protobuf/wkt'
+import {
+	type Config,
+	type ConfigJson,
+	ConfigSchema,
+	type Input,
+	type InputJson,
+	InputSchema,
+	type Output,
+	OutputSchema,
+	type TriggerEvent,
+	TriggerEventSchema,
+} from '@cre/generated/capabilities/internal/actionandtrigger/v1/action_and_trigger_pb'
+import { type CapabilityResponse, Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { callCapability } from '@cre/sdk/utils/capabilities/call-capability'
 import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
 import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
-import { type Any, AnySchema } from '@bufbuild/protobuf/wkt'
 import { getTypeUrl } from '@cre/sdk/utils/typeurl'
-import {
-	ConfigSchema,
-	InputSchema,
-	OutputSchema,
-	TriggerEventSchema,
-	type Config,
-	type ConfigJson,
-	type Input,
-	type InputJson,
-	type Output,
-	type TriggerEvent,
-} from '@cre/generated/capabilities/internal/actionandtrigger/v1/action_and_trigger_pb'
 
 /**
  * Basic Capability

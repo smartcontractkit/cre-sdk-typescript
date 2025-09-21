@@ -2,13 +2,13 @@
 // @generated from file sdk/v1alpha/sdk.proto (package sdk.v1alpha, syntax proto3)
 /* eslint-disable */
 
+import type { Message } from '@bufbuild/protobuf'
 import type { GenEnum, GenFile, GenMessage } from '@bufbuild/protobuf/codegenv2'
 import { enumDesc, fileDesc, messageDesc } from '@bufbuild/protobuf/codegenv2'
 import type { Any, AnyJson, Empty, EmptyJson } from '@bufbuild/protobuf/wkt'
 import { file_google_protobuf_any, file_google_protobuf_empty } from '@bufbuild/protobuf/wkt'
 import type { Value, ValueJson } from '../../values/v1/values_pb'
 import { file_values_v1_values } from '../../values/v1/values_pb'
-import type { Message } from '@bufbuild/protobuf'
 
 /**
  * Describes the file sdk/v1alpha/sdk.proto.

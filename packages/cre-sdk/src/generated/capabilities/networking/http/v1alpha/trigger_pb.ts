@@ -2,10 +2,10 @@
 // @generated from file capabilities/networking/http/v1alpha/trigger.proto (package capabilities.networking.http.v1alpha, syntax proto3)
 /* eslint-disable */
 
+import type { Message } from '@bufbuild/protobuf'
 import type { GenEnum, GenFile, GenMessage, GenService } from '@bufbuild/protobuf/codegenv2'
 import { enumDesc, fileDesc, messageDesc, serviceDesc } from '@bufbuild/protobuf/codegenv2'
 import { file_tools_generator_v1alpha_cre_metadata } from '../../../../tools/generator/v1alpha/cre_metadata_pb'
-import type { Message } from '@bufbuild/protobuf'
 
 /**
  * Describes the file capabilities/networking/http/v1alpha/trigger.proto.

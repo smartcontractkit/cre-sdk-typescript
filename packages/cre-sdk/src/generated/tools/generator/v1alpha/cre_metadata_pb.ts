@@ -2,13 +2,13 @@
 // @generated from file tools/generator/v1alpha/cre_metadata.proto (package tools.generator.v1alpha, syntax proto3)
 /* eslint-disable */
 
+import type { Message } from '@bufbuild/protobuf'
 import type { GenExtension, GenFile, GenMessage } from '@bufbuild/protobuf/codegenv2'
 import { extDesc, fileDesc, messageDesc } from '@bufbuild/protobuf/codegenv2'
 import type { MethodOptions, ServiceOptions } from '@bufbuild/protobuf/wkt'
 import { file_google_protobuf_descriptor } from '@bufbuild/protobuf/wkt'
 import type { Mode, ModeJson } from '../../../sdk/v1alpha/sdk_pb'
 import { file_sdk_v1alpha_sdk } from '../../../sdk/v1alpha/sdk_pb'
-import type { Message } from '@bufbuild/protobuf'
 
 /**
  * Describes the file tools/generator/v1alpha/cre_metadata.proto.

@@ -1,70 +1,70 @@
 {
-  "name": "@chainlink/cre-sdk",
-  "version": "0.0.1",
-  "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    }
-  },
-  "bin": {
-    "cre-compile": "bin/cre-compile.ts"
-  },
-  "files": [
-    "bin/",
-    "scripts/",
-    "dist/",
-    "package.json",
-    "README.md",
-    "LICENSE.md"
-  ],
-  "scripts": {
-    "build": "bun run clean && bun run compile:build && bun run fix-imports",
-    "clean": "rm -rf dist",
-    "compile:build": "tsc -p tsconfig.build.json",
-    "fix-imports": "bun scripts/run.ts fix-imports",
-    "compile:ts-to-js": "bun scripts/run.ts compile-to-js",
-    "compile:js-to-wasm": "bun scripts/run.ts compile-to-wasm",
-    "compile:workflow": "bun scripts/run.ts compile-workflow",
-    "compile:all-standard-tests": "bun scripts/run.ts compile-all-standard-tests",
-    "check": "biome check --write",
-    "format": "biome format --write ${BIOME_PATHS:-.}",
-    "generate:chain-selectors": "bun scripts/run.ts generate-chain-selectors && BIOME_PATHS=\"src/generated\" bun format",
-    "generate:proto": "bunx @bufbuild/buf generate",
-    "generate:sdk": "bun generate:chain-selectors && bun generate:proto && bun scripts/run generate-sdks && BIOME_PATHS=\"src/generated src/generated-sdk\" bun format",
-    "lint": "biome lint --write",
-    "test": "bun test",
-    "test:standard": "./scripts/run-standard-tests.sh",
-    "typecheck": "tsc",
-    "prepublishOnly": "bun run build"
-  },
-  "dependencies": {
-    "@bufbuild/protobuf": "2.6.3",
-    "@bufbuild/protoc-gen-es": "2.6.3",
-    "@chainlink/cre-sdk-javy-plugin": "workspace:*",
-    "@standard-schema/spec": "1.0.0",
-    "viem": "2.34.0",
-    "zod": "3.25.76"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "2.2.4",
-    "@bufbuild/buf": "1.56.0",
-    "@types/bun": "1.2.21",
-    "chain-selectors": "https://github.com/smartcontractkit/chain-selectors.git#8b963095ae797a3024c8e55822cced7bf618176f",
-    "fast-glob": "3.3.3",
-    "ts-proto": "2.7.5",
-    "typescript": "5.9.2",
-    "yaml": "2.8.1"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "author": "SmartContract Chainlink Limited SEZC",
-  "license": "SEE LICENSE IN LICENSE.md",
-  "engines": {
-    "bun": ">=1.2.21"
-  }
+	"name": "@chainlink/cre-sdk",
+	"version": "0.0.1",
+	"type": "module",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		}
+	},
+	"bin": {
+		"cre-compile": "bin/cre-compile.ts"
+	},
+	"files": [
+		"bin/",
+		"scripts/",
+		"dist/",
+		"package.json",
+		"README.md",
+		"LICENSE.md"
+	],
+	"scripts": {
+		"build": "bun run clean && bun run compile:build && bun run fix-imports",
+		"clean": "rm -rf dist",
+		"compile:build": "tsc -p tsconfig.build.json",
+		"fix-imports": "bun scripts/run.ts fix-imports",
+		"compile:ts-to-js": "bun scripts/run.ts compile-to-js",
+		"compile:js-to-wasm": "bun scripts/run.ts compile-to-wasm",
+		"compile:workflow": "bun scripts/run.ts compile-workflow",
+		"compile:all-standard-tests": "bun scripts/run.ts compile-all-standard-tests",
+		"check": "biome check --write ${BIOME_PATHS:-.}",
+		"format": "biome format --write ${BIOME_PATHS:-.}",
+		"generate:chain-selectors": "bun scripts/run.ts generate-chain-selectors && BIOME_PATHS=\"src/generated\" bun format",
+		"generate:proto": "bunx @bufbuild/buf generate",
+		"generate:sdk": "bun generate:chain-selectors && bun generate:proto && bun scripts/run generate-sdks && BIOME_PATHS=\"src/generated src/generated-sdk\" bun format",
+		"lint": "biome lint --write",
+		"test": "bun test",
+		"test:standard": "./scripts/run-standard-tests.sh",
+		"typecheck": "tsc",
+		"prepublishOnly": "bun run build"
+	},
+	"dependencies": {
+		"@bufbuild/protobuf": "2.6.3",
+		"@bufbuild/protoc-gen-es": "2.6.3",
+		"@chainlink/cre-sdk-javy-plugin": "workspace:*",
+		"@standard-schema/spec": "1.0.0",
+		"viem": "2.34.0",
+		"zod": "3.25.76"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.2.4",
+		"@bufbuild/buf": "1.56.0",
+		"@types/bun": "1.2.21",
+		"chain-selectors": "https://github.com/smartcontractkit/chain-selectors.git#8b963095ae797a3024c8e55822cced7bf618176f",
+		"fast-glob": "3.3.3",
+		"ts-proto": "2.7.5",
+		"typescript": "5.9.2",
+		"yaml": "2.8.1"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"author": "SmartContract Chainlink Limited SEZC",
+	"license": "SEE LICENSE IN LICENSE.md",
+	"engines": {
+		"bun": ">=1.2.21"
+	}
 }

@@ -1,19 +1,20 @@
-import { fromBinary, toBinary, fromJson } from '@bufbuild/protobuf'
-import { Mode, type CapabilityResponse } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import { fromBinary, fromJson, toBinary } from '@bufbuild/protobuf'
+import {
+	type CapabilityResponse,
+	Mode,
+	type ReportRequest,
+	type ReportRequestJson,
+	ReportRequestSchema,
+	type ReportResponse,
+	ReportResponseSchema,
+	type SimpleConsensusInputs,
+	type SimpleConsensusInputsJson,
+	SimpleConsensusInputsSchema,
+} from '@cre/generated/sdk/v1alpha/sdk_pb'
+import { type Value, ValueSchema } from '@cre/generated/values/v1/values_pb'
 import { callCapability } from '@cre/sdk/utils/capabilities/call-capability'
 import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
 import { getTypeUrl } from '@cre/sdk/utils/typeurl'
-import {
-	ReportRequestSchema,
-	ReportResponseSchema,
-	SimpleConsensusInputsSchema,
-	type ReportRequest,
-	type ReportRequestJson,
-	type ReportResponse,
-	type SimpleConsensusInputs,
-	type SimpleConsensusInputsJson,
-} from '@cre/generated/sdk/v1alpha/sdk_pb'
-import { ValueSchema, type Value } from '@cre/generated/values/v1/values_pb'
 
 /**
  * Consensus Capability

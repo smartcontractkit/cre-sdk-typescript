@@ -1,15 +1,15 @@
-import { fromBinary, toBinary, fromJson } from '@bufbuild/protobuf'
-import { Mode, type CapabilityResponse } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import { fromBinary, fromJson, toBinary } from '@bufbuild/protobuf'
+import {
+	type Inputs,
+	type InputsJson,
+	InputsSchema,
+	type Outputs,
+	OutputsSchema,
+} from '@cre/generated/capabilities/internal/basicaction/v1/basic_action_pb'
+import { type CapabilityResponse, Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { callCapability } from '@cre/sdk/utils/capabilities/call-capability'
 import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
 import { getTypeUrl } from '@cre/sdk/utils/typeurl'
-import {
-	InputsSchema,
-	OutputsSchema,
-	type Inputs,
-	type InputsJson,
-	type Outputs,
-} from '@cre/generated/capabilities/internal/basicaction/v1/basic_action_pb'
 
 /**
  * BasicAction Capability
