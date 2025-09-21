@@ -3,11 +3,17 @@
   "version": "0.0.1",
   "type": "module",
   "bin": {
-    "cre-setup": "bin/setup.js",
-    "cre-compile-workflow": "bin/compile-workflow.js"
+    "cre-setup": "bin/setup.ts",
+    "cre-compile-workflow": "bin/compile-workflow.ts"
   },
   "scripts": {
-    "build": "node scripts/compile-javy-sdk-plugin.js"
+    "build": "bun run clean && bun scripts/compile-javy-sdk-plugin.ts",
+    "clean": "rm -rf dist",
+    "check": "biome check --write ${BIOME_PATHS:-.}",
+    "format": "biome format --write ${BIOME_PATHS:-.}",
+    "lint": "biome lint --write",
+    "typecheck": "tsc",
+    "prepublishOnly": "bun run build"
   },
   "keywords": [],
   "author": "SmartContract Chainlink Limited SEZC",
@@ -15,7 +21,7 @@
   "description": "Chainlink CRE SDK Javy Plugin.",
   "files": [
     "bin/",
-    "src/",
+    "scripts/",
     "dist/"
   ],
   "publishConfig": {

@@ -1,8 +1,8 @@
 #!/usr/bin/env bun
-import { ensureJavy } from "../src/ensure-javy.js";
 import { spawn } from "node:child_process";
-import { resolve, dirname } from "node:path";
+import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { ensureJavy } from "../scripts/ensure-javy.ts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
