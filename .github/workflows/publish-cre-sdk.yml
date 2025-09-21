@@ -1,0 +1,193 @@
+name: Publish CRE SDK
+
+on:
+  release:
+    types: [published]
+  push:
+    tags:
+      - "cre-sdk-v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to publish (e.g., 1.0.0)"
+        required: false
+        type: string
+      dry_run:
+        description: "Run in dry-run mode (do not actually publish)"
+        required: false
+        default: false
+        type: boolean
+
+env:
+  BUN_VERSION: "1.2.21"
+
+jobs:
+  build-and-publish-cre-sdk:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # for npm provenance
+    environment: Publish
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Update versions if specified
+        if: ${{ github.event.inputs.version }}
+        run: |
+          echo "Updating versions to ${{ github.event.inputs.version }}"
+
+          # Update javy-plugin version first
+          cd packages/cre-sdk-javy-plugin
+          bun pm version ${{ github.event.inputs.version }}
+          cd ../..
+
+          # Update cre-sdk version
+          cd packages/cre-sdk
+          bun pm version ${{ github.event.inputs.version }}
+          cd ../..
+
+          echo "Both packages updated to version ${{ github.event.inputs.version }}"
+
+      - name: Build javy plugin
+        working-directory: packages/cre-sdk-javy-plugin
+        run: bun run build
+
+      - name: Build cre-sdk
+        run: |
+          # Build using turbo to ensure proper dependency order
+          bun run build
+
+      - name: Resolve workspace dependencies
+        run: |
+          echo "Resolving workspace dependencies for publishing..."
+
+          # Get the current version from javy-plugin
+          JAVY_VERSION=$(cd packages/cre-sdk-javy-plugin && node -p "require('./package.json').version")
+          echo "Javy plugin version: $JAVY_VERSION"
+
+          # Update cre-sdk package.json to use the actual version instead of workspace:*
+          cd packages/cre-sdk
+
+          # Create a backup of the original package.json
+          cp package.json package.json.backup
+
+          # Replace workspace:* with the actual version
+          sed -i.tmp "s/\"@chainlink\/cre-sdk-javy-plugin\": \"workspace:\*\"/\"@chainlink\/cre-sdk-javy-plugin\": \"^$JAVY_VERSION\"/" package.json
+          rm package.json.tmp
+
+          echo "Updated cre-sdk dependency to use version ^$JAVY_VERSION"
+          cat package.json | grep "@chainlink/cre-sdk-javy-plugin"
+
+      - name: Verify npm authentication
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets. NPM_CRE_SDK_TYPESCRIPT }}
+        run: bun pm whoami
+
+      - name: Publish cre-sdk package
+        working-directory: packages/cre-sdk
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets. NPM_CRE_SDK_TYPESCRIPT }}
+        run: |
+          echo "Publishing @chainlink/cre-sdk..."
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            echo "DRY RUN: Would publish @chainlink/cre-sdk"
+            bun publish --dry-run --access public --verbose
+          else
+            bun publish --access public --verbose
+          fi
+
+      - name: Restore original package.json
+        if: always()
+        working-directory: packages/cre-sdk
+        run: |
+          if [ -f package.json.backup ]; then
+            mv package.json.backup package.json
+            echo "Restored original package.json with workspace:* dependency"
+          fi
+
+      - name: Create release summary
+        if: ${{ !github.event.inputs.dry_run }}
+        run: |
+          echo "## 📦 Published CRE SDK Package" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- 📋 \`@chainlink/cre-sdk\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Get the javy plugin version that was used
+          JAVY_VERSION=$(cd packages/cre-sdk-javy-plugin && node -p "require('./package.json').version")
+          echo "### Dependencies" >> $GITHUB_STEP_SUMMARY
+          echo "- 🔌 Uses \`@chainlink/cre-sdk-javy-plugin@^$JAVY_VERSION\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "### Installation" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+          echo "# Using npm" >> $GITHUB_STEP_SUMMARY
+          echo "npm install @chainlink/cre-sdk" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "# Using bun" >> $GITHUB_STEP_SUMMARY
+          echo "bun add @chainlink/cre-sdk" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### CLI Commands" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+          echo "# Compile workflow" >> $GITHUB_STEP_SUMMARY
+          echo "cre-compile" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+  verify-cre-sdk:
+    needs: build-and-publish-cre-sdk
+    runs-on: ubuntu-latest
+    if: ${{ !github.event.inputs.dry_run }}
+
+    steps:
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Wait for package propagation
+        run: sleep 60
+
+      - name: Verify cre-sdk package installation
+        run: |
+          echo "Verifying @chainlink/cre-sdk can be installed..."
+          bun add @chainlink/cre-sdk --dry-run
+          echo "✅ CRE SDK package verification successful"
+
+      - name: Verify CLI binary is available
+        run: |
+          echo "Installing package to test CLI binary..."
+          bun add @chainlink/cre-sdk
+
+          echo "Checking cre-compile command..."
+          if command -v cre-compile >/dev/null 2>&1; then
+            echo "✅ cre-compile command is available"
+          else
+            echo "❌ cre-compile command not found"
+            exit 1
+          fi
+
+      - name: Verify dependency resolution
+        run: |
+          echo "Verifying that @chainlink/cre-sdk-javy-plugin is properly resolved..."
+
+          # Check that the javy plugin is installed as a dependency
+          if bun pm list | grep -q "@chainlink/cre-sdk-javy-plugin"; then
+            echo "✅ @chainlink/cre-sdk-javy-plugin dependency resolved correctly"
+          else
+            echo "❌ @chainlink/cre-sdk-javy-plugin dependency not found"
+            exit 1
+          fi
