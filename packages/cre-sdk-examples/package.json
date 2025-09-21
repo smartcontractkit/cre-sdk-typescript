@@ -7,7 +7,6 @@
   "license": "MIT",
   "description": "Demo app with example workflows utilizing CRE TypeScript SDK. It presents usage of CRE SDK and allows SDK developers to test workflows.",
   "scripts": {
-    "compile:workflow": "bunx cre-compile",
     "check": "biome check --write ${BIOME_PATHS:-.}",
     "format": "biome format --write ${BIOME_PATHS:-.}",
     "lint": "biome lint --write",

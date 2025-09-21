@@ -7,9 +7,9 @@ FORCE:
 	@echo "Building test: $*"
 	@path_parts=($(subst /, ,$*)); \
 	if [ $${#path_parts[@]} -eq 1 ]; then \
-		cd ../.. && bun compile:workflow src/standard_tests/$${path_parts[0]}/test.ts .temp/src/standard_tests/$${path_parts[0]}/test.wasm; \
+		cd ../.. && bun compile:workflow src/standard_tests/$${path_parts[0]}/test.ts .temp/standard_tests/$${path_parts[0]}/test.wasm; \
 	elif [ $${#path_parts[@]} -eq 2 ]; then \
-		cd ../.. && bun compile:workflow src/standard_tests/$${path_parts[0]}/$${path_parts[1]}/test.ts .temp/src/standard_tests/$${path_parts[0]}/$${path_parts[1]}/test.wasm; \
+		cd ../.. && bun compile:workflow src/standard_tests/$${path_parts[0]}/$${path_parts[1]}/test.ts .temp/standard_tests/$${path_parts[0]}/$${path_parts[1]}/test.wasm; \
 	else \
 		echo "❌ Unsupported test path depth: $*"; \
 		exit 1; \

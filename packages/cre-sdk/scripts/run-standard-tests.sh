@@ -9,7 +9,7 @@ set -e
 mkdir -p ./dist/workflows/standard_tests
 
 # Build javy wasm
-if [ ! -f ../../cre-sdk-javy-plugin/dist/javy_chainlink_sdk.wasm ]; then
+if [ ! -f ../cre-sdk-javy-plugin/dist/javy_chainlink_sdk.wasm ]; then
     echo "Error: javy_chainlink_sdk.wasm not found"
     exit 1
 fi
