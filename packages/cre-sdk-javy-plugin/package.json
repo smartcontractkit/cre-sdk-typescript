@@ -1,0 +1,27 @@
+{
+  "name": "@chainlink/cre-sdk-javy-plugin",
+  "version": "0.0.1",
+  "type": "module",
+  "bin": {
+    "cre-setup": "bin/setup.js",
+    "cre-compile-workflow": "bin/compile-workflow.js"
+  },
+  "scripts": {
+    "build": "node scripts/compile-javy-sdk-plugin.js"
+  },
+  "keywords": [],
+  "author": "SmartContract Chainlink Limited SEZC",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "description": "Chainlink CRE SDK Javy Plugin.",
+  "files": [
+    "bin/",
+    "src/",
+    "dist/"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "bun": ">=1.2.21"
+  }
+}

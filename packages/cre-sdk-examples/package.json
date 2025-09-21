@@ -1,0 +1,22 @@
+{
+  "name": "@chainlink/cre-sdk-examples",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "author": "Ernest Nowacki",
+  "license": "MIT",
+  "description": "Demo app with example workflows utilizing CRE TypeScript SDK. It presents usage of CRE SDK and allows SDK developers to test workflows.",
+  "scripts": {
+    "compile:workflow": "bunx cre-compile",
+    "check": "biome check --write",
+    "format": "biome format --write ${BIOME_PATHS:-.}",
+    "lint": "biome lint --write",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "@chainlink/cre-sdk": "workspace:*"
+  },
+  "engines": {
+    "bun": ">=1.2.21"
+  }
+}
