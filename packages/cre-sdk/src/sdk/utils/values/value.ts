@@ -15,7 +15,7 @@ import {
 	ValueSchema,
 } from '@cre/generated/values/v1/values_pb'
 
-import type { CreSerializable } from './serializer_types'
+import type { CreSerializable, PrimitiveTypes } from './serializer_types'
 
 /**
  * Type that can validate a value and return a typed result.
@@ -26,11 +26,13 @@ export interface SchemaValidator<T> {
 }
 
 /**
- * Options for the unwrapToType function - either use a schema validator OR a factory function, not both.
+ * Options for the unwrapToType function -
+ * - for primitive types, use the instance option to verify the type matches, the value is ignored.
+ * - for non-primitive types, either use a schema validator OR a factory function, not both.
  */
-export type UnwrapOptions<T> =
-	| { schema: SchemaValidator<T>; factory?: never }
-	| { schema?: never; factory: () => T }
+export type UnwrapOptions<T> = T extends PrimitiveTypes
+	? { instance: T }
+	: { schema: SchemaValidator<T>; factory?: never } | { schema?: never; factory: () => T }
 
 export class Int64 {
 	// int64 bounds
@@ -319,30 +321,38 @@ export class Value {
 	/**
 	 * Unwraps a Value object into its native JavaScript equivalent and casts it to type T.
 	 * If the value is null or undefined, throws an exception.
+	 
 	 *
-	 * @param options - Either a schema validator or a factory function (but not both)
+	 * @param options - Either a schema validator or a factory function (but not both), used for non-primitive types
 	 * @returns The unwrapped JavaScript value cast to type T
 	 * @throws Error if value is null, undefined, contains an invalid case, or fails schema validation
 	 */
 	unwrapToType<T>(options: UnwrapOptions<T>): T {
 		const unwrapped = this.unwrap()
 
+		if ('instance' in options) {
+			if (typeof unwrapped !== typeof options.instance) {
+				throw new Error(`Cannot unwrap to type ${typeof options.instance}`)
+			}
+			return unwrapped as T
+		}
+
 		if (options.schema) {
 			return options.schema.parse(unwrapped)
 		}
 
-		const instance = options.factory()
+		const obj = options.factory()
 
 		if (typeof unwrapped === 'object' && unwrapped !== null) {
 			// Use Object.assign for more efficient property copying
-			Object.assign(instance as object, unwrapped)
+			Object.assign(obj as object, unwrapped)
 		} else {
 			throw new Error(
 				`Cannot copy properties from primitive value to object instance. Use a schema instead.`,
 			)
 		}
 
-		return instance
+		return obj
 	}
 }
 

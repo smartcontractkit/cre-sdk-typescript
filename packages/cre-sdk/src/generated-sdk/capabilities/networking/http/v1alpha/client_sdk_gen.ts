@@ -42,29 +42,29 @@ export class ClientCapability {
 		}
 		const capabilityId = ClientCapability.CAPABILITY_ID
 
-		return callCapability({
+		const capabilityResponse = await callCapability({
 			capabilityId,
 			method: 'SendRequest',
 			mode: this.mode,
 			payload,
-		}).then((capabilityResponse: CapabilityResponse) => {
-			if (capabilityResponse.response.case === 'error') {
-				throw new CapabilityError(capabilityResponse.response.value, {
-					capabilityId,
-					method: 'SendRequest',
-					mode: this.mode,
-				})
-			}
-
-			if (capabilityResponse.response.case !== 'payload') {
-				throw new CapabilityError('No payload in response', {
-					capabilityId,
-					method: 'SendRequest',
-					mode: this.mode,
-				})
-			}
-
-			return fromBinary(ResponseSchema, capabilityResponse.response.value.value)
 		})
+
+		if (capabilityResponse.response.case === 'error') {
+			throw new CapabilityError(capabilityResponse.response.value, {
+				capabilityId,
+				method: 'SendRequest',
+				mode: this.mode,
+			})
+		}
+
+		if (capabilityResponse.response.case !== 'payload') {
+			throw new CapabilityError('No payload in response', {
+				capabilityId,
+				method: 'SendRequest',
+				mode: this.mode,
+			})
+		}
+
+		return fromBinary(ResponseSchema, capabilityResponse.response.value.value)
 	}
 }

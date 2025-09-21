@@ -49,30 +49,30 @@ export class BasicCapability {
 		}
 		const capabilityId = BasicCapability.CAPABILITY_ID
 
-		return callCapability({
+		const capabilityResponse = await callCapability({
 			capabilityId,
 			method: 'Action',
 			mode: this.mode,
 			payload,
-		}).then((capabilityResponse: CapabilityResponse) => {
-			if (capabilityResponse.response.case === 'error') {
-				throw new CapabilityError(capabilityResponse.response.value, {
-					capabilityId,
-					method: 'Action',
-					mode: this.mode,
-				})
-			}
-
-			if (capabilityResponse.response.case !== 'payload') {
-				throw new CapabilityError('No payload in response', {
-					capabilityId,
-					method: 'Action',
-					mode: this.mode,
-				})
-			}
-
-			return fromBinary(OutputSchema, capabilityResponse.response.value.value)
 		})
+
+		if (capabilityResponse.response.case === 'error') {
+			throw new CapabilityError(capabilityResponse.response.value, {
+				capabilityId,
+				method: 'Action',
+				mode: this.mode,
+			})
+		}
+
+		if (capabilityResponse.response.case !== 'payload') {
+			throw new CapabilityError('No payload in response', {
+				capabilityId,
+				method: 'Action',
+				mode: this.mode,
+			})
+		}
+
+		return fromBinary(OutputSchema, capabilityResponse.response.value.value)
 	}
 
 	trigger(config: ConfigJson): BasicTrigger {

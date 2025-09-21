@@ -27,6 +27,7 @@ jobs:
     permissions:
       contents: read
       id-token: write # for npm provenance
+    environment: Publish
     
     steps:
       - name: Checkout code
@@ -59,25 +60,23 @@ jobs:
           echo "Generated packages:"
           ls -la pkg/*.tgz
 
-      - name: Setup npm authentication
-        run: |
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
-          echo "registry=https://registry.npmjs.org/" >> ~/.npmrc
-          echo "access=public" >> ~/.npmrc
-
       - name: Verify npm authentication
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets. NPM_CRE_SDK_TYPESCRIPT }}
         run: bun pm whoami
 
       - name: Publish main package
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets. NPM_CRE_SDK_TYPESCRIPT }}
         run: |
           MAIN_PACKAGE=$(find pkg -name "*cre-sdk-*.tgz" | head -1)
           if [ -n "$MAIN_PACKAGE" ]; then
             echo "Publishing main package: $MAIN_PACKAGE"
             if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
               echo "DRY RUN: Would publish $MAIN_PACKAGE"
-              bun publish "$MAIN_PACKAGE" --dry-run --access public
+              bun publish "$MAIN_PACKAGE" --dry-run --access public --verbose
             else
-              bun publish "$MAIN_PACKAGE" --access public
+              bun publish "$MAIN_PACKAGE" --access public --verbose
             fi
           else
             echo "Main package not found!"

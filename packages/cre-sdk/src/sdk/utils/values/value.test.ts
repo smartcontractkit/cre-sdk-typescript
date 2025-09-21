@@ -397,6 +397,17 @@ describe('val helpers', () => {
 		expect(schemaCalled).toBe(true)
 	})
 
+	test('unwrapToType primitives values', () => {
+		const val = Value.from(123)
+		const unwrapped = val.unwrapToType<number>({ instance: 0 })
+		expect(unwrapped).toEqual(123)
+	})
+
+	test('unwrapToType wrong primitive type throws', () => {
+		const val = Value.from(123)
+		expect(() => val.unwrapToType<string>({ instance: 'a' })).toThrow()
+	})
+
 	test('from object with constructor', () => {
 		class Test {
 			public i: number = 0

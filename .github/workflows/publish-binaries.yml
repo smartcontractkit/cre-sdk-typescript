@@ -1,4 +1,6 @@
 name: Publish Binary Packages
+permissions:
+  contents: read
 
 on:
   workflow_dispatch:
@@ -27,13 +29,72 @@ env:
   BUN_VERSION: '1.2.21'
 
 jobs:
+  build-javy-sdk-plugin-darwin:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+      
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+          
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      
+      - name: Build Javy SDK plugin
+        run: bun run build-bins.ts darwin-arm64
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # actions/upload-artifact@v4.5.0
+        with:
+          name: cre-ts-darwin-arm64
+          path: |
+            pkg/cli/darwin-arm64
+
+  build-javy-sdk-plugin-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+      
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+          
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build Javy SDK plugin
+        run: bun run build-bins.ts linux-x64
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # actions/upload-artifact@v4.5.0
+        with:
+          name: cre-ts-linux-x64
+          path: |
+            pkg/cli/linux-x64
+
+
   build-and-publish-binaries:
+    needs:
+      - build-javy-sdk-plugin-darwin
+      - build-javy-sdk-plugin-linux
     runs-on: ubuntu-latest
     outputs:
       selected_platforms: ${{ steps.platforms.outputs.selected_platforms }}
     permissions:
       contents: read
       id-token: write # for npm provenance
+    environment: Publish
     
     steps:
       - name: Checkout code
@@ -50,6 +111,18 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Download Build Artifacts for darwin/arm64
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # actions/download-artifact@v4.1.8
+        with:
+          name: cre-ts-darwin-arm64
+          path: ./pkg/cli/darwin_arm64
+
+      - name: Download Build Artifacts for linux/x64
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # actions/download-artifact@v4.1.8
+        with:
+          name: cre-ts-linux-x64
+          path: ./pkg/cli/linux_x64
+
       - name: Update platform package versions
         if: ${{ github.event.inputs.version }}
         run: |
@@ -60,8 +133,10 @@ jobs:
             if [ -d "$folder" ] && [ -f "$folder/package.json" ]; then
               echo "Updating version in $folder"
               (cd "$folder" && bun pm version ${{ github.event.inputs.version }})
+              echo "Version updated in $folder -> ${{ github.event.inputs.version }}"
             fi
           done
+
 
       - name: Build packages
         run: |
@@ -85,18 +160,16 @@ jobs:
       - name: List generated binary packages
         run: |
           echo "Generated binary packages:"
-          ls -la pkg/*cre-build-*.tgz
-
-      - name: Setup npm authentication
-        run: |
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
-          echo "registry=https://registry.npmjs.org/" >> ~/.npmrc
-          echo "access=public" >> ~/.npmrc
+          ls -la ./pkg/*cre-ts-*.tgz
 
       - name: Verify npm authentication
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets. NPM_CRE_SDK_TYPESCRIPT }}
         run: bun pm whoami
 
       - name: Publish platform-specific packages
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets. NPM_CRE_SDK_TYPESCRIPT }}
         run: |
           SELECTED_PLATFORMS="${{ steps.platforms.outputs.selected_platforms }}"
           IFS=',' read -ra PLATFORM_ARRAY <<< "$SELECTED_PLATFORMS"
@@ -104,12 +177,12 @@ jobs:
           echo "Publishing packages for platforms: ${PLATFORM_ARRAY[@]}"
           
           # Publish selected platform-specific build packages
-          for package in pkg/*cre-build-*.tgz; do
+          for package in pkg/*cre-ts-*.tgz; do
             if [ -f "$package" ]; then
               BASENAME=$(basename "$package")
               
-              # Extract platform from filename (e.g., cre-build-darwin-arm64-0.0.1.tgz -> darwin-arm64)
-              PLATFORM=$(echo "$BASENAME" | sed 's/.*cre-build-\(.*\)-[0-9].*/\1/')
+              # Extract platform from filename (e.g., cre-ts-darwin-arm64-0.0.1.tgz -> darwin-arm64)
+              PLATFORM=$(echo "$BASENAME" | sed 's/.*cre-ts-\(.*\)-[0-9].*/\1/')
               
               # Check if this platform should be published
               SHOULD_PUBLISH=false
@@ -124,9 +197,10 @@ jobs:
                 echo "Publishing platform package: $package (platform: $PLATFORM)"
                 if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
                   echo "DRY RUN: Would publish $package"
-                  bun publish "$package" --dry-run --access public
+                  bun publish "$package" --dry-run --access public --verbose
                 else
-                  bun publish "$package" --access public
+                  bun publish "$package" --access public --verbose
+                  sleep 5
                 fi
               else
                 echo "Skipping $package (platform: $PLATFORM not in selection)"
@@ -138,7 +212,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: binary-packages
-          path: pkg/*cre-build-*.tgz
+          path: pkg/*cre-ts-*.tgz
           retention-days: 30
 
       - name: Create release summary
@@ -150,10 +224,10 @@ jobs:
           SELECTED_PLATFORMS="${{ steps.platforms.outputs.selected_platforms }}"
           IFS=',' read -ra PLATFORM_ARRAY <<< "$SELECTED_PLATFORMS"
           
-          for package in pkg/*cre-build-*.tgz; do
+          for package in pkg/*cre-ts-*.tgz; do
             if [ -f "$package" ]; then
               BASENAME=$(basename "$package")
-              PLATFORM=$(echo "$BASENAME" | sed 's/.*cre-build-\(.*\)-[0-9].*/\1/')
+              PLATFORM=$(echo "$BASENAME" | sed 's/.*cre-ts-\(.*\)-[0-9].*/\1/')
               
               # Check if this platform was published
               for selected_platform in "${PLATFORM_ARRAY[@]}"; do
@@ -170,8 +244,8 @@ jobs:
           echo "### Platform-Specific Installation" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
           echo "# Install specific platform binary" >> $GITHUB_STEP_SUMMARY
-          echo "npm install @chainlink/cre-build-darwin-arm64  # for macOS ARM64" >> $GITHUB_STEP_SUMMARY
-          echo "npm install @chainlink/cre-build-linux-x64     # for Linux x64" >> $GITHUB_STEP_SUMMARY
+          echo "npm install @chainlink/cre-ts-darwin-arm64  # for macOS ARM64" >> $GITHUB_STEP_SUMMARY
+          echo "npm install @chainlink/cre-ts-linux-x64     # for Linux x64" >> $GITHUB_STEP_SUMMARY
           echo "# etc..." >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
 
@@ -197,11 +271,11 @@ jobs:
           IFS=',' read -ra PLATFORM_ARRAY <<< "$SELECTED_PLATFORMS"
           
           for platform in "${PLATFORM_ARRAY[@]}"; do
-            echo "Checking @chainlink/cre-build-$platform..."
-            if bun pm view "@chainlink/cre-build-$platform" version >/dev/null 2>&1; then
-              echo "✅ @chainlink/cre-build-$platform exists"
+            echo "Checking @chainlink/cre-ts-$platform..."
+            if bun pm view "@chainlink/cre-ts-$platform" version >/dev/null 2>&1; then
+              echo "✅ @chainlink/cre-ts-$platform exists"
             else
-              echo "❌ @chainlink/cre-build-$platform not found"
+              echo "❌ @chainlink/cre-ts-$platform not found"
               exit 1
             fi
           done
