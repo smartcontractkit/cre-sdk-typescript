@@ -13,7 +13,7 @@
     "format": "biome format --write ${BIOME_PATHS:-.}",
     "lint": "biome lint --write",
     "typecheck": "tsc",
-    "prepublishOnly": "bun run build"
+    "prepublishOnly": "bun typecheck && bun lint && bun run build"
   },
   "keywords": [],
   "author": "SmartContract Chainlink Limited SEZC",
