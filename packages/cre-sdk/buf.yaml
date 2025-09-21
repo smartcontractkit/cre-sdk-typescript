@@ -1,7 +1,7 @@
 version: v2
 
 modules:
-  - path: submodules/chainlink-protos/cre
+  - path: ../../submodules/chainlink-protos/cre
 
 lint:
   use:

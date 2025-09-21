@@ -77,7 +77,9 @@ const CHAIN_CONFIGS: ChainSelectorConfig[] = [
 ]
 
 const readYamlFile = (filename: string): string => {
-	const chainSelectorsPath = join(process.cwd(), 'node_modules', 'chain-selectors', filename)
+	// Look for chain-selectors in workspace root node_modules (turborepo setup)
+	const workspaceRoot = join(process.cwd(), '..', '..')
+	const chainSelectorsPath = join(workspaceRoot, 'node_modules', 'chain-selectors', filename)
 	try {
 		return readFileSync(chainSelectorsPath, 'utf-8')
 	} catch (error) {
