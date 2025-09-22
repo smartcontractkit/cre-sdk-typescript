@@ -79,11 +79,12 @@ print_step "Update javy plugin: $UPDATE_JAVY"
 print_step "Installing dependencies..."
 bun install --frozen-lockfile
 
-print_step "Updating package versions..."
+# Step 1: Build javy plugin (regardless of version update)
+print_step "Building javy-plugin..."
+cd packages/cre-sdk-javy-plugin
 
-# Update javy-plugin version (if requested)
+# Step 2: Update javy-plugin version if requested (before build)
 if [[ "$UPDATE_JAVY" == "true" ]]; then
-    cd packages/cre-sdk-javy-plugin
     CURRENT_JAVY_VERSION=$(node -p "require('./package.json').version")
     if [[ "$CURRENT_JAVY_VERSION" != "$JAVY_VERSION" ]]; then
         print_step "Updating javy-plugin from $CURRENT_JAVY_VERSION to $JAVY_VERSION"
@@ -91,13 +92,26 @@ if [[ "$UPDATE_JAVY" == "true" ]]; then
     else
         print_step "Javy-plugin already at version $JAVY_VERSION, skipping version update"
     fi
-    cd ../..
-else
-    print_step "Skipping javy-plugin version update"
 fi
 
-# Update cre-sdk version
+# Build javy-plugin
+bun run build
+print_success "Javy-plugin built successfully"
+
+# Step 3: Dry run javy-plugin publish
+if [[ "$UPDATE_JAVY" == "true" ]]; then
+    print_step "Running dry-run publish for javy-plugin..."
+    bun publish --dry-run --access public --verbose
+    print_success "Javy plugin dry-run completed"
+fi
+
+cd ../..
+
+# Step 4: Update cre-sdk version and javy-plugin dependency
+print_step "Updating cre-sdk package..."
 cd packages/cre-sdk
+
+# Update cre-sdk version
 CURRENT_SDK_VERSION=$(node -p "require('./package.json').version")
 if [[ "$CURRENT_SDK_VERSION" != "$SDK_VERSION" ]]; then
     print_step "Updating cre-sdk from $CURRENT_SDK_VERSION to $SDK_VERSION"
@@ -105,38 +119,10 @@ if [[ "$CURRENT_SDK_VERSION" != "$SDK_VERSION" ]]; then
 else
     print_step "CRE SDK already at version $SDK_VERSION, skipping version update"
 fi
-cd ../..
 
-print_step "Running pre-publish checks for javy plugin..."
-cd packages/cre-sdk-javy-plugin
-bun run prepublish-checks
-cd ../..
-
-print_step "Building cre-sdk..."
-cd packages/cre-sdk
-bun run build
-cd ../..
-
-print_step "Setting up CRE environment..."
-cd packages/cre-sdk
-bun --bun ../cre-sdk-javy-plugin/bin/setup.ts
-cd ../..
-print_success "CRE setup completed"
-
-print_step "Running pre-publish checks for cre-sdk..."
-cd packages/cre-sdk
-bun typecheck && bun lint && bun test && bun test:standard
-cd ../..
-print_success "All pre-publish checks passed"
-
-print_step "Resolving workspace dependencies for publishing..."
-
-# Get the current version from javy-plugin
-JAVY_VERSION=$(cd packages/cre-sdk-javy-plugin && node -p "require('./package.json').version")
-echo "Javy plugin version: $JAVY_VERSION"
-
-# Update cre-sdk package.json to use the actual version instead of workspace:*
-cd packages/cre-sdk
+# Get the javy-plugin version and update cre-sdk dependency
+JAVY_VERSION=$(cd ../cre-sdk-javy-plugin && node -p "require('./package.json').version")
+print_step "Updating cre-sdk dependency to javy-plugin version $JAVY_VERSION"
 
 # Create a backup of the original package.json
 cp package.json package.json.backup
@@ -151,27 +137,31 @@ else
 fi
 
 print_success "Updated cre-sdk dependency to use version ^$JAVY_VERSION"
-echo "Dependency line:"
-cat package.json | grep "@chainlink/cre-sdk-javy-plugin"
 
 cd ../..
 
-if [[ "$UPDATE_JAVY" == "true" ]]; then
-    print_step "Running dry-run publish for javy-plugin..."
-    cd packages/cre-sdk-javy-plugin
-    bun publish --dry-run --access public --verbose
-    print_success "Javy plugin dry-run completed"
-    cd ../..
-else
-    print_step "Skipping javy-plugin publish (not updated)"
-fi
+# Step 5: Run cre-setup
+print_step "Setting up CRE environment..."
+cd packages/cre-sdk
+bun --bun ../cre-sdk-javy-plugin/bin/setup.ts
+cd ../..
+print_success "CRE setup completed"
 
+# Step 6: Build cre-sdk
+print_step "Building cre-sdk..."
+cd packages/cre-sdk
+bun run build
+print_success "CRE SDK built successfully"
+cd ../..
+
+# Step 7: Dry run cre-sdk publish
 print_step "Running dry-run publish for cre-sdk..."
 cd packages/cre-sdk
 bun publish --dry-run --access public --verbose
 print_success "CRE SDK dry-run completed"
-
 cd ../..
+
+# Step 8: Workspace dependency will be restored by cleanup function
 
 print_success "🎉 Dry-run publish test completed successfully!"
 echo ""

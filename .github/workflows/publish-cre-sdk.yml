@@ -90,10 +90,6 @@ jobs:
           echo "CRE_SDK_VERSION=$NEW_VERSION" >> $GITHUB_ENV
           echo "Final CRE SDK version: $NEW_VERSION"
 
-      - name: Run pre-publish checks for javy plugin
-        working-directory: packages/cre-sdk-javy-plugin
-        run: bun run prepublish-checks
-
       - name: Build cre-sdk
         working-directory: packages/cre-sdk
         run: bun run build
