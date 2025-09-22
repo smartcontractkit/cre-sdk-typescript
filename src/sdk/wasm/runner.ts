@@ -8,6 +8,7 @@ import {
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { type ConfigHandlerParams, configHandler } from '@cre/sdk/utils/config'
 import type { SecretsProvider, Workflow } from '@cre/sdk/workflow'
+import { Value } from '../utils'
 import { hostBindings } from './host-bindings'
 import { Runtime } from './runtime'
 
@@ -50,10 +51,11 @@ export class Runner<TConfig> {
 		) => Promise<Workflow<TConfig>> | Workflow<TConfig>,
 	) {
 		const runtime = new Runtime(this.config, 0, this.request.maxResponseSize)
-		const workflow = await initFn(this.config, { getSecret: runtime.getSecret.bind(runtime) })
 
 		var result: Promise<ExecutionResult> | ExecutionResult
 		try {
+			const workflow = await initFn(this.config, { getSecret: runtime.getSecret.bind(runtime) })
+
 			switch (this.request.request.case) {
 				case 'subscribe':
 					result = this.handleSubscribePhase(this.request, workflow)
@@ -97,8 +99,14 @@ export class Runner<TConfig> {
 			const decoded = fromBinary(schema, payloadAny.value)
 			const adapted = await entry.trigger.adapt(decoded)
 
-			const result = await entry.fn(runtime, adapted)
-			return create(ExecutionResultSchema, { result: { case: 'value', value: result.proto() } })
+			try {
+				const result = await entry.fn(runtime, adapted)
+				const wrapped = Value.wrap(result)
+				return create(ExecutionResultSchema, { result: { case: 'value', value: wrapped.proto() } })
+			} catch (e) {
+				const err = e instanceof Error ? e.message : String(e)
+				return create(ExecutionResultSchema, { result: { case: 'error', value: err } })
+			}
 		}
 
 		return create(ExecutionResultSchema, {

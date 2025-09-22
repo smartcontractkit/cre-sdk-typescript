@@ -16,11 +16,14 @@ import {
 	SecretResponseSchema,
 	SecretResponsesSchema,
 	SecretSchema,
+	type Trigger,
 	TriggerSchema,
 	type TriggerSubscriptionRequest,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import type { Value as ProtoValue } from '@cre/generated/values/v1/values_pb'
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
 import { cre } from '@cre/sdk/cre'
+import { Value } from '../utils'
 import type { SecretsProvider } from '../workflow'
 import { Runner } from './runner'
 
@@ -136,10 +139,111 @@ describe('runner', () => {
 			expect(actualConfig.name).toBe('foo')
 			expect(actualConfig.number).toBe(10)
 		})
+
+		test('executes workflow', async () => {
+			var sentResponse: ExecutionResult | null = null
+			mockHostBindings.sendResponse = mock((input) => {
+				sentResponse = fromBinary(ExecutionResultSchema, input)
+				return 0
+			})
+			const runner = await getTestRunner(anyExecuteRequest)
+			await runner.run(async (_: string, secretsProvider: SecretsProvider) => {
+				return [
+					cre.handler(basicTrigger.trigger({ name: 'foo', number: 10 }), (runtime, trigger) => {
+						expect(runtime.config).toBe(anyConfig.toString())
+						expect(trigger.coolOutput).toBe('hi')
+						return 10
+					}),
+				]
+			})
+			expect(sentResponse).toBeDefined()
+			expect(sentResponse!.result.case).toBe('value')
+			expect(
+				Value.wrap(sentResponse!.result.value as ProtoValue).unwrapToType({ instance: 10 }),
+			).toBe(10)
+		})
 	})
 
-	test('should create workflows', async () => {
-		assertEnv(await getTestRunner(subscribeRequest))
+	test('executes subscribe error', async () => {
+		var sentResponse: ExecutionResult | null = null
+		const anyError = 'error'
+		mockHostBindings.sendResponse = mock((input) => {
+			sentResponse = fromBinary(ExecutionResultSchema, input)
+			expect(sentResponse!.result.case).toBe('error')
+			expect(sentResponse!.result.value).toBe(anyError)
+			return 0
+		})
+		const runner = await getTestRunner(subscribeRequest)
+		await runner.run((_: string, secretsProvider: SecretsProvider) => {
+			throw new Error(anyError)
+		})
+	})
+
+	test('executes subscribe resolve error', async () => {
+		var sentResponse: ExecutionResult | null = null
+		const anyError = 'error'
+		mockHostBindings.sendResponse = mock((input) => {
+			sentResponse = fromBinary(ExecutionResultSchema, input)
+			expect(sentResponse!.result.case).toBe('error')
+			expect(sentResponse!.result.value).toBe(anyError)
+			return 0
+		})
+		const runner = await getTestRunner(subscribeRequest)
+		await runner.run(async (_: string, secretsProvider: SecretsProvider) => {
+			return Promise.reject(new Error(anyError))
+		})
+	})
+
+	test('executes trigger error', async () => {
+		var sentResponse: ExecutionResult | null = null
+		const anyError = 'error'
+		mockHostBindings.sendResponse = mock((input) => {
+			sentResponse = fromBinary(ExecutionResultSchema, input)
+			expect(sentResponse!.result.case).toBe('error')
+			expect(sentResponse!.result.value).toBe(anyError)
+			return 0
+		})
+		const runner = await getTestRunner(anyExecuteRequest)
+		await runner.run(async (_: string, secretsProvider: SecretsProvider) => {
+			throw new Error(anyError)
+		})
+	})
+
+	test('executes workflow with multiple triggers', async () => {
+		var sentResponse: ExecutionResult | null = null
+		mockHostBindings.sendResponse = mock((input) => {
+			sentResponse = fromBinary(ExecutionResultSchema, input)
+			return 0
+		})
+		const testRequest = structuredClone(anyExecuteRequest)
+		const trigger = testRequest.request.value as Trigger
+		trigger.id = 1n
+
+		const runner = await getTestRunner(testRequest)
+		await runner.run(async (_: string, secretsProvider: SecretsProvider) => {
+			return [
+				cre.handler(basicTrigger.trigger({ name: 'foo', number: 10 }), (runtime, trigger) => {
+					expect(runtime.config).toBe(anyConfig.toString())
+					expect(trigger.coolOutput).toBe('hi')
+					return 10
+				}),
+				cre.handler(basicTrigger.trigger({ name: 'bar', number: 20 }), (runtime, trigger) => {
+					expect(runtime.config).toBe(anyConfig.toString())
+					expect(trigger.coolOutput).toBe('hi')
+					return 20
+				}),
+				cre.handler(basicTrigger.trigger({ name: 'baz', number: 30 }), (runtime, trigger) => {
+					expect(runtime.config).toBe(anyConfig.toString())
+					expect(trigger.coolOutput).toBe('hi')
+					return 30
+				}),
+			]
+		})
+		expect(sentResponse).toBeDefined()
+		expect(sentResponse!.result.case).toBe('value')
+		expect(
+			Value.wrap(sentResponse!.result.value as ProtoValue).unwrapToType({ instance: 10 }),
+		).toBe(20)
 	})
 
 	test('get secrets passes max response size', async () => {
@@ -219,93 +323,3 @@ function getTestRunner(request: ExecuteRequest): Promise<Runner<string>> {
 		},
 	})
 }
-
-/*
-
-
-func TestRunner_Run(t *testing.T) {
-	
-
-	t.Run("makes callback with correct runner", func(t *testing.T) {
-		testutils.SetupExpectedCalls(t)
-		dr := getTestRunner(t, anyExecuteRequest)
-		testutils.RunTestWorkflow(dr)
-
-		actual := &sdk.ExecutionResult{}
-		sentResponse := dr.(runnerWrapper[string]).baseRunner.(*runner[string, cre.Runtime]).runnerInternals.(*runnerInternalsTestHook).sentResponse
-		require.NoError(t, proto.Unmarshal(sentResponse, actual))
-
-		switch result := actual.Result.(type) {
-		case *sdk.ExecutionResult_Value:
-			v, err := values.FromProto(result.Value)
-			require.NoError(t, err)
-			returnedValue, err := v.Unwrap()
-			require.NoError(t, err)
-			assert.Equal(t, testutils.TestWorkflowExpectedResult(), returnedValue)
-		default:
-			assert.Fail(t, "unexpected result type", result)
-		}
-	})
-
-	t.Run("makes callback with correct runner and multiple handlers", func(t *testing.T) {
-		secondTriggerReq := &sdk.ExecuteRequest{
-			Config:          anyConfig,
-			MaxResponseSize: anyMaxResponseSize,
-			Request: &sdk.ExecuteRequest_Trigger{
-				Trigger: &sdk.Trigger{
-					Id:      uint64(triggerIndex + 1),
-					Payload: mustAny(testutils.TestWorkflowTrigger()),
-				},
-			},
-		}
-		testutils.SetupExpectedCalls(t)
-		dr := getTestRunner(t, secondTriggerReq)
-		testutils.RunIdenticalTriggersWorkflow(dr)
-
-		actual := &sdk.ExecutionResult{}
-		sentResponse := dr.(runnerWrapper[string]).baseRunner.(*runner[string, cre.Runtime]).runnerInternals.(*runnerInternalsTestHook).sentResponse
-		require.NoError(t, proto.Unmarshal(sentResponse, actual))
-
-		switch result := actual.Result.(type) {
-		case *sdk.ExecutionResult_Value:
-			v, err := values.FromProto(result.Value)
-			require.NoError(t, err)
-			returnedValue, err := v.Unwrap()
-			require.NoError(t, err)
-			assert.Equal(t, testutils.TestWorkflowExpectedResult()+"true", returnedValue)
-		default:
-			assert.Fail(t, "unexpected result type", result)
-		}
-	})
-}
-
-
-func testRunnerInternals(tb testing.TB, request *sdk.ExecuteRequest) *runnerInternalsTestHook {
-	serialzied, err := proto.Marshal(request)
-	require.NoError(tb, err)
-	encoded := base64.StdEncoding.EncodeToString(serialzied)
-
-	return &runnerInternalsTestHook{
-		testTb:    tb,
-		arguments: []string{"wasm", encoded},
-	}
-}
-
-func testRuntimeInternals(tb testing.TB) *runtimeInternalsTestHook {
-	return &runtimeInternalsTestHook{
-		testTb:                  tb,
-		outstandingCalls:        map[int32]cre.Promise[*sdk.CapabilityResponse]{},
-		outstandingSecretsCalls: map[int32]cre.Promise[[]*sdk.SecretResponse]{},
-		secrets:                 map[string]*sdk.Secret{},
-	}
-}
-
-func mustAny(msg proto.Message) *anypb.Any {
-	a, err := anypb.New(msg)
-	if err != nil {
-		panic(err)
-	}
-	return a
-}
-
-*/
