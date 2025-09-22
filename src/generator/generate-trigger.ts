@@ -7,6 +7,7 @@ import type { DescMethod } from '@bufbuild/protobuf'
  * @param methodName - The camelCase method name
  * @param capabilityId - The capability ID
  * @param className - The capability class name
+ * @param hasChainSelector - Whether this capability supports chainSelector routing
  * @returns The generated trigger method code
  */
 export function generateTriggerMethod(
@@ -14,12 +15,23 @@ export function generateTriggerMethod(
 	methodName: string,
 	capabilityClassName: string,
 	className: string,
+  hasChainSelector: boolean,
 ): string {
 	const triggerClassName = `${className}${method.name}`
+  const capabilityIdLogic = hasChainSelector
+		? `
+    // Include chainSelector in capability ID for routing when specified
+    const capabilityId = this.chainSelector
+      ? \`\${${capabilityClassName}.CAPABILITY_NAME}:ChainSelector:\${this.chainSelector}@\${${capabilityClassName}.CAPABILITY_VERSION}\`
+      : ${capabilityClassName}.CAPABILITY_ID;`
+		: `
+    const capabilityId = ${capabilityClassName}.CAPABILITY_ID;`
+  
 
 	return `
   ${methodName}(config: ${method.input.name}Json): ${triggerClassName} {
-    return new ${triggerClassName}(this.mode, config, ${capabilityClassName}.CAPABILITY_ID, "${method.name}");
+    ${capabilityIdLogic}
+    return new ${triggerClassName}(this.mode, config, capabilityId, "${method.name}");
   }`
 }
 

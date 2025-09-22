@@ -36,7 +36,8 @@ export class CronCapability {
 	constructor(private readonly mode: Mode = CronCapability.DEFAULT_MODE) {}
 
 	trigger(config: ConfigJson): CronTrigger {
-		return new CronTrigger(this.mode, config, CronCapability.CAPABILITY_ID, 'Trigger')
+		const capabilityId = CronCapability.CAPABILITY_ID
+		return new CronTrigger(this.mode, config, capabilityId, 'Trigger')
 	}
 }
 
