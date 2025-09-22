@@ -1,9 +1,9 @@
 import { cre, type NodeRuntime, type Runtime } from '@cre/sdk/cre'
+import { consensusMedianAggregation, Value } from '@cre/sdk/utils'
 import { withErrorBoundary } from '@cre/sdk/utils/error-boundary'
 import { bytesToHex, hexToBase64 } from '@cre/sdk/utils/hex-utils'
-import { sendResponseValue } from '@cre/sdk/utils/send-response-value'
+import { sendResponseValue } from '@cre/sdk/wasm/send-response-value'
 import { decodeFunctionResult, encodeFunctionData, toHex, zeroAddress } from 'viem'
-import { Value, consensusMedianAggregation } from '@cre/sdk/utils'
 import { z } from 'zod'
 
 // TODO: In production, load ABI from external file or contract metadata

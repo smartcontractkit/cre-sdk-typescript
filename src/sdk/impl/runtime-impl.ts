@@ -14,15 +14,12 @@ import {
 	Mode,
 	type Secret,
 	type SecretRequest,
+	type SecretRequestJson,
+	SecretRequestSchema,
 	SimpleConsensusInputsSchema,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { ConsensusCapability } from '@cre/generated-sdk/capabilities/internal/consensus/v1alpha/consensus_sdk_gen'
-import type {
-	BaseRuntime,
-	CallCapabilityParams,
-	NodeRuntime,
-	Runtime,
-} from '@cre/sdk/runtime/runtime'
+import type { BaseRuntime, CallCapabilityParams, NodeRuntime, Runtime } from '@cre/sdk/runtime'
 import {
 	type ConsensusAggregation,
 	type CreSerializable,
@@ -42,7 +39,7 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 		public config: C,
 		public nextCallId: number,
 		protected helpers: RuntimeHelpers,
-		protected maxResponseSize: number,
+		protected maxResponseSize: bigint,
 		private mode: Mode,
 	) {}
 
@@ -105,7 +102,11 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 				case 'payload':
 					return anyUnpack(response.value as Any, outputSchema) as O
 				case 'error':
-					throw new CapabilityError(`Error ${response.value}`, { capabilityId, method, callbackId })
+					throw new CapabilityError(`Error ${response.value}`, {
+						capabilityId,
+						method,
+						callbackId,
+					})
 				default:
 					throw new CapabilityError(`Error cannot unwrap ${response.case}`, {
 						capabilityId,
@@ -128,7 +129,8 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 
 export class NodeRuntimeImpl<C> extends BaseRuntimeImpl<C> implements NodeRuntime<C> {
 	_isNodeRuntime: true = true
-	constructor(config: C, nextCallId: number, helpers: RuntimeHelpers, maxResponseSize: number) {
+	constructor(config: C, nextCallId: number, helpers: RuntimeHelpers, maxResponseSize: bigint) {
+		helpers.switchModes(Mode.NODE)
 		super(config, nextCallId, helpers, maxResponseSize, Mode.NODE)
 	}
 }
@@ -136,7 +138,8 @@ export class NodeRuntimeImpl<C> extends BaseRuntimeImpl<C> implements NodeRuntim
 export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 	private nextNodeCallId: number = -1
 
-	constructor(config: C, nextCallId: number, helpers: RuntimeHelpers, maxResponseSize: number) {
+	constructor(config: C, nextCallId: number, helpers: RuntimeHelpers, maxResponseSize: bigint) {
+		helpers.switchModes(Mode.DON)
 		super(config, nextCallId, helpers, maxResponseSize, Mode.DON)
 	}
 
@@ -153,7 +156,6 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 				this.helpers,
 				this.maxResponseSize,
 			)
-			this.helpers.switchModes(Mode.NODE)
 
 			const consensusInput = create(SimpleConsensusInputsSchema, {
 				descriptors: consesusAggretation.descriptor,
@@ -192,7 +194,14 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 		}
 	}
 
-	getSecret(request: SecretRequest): Promise<Secret> {
+	getSecret(request: SecretRequest | SecretRequestJson): Promise<Secret> {
+		if (this.modeError) {
+			return Promise.reject(this.modeError)
+		}
+
+		const secretRequest = (request as any).$typeName
+			? create(SecretRequestSchema, request)
+			: (request as SecretRequest)
 		const id = this.nextCallId
 		this.nextCallId++
 		const secretsReq = create(GetSecretsRequestSchema, {
@@ -200,7 +209,9 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 			requests: [request],
 		})
 		if (!this.helpers.getSecrets(secretsReq, this.maxResponseSize)) {
-			return Promise.reject(new SecretsError(request, 'host is not making the secrets request'))
+			return Promise.reject(
+				new SecretsError(secretRequest, 'host is not making the secrets request'),
+			)
 		}
 
 		return new LazyPromise(async () => {
@@ -209,12 +220,12 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 			const secretsResponse = awaitResponse.responses[id]
 
 			if (!secretsResponse) {
-				throw new SecretsError(request, 'no response')
+				throw new SecretsError(secretRequest, 'no response')
 			}
 
 			const responses = secretsResponse.responses
 			if (responses.length != 1) {
-				throw new SecretsError(request, 'invalid value returned from host')
+				throw new SecretsError(secretRequest, 'invalid value returned from host')
 			}
 
 			const response = responses[0].response
@@ -222,9 +233,9 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 				case 'secret':
 					return response.value
 				case 'error':
-					throw new SecretsError(request, response.value.error)
+					throw new SecretsError(secretRequest, response.value.error)
 				default:
-					throw new SecretsError(request, 'cannot unmashal returned value from host')
+					throw new SecretsError(secretRequest, 'cannot unmashal returned value from host')
 			}
 		})
 	}
@@ -232,10 +243,10 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 
 export interface RuntimeHelpers {
 	call(request: CapabilityRequest): boolean
-	await(request: AwaitCapabilitiesRequest, maxResponseSize: number): AwaitCapabilitiesResponse
+	await(request: AwaitCapabilitiesRequest, maxResponseSize: bigint): AwaitCapabilitiesResponse
 
-	getSecrets(request: GetSecretsRequest, maxResponseSize: number): boolean
-	awaitSecrets(request: AwaitSecretsRequest, maxResponseSize: number): AwaitSecretsResponse
+	getSecrets(request: GetSecretsRequest, maxResponseSize: bigint): boolean
+	awaitSecrets(request: AwaitSecretsRequest, maxResponseSize: bigint): AwaitSecretsResponse
 
 	switchModes(mode: Mode): void
 

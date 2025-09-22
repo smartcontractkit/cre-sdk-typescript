@@ -1,8 +1,8 @@
-import { consensusIdenticalAggregation } from '@cre/sdk/utils'
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
 import { BasicActionCapability as NodeActionCapability } from '@cre/generated-sdk/capabilities/internal/nodeaction/v1/basicaction_sdk_gen'
 import { cre, type NodeRuntime } from '@cre/sdk/cre'
-import { NodeModeError } from '@cre/sdk/runtime/errors'
+import { NodeModeError } from '@cre/sdk/errors'
+import { consensusIdenticalAggregation } from '@cre/sdk/utils'
 
 const handler = async () => {
 	// First, run in node mode and do consensus - this makes the expected CallCapability call

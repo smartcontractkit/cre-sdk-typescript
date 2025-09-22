@@ -1,9 +1,9 @@
-import { z } from 'zod'
 import { cre } from '@cre/sdk/cre'
-import { withErrorBoundary } from '@cre/sdk/utils/error-boundary'
-import { Value, consensusMedianAggregation } from '@cre/sdk/utils'
-import type { NodeRuntime } from '@cre/sdk/runtime/runtime'
+import type { NodeRuntime } from '@cre/sdk/runtime'
 import { runInNodeMode } from '@cre/sdk/runtime/run-in-node-mode'
+import { Value, consensusMedianAggregation } from '@cre/sdk/utils'
+import { withErrorBoundary } from '@cre/sdk/utils/error-boundary'
+import { z } from 'zod'
 
 const configSchema = z.object({
 	schedule: z.string(),

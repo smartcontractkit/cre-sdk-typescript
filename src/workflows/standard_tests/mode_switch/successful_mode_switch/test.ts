@@ -1,9 +1,9 @@
 import { BasicActionCapability } from '@cre/generated-sdk/capabilities/internal/basicaction/v1/basicaction_sdk_gen'
-import { BasicActionCapability as NodeActionCapability } from '@cre/generated-sdk/capabilities/internal/nodeaction/v1/basicaction_sdk_gen'
-import type { NodeRuntime } from '@cre/sdk/runtime/runtime'
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
+import { BasicActionCapability as NodeActionCapability } from '@cre/generated-sdk/capabilities/internal/nodeaction/v1/basicaction_sdk_gen'
 import { cre, type Runtime } from '@cre/sdk/cre'
-import { Int64, Value, ConsensusAggregationByFields, median } from '@cre/sdk/utils'
+import type { NodeRuntime } from '@cre/sdk/runtime'
+import { ConsensusAggregationByFields, Int64, median, Value } from '@cre/sdk/utils'
 
 // Doesn't matter for this test
 type Config = unknown

@@ -1,36 +1,10 @@
-import type { StandardSchemaV1 } from '@standard-schema/spec'
 import type { ExecuteRequest } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import { getRequest } from '../get-request'
+import type { StandardSchemaV1 } from '@standard-schema/spec'
 
-export const getConfigFromExecuteRequest = (executeRequest: ExecuteRequest) => {
-	const config = executeRequest.config
-	const configString = Buffer.from(config).toString()
-
-	try {
-		return JSON.parse(configString)
-	} catch (e) {
-		if (typeof configString === 'string') {
-			return configString
-		}
-
-		if (e instanceof Error) {
-			console.error(e.message)
-			console.error(e.stack)
-		}
-
-		throw e
-	}
-}
-
-export const getConfig = () => {
-	const executeRequest: ExecuteRequest = getRequest()
-	return getConfigFromExecuteRequest(executeRequest)
-}
-
-const standardValidate = async <T extends StandardSchemaV1>(
-	schema: T,
-	input: StandardSchemaV1.InferInput<T>,
-): Promise<StandardSchemaV1.InferOutput<T>> => {
+async function standardValidate<TIntermediateConfig, TConfig>(
+	schema: StandardSchemaV1<TIntermediateConfig, TConfig>,
+	input: TIntermediateConfig,
+): Promise<TConfig> {
 	let result = schema['~standard'].validate(input)
 	if (result instanceof Promise) result = await result
 
@@ -45,24 +19,31 @@ const standardValidate = async <T extends StandardSchemaV1>(
 	return result.value
 }
 
-export type ConfigHandlerParams = {
-	configParser?: (config: unknown) => unknown
-	configSchema?: StandardSchemaV1
-}
-export const configHandler = async <TConfig>({
-	configParser,
-	configSchema,
-}: ConfigHandlerParams = {}): Promise<TConfig> => {
-	const config = getConfig()
-	let parsedConfig = config
+export type ConfigHandlerParams<
+	TConfig,
+	TIntermediateConfig = TConfig,
+> = (TIntermediateConfig extends Uint8Array
+	? {
+			configParser?: (config: Uint8Array) => TIntermediateConfig
+		}
+	: {
+			configParser: (config: Uint8Array) => TIntermediateConfig
+		}) &
+	(TIntermediateConfig extends TConfig
+		? {
+				configSchema?: StandardSchemaV1<TIntermediateConfig, TConfig>
+			}
+		: {
+				configSchema: StandardSchemaV1<TIntermediateConfig, TConfig>
+			})
 
-	if (configParser) {
-		parsedConfig = configParser(config)
-	}
-
-	if (configSchema) {
-		parsedConfig = await standardValidate(configSchema, parsedConfig)
-	}
-
-	return parsedConfig
+export const configHandler = async <TConfig, TIntermediateConfig = TConfig>(
+	{ configParser, configSchema }: ConfigHandlerParams<TConfig, TIntermediateConfig>,
+	request: ExecuteRequest,
+): Promise<TConfig> => {
+	const config = request.config
+	const intermediateConfig = configParser ? configParser(config) : (config as TIntermediateConfig)
+	return configSchema
+		? standardValidate(configSchema, intermediateConfig)
+		: (intermediateConfig as unknown as TConfig)
 }

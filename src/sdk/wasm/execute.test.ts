@@ -1,20 +1,19 @@
-import { describe, test, expect, mock } from 'bun:test'
-import { handler } from '@cre/sdk/workflow'
-import { create, toBinary, fromBinary } from '@bufbuild/protobuf'
-import {
-	ExecuteRequestSchema,
-	type ExecuteRequest,
-	ExecutionResultSchema,
-} from '@cre/generated/sdk/v1alpha/sdk_pb'
+import { describe, expect, mock, test } from 'bun:test'
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf'
 import { EmptySchema } from '@bufbuild/protobuf/wkt'
-import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
-import { BasicCapability as ActionAndTriggerCapability } from '@cre/generated-sdk/capabilities/internal/actionandtrigger/v1/basic_sdk_gen'
 import { TriggerEventSchema as ActionTriggerEventSchema } from '@cre/generated/capabilities/internal/actionandtrigger/v1/action_and_trigger_pb'
 import { OutputsSchema as BasicTriggerOutputsSchema } from '@cre/generated/capabilities/internal/basictrigger/v1/basic_trigger_pb'
-import { getTypeUrl } from '@cre/sdk/utils/typeurl'
-import { mockHostBindings } from '@cre/sdk/testhelpers/mock-host-bindings'
+import {
+	type ExecuteRequest,
+	ExecuteRequestSchema,
+	ExecutionResultSchema,
+} from '@cre/generated/sdk/v1alpha/sdk_pb'
+import { BasicCapability as ActionAndTriggerCapability } from '@cre/generated-sdk/capabilities/internal/actionandtrigger/v1/basic_sdk_gen'
+import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
+import { handleExecuteRequest } from '@cre/sdk/impl/execute'
 import { mockedRuntime } from '@cre/sdk/testhelpers/mock-runtime'
-import { handleExecuteRequest } from '@cre/sdk/engine/execute'
+import { getTypeUrl } from '@cre/sdk/utils/typeurl'
+import { handler } from '@cre/sdk/workflow'
 
 const emptyConfig = {}
 
@@ -36,9 +35,9 @@ describe('engine/execute', () => {
 		const basic = new BasicTriggerCapability()
 		const action = new ActionAndTriggerCapability()
 		const workflow = [
-			handler(basic.trigger({ name: 'first-trigger', number: 100 }), () => {}),
-			handler(action.trigger({ name: 'second-trigger', number: 150 }), () => {}),
-			handler(basic.trigger({ name: 'third-trigger', number: 200 }), () => {}),
+			handler(basic.trigger({ name: 'first-trigger', number: 100 }), () => 100),
+			handler(action.trigger({ name: 'second-trigger', number: 150 }), () => 123n),
+			handler(basic.trigger({ name: 'third-trigger', number: 200 }), () => 'hello'),
 		]
 
 		const req: ExecuteRequest = create(ExecuteRequestSchema, {
@@ -58,28 +57,15 @@ describe('engine/execute', () => {
 		expect(subs[2]).toContain(
 			'basic-test-trigger@1.0.0:Trigger:type.googleapis.com/capabilities.internal.basictrigger.v1.Config',
 		)
-
-		mockHostBindings.sendResponse.mockRestore()
 	})
 
 	test('trigger routes by id and decodes payload for correct handler', async () => {
-		const calls: string[] = []
-
 		const basic = new BasicTriggerCapability()
 		const action = new ActionAndTriggerCapability()
 		const workflow = [
-			handler(basic.trigger({ name: 'first-trigger', number: 100 }), (_e, _r, out) => {
-				// @ts-ignore
-				calls.push(`basic:${out.coolOutput}`)
-			}),
-			handler(action.trigger({ name: 'second-trigger', number: 150 }), (_e, _r, out) => {
-				// @ts-ignore
-				calls.push(`action:${out.coolOutput}`)
-			}),
-			handler(basic.trigger({ name: 'third-trigger', number: 200 }), (_e, _r, out) => {
-				// @ts-ignore
-				calls.push(`basic2:${out.coolOutput}`)
-			}),
+			handler(basic.trigger({ name: 'first-trigger', number: 100 }), (_e, _r) => 0),
+			handler(action.trigger({ name: 'second-trigger', number: 150 }), (_e, _r) => 1),
+			handler(basic.trigger({ name: 'third-trigger', number: 200 }), (_e, _r) => 2),
 		]
 
 		// Build ExecuteRequest with id=1 (second handler) and payload of Action TriggerEvent
@@ -99,22 +85,17 @@ describe('engine/execute', () => {
 			maxResponseSize: 0n,
 		})
 
-		await handleExecuteRequest(req, workflow, emptyConfig, mockedRuntime)
+		const result = await handleExecuteRequest(req, workflow, emptyConfig, mockedRuntime)
 
-		expect(calls).toEqual(['action:different'])
+		expect(result).toEqual(1)
 	})
 
 	test('trigger ignores out-of-range id (no handler invoked)', async () => {
-		const calls: string[] = []
 		const basic = new BasicTriggerCapability()
 		const action = new ActionAndTriggerCapability()
 		const workflow = [
-			handler(basic.trigger({ name: 'first-trigger', number: 100 }), () => {
-				calls.push('basic')
-			}),
-			handler(action.trigger({ name: 'second-trigger', number: 150 }), () => {
-				calls.push('action')
-			}),
+			handler(basic.trigger({ name: 'first-trigger', number: 100 }), () => 0),
+			handler(action.trigger({ name: 'second-trigger', number: 150 }), () => 1),
 		]
 
 		const payloadAny = {
@@ -130,21 +111,17 @@ describe('engine/execute', () => {
 			maxResponseSize: 0n,
 		})
 
-		await handleExecuteRequest(req, workflow, emptyConfig, mockedRuntime)
-		expect(calls).toEqual([])
+		const result = await handleExecuteRequest(req, workflow, emptyConfig, mockedRuntime)
+		expect(result).toBeUndefined()
 	})
 
-	test('trigger ignores typeUrl mismatch for targeted handler', async () => {
+	test('trigger throws on typeUrl mismatch for targeted handler', async () => {
 		const calls: string[] = []
 		const basic = new BasicTriggerCapability()
 		const action = new ActionAndTriggerCapability()
 		const workflow = [
-			handler(basic.trigger({ name: 'first-trigger', number: 100 }), () => {
-				calls.push('basic')
-			}),
-			handler(action.trigger({ name: 'second-trigger', number: 150 }), () => {
-				calls.push('action')
-			}),
+			handler(basic.trigger({ name: 'first-trigger', number: 100 }), () => 1),
+			handler(action.trigger({ name: 'second-trigger', number: 150 }), () => 2),
 		]
 
 		// Intentionally send BasicTriggerOutputs payload to the action trigger handler (index 1)
@@ -161,7 +138,8 @@ describe('engine/execute', () => {
 			maxResponseSize: 0n,
 		})
 
-		await handleExecuteRequest(req, workflow, emptyConfig, mockedRuntime)
-		expect(calls).toEqual([])
+		expect(
+			async () => await handleExecuteRequest(req, workflow, emptyConfig, mockedRuntime),
+		).toThrow()
 	})
 })
