@@ -421,7 +421,7 @@ withErrorBoundary(main);
 To build the SDK locally:
 
 ```bash
-# Install dependencies
+# Install dependencies (from monorepo root)
 bun install
 
 # Generate protocol buffers and SDK types
