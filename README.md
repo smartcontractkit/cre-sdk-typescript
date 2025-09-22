@@ -1,410 +1,149 @@
-# cre-sdk-typescript
+# Chainlink CRE SDK for TypeScript
 
-# cre-ts-sdk
+Build decentralized workflows that combine off-chain computation with on-chain execution using the Chainlink Runtime Environment (CRE) SDK.
 
-## Submodules
+## What is CRE?
 
-This project uses Git submodules to include external dependencies. After cloning the repository, you need to initialize and update the submodules:
+The Chainlink Runtime Environment enables developers to create workflows that:
 
-### Initial Setup
+- **Fetch data** from external APIs with built-in consensus
+- **Interact with blockchains** across multiple networks
+- **Coordinate complex operations** with triggers and scheduling
+- **Aggregate results** from multiple data sources reliably
 
-```zsh
-# Clone with submodules
-git clone --recursive https://github.com/smartcontractkit/cre-sdk-typescript
+Perfect for building price feeds, automated trading strategies, cross-chain applications, and any workflow requiring reliable off-chain computation with on-chain execution.
 
-# Or if already cloned without submodules
-git submodule update --init --recursive
-```
+## Package Structure
 
-### Updating Submodules
+This monorepo contains:
 
-When there are changes in the submodule repositories:
+- **[@chainlink/cre-sdk](./packages/cre-sdk)** - Main SDK for building CRE workflows
+- **[@chainlink/cre-sdk-examples](./packages/cre-sdk-examples)** - Example workflows and patterns
+- **[@chainlink/cre-sdk-javy-plugin](./packages/cre-sdk-javy-plugin)** - WebAssembly compilation tools
 
-```zsh
-# Update all submodules to their latest commits
-git submodule update --remote
+## Examples
 
-# Or update a specific submodule
-git submodule update --remote submodules/chainlink-protos
-```
-
-### Working with Submodules
-
-```zsh
-# Check submodule status
-git submodule status
-
-# Enter a submodule directory and switch branches
-cd submodules/chainlink-protos
-git checkout main
-git pull origin main
-cd ../..
-```
-
-If you need to make changes to the submodule, it's recommended to contribute to the original repository, following all the contribution guidelines, and then once the changes are merged, update the submodule to the latest version.
-
-Currently sdk uses submodules:
-
-- chainlink-protos - for protobuf definitions
-
-## Setup
-
-This repo is using [Bun](https://bun.sh/) as the package manager and TS engine.
-Use [asdf](https://asdf-vm.com/) to install the correct version, supported by the project.
-
-```bash
-asdf install
-```
-
-To install dependencies:
-
-```zsh
-bun i
-```
-
-To build everything you need in one shot:
-
-```zsh
-bun build:all
-```
-
-If this fails you may need to check your output and potentially run `"rustup target add wasm32-wasip1`.
-
-To build just the Chainlink SDK Javy plugin:
-
-```zsh
-bun build:javy:plugin
-```
-
-To compile Javy WASM that includes the Chainlink SDK plugin:
-
-```zsh
-bun build:javy:sdk:wasm
-```
-
-To transpile TS workflow to JS:
-
-```zsh
-bun build:workflows:js
-```
-
-To compile JS workflows to WASM:
-
-```zsh
-bun build:workflows:wasm
-```
-
-## Javy
-
-[Javy](https://github.com/bytecodealliance/javy) is a main tool that drives our TS -> Wasm compilation.
-
-When installing it on a Mac, you might run into an error, caused by Apple's security policy. This repo contains a pre-compiled version of Javy for ARM architecture,
-which is safe to run. However if you still run into issues, remove the quarantine attribute from the file:
-
-```zsh
-xattr -d com.apple.quarantine ./bin/javy-arm-macos-v5.0.4
-```
-
-Then make sure the file has execute permissions:
-
-```zsh
-chmod +x ./bin/javy-arm-macos-v5.0.4
-```
-
-Finally, verify if everything is working:
-
-```zsh
-./bin/javy-arm-macos-v5.0.4 --version
-```
-
-If you see the version number, you're good to go.
-For your convenience, there's a bun script that simply exposes `bun javy` to the CLI:
-
-```zsh
-bun javy --version
-```
-
-### Javy Chainlink SDK
-
-Javy Chainlink SDK is a plugin that exposes host functions to the guest.
-
-To build the plugin, run:
-
-```zsh
-bun build:javy:plugin
-```
-
-or manually:
-
-```zsh
-cd plugins/javy_chainlink_sdk
-cargo build --target wasm32-wasip1 --release
-```
-
-The plugin is later used to compile the Guest workflows.
-**Important**: There are two options of how the plugin can be used: `dynamic` and `static`.
-Currently we're using the static approach, but support for dynamic (looking for plugin at runtime) would be explored.
-
-### Linux
-
-Similar to the macOS instructions, for Linux you'll need:
-
-```zsh
-chmod +x ./bin/javy-arm-linux-v5.0.4
-```
-
-Verify the binary:
-
-```zsh
-./bin/javy-arm-linux-v5.0.4 --version
-```
-
-Convenience script:
-
-```zsh
-bun javy:linux --version
-```
-
-## Biome
-
-[Biome](https://github.com/biomejs/biome) is our default formatter and linter.
-
-To run the checks and auto-fix everything that can be auto-fixed:
-
-```zsh
-bun biome:check
-```
-
-To run just the formatter:
-
-```zsh
-bun biome:format
-```
-
-To run just the linter:
-
-```zsh
-bun biome:lint
-```
-
-## Compile to Wasm
-
-Write your workflow and build it. Build process will generate output in `/dist`.
-
-```zsh
-bun build:all
-```
-
-This will compile the workflows to Wasm and output the files to the `dist/workflows` directory.
-Build is also compiling SDK files from TS to JS and outputting them to the `dist` directory, maintaining the same structure.
-
-### Build Output Structure
-
-After running `bun build:all`, the following structure will be created:
-
-```
-dist/
-├── workflows/          # Compiled WASM workflows
-│   └── hello-world.wasm
-├── sdk/               # Compiled JS SDK files
-└── javy/              # Javy SDK plugin artifacts
-```
-
-## Tooling
-
-You would need Rust installed to build the plugin.
-
-## `wasm-tools` - for debugging content of compiled Wasm files
-
-To install:
-
-```zsh
-cargo install --locked wasm-tools
-```
-
-Example usage (validate the hello-world workflow):
-
-```zsh
-wasm-tools component targets --world workflow src/workflows/workflow.wit dist/workflows/hello-world.wasm
-```
-
-## Protobuf Generation
-
-This project uses [ts-proto](https://github.com/stephenh/ts-proto) for generating TypeScript types from Protocol Buffers.
-
-### Prerequisites
-
-`buf` is managed via bunx from dev dependencies, so only prerequisite is that you've run `bun install` before attempting to run proto related commands.
-
-### Available Commands
-
-- `bun proto:generate` - Generate TypeScript types from .proto files
-- `bun proto:lint` - Lint .proto files
-- `bun proto:format` - Format .proto files
-
-### Configuration
-
-- **buf.yaml** - Main buf configuration
-- **buf.gen.yaml** - Code generation configuration using ts-proto
-- **.tool-versions** - Version management for bun only
-- **package.json** - buf version managed as dev dependency
-
-Generated files are placed in `src/generated/`.
-
-# Generated Chain Selectors
-
-This directory contains auto-generated TypeScript files for Chainlink Chain Selectors.
-
-## Overview
-
-The chain selectors are automatically generated from the official [Chainlink chain-selectors repository](https://github.com/smartcontractkit/chain-selectors) YAML files. The repository is installed as a dev dependency, ensuring consistent builds without network dependencies.
-
-## Structure
-
-### Individual Network Files
-
-Each network has its own TypeScript file organized by blockchain family:
-
-```
-src/generated/chain-selectors/
-├── evm/
-│   ├── ethereum-mainnet.ts
-│   ├── ethereum-mainnet-optimism-1.ts
-│   ├── polygon-mainnet.ts
-│   └── ... (231 EVM networks)
-├── solana/
-│   ├── solana-mainnet.ts
-│   ├── solana-testnet.ts
-│   └── solana-devnet.ts
-├── aptos/
-│   ├── aptos-mainnet.ts
-│   ├── aptos-testnet.ts
-│   └── aptos-localnet.ts
-├── sui/
-├── ton/
-└── tron/
-```
-
-Each file exports a single network configuration:
+### 📅 Scheduled Tasks
 
 ```typescript
-// src/generated/chain-selectors/evm/ethereum-mainnet.ts
-export default {
-  chainId: "1",
-  chainSelector: {
-    name: "ethereum-mainnet",
-    selector: "5009297550715158000",
-  },
-  chainFamily: "evm",
-};
+// Execute every 5 minutes
+const cron = new cre.capabilities.CronCapability();
+cron.trigger({ schedule: "0 */5 * * * *" });
 ```
 
-### Networks Array
-
-All networks are also available as a single array:
+### 🌐 API Data Fetching
 
 ```typescript
-// src/generated/networks.ts
-export const ALL_NETWORKS: NetworkInfo[] = [
-  // ... all 247 networks
-];
+// Fetch with built-in consensus across nodes
+const price = await cre.runInNodeMode(
+  fetchPriceData,
+  consensusMedianAggregation()
+)(config);
 ```
 
-## Usage
-
-### Direct Import of Specific Networks
+### ⛓️ Blockchain Integration
 
 ```typescript
-import ethereumMainnet from "./generated/chain-selectors/evm/ethereum-mainnet";
-import solanaMainnet from "./generated/chain-selectors/solana/solana-mainnet";
-
-console.log(ethereumMainnet.chainSelector.name); // "ethereum-mainnet"
-console.log(solanaMainnet.chainSelector.selector); // "124615329519749600"
-```
-
-### Using Utility Functions
-
-```typescript
-import {
-  getAllNetworks,
-  getNetworkBySelector,
-  getNetworksByFamily,
-  getNetworkByFamilyAndChainId,
-  getNetworkByChainSelectorName,
-} from "./sdk/utils/chain-selectors";
-
-// Get network by selector
-const network = getNetworkBySelector("5009297550715158000");
-
-// Get network by name
-const ethereum = getNetworkByChainSelectorName("ethereum-mainnet");
-
-// Get network by family and chain ID
-const evmNetwork = getNetworkByFamilyAndChainId("evm", "1");
-
-// Get all networks for a family
-const evmNetworks = getNetworksByFamily("evm");
-
-// Get all networks
-const allNetworks = getAllNetworks();
-```
-
-## Supported Blockchain Families
-
-- **EVM**: 231 networks - Ethereum Virtual Machine compatible chains
-- **Solana**: 3 networks - Solana networks
-- **Aptos**: 3 networks - Aptos networks
-- **Sui**: 3 networks - Sui networks
-- **TON**: 3 networks - TON networks
-- **Tron**: 4 networks - Tron networks
-
-## Regenerating
-
-To update with the latest chain selectors:
-
-```bash
-bun generate:chain-selectors
-```
-
-This will:
-
-1. Read the local YAML files from the chain-selectors dev dependency
-2. Generate individual network files organized by blockchain family
-3. Create the main networks array file
-4. Generate utility functions
-5. Format the output with Biome
-
-To update to the latest chain selectors, update the dependency:
-
-```bash
-bun update chain-selectors
-bun generate:chain-selectors
+// Read/write to any EVM chain
+const evmClient = new cre.capabilities.EVMClient(
+  undefined,
+  BigInt("5009297550715157269") // Ethereum Sepolia
+);
 ```
 
 ## Key Features
 
-- **Individual Files**: Each network has its own importable file
-- **Family Organization**: Networks organized by blockchain family directories
-- **Type Safety**: All data structures are fully typed with TypeScript
-- **Tree Shaking**: Import only the networks you need
-- **Offline Builds**: No internet required during generation
-- **Consistent Builds**: Locked to specific dependency version
+- **🔄 Multi-Node Consensus** - Aggregate data from multiple sources reliably
+- **⚡ Cross-Chain Support** - Work with 200+ blockchain networks
+- **📊 Built-in Aggregation** - Median, mean, and custom consensus mechanisms
+- **🛡️ Type Safety** - Full TypeScript support with Zod validation
+- **🎯 Event-Driven** - Cron triggers, HTTP webhooks, and custom events
+- **🔗 Viem Integration** - Native support for Ethereum interactions
 
-## Files Generated
+## Use Cases
 
-- `chain-selectors/[family]/[network-name].ts` - Individual network files
-- `networks.ts` - Array of all networks
-- Utility functions in `src/sdk/utils/chain-selectors/`
+**🏦 DeFi Applications**
 
-## Source Data
+- Automated yield farming strategies
+- Cross-chain arbitrage bots
+- Dynamic rebalancing portfolios
+- Liquidation protection systems
 
-The generator reads data from these YAML files in the local chain-selectors dependency:
+**📊 Data Oracles**
 
-- `selectors.yml` - EVM chains
-- `selectors_solana.yml` - Solana networks
-- `selectors_aptos.yml` - Aptos networks
-- `selectors_sui.yml` - Sui networks
-- `selectors_ton.yml` - TON networks
-- `selectors_tron.yml` - Tron networks
+- Custom price feeds with multiple sources
+- Weather data aggregation
+- Sports scores and betting odds
+- Real-world asset tokenization data
 
-All files are sourced from the official [Chainlink chain-selectors repository](https://github.com/smartcontractkit/chain-selectors).
+**🔗 Cross-Chain Operations**
+
+- Bridge monitoring and alerts
+- Multi-chain governance voting
+- Cross-chain token transfers
+- Unified liquidity management
+
+## Contributing & Development
+
+This monorepo uses:
+
+- **[Bun](https://bun.sh/)** - Package manager and TypeScript runtime
+- **[Biome](https://github.com/biomejs/biome)** - Formatting and linting
+- **[Javy](https://github.com/bytecodealliance/javy)** - WebAssembly compilation
+
+### Setup for Contributors
+
+```bash
+# Clone with submodules (for protobuf definitions)
+git clone --recursive https://github.com/smartcontractkit/cre-sdk-typescript
+cd cre-sdk-typescript
+
+# Install dependencies
+bun install
+
+# Build everything
+bun build:all
+```
+
+### Available Scripts
+
+```bash
+# Development
+bun build:all              # Build all packages and workflows
+bun biome:check           # Format and lint code
+bun test                  # Run tests
+
+# Package-specific builds
+bun build:javy:plugin     # Build Javy WebAssembly plugin
+bun build:workflows:wasm  # Compile workflows to WASM
+bun generate:proto        # Generate types from protobuf
+bun generate:chain-selectors  # Update chain selector types
+```
+
+For detailed development setup, see individual package READMEs:
+
+- [CRE SDK Development](./packages/cre-sdk/README.md#building-from-source)
+- [Javy Plugin Development](./packages/cre-sdk-javy-plugin/README.md#build-from-source)
+
+## Submodules
+
+This project uses Git submodules for external dependencies:
+
+```bash
+# Clone with submodules
+git clone --recursive https://github.com/smartcontractkit/cre-sdk-typescript
+
+# Or initialize submodules after cloning
+git submodule update --init --recursive
+
+# Update submodules to latest
+git submodule update --remote
+```
+
+**Current submodules:**
+
+- `chainlink-protos` - Protocol buffer definitions
+
+## License
+
+See LICENSE in individual package directories.

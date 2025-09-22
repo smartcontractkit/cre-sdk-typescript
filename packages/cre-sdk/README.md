@@ -437,6 +437,47 @@ bun test
 bun test:standard
 ```
 
+### Protobuf Generation
+
+This SDK uses [ts-proto](https://github.com/stephenh/ts-proto) for generating TypeScript types from Protocol Buffers.
+
+**Available Commands:**
+
+- `bun generate:proto` - Generate TypeScript types from .proto files
+- `bun proto:lint` - Lint .proto files
+- `bun proto:format` - Format .proto files
+
+**Configuration:**
+
+- `buf.yaml` - Main buf configuration
+- `buf.gen.yaml` - Code generation configuration using ts-proto
+- Generated files are placed in `src/generated/`
+
+### Chain Selectors Generation
+
+Auto-generated TypeScript files for 200+ blockchain networks from the official [Chainlink chain-selectors repository](https://github.com/smartcontractkit/chain-selectors).
+
+**Regenerate chain selectors:**
+
+```bash
+bun generate:chain-selectors
+```
+
+**Usage:**
+
+```typescript
+import { getAllNetworks, getNetwork } from "@chainlink/cre-sdk";
+
+const ethereum = getNetwork("ethereum-mainnet");
+const allNetworks = getAllNetworks();
+```
+
+**Supported Networks:**
+
+- **EVM**: 231 networks (Ethereum, Polygon, Arbitrum, etc.)
+- **Solana**: 3 networks (Mainnet, Testnet, Devnet)
+- **Aptos, Sui, TON, Tron**: 3-4 networks each
+
 ## Requirements
 
 - **Runtime**: Bun >= 1.2.21
