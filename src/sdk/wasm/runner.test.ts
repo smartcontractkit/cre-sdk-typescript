@@ -1,17 +1,23 @@
 import { afterEach, describe, expect, mock, test } from 'bun:test'
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf'
-import { anyPack, EmptySchema } from '@bufbuild/protobuf/wkt'
-import { OutputsSchema } from '@cre/generated/capabilities/internal/basictrigger/v1/basic_trigger_pb'
+import { anyPack, anyUnpack, EmptySchema } from '@bufbuild/protobuf/wkt'
+import {
+	ConfigSchema,
+	OutputsSchema,
+} from '@cre/generated/capabilities/internal/basictrigger/v1/basic_trigger_pb'
 import {
 	AwaitSecretsRequestSchema,
 	AwaitSecretsResponseSchema,
 	type ExecuteRequest,
 	ExecuteRequestSchema,
+	type ExecutionResult,
+	ExecutionResultSchema,
 	GetSecretsRequestSchema,
 	SecretResponseSchema,
 	SecretResponsesSchema,
 	SecretSchema,
 	TriggerSchema,
+	type TriggerSubscriptionRequest,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
 import { cre } from '@cre/sdk/cre'
@@ -104,6 +110,34 @@ afterEach(() => {
 })
 
 describe('runner', () => {
+	describe('run', () => {
+		test('gathers subscriptions', async () => {
+			var sentResponse: ExecutionResult | null = null
+			mockHostBindings.sendResponse = mock((input) => {
+				sentResponse = fromBinary(ExecutionResultSchema, input)
+				return 0
+			})
+			const runner = await getTestRunner(subscribeRequest)
+			await runner.run(async (_: string, secretsProvider: SecretsProvider) => {
+				return [
+					cre.handler(basicTrigger.trigger({ name: 'foo', number: 10 }), () => {
+						throw new Error('Must not be called during registration to tiggers')
+					}),
+				]
+			})
+			expect(sentResponse).toBeDefined()
+			expect(sentResponse!.result.case).toBe('triggerSubscriptions')
+			const responseValue = sentResponse!.result.value! as TriggerSubscriptionRequest
+			expect(responseValue.subscriptions.length).toBe(1)
+			expect(responseValue.subscriptions[0].id).toBe(capID)
+			expect(responseValue.subscriptions[0].method).toBe('Trigger')
+			expect(responseValue.subscriptions[0].payload).toBeDefined()
+			const actualConfig = anyUnpack(responseValue.subscriptions[0].payload!, ConfigSchema)!
+			expect(actualConfig.name).toBe('foo')
+			expect(actualConfig.number).toBe(10)
+		})
+	})
+
 	test('should create workflows', async () => {
 		assertEnv(await getTestRunner(subscribeRequest))
 	})
@@ -188,58 +222,9 @@ function getTestRunner(request: ExecuteRequest): Promise<Runner<string>> {
 
 /*
 
-var (
-
-func TestRunner_GetSecrets_PassesMaxResponseSize(t *testing.T) {
-	dr := getTestRunner(t, subscribeRequest)
-	dr.Run(func(_ string, _ *slog.Logger, secretsProvider cre.SecretsProvider) (cre.Workflow[string], error) {
-		_, err := secretsProvider.GetSecret(&sdk.SecretRequest{Namespace: "Foo", Id: "Bar"}).Await()
-		// This will fail with "buffer cannot be empty" if we fail to pass the maxResponseSize from the
-		// runner to the runtime.
-		assert.ErrorContains(t, err, "secret Foo.Bar not found")
-
-		return cre.Workflow[string]{
-			cre.Handler(
-				basictrigger.Trigger(testutils.TestWorkflowTriggerConfig()),
-				func(string, cre.Runtime, *basictrigger.Outputs) (int, error) {
-					return 0, nil
-				}),
-		}, nil
-	})
-}
 
 func TestRunner_Run(t *testing.T) {
-	t.Run("runner gathers subscriptions", func(t *testing.T) {
-		dr := getTestRunner(t, subscribeRequest)
-		dr.Run(func(string, *slog.Logger, cre.SecretsProvider) (cre.Workflow[string], error) {
-			return cre.Workflow[string]{
-				cre.Handler(
-					basictrigger.Trigger(testutils.TestWorkflowTriggerConfig()),
-					func(string, cre.Runtime, *basictrigger.Outputs) (int, error) {
-						require.Fail(t, "Must not be called during registration to tiggers")
-						return 0, nil
-					}),
-			}, nil
-		})
-
-		actual := &sdk.ExecutionResult{}
-		sentResponse := dr.(runnerWrapper[string]).baseRunner.(*subscriber[string, cre.Runtime]).runnerInternals.(*runnerInternalsTestHook).sentResponse
-		require.NoError(t, proto.Unmarshal(sentResponse, actual))
-
-		switch result := actual.Result.(type) {
-		case *sdk.ExecutionResult_TriggerSubscriptions:
-			subscriptions := result.TriggerSubscriptions.Subscriptions
-			require.Len(t, subscriptions, 1)
-			subscription := subscriptions[triggerIndex]
-			assert.Equal(t, capID, subscription.Id)
-			assert.Equal(t, "Trigger", subscription.Method)
-			payload := &basictrigger.Config{}
-			require.NoError(t, subscription.Payload.UnmarshalTo(payload))
-			assert.True(t, proto.Equal(testutils.TestWorkflowTriggerConfig(), payload))
-		default:
-			assert.Fail(t, "unexpected result type", result)
-		}
-	})
+	
 
 	t.Run("makes callback with correct runner", func(t *testing.T) {
 		testutils.SetupExpectedCalls(t)
