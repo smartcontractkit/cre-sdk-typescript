@@ -148,7 +148,10 @@ export class Decimal {
 		const intPart = m[2] ?? '0'
 		let fracPart = m[3] ?? ''
 		// remove trailing zeros in fractional part to normalize
-		fracPart = fracPart.replace(/0+$/g, '')
+		// Use simple loop instead of regex to avoid ReDoS vulnerability
+		while (fracPart.length > 0 && fracPart[fracPart.length - 1] === '0') {
+			fracPart = fracPart.slice(0, -1)
+		}
 		const exponent = fracPart.length === 0 ? 0 : -fracPart.length
 		const digits = intPart + fracPart || '0'
 		const coeffecient = BigInt((signStr === '-' ? '-' : '') + digits)
@@ -252,11 +255,15 @@ export class Value {
 			})
 
 		if (v instanceof Int64) {
-			return create(ValueSchema, { value: { case: 'int64Value', value: v.value } })
+			return create(ValueSchema, {
+				value: { case: 'int64Value', value: v.value },
+			})
 		}
 
 		if (v instanceof UInt64) {
-			return create(ValueSchema, { value: { case: 'uint64Value', value: v.value } })
+			return create(ValueSchema, {
+				value: { case: 'uint64Value', value: v.value },
+			})
 		}
 
 		if (v instanceof Decimal) {
@@ -264,12 +271,16 @@ export class Value {
 				coefficient: Value.bigIntToProtoBigInt(v.coeffecient),
 				exponent: v.exponent,
 			})
-			return create(ValueSchema, { value: { case: 'decimalValue', value: decimalProto } })
+			return create(ValueSchema, {
+				value: { case: 'decimalValue', value: decimalProto },
+			})
 		}
 
 		switch (typeof v) {
 			case 'string':
-				return create(ValueSchema, { value: { case: 'stringValue', value: v } })
+				return create(ValueSchema, {
+					value: { case: 'stringValue', value: v },
+				})
 			case 'boolean':
 				return create(ValueSchema, { value: { case: 'boolValue', value: v } })
 			case 'bigint': {
@@ -278,7 +289,9 @@ export class Value {
 				})
 			}
 			case 'number': {
-				return create(ValueSchema, { value: { case: 'float64Value', value: v } })
+				return create(ValueSchema, {
+					value: { case: 'float64Value', value: v },
+				})
 			}
 			case 'object':
 				break // handled below
