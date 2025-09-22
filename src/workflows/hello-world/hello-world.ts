@@ -1,15 +1,13 @@
-import { cre } from '@cre/sdk/cre'
-import type { Runtime } from '@cre/sdk/runtime'
-import { Value } from '@cre/sdk/utils'
-import { withErrorBoundary } from '@cre/sdk/utils/error-boundary'
+import { cre, type Runtime } from '@cre/sdk/cre'
+import { Runner } from '@cre/sdk/wasm'
 
 type Config = {
 	schedule: string
 }
 
-const onCronTrigger = (runtime: Runtime<Config>): void => {
+const onCronTrigger = (_: Runtime<Config>): string => {
 	console.log('Hello, Calculator! Workflow triggered.')
-	cre.sendResponseValue(Value.from('Hello, Calculator!'))
+	return 'Hello, Calculator!'
 }
 
 const initWorkflow = (config: Config) => {
@@ -19,8 +17,10 @@ const initWorkflow = (config: Config) => {
 }
 
 export async function main() {
-	const runner = await cre.newRunner<Config>()
+	const runner = await Runner.newRunner<Config>({
+		configParser: (b) => JSON.parse(Buffer.from(b).toString()),
+	})
 	await runner.run(initWorkflow)
 }
 
-withErrorBoundary(main)
+await main()

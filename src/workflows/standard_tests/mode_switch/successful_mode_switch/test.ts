@@ -1,9 +1,11 @@
+import type { Outputs } from '@cre/generated/capabilities/internal/basictrigger/v1/basic_trigger_pb'
 import { BasicActionCapability } from '@cre/generated-sdk/capabilities/internal/basicaction/v1/basicaction_sdk_gen'
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
 import { BasicActionCapability as NodeActionCapability } from '@cre/generated-sdk/capabilities/internal/nodeaction/v1/basicaction_sdk_gen'
 import { cre, type Runtime } from '@cre/sdk/cre'
 import type { NodeRuntime } from '@cre/sdk/runtime'
-import { ConsensusAggregationByFields, Int64, median, Value } from '@cre/sdk/utils'
+import { ConsensusAggregationByFields, Int64, median } from '@cre/sdk/utils'
+import { Runner } from '@cre/sdk/wasm'
 
 // Doesn't matter for this test
 type Config = unknown
@@ -12,17 +14,17 @@ class Output {
 	constructor(public OutputThing: Int64) {}
 }
 
-const handler = async (_config: Config, runtime: Runtime) => {
+const handler = async (runtime: Runtime<Uint8Array>, _: Outputs) => {
 	const donInput = { inputThing: true }
 	const basicActionCapability = new BasicActionCapability()
-	const donResponse = await basicActionCapability.performAction(donInput)
+	const donResponse = await basicActionCapability.performAction(runtime, donInput)
 	runtime.now()
 
-	const consensusOutput = await cre.runInNodeMode(
-		async (nodeRuntime: NodeRuntime): Promise<Output> => {
+	const consensusOutput = await runtime.runInNodeMode(
+		async (nodeRuntime: NodeRuntime<Uint8Array>): Promise<Output> => {
 			nodeRuntime.now()
 			const nodeActionCapability = new NodeActionCapability()
-			const nodeResponse = await nodeActionCapability.performAction({
+			const nodeResponse = await nodeActionCapability.performAction(nodeRuntime, {
 				inputThing: true,
 			})
 
@@ -35,9 +37,7 @@ const handler = async (_config: Config, runtime: Runtime) => {
 
 	runtime.now()
 
-	cre.sendResponseValue(
-		Value.from(`${donResponse.adaptedThing}${consensusOutput.OutputThing.value}`),
-	)
+	return `${donResponse.adaptedThing}${consensusOutput.OutputThing.value}`
 }
 
 const initWorkflow = () => {
@@ -51,8 +51,8 @@ export async function main() {
 		`TS workflow: standard test: mode_switch: successful_mode_switch [${new Date().toISOString()}]`,
 	)
 
-	const runner = await cre.newRunner()
+	const runner = await Runner.newRunner<Uint8Array>({})
 	await runner.run(initWorkflow)
 }
 
-cre.withErrorBoundary(main)
+await main()

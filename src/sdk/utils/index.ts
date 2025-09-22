@@ -1,4 +1,3 @@
-export * from '../wasm/send-response-value'
 export * from './hex-utils'
 export * from './values/consensus_aggregators'
 export * from './values/serializer_types'
