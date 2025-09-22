@@ -21,7 +21,7 @@ cleanup() {
     fi
     
     # Restore original package versions using git
-    if [[ "$UPDATE_JAVY" == "true" ]]; then
+    if [[ "$UPDATE_JAVY" == "true" ]] && [ -d "$SCRIPT_DIR/packages/cre-sdk-javy-plugin" ]; then
         cd "$SCRIPT_DIR/packages/cre-sdk-javy-plugin"
         git checkout -- package.json 2>/dev/null && echo "✅ Restored javy-plugin version" || echo "ℹ️  No javy-plugin version to restore"
         cd "$SCRIPT_DIR"
@@ -107,17 +107,27 @@ else
 fi
 cd ../..
 
-print_step "Building javy plugin..."
+print_step "Running pre-publish checks for javy plugin..."
 cd packages/cre-sdk-javy-plugin
+bun run prepublish-checks
+cd ../..
+
+print_step "Building cre-sdk..."
+cd packages/cre-sdk
 bun run build
 cd ../..
 
 print_step "Setting up CRE environment..."
-bun --bun packages/cre-sdk-javy-plugin/bin/setup.ts
+cd packages/cre-sdk
+bun --bun ../cre-sdk-javy-plugin/bin/setup.ts
+cd ../..
 print_success "CRE setup completed"
 
-print_step "Building cre-sdk with turbo..."
-bun run build
+print_step "Running pre-publish checks for cre-sdk..."
+cd packages/cre-sdk
+bun typecheck && bun lint && bun test && bun test:standard
+cd ../..
+print_success "All pre-publish checks passed"
 
 print_step "Resolving workspace dependencies for publishing..."
 
