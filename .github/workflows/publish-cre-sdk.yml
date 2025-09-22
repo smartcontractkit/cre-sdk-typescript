@@ -94,6 +94,12 @@ jobs:
         working-directory: packages/cre-sdk-javy-plugin
         run: bun run build
 
+      - name: Setup CRE environment
+        run: |
+          echo "Setting up CRE environment with javy plugin..."
+          bun --bun packages/cre-sdk-javy-plugin/bin/setup.ts
+          echo "CRE setup completed"
+
       - name: Build cre-sdk
         run: |
           # Build using turbo to ensure proper dependency order

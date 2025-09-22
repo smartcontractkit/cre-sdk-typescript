@@ -4,6 +4,39 @@ set -e
 echo "🧪 CRE SDK Dry-Run Publish Test"
 echo "================================"
 
+# Function to restore original state on exit
+cleanup() {
+    echo ""
+    echo "🔄 Cleaning up..."
+    
+    # Get the current directory to ensure we're in the right place
+    SCRIPT_DIR=$(pwd)
+    
+    # Restore workspace dependency in cre-sdk if backup exists
+    if [ -f "$SCRIPT_DIR/packages/cre-sdk/package.json.backup" ]; then
+        cd "$SCRIPT_DIR/packages/cre-sdk"
+        mv package.json.backup package.json
+        echo "✅ Restored cre-sdk workspace dependency"
+        cd "$SCRIPT_DIR"
+    fi
+    
+    # Restore original package versions using git
+    if [[ "$UPDATE_JAVY" == "true" ]]; then
+        cd "$SCRIPT_DIR/packages/cre-sdk-javy-plugin"
+        git checkout -- package.json 2>/dev/null && echo "✅ Restored javy-plugin version" || echo "ℹ️  No javy-plugin version to restore"
+        cd "$SCRIPT_DIR"
+    fi
+    
+    cd "$SCRIPT_DIR/packages/cre-sdk"
+    git checkout -- package.json 2>/dev/null && echo "✅ Restored cre-sdk version" || echo "ℹ️  No cre-sdk version to restore"
+    cd "$SCRIPT_DIR"
+    
+    echo "🧹 Cleanup completed"
+}
+
+# Set trap to run cleanup on script exit (success or failure)
+trap cleanup EXIT
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -51,8 +84,13 @@ print_step "Updating package versions..."
 # Update javy-plugin version (if requested)
 if [[ "$UPDATE_JAVY" == "true" ]]; then
     cd packages/cre-sdk-javy-plugin
-    print_step "Updating javy-plugin to $JAVY_VERSION"
-    bun pm version $JAVY_VERSION
+    CURRENT_JAVY_VERSION=$(node -p "require('./package.json').version")
+    if [[ "$CURRENT_JAVY_VERSION" != "$JAVY_VERSION" ]]; then
+        print_step "Updating javy-plugin from $CURRENT_JAVY_VERSION to $JAVY_VERSION"
+        bun pm version $JAVY_VERSION
+    else
+        print_step "Javy-plugin already at version $JAVY_VERSION, skipping version update"
+    fi
     cd ../..
 else
     print_step "Skipping javy-plugin version update"
@@ -60,14 +98,23 @@ fi
 
 # Update cre-sdk version
 cd packages/cre-sdk
-print_step "Updating cre-sdk to $SDK_VERSION"
-bun pm version $SDK_VERSION
+CURRENT_SDK_VERSION=$(node -p "require('./package.json').version")
+if [[ "$CURRENT_SDK_VERSION" != "$SDK_VERSION" ]]; then
+    print_step "Updating cre-sdk from $CURRENT_SDK_VERSION to $SDK_VERSION"
+    bun pm version $SDK_VERSION
+else
+    print_step "CRE SDK already at version $SDK_VERSION, skipping version update"
+fi
 cd ../..
 
 print_step "Building javy plugin..."
 cd packages/cre-sdk-javy-plugin
 bun run build
 cd ../..
+
+print_step "Setting up CRE environment..."
+bun --bun packages/cre-sdk-javy-plugin/bin/setup.ts
+print_success "CRE setup completed"
 
 print_step "Building cre-sdk with turbo..."
 bun run build
@@ -113,12 +160,6 @@ print_step "Running dry-run publish for cre-sdk..."
 cd packages/cre-sdk
 bun publish --dry-run --access public --verbose
 print_success "CRE SDK dry-run completed"
-
-print_step "Restoring original package.json..."
-if [ -f package.json.backup ]; then
-    mv package.json.backup package.json
-    print_success "Restored original package.json with workspace:* dependency"
-fi
 
 cd ../..
 
