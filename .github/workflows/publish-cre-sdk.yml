@@ -9,9 +9,27 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version to publish (e.g., 1.0.0)"
+        description: "CRE SDK version to publish (e.g., 1.0.0). Leave empty to auto-increment"
         required: false
         type: string
+      version_type:
+        description: "Auto-increment type (if version not specified)"
+        required: false
+        default: "patch"
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      javy_plugin_version:
+        description: "Javy plugin version to use (e.g., 1.0.0). Leave empty to use latest published"
+        required: false
+        type: string
+      update_javy_plugin:
+        description: "Also update javy plugin version before publishing SDK"
+        required: false
+        default: false
+        type: boolean
       dry_run:
         description: "Run in dry-run mode (do not actually publish)"
         required: false
@@ -44,22 +62,33 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Update versions if specified
-        if: ${{ github.event.inputs.version }}
+      - name: Update javy plugin version (if requested)
+        if: ${{ github.event.inputs.update_javy_plugin == 'true' }}
+        working-directory: packages/cre-sdk-javy-plugin
         run: |
-          echo "Updating versions to ${{ github.event.inputs.version }}"
+          if [ -n "${{ github.event.inputs.javy_plugin_version }}" ]; then
+            echo "Updating javy plugin to specified version: ${{ github.event.inputs.javy_plugin_version }}"
+            bun pm version ${{ github.event.inputs.javy_plugin_version }}
+          else
+            echo "Auto-incrementing javy plugin version (patch)"
+            bun pm version patch
+          fi
 
-          # Update javy-plugin version first
-          cd packages/cre-sdk-javy-plugin
-          bun pm version ${{ github.event.inputs.version }}
-          cd ../..
+      - name: Update CRE SDK version
+        working-directory: packages/cre-sdk
+        run: |
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            echo "Updating CRE SDK version to ${{ github.event.inputs.version }}"
+            bun pm version ${{ github.event.inputs.version }}
+          else
+            echo "Auto-incrementing CRE SDK version (${{ github.event.inputs.version_type || 'patch' }})"
+            bun pm version ${{ github.event.inputs.version_type || 'patch' }}
+          fi
 
-          # Update cre-sdk version
-          cd packages/cre-sdk
-          bun pm version ${{ github.event.inputs.version }}
-          cd ../..
-
-          echo "Both packages updated to version ${{ github.event.inputs.version }}"
+          # Get the final version for later steps
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          echo "CRE_SDK_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+          echo "Final CRE SDK version: $NEW_VERSION"
 
       - name: Build javy plugin
         working-directory: packages/cre-sdk-javy-plugin
@@ -74,9 +103,15 @@ jobs:
         run: |
           echo "Resolving workspace dependencies for publishing..."
 
-          # Get the current version from javy-plugin
-          JAVY_VERSION=$(cd packages/cre-sdk-javy-plugin && node -p "require('./package.json').version")
-          echo "Javy plugin version: $JAVY_VERSION"
+          # Determine which javy plugin version to use
+          if [ -n "${{ github.event.inputs.javy_plugin_version }}" ]; then
+            JAVY_VERSION="${{ github.event.inputs.javy_plugin_version }}"
+            echo "Using specified javy plugin version: $JAVY_VERSION"
+          else
+            # Get the current version from javy-plugin package.json
+            JAVY_VERSION=$(cd packages/cre-sdk-javy-plugin && node -p "require('./package.json').version")
+            echo "Using current workspace javy plugin version: $JAVY_VERSION"
+          fi
 
           # Update cre-sdk package.json to use the actual version instead of workspace:*
           cd packages/cre-sdk
@@ -91,10 +126,27 @@ jobs:
           echo "Updated cre-sdk dependency to use version ^$JAVY_VERSION"
           cat package.json | grep "@chainlink/cre-sdk-javy-plugin"
 
+          # Store for later use
+          echo "RESOLVED_JAVY_VERSION=$JAVY_VERSION" >> $GITHUB_ENV
+
       - name: Verify npm authentication
         env:
           NPM_CONFIG_TOKEN: ${{ secrets. NPM_CRE_SDK_TYPESCRIPT }}
         run: bun pm whoami
+
+      - name: Publish javy plugin (if updated)
+        if: ${{ github.event.inputs.update_javy_plugin == 'true' }}
+        working-directory: packages/cre-sdk-javy-plugin
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets. NPM_CRE_SDK_TYPESCRIPT }}
+        run: |
+          echo "Publishing @chainlink/cre-sdk-javy-plugin..."
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            echo "DRY RUN: Would publish @chainlink/cre-sdk-javy-plugin"
+            bun publish --dry-run --access public --verbose
+          else
+            bun publish --access public --verbose
+          fi
 
       - name: Publish cre-sdk package
         working-directory: packages/cre-sdk
@@ -123,13 +175,16 @@ jobs:
         run: |
           echo "## 📦 Published CRE SDK Package" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- 📋 \`@chainlink/cre-sdk\`" >> $GITHUB_STEP_SUMMARY
+
+          # Show what was published
+          if [ "${{ github.event.inputs.update_javy_plugin }}" = "true" ]; then
+            echo "- 🔌 \`@chainlink/cre-sdk-javy-plugin@$RESOLVED_JAVY_VERSION\` (updated)" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "- 📋 \`@chainlink/cre-sdk@$CRE_SDK_VERSION\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          # Get the javy plugin version that was used
-          JAVY_VERSION=$(cd packages/cre-sdk-javy-plugin && node -p "require('./package.json').version")
           echo "### Dependencies" >> $GITHUB_STEP_SUMMARY
-          echo "- 🔌 Uses \`@chainlink/cre-sdk-javy-plugin@^$JAVY_VERSION\`" >> $GITHUB_STEP_SUMMARY
+          echo "- 🔌 Uses \`@chainlink/cre-sdk-javy-plugin@^$RESOLVED_JAVY_VERSION\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
           echo "### Installation" >> $GITHUB_STEP_SUMMARY

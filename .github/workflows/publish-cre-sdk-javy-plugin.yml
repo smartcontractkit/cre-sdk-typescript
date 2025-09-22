@@ -9,9 +9,18 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version to publish (e.g., 1.0.0)"
+        description: "Version to publish (e.g., 1.0.0). Leave empty to auto-increment patch version"
         required: false
         type: string
+      version_type:
+        description: "Auto-increment type (if version not specified)"
+        required: false
+        default: "patch"
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
       dry_run:
         description: "Run in dry-run mode (do not actually publish)"
         required: false
@@ -44,12 +53,21 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Update version if specified
-        if: ${{ github.event.inputs.version }}
+      - name: Update version
         working-directory: packages/cre-sdk-javy-plugin
         run: |
-          echo "Updating CRE SDK Javy plugin version to ${{ github.event.inputs.version }}"
-          bun pm version ${{ github.event.inputs.version }}
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            echo "Updating CRE SDK Javy plugin version to ${{ github.event.inputs.version }}"
+            bun pm version ${{ github.event.inputs.version }}
+          else
+            echo "Auto-incrementing version (${{ github.event.inputs.version_type || 'patch' }})"
+            bun pm version ${{ github.event.inputs.version_type || 'patch' }}
+          fi
+
+          # Get the final version for later steps
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          echo "JAVY_PLUGIN_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+          echo "Final javy plugin version: $NEW_VERSION"
 
       - name: Build CRE SDK Javy plugin
         working-directory: packages/cre-sdk-javy-plugin
