@@ -68,7 +68,16 @@ if [[ ! -f "package.json" ]] || [[ ! -d "packages" ]]; then
 fi
 
 # Parse command line arguments
-SDK_VERSION=${1:-"0.0.2-test"}
+if [ -z "$1" ]; then
+    print_error "SDK version is required"
+    echo "Usage: $0 <sdk_version> [javy_version] [update_javy]"
+    echo "Example: $0 1.0.0"
+    echo "Example: $0 1.0.0 0.9.0"
+    echo "Example: $0 1.0.0 1.0.0 false"
+    exit 1
+fi
+
+SDK_VERSION=$1
 JAVY_VERSION=${2:-$SDK_VERSION}
 UPDATE_JAVY=${3:-"true"}
 
@@ -174,7 +183,6 @@ echo "- ✅ Workspace dependencies correctly resolved for publishing"
 echo "- ✅ Original package.json restored"
 echo ""
 echo "Usage examples:"
-echo "  ./scripts/dry-run-publish.sh                    # Both packages: 0.0.2-test"
 echo "  ./scripts/dry-run-publish.sh 1.0.0              # Both packages: 1.0.0"
 echo "  ./scripts/dry-run-publish.sh 1.0.0 0.9.0        # SDK: 1.0.0, Javy: 0.9.0"
 echo "  ./scripts/dry-run-publish.sh 1.0.0 1.0.0 false  # SDK: 1.0.0, skip javy update"
