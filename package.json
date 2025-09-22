@@ -1,4 +1,5 @@
 {
+  "name": "@chainlink/cre-sdk-monorepo",
   "type": "module",
   "private": true,
   "devDependencies": {
