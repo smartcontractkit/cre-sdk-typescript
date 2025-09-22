@@ -38,6 +38,7 @@ export const main = async (tsFilePath?: string, outputFilePath?: string) => {
 		outdir: path.dirname(resolvedOutput),
 		target: 'node',
 		format: 'esm',
+		naming: path.basename(resolvedOutput),
 	})
 
 	// The file Bun will emit before bundling
