@@ -14,6 +14,9 @@ import { sendResponseValue } from '@cre/sdk/utils/send-response-value'
 import { withErrorBoundary } from '@cre/sdk/utils/error-boundary'
 import { sendError } from '@cre/sdk/utils/send-error'
 
+export type { Log as EVMLog} from '@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb';
+export type { Payload as CronPayload } from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
+export type { Payload as HTTPPayload } from '@cre/generated/capabilities/networking/http/v1alpha/trigger_pb';
 export type { Runtime, NodeRuntime } from '@cre/sdk/runtime/runtime'
 
 prepareRuntime()

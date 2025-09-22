@@ -473,7 +473,11 @@ export class ClientCapability {
 	}
 
 	logTrigger(config: FilterLogTriggerRequestJson): ClientLogTrigger {
-		return new ClientLogTrigger(this.mode, config, ClientCapability.CAPABILITY_ID, 'LogTrigger')
+		// Include chainSelector in capability ID for routing when specified
+		const capabilityId = this.chainSelector
+			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+			: ClientCapability.CAPABILITY_ID
+		return new ClientLogTrigger(this.mode, config, capabilityId, 'LogTrigger')
 	}
 
 	async writeReport(input: WriteReportRequest | WriteReportRequestJson): Promise<WriteReportReply> {

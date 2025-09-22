@@ -34,7 +34,8 @@ export class BasicCapability {
 	constructor(private readonly mode: Mode = BasicCapability.DEFAULT_MODE) {}
 
 	trigger(config: ConfigJson): BasicTrigger {
-		return new BasicTrigger(this.mode, config, BasicCapability.CAPABILITY_ID, 'Trigger')
+		const capabilityId = BasicCapability.CAPABILITY_ID
+		return new BasicTrigger(this.mode, config, capabilityId, 'Trigger')
 	}
 }
 
