@@ -31,9 +31,31 @@ function computeAsset({ version }: { version: string }) {
 		}
 	}
 
+	// macOS x64
+	if (platform === 'darwin' && arch === 'x64') {
+		const name = `javy-x86_64-macos-${version}`
+		return {
+			gzUrl: `${base}/${version}/${name}.gz`,
+			shaUrl: `${base}/${version}/${name}.gz.sha256`,
+			cacheDir: path.join(os.homedir(), '.cache', 'javy', version, 'darwin-arm64'),
+			outName: 'javy',
+		}
+	}
+
 	// Linux ARM64
 	if (platform === 'linux' && arch === 'arm64') {
 		const name = `javy-arm-linux-${version}`
+		return {
+			gzUrl: `${base}/${version}/${name}.gz`,
+			shaUrl: `${base}/${version}/${name}.gz.sha256`,
+			cacheDir: path.join(os.homedir(), '.cache', 'javy', version, 'linux-arm64'),
+			outName: 'javy',
+		}
+	}
+
+	// Linux x64
+	if (platform === 'linux' && arch === 'x64') {
+		const name = `javy-x86_64-linux-${version}`
 		return {
 			gzUrl: `${base}/${version}/${name}.gz`,
 			shaUrl: `${base}/${version}/${name}.gz.sha256`,
