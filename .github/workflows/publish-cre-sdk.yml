@@ -23,6 +23,9 @@ jobs:
       contents: read
       id-token: write # for npm provenance
     environment: Publish
+    defaults:
+      run:
+        shell: zsh {0}
 
     steps:
       - name: Checkout code
@@ -37,6 +40,9 @@ jobs:
           echo "Checked out ref: ${{ github.event.inputs.tag || 'main' }}"
           echo "Current commit: $(git rev-parse HEAD)"
           echo "Current commit short: $(git rev-parse --short HEAD)"
+
+      - name: Install zsh
+        run: sudo apt-get update && sudo apt-get install -y zsh
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
