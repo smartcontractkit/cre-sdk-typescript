@@ -13,9 +13,9 @@ const asyncCalls = async () => {
 	const p1 = basicAction.performAction(input1)
 	const p2 = basicAction.performAction(input2)
 
-	// We await them in the reverse order.
-	const r2 = await p2
-	const r1 = await p1
+	// We get results in the reverse order.
+	const r2 = await p2.result()
+	const r1 = await p1.result()
 
 	cre.sendResponseValue(Value.from(`${r1.adaptedThing}${r2.adaptedThing}`))
 }

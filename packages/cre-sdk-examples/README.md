@@ -23,11 +23,11 @@ bunx cre-setup
 Then you are ready to use the CRE SDK to compile your workflows to WASM. Choose any workflow you want to compile and run the following command:
 
 ```bash
-bunx cre-compile-workflow <input.ts> <output.wasm>
+bunx cre-compile <input.ts> <output.wasm>
 ```
 
 Example:
 
 ```bash
-bunx cre-compile-workflow src/workflows/hello-world/index.ts dist/hello-world.wasm
+bun cre-compile src/workflows/hello-world/index.ts dist/hello-world.wasm
 ```

@@ -1,4 +1,4 @@
-import { create, toJson } from '@bufbuild/protobuf'
+import { create } from '@bufbuild/protobuf'
 import { Mode, SimpleConsensusInputsSchema } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { ConsensusCapability } from '@cre/generated-sdk/capabilities/internal/consensus/v1alpha/consensus_sdk_gen'
 import { type NodeRuntime, runtime } from '@cre/sdk/runtime/runtime'
@@ -47,7 +47,7 @@ export function runInNodeMode<TArgs extends any[], TOutput>(
 		}
 
 		const consensus = new ConsensusCapability()
-		const result = await consensus.simple(consensusInput)
+		const result = await consensus.simple(consensusInput).result()
 		const wrappedValue = Value.wrap(result)
 
 		return unwrapOptions
