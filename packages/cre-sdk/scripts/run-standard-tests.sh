@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 # Run standard tests script
 # Usage: ./scripts/run-standard-tests.sh
