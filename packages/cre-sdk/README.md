@@ -2,6 +2,10 @@
 
 The Chainlink Runtime Environment (CRE) SDK for TypeScript enables developers to build decentralized workflows that combine off-chain computation with on-chain execution. Create workflows that fetch data from APIs, interact with smart contracts, and coordinate complex multi-step operations across blockchain networks.
 
+## Examples
+
+Ready to clone repo with example workflows and cre-sdk set up: [cre-sdk-examples](https://github.com/smartcontractkit/cre-sdk-typescript/tree/main/packages/cre-sdk-examples).
+
 ## Installation
 
 ```bash
@@ -421,7 +425,7 @@ withErrorBoundary(main);
 To build the SDK locally:
 
 ```bash
-# Install dependencies
+# Install dependencies (from monorepo root)
 bun install
 
 # Generate protocol buffers and SDK types
@@ -487,7 +491,3 @@ const allNetworks = getAllNetworks();
 ## License
 
 See LICENSE in LICENSE.md
-
----
-
-For more examples and advanced usage patterns, check out the [examples package](../cre-sdk-examples) in this monorepo.

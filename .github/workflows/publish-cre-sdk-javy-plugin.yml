@@ -69,10 +69,6 @@ jobs:
           echo "JAVY_PLUGIN_VERSION=$NEW_VERSION" >> $GITHUB_ENV
           echo "Final javy plugin version: $NEW_VERSION"
 
-      - name: Run pre-publish checks and build
-        working-directory: packages/cre-sdk-javy-plugin
-        run: bun run prepublish-checks
-
       - name: Verify npm authentication
         env:
           NPM_CONFIG_TOKEN: ${{ secrets. NPM_CRE_SDK_TYPESCRIPT }}

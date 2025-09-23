@@ -102,22 +102,23 @@ cd cre-sdk-typescript
 bun install
 
 # Build everything
-bun build:all
+bun build
 ```
 
 ### Available Scripts
 
 ```bash
 # Development
-bun build:all              # Build all packages and workflows
-bun biome:check           # Format and lint code
-bun test                  # Run tests
+bun build                 # Build all packages using turbo
+bun check                 # Format and lint code using biome
+bun format                # Format code using biome
+bun lint                  # Lint code using biome
+bun typecheck             # Type check all packages
 
-# Package-specific builds
-bun build:javy:plugin     # Build Javy WebAssembly plugin
-bun build:workflows:wasm  # Compile workflows to WASM
+# Package-specific builds (run from packages/cre-sdk/)
 bun generate:proto        # Generate types from protobuf
 bun generate:chain-selectors  # Update chain selector types
+bun generate:sdk          # Generate all SDK types and code
 ```
 
 For detailed development setup, see individual package READMEs:
