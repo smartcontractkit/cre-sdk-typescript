@@ -64,17 +64,19 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 		functionName: 'get',
 	})
 
-	const contractCall = await evmClient.callContract({
-		call: {
-			from: hexToBase64(zeroAddress),
-			to: hexToBase64(evmConfig.storageAddress),
-			data: hexToBase64(callData),
-		},
-		blockNumber: {
-			absVal: Buffer.from([3]).toString('base64'), // 3 for finalized block
-			sign: '-1', // negative for finalized
-		},
-	})
+	const contractCall = await evmClient
+		.callContract({
+			call: {
+				from: hexToBase64(zeroAddress),
+				to: hexToBase64(evmConfig.storageAddress),
+				data: hexToBase64(callData),
+			},
+			blockNumber: {
+				absVal: Buffer.from([3]).toString('base64'), // 3 for finalized block
+				sign: '-1', // negative for finalized
+			},
+		})
+		.result()
 
 	// Decode the result
 	const onchainValue = decodeFunctionResult({
@@ -109,17 +111,19 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 	runtime.logger.log('Dry running call to ensure the value is not anomalous...')
 
 	// dry run the call to ensure the value is not anomalous
-	const dryRunCall = await evmClient.callContract({
-		call: {
-			from: hexToBase64(zeroAddress),
-			to: hexToBase64(evmConfig.calculatorConsumerAddress),
-			data: hexToBase64(dryRunCallData),
-		},
-		blockNumber: {
-			absVal: Buffer.from([3]).toString('base64'), // 3 for finalized block
-			sign: '-1', // negative for finalized
-		},
-	})
+	const dryRunCall = await evmClient
+		.callContract({
+			call: {
+				from: hexToBase64(zeroAddress),
+				to: hexToBase64(evmConfig.calculatorConsumerAddress),
+				data: hexToBase64(dryRunCallData),
+			},
+			blockNumber: {
+				absVal: Buffer.from([3]).toString('base64'), // 3 for finalized block
+				sign: '-1', // negative for finalized
+			},
+		})
+		.result()
 
 	const dryRunResponse = decodeFunctionResult({
 		abi: CALCULATOR_CONSUMER_ABI,
@@ -141,12 +145,14 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 		args: [toHex('0x'), dryRunCallData],
 	})
 
-	const resp = await evmClient.writeReport({
-		receiver: evmConfig.calculatorConsumerAddress,
-		report: {
-			rawReport: writeCallData,
-		},
-	})
+	const resp = await evmClient
+		.writeReport({
+			receiver: evmConfig.calculatorConsumerAddress,
+			report: {
+				rawReport: writeCallData,
+			},
+		})
+		.result()
 
 	const txHash = resp.txHash
 

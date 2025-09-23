@@ -61,17 +61,19 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 		functionName: 'get',
 	})
 
-	const contractCall = await evmClient.callContract({
-		call: {
-			from: hexToBase64(zeroAddress),
-			to: hexToBase64(evmConfig.storageAddress),
-			data: hexToBase64(callData),
-		},
-		blockNumber: {
-			absVal: Buffer.from([3]).toString('base64'), // 3 for finalized block
-			sign: '-1', // negative for finalized
-		},
-	})
+	const contractCall = await evmClient
+		.callContract({
+			call: {
+				from: hexToBase64(zeroAddress),
+				to: hexToBase64(evmConfig.storageAddress),
+				data: hexToBase64(callData),
+			},
+			blockNumber: {
+				absVal: Buffer.from([3]).toString('base64'), // 3 for finalized block
+				sign: '-1', // negative for finalized
+			},
+		})
+		.result()
 
 	// Decode the result
 	const onchainValue = decodeFunctionResult({

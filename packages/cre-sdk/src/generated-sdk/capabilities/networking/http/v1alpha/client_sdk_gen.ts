@@ -31,7 +31,7 @@ export class ClientCapability {
 
 	constructor(private readonly mode: Mode = ClientCapability.DEFAULT_MODE) {}
 
-	async sendRequest(input: Request | RequestJson): Promise<Response> {
+	sendRequest(input: Request | RequestJson): { result: () => Promise<Response> } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const value = (input as any).$typeName
 			? (input as Request)
@@ -42,29 +42,35 @@ export class ClientCapability {
 		}
 		const capabilityId = ClientCapability.CAPABILITY_ID
 
-		const capabilityResponse = await callCapability({
+		const capabilityResponse = callCapability({
 			capabilityId,
 			method: 'SendRequest',
 			mode: this.mode,
 			payload,
 		})
 
-		if (capabilityResponse.response.case === 'error') {
-			throw new CapabilityError(capabilityResponse.response.value, {
-				capabilityId,
-				method: 'SendRequest',
-				mode: this.mode,
-			})
-		}
+		return {
+			result: async () => {
+				const { response } = await capabilityResponse.result()
 
-		if (capabilityResponse.response.case !== 'payload') {
-			throw new CapabilityError('No payload in response', {
-				capabilityId,
-				method: 'SendRequest',
-				mode: this.mode,
-			})
-		}
+				if (response.case === 'error') {
+					throw new CapabilityError(response.value, {
+						capabilityId,
+						method: 'SendRequest',
+						mode: this.mode,
+					})
+				}
 
-		return fromBinary(ResponseSchema, capabilityResponse.response.value.value)
+				if (response.case !== 'payload') {
+					throw new CapabilityError('No payload in response', {
+						capabilityId,
+						method: 'SendRequest',
+						mode: this.mode,
+					})
+				}
+
+				return fromBinary(ResponseSchema, response.value.value)
+			},
+		}
 	}
 }

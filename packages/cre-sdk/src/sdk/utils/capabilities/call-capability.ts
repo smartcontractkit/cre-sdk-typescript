@@ -1,18 +1,24 @@
-import { type CapabilityResponse, Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import { runtimeGuards } from '@cre/sdk/runtime/runtime'
-import { awaitAsyncRequest } from '@cre/sdk/utils/await-async-request'
-import { doRequestAsync } from '@cre/sdk/utils/do-request-async'
-import { LazyPromise } from '@cre/sdk/utils/lazy-promise'
+import { doRequestAsync } from "@cre/sdk/utils/do-request-async";
+import { awaitAsyncRequest } from "@cre/sdk/utils/await-async-request";
+import {
+  Mode,
+  type CapabilityResponse,
+} from "@cre/generated/sdk/v1alpha/sdk_pb";
+import { runtimeGuards } from "@cre/sdk/runtime/runtime";
 
 export type CallCapabilityParams = {
-	capabilityId: string
-	method: string
-	mode: Mode
-	payload: {
-		typeUrl: string
-		value: Uint8Array
-	}
-}
+  capabilityId: string;
+  method: string;
+  mode: Mode;
+  payload: {
+    typeUrl: string;
+    value: Uint8Array;
+  };
+};
+
+type CallCapabilityReturn = {
+  result: () => Promise<CapabilityResponse>;
+};
 
 /**
  * Calls a capability asynchronously and returns a promise for the response.
@@ -22,29 +28,30 @@ export type CallCapabilityParams = {
  * @returns A promise that resolves to the capability response
  */
 export function callCapability({
-	capabilityId,
-	method,
-	mode = Mode.DON,
-	payload,
-}: CallCapabilityParams): Promise<CapabilityResponse> {
-	// Guards:
-	// - Block DON-mode calls while currently in NODE mode
-	// - Block NODE-mode calls while currently in DON mode
-	if (mode === Mode.DON) runtimeGuards.assertDonSafe()
-	if (mode === Mode.NODE) runtimeGuards.assertNodeSafe()
+  capabilityId,
+  method,
+  mode = Mode.DON,
+  payload,
+}: CallCapabilityParams): CallCapabilityReturn {
+  // Guards:
+  // - Block DON-mode calls while currently in NODE mode
+  // - Block NODE-mode calls while currently in DON mode
+  if (mode === Mode.DON) runtimeGuards.assertDonSafe();
+  if (mode === Mode.NODE) runtimeGuards.assertNodeSafe();
 
-	const callbackId = doRequestAsync({
-		capabilityId,
-		method,
-		mode,
-		payload,
-	})
+  const callbackId = doRequestAsync({
+    capabilityId,
+    method,
+    mode,
+    payload,
+  });
 
-	return new LazyPromise(async () => {
-		return awaitAsyncRequest(callbackId, {
-			capabilityId,
-			method,
-			mode,
-		})
-	})
+  return {
+    result: async () =>
+      awaitAsyncRequest(callbackId, {
+        capabilityId,
+        method,
+        mode,
+      }),
+  };
 }
