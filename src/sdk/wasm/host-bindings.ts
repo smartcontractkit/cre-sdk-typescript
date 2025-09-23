@@ -20,11 +20,11 @@ const globalHostBindingsSchema = z.object({
 		.returns(z.union([z.instanceof(Uint8Array), z.custom<Uint8Array<ArrayBufferLike>>()])),
 	getSecrets: z
 		.function()
-		.args(z.union([z.instanceof(Uint8Array), z.custom<Uint8Array<ArrayBufferLike>>()]), z.number())
+		.args(z.union([z.instanceof(Uint8Array), z.custom<Uint8Array<ArrayBufferLike>>()]), z.bigint())
 		.returns(z.any()),
 	awaitSecrets: z
 		.function()
-		.args(z.union([z.instanceof(Uint8Array), z.custom<Uint8Array<ArrayBufferLike>>()]), z.number())
+		.args(z.union([z.instanceof(Uint8Array), z.custom<Uint8Array<ArrayBufferLike>>()]), z.bigint())
 		.returns(z.union([z.instanceof(Uint8Array), z.custom<Uint8Array<ArrayBufferLike>>()])),
 	getWasiArgs: z.function().args().returns(z.string()),
 	now: z.function().args().returns(z.number()),

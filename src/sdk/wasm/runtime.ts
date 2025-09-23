@@ -49,27 +49,24 @@ class WasmRuntimeHelpers implements RuntimeHelpers {
 	}
 
 	await(request: AwaitCapabilitiesRequest, maxResponseSize: bigint): AwaitCapabilitiesResponse {
+		console.log('await: ', maxResponseSize)
+		console.log('await number:', Number(maxResponseSize))
 		const response = hostBindings.awaitCapabilities(
 			toBinary(AwaitCapabilitiesRequestSchema, request),
-			Number(maxResponseSize),
+			Number(1024 * 1024 * 5),
 		)
 		const responseBytes = Array.isArray(response) ? new Uint8Array(response) : response
 		return fromBinary(AwaitCapabilitiesResponseSchema, responseBytes)
 	}
 
 	getSecrets(request: GetSecretsRequest, maxResponseSize: bigint): boolean {
-		return (
-			hostBindings.getSecrets(
-				toBinary(GetSecretsRequestSchema, request),
-				Number(maxResponseSize),
-			) >= 0
-		)
+		return hostBindings.getSecrets(toBinary(GetSecretsRequestSchema, request), maxResponseSize) >= 0
 	}
 
 	awaitSecrets(request: AwaitSecretsRequest, maxResponseSize: bigint): AwaitSecretsResponse {
 		const response = hostBindings.awaitSecrets(
 			toBinary(AwaitSecretsRequestSchema, request),
-			Number(maxResponseSize),
+			maxResponseSize,
 		)
 		const responseBytes = Array.isArray(response) ? new Uint8Array(response) : response
 		return fromBinary(AwaitSecretsResponseSchema, responseBytes)
