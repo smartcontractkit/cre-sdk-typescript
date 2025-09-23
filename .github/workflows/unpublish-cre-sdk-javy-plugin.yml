@@ -34,7 +34,7 @@ jobs:
       - name: Verify npm authentication
         env:
           NPM_CONFIG_TOKEN: ${{ secrets.NPM_CRE_SDK_TYPESCRIPT }}
-        run: bun pm whoami
+        run: npm whoami
 
       - name: Verify version exists
         env:
