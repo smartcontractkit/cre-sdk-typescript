@@ -18,7 +18,7 @@ const handler = async () => {
 		// We shoudl be using node runtime here in future...
 		const _ = nrt
 		const nodeActionCapability = new NodeActionCapability()
-		await nodeActionCapability.performAction({ inputThing: true })
+		await nodeActionCapability.performAction({ inputThing: true }).result()
 	} catch (e) {
 		console.log('error', e)
 		if (e instanceof NodeModeError) {

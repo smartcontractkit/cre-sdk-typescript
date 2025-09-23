@@ -38,7 +38,7 @@ export class BasicCapability {
 
 	constructor(private readonly mode: Mode = BasicCapability.DEFAULT_MODE) {}
 
-	async action(input: Input | InputJson): Promise<Output> {
+	action(input: Input | InputJson): { result: () => Promise<Output> } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const value = (input as any).$typeName
 			? (input as Input)
@@ -49,30 +49,36 @@ export class BasicCapability {
 		}
 		const capabilityId = BasicCapability.CAPABILITY_ID
 
-		const capabilityResponse = await callCapability({
+		const capabilityResponse = callCapability({
 			capabilityId,
 			method: 'Action',
 			mode: this.mode,
 			payload,
 		})
 
-		if (capabilityResponse.response.case === 'error') {
-			throw new CapabilityError(capabilityResponse.response.value, {
-				capabilityId,
-				method: 'Action',
-				mode: this.mode,
-			})
-		}
+		return {
+			result: async () => {
+				const { response } = await capabilityResponse.result()
 
-		if (capabilityResponse.response.case !== 'payload') {
-			throw new CapabilityError('No payload in response', {
-				capabilityId,
-				method: 'Action',
-				mode: this.mode,
-			})
-		}
+				if (response.case === 'error') {
+					throw new CapabilityError(response.value, {
+						capabilityId,
+						method: 'Action',
+						mode: this.mode,
+					})
+				}
 
-		return fromBinary(OutputSchema, capabilityResponse.response.value.value)
+				if (response.case !== 'payload') {
+					throw new CapabilityError('No payload in response', {
+						capabilityId,
+						method: 'Action',
+						mode: this.mode,
+					})
+				}
+
+				return fromBinary(OutputSchema, response.value.value)
+			},
+		}
 	}
 
 	trigger(config: ConfigJson): BasicTrigger {

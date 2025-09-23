@@ -1,7 +1,6 @@
 import { doRequestAsync } from '@cre/sdk/utils/do-request-async'
 import { awaitAsyncRequest } from '@cre/sdk/utils/await-async-request'
 import { Mode, type CapabilityResponse } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import { LazyPromise } from '@cre/sdk/utils/lazy-promise'
 import { runtimeGuards } from '@cre/sdk/runtime/runtime'
 
 export type CallCapabilityParams = {
@@ -12,6 +11,10 @@ export type CallCapabilityParams = {
 		typeUrl: string
 		value: Uint8Array
 	}
+}
+
+type CallCapabilityReturn = {
+	result: () => Promise<CapabilityResponse>
 }
 
 /**
@@ -26,7 +29,7 @@ export function callCapability({
 	method,
 	mode = Mode.DON,
 	payload,
-}: CallCapabilityParams): Promise<CapabilityResponse> {
+}: CallCapabilityParams): CallCapabilityReturn {
 	// Guards:
 	// - Block DON-mode calls while currently in NODE mode
 	// - Block NODE-mode calls while currently in DON mode
@@ -40,11 +43,12 @@ export function callCapability({
 		payload,
 	})
 
-	return new LazyPromise(async () => {
-		return awaitAsyncRequest(callbackId, {
-			capabilityId,
-			method,
-			mode,
-		})
-	})
+	return {
+		result: async () =>
+			awaitAsyncRequest(callbackId, {
+				capabilityId,
+				method,
+				mode,
+			}),
+	}
 }
