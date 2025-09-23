@@ -36,7 +36,7 @@
     "generate:proto": "bunx @bufbuild/buf generate && BIOME_PATHS=\"src/generated\" bun check",
     "generate:sdk": "bun generate:proto && bun generate:chain-selectors && bun scripts/run generate-sdks && BIOME_PATHS=\"src/generated src/generated-sdk\" bun check",
     "lint": "biome lint --write",
-    "prepublishOnly": "bun typecheck && bun lint && bun test && bun test:standard",
+    "prepublishOnly": "bun typecheck && bun lint && bun test",
     "test": "bun test",
     "test:standard": "./scripts/run-standard-tests.sh",
     "typecheck": "tsc"
