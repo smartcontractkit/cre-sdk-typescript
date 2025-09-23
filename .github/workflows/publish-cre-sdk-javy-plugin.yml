@@ -1,26 +1,12 @@
 name: Publish CRE SDK Javy Plugin
 
 on:
-  release:
-    types: [published]
-  push:
-    tags:
-      - "cre-sdk-javy-plugin-v*"
   workflow_dispatch:
     inputs:
-      version:
-        description: "Version to publish (e.g., 1.0.0). Leave empty to auto-increment patch version"
+      tag:
+        description: "Git tag to checkout and publish from (leave empty for latest commit on main)"
         required: false
         type: string
-      version_type:
-        description: "Auto-increment type (if version not specified)"
-        required: false
-        default: "patch"
-        type: choice
-        options:
-          - patch
-          - minor
-          - major
       dry_run:
         description: "Run in dry-run mode (do not actually publish)"
         required: false
@@ -42,8 +28,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.inputs.tag || 'main' }}
           fetch-depth: 0
           submodules: recursive
+
+      - name: Display checkout info
+        run: |
+          echo "Checked out ref: ${{ github.event.inputs.tag || 'main' }}"
+          echo "Current commit: $(git rev-parse HEAD)"
+          echo "Current commit short: $(git rev-parse --short HEAD)"
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
@@ -53,25 +46,13 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Update version
+      - name: Get package version
         working-directory: packages/cre-sdk-javy-plugin
         run: |
-          if [ -n "${{ github.event.inputs.version }}" ]; then
-            echo "Updating CRE SDK Javy plugin version to ${{ github.event.inputs.version }}"
-            bun pm version ${{ github.event.inputs.version }}
-          else
-            echo "Auto-incrementing version (${{ github.event.inputs.version_type || 'patch' }})"
-            bun pm version ${{ github.event.inputs.version_type || 'patch' }}
-          fi
-
-          # Get the final version for later steps
-          NEW_VERSION=$(node -p "require('./package.json').version")
-          echo "JAVY_PLUGIN_VERSION=$NEW_VERSION" >> $GITHUB_ENV
-          echo "Final javy plugin version: $NEW_VERSION"
-
-      - name: Run pre-publish checks and build
-        working-directory: packages/cre-sdk-javy-plugin
-        run: bun run prepublish-checks
+          # Get the version from package.json
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          echo "JAVY_PLUGIN_VERSION=$CURRENT_VERSION" >> $GITHUB_ENV
+          echo "Using javy plugin version from package.json: $CURRENT_VERSION"
 
       - name: Verify npm authentication
         env:
@@ -97,11 +78,11 @@ jobs:
           echo "## 🔌 Published CRE SDK Javy Plugin Package" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- 🔌 \`@chainlink/cre-sdk-javy-plugin\`" >> $GITHUB_STEP_SUMMARY
+          echo "- 📋 Published from: \`${{ github.event.inputs.tag || 'main' }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- 🔗 Commit: \`$(git rev-parse --short HEAD)\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Installation" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
-          echo "# Using npm" >> $GITHUB_STEP_SUMMARY
-          echo "npm install @chainlink/cre-sdk-javy-plugin" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "# Using bun" >> $GITHUB_STEP_SUMMARY
           echo "bun add @chainlink/cre-sdk-javy-plugin" >> $GITHUB_STEP_SUMMARY
@@ -110,10 +91,10 @@ jobs:
           echo "### CLI Commands" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
           echo "# Setup CRE environment" >> $GITHUB_STEP_SUMMARY
-          echo "cre-setup" >> $GITHUB_STEP_SUMMARY
+          echo "bunx cre-setup" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "# Compile workflow" >> $GITHUB_STEP_SUMMARY
-          echo "cre-compile-workflow" >> $GITHUB_STEP_SUMMARY
+          echo "bunx cre-compile-workflow" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
 
   verify-cre-sdk-javy-plugin:
@@ -141,18 +122,18 @@ jobs:
           echo "Installing package to test CLI binaries..."
           bun add @chainlink/cre-sdk-javy-plugin
 
-          echo "Checking cre-setup command..."
-          if command -v cre-setup >/dev/null 2>&1; then
-            echo "✅ cre-setup command is available"
+          echo "Checking cre-setup command via bunx..."
+          if bunx cre-setup --help >/dev/null 2>&1; then
+            echo "✅ cre-setup command is available via bunx"
           else
-            echo "❌ cre-setup command not found"
+            echo "❌ cre-setup command not found via bunx"
             exit 1
           fi
 
-          echo "Checking cre-compile-workflow command..."
-          if command -v cre-compile-workflow >/dev/null 2>&1; then
-            echo "✅ cre-compile-workflow command is available"
+          echo "Checking cre-compile-workflow command via bunx..."
+          if bunx cre-compile-workflow --help >/dev/null 2>&1; then
+            echo "✅ cre-compile-workflow command is available via bunx"
           else
-            echo "❌ cre-compile-workflow command not found"
+            echo "❌ cre-compile-workflow command not found via bunx"
             exit 1
           fi
