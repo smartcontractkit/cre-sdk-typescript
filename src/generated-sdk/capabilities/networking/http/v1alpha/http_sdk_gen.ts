@@ -34,7 +34,8 @@ export class HTTPCapability {
 	constructor(private readonly mode: Mode = HTTPCapability.DEFAULT_MODE) {}
 
 	trigger(config: ConfigJson): HTTPTrigger {
-		return new HTTPTrigger(this.mode, config, HTTPCapability.CAPABILITY_ID, 'Trigger')
+		const capabilityId = HTTPCapability.CAPABILITY_ID
+		return new HTTPTrigger(this.mode, config, capabilityId, 'Trigger')
 	}
 }
 
