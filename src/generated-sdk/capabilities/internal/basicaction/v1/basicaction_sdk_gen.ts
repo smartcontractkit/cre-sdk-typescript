@@ -1,12 +1,12 @@
 import { fromJson } from '@bufbuild/protobuf'
+import { type Runtime } from '@cre/sdk/runtime/runtime'
 import {
+	InputsSchema,
+	OutputsSchema,
 	type Inputs,
 	type InputsJson,
-	InputsSchema,
 	type Outputs,
-	OutputsSchema,
 } from '@cre/generated/capabilities/internal/basicaction/v1/basic_action_pb'
-import { type Runtime } from '@cre/sdk/runtime'
 
 /**
  * BasicAction Capability

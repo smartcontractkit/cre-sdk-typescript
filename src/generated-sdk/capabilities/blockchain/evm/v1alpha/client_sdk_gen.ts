@@ -1,60 +1,61 @@
 import { fromJson, create } from '@bufbuild/protobuf'
-import { type Any, AnySchema, anyPack, type Empty, EmptySchema } from '@bufbuild/protobuf/wkt'
+import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
+import { type Any, AnySchema, anyPack } from '@bufbuild/protobuf/wkt'
+import { type Runtime } from '@cre/sdk/runtime/runtime'
 import {
-	type BalanceAtReply,
 	BalanceAtReplySchema,
+	BalanceAtRequestSchema,
+	CallContractReplySchema,
+	CallContractRequestSchema,
+	EstimateGasReplySchema,
+	EstimateGasRequestSchema,
+	FilterLogTriggerRequestSchema,
+	FilterLogsReplySchema,
+	FilterLogsRequestSchema,
+	GetTransactionByHashReplySchema,
+	GetTransactionByHashRequestSchema,
+	GetTransactionReceiptReplySchema,
+	GetTransactionReceiptRequestSchema,
+	HeaderByNumberReplySchema,
+	HeaderByNumberRequestSchema,
+	LogSchema,
+	RegisterLogTrackingRequestSchema,
+	UnregisterLogTrackingRequestSchema,
+	WriteReportReplySchema,
+	WriteReportRequestSchema,
+	type BalanceAtReply,
 	type BalanceAtRequest,
 	type BalanceAtRequestJson,
-	BalanceAtRequestSchema,
 	type CallContractReply,
-	CallContractReplySchema,
 	type CallContractRequest,
 	type CallContractRequestJson,
-	CallContractRequestSchema,
 	type EstimateGasReply,
-	EstimateGasReplySchema,
 	type EstimateGasRequest,
 	type EstimateGasRequestJson,
-	EstimateGasRequestSchema,
-	type FilterLogsReply,
-	FilterLogsReplySchema,
-	type FilterLogsRequest,
-	type FilterLogsRequestJson,
-	FilterLogsRequestSchema,
 	type FilterLogTriggerRequest,
 	type FilterLogTriggerRequestJson,
-	FilterLogTriggerRequestSchema,
+	type FilterLogsReply,
+	type FilterLogsRequest,
+	type FilterLogsRequestJson,
 	type GetTransactionByHashReply,
-	GetTransactionByHashReplySchema,
 	type GetTransactionByHashRequest,
 	type GetTransactionByHashRequestJson,
-	GetTransactionByHashRequestSchema,
 	type GetTransactionReceiptReply,
-	GetTransactionReceiptReplySchema,
 	type GetTransactionReceiptRequest,
 	type GetTransactionReceiptRequestJson,
-	GetTransactionReceiptRequestSchema,
 	type HeaderByNumberReply,
-	HeaderByNumberReplySchema,
 	type HeaderByNumberRequest,
 	type HeaderByNumberRequestJson,
-	HeaderByNumberRequestSchema,
 	type Log,
-	LogSchema,
 	type RegisterLogTrackingRequest,
 	type RegisterLogTrackingRequestJson,
-	RegisterLogTrackingRequestSchema,
 	type UnregisterLogTrackingRequest,
 	type UnregisterLogTrackingRequestJson,
-	UnregisterLogTrackingRequestSchema,
 	type WriteReportReply,
-	WriteReportReplySchema,
 	type WriteReportRequest,
 	type WriteReportRequestJson,
-	WriteReportRequestSchema,
 } from '@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb'
-import { type Runtime } from '@cre/sdk/runtime'
-import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
+import { EmptySchema, type Empty } from '@bufbuild/protobuf/wkt'
 
 /**
  * Client Capability
@@ -297,7 +298,11 @@ export class ClientCapability {
 	}
 
 	logTrigger(config: FilterLogTriggerRequestJson): ClientLogTrigger {
-		return new ClientLogTrigger(config, ClientCapability.CAPABILITY_ID, 'LogTrigger')
+		// Include chainSelector in capability ID for routing when specified
+		const capabilityId = this.chainSelector
+			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+			: ClientCapability.CAPABILITY_ID
+		return new ClientLogTrigger(config, capabilityId, 'LogTrigger')
 	}
 
 	async writeReport(

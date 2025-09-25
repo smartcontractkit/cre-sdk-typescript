@@ -1,12 +1,12 @@
 import { fromJson } from '@bufbuild/protobuf'
+import { type NodeRuntime } from '@cre/sdk/runtime/runtime'
 import {
+	NodeInputsSchema,
+	NodeOutputsSchema,
 	type NodeInputs,
 	type NodeInputsJson,
-	NodeInputsSchema,
 	type NodeOutputs,
-	NodeOutputsSchema,
 } from '@cre/generated/capabilities/internal/nodeaction/v1/node_action_pb'
-import { type NodeRuntime } from '@cre/sdk/runtime'
 
 /**
  * BasicAction Capability

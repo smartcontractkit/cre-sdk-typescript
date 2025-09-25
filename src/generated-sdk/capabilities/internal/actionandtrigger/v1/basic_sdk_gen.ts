@@ -1,19 +1,19 @@
 import { fromJson, create } from '@bufbuild/protobuf'
+import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 import { type Any, AnySchema, anyPack } from '@bufbuild/protobuf/wkt'
+import { type Runtime } from '@cre/sdk/runtime/runtime'
 import {
+	ConfigSchema,
+	InputSchema,
+	OutputSchema,
+	TriggerEventSchema,
 	type Config,
 	type ConfigJson,
-	ConfigSchema,
 	type Input,
 	type InputJson,
-	InputSchema,
 	type Output,
-	OutputSchema,
 	type TriggerEvent,
-	TriggerEventSchema,
 } from '@cre/generated/capabilities/internal/actionandtrigger/v1/action_and_trigger_pb'
-import { type Runtime } from '@cre/sdk/runtime'
-import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 
 /**
  * Basic Capability
@@ -49,7 +49,8 @@ export class BasicCapability {
 	}
 
 	trigger(config: ConfigJson): BasicTrigger {
-		return new BasicTrigger(config, BasicCapability.CAPABILITY_ID, 'Trigger')
+		const capabilityId = BasicCapability.CAPABILITY_ID
+		return new BasicTrigger(config, capabilityId, 'Trigger')
 	}
 }
 

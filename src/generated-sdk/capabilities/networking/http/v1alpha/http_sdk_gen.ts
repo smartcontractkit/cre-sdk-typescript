@@ -1,14 +1,14 @@
 import { fromJson, create } from '@bufbuild/protobuf'
+import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 import { type Any, AnySchema, anyPack } from '@bufbuild/protobuf/wkt'
+import { type Runtime } from '@cre/sdk/runtime/runtime'
 import {
+	ConfigSchema,
+	PayloadSchema,
 	type Config,
 	type ConfigJson,
-	ConfigSchema,
 	type Payload,
-	PayloadSchema,
 } from '@cre/generated/capabilities/networking/http/v1alpha/trigger_pb'
-import { type Runtime } from '@cre/sdk/runtime'
-import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 
 /**
  * HTTP Capability
@@ -27,7 +27,8 @@ export class HTTPCapability {
 	constructor() {}
 
 	trigger(config: ConfigJson): HTTPTrigger {
-		return new HTTPTrigger(config, HTTPCapability.CAPABILITY_ID, 'Trigger')
+		const capabilityId = HTTPCapability.CAPABILITY_ID
+		return new HTTPTrigger(config, capabilityId, 'Trigger')
 	}
 }
 

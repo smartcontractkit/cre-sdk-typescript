@@ -1,12 +1,12 @@
 import { fromJson } from '@bufbuild/protobuf'
+import { type NodeRuntime } from '@cre/sdk/runtime/runtime'
 import {
+	RequestSchema,
+	ResponseSchema,
 	type Request,
 	type RequestJson,
-	RequestSchema,
 	type Response,
-	ResponseSchema,
 } from '@cre/generated/capabilities/networking/http/v1alpha/client_pb'
-import { type NodeRuntime } from '@cre/sdk/runtime'
 
 /**
  * Client Capability

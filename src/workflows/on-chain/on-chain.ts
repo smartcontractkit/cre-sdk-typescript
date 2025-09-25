@@ -55,7 +55,7 @@ const onCronTrigger = async (runtime: Runtime<Config>, _: Payload): Promise<bigi
 		functionName: 'get',
 	})
 
-	const contractCall = await evmClient.callContract(runtime, {
+	const contractCall = evmClient.callContract(runtime, {
 		call: {
 			from: hexToBase64(zeroAddress),
 			to: hexToBase64(evmConfig.storageAddress),

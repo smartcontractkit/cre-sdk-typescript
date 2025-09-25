@@ -132,7 +132,7 @@ export function generateSdk(file: GenFile, outputDir: string) {
 
 				// Check if this is a streaming method (trigger)
 				if (method.methodKind === 'server_streaming') {
-					return generateTriggerMethod(method, methodName, capabilityClassName, service.name)
+					return generateTriggerMethod(method, methodName, capabilityClassName, service.name, hasChainSelector)
 				}
 
 				// Generate action method

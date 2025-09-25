@@ -1,16 +1,16 @@
 import { fromJson } from '@bufbuild/protobuf'
+import { type Runtime } from '@cre/sdk/runtime/runtime'
 import {
+	ReportRequestSchema,
+	ReportResponseSchema,
+	SimpleConsensusInputsSchema,
 	type ReportRequest,
 	type ReportRequestJson,
-	ReportRequestSchema,
 	type ReportResponse,
-	ReportResponseSchema,
 	type SimpleConsensusInputs,
 	type SimpleConsensusInputsJson,
-	SimpleConsensusInputsSchema,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import { type Value, ValueSchema } from '@cre/generated/values/v1/values_pb'
-import { type Runtime } from '@cre/sdk/runtime'
+import { ValueSchema, type Value } from '@cre/generated/values/v1/values_pb'
 
 /**
  * Consensus Capability
