@@ -20,6 +20,8 @@ export type BaseRuntime<C> = {
 	): { result: () => Promise<O> }
 
 	now(): Date
+
+	log(message: string): void
 }
 
 export type Runtime<C> = BaseRuntime<C> &

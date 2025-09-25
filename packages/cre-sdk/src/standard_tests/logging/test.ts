@@ -1,10 +1,9 @@
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
 import { cre, type Runtime } from '@cre/sdk/cre'
 import { Runner } from '@cre/sdk/wasm'
-import { hostBindings } from '@cre/sdk/wasm/host-bindings'
 
 const doLog = (runtime: Runtime<string>) => {
-	hostBindings.log('log from wasm!')
+	runtime.log('log from wasm!')
 	return runtime.config
 }
 

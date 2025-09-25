@@ -64,7 +64,7 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 
 		const anyPayload = anyPack(inputSchema, payload)
 		const callbackId = this.nextCallId
-		if (this.mode == Mode.DON) this.nextCallId++
+		if (this.mode === Mode.DON) this.nextCallId++
 		else this.nextCallId--
 
 		const req = create(CapabilityRequestSchema, {
@@ -129,6 +129,10 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 	now(): Date {
 		// ns to ms
 		return new Date(this.helpers.now() / 1000000)
+	}
+
+	log(message: string): void {
+		this.helpers.log(message)
 	}
 }
 
@@ -231,7 +235,7 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 				}
 
 				const responses = secretsResponse.responses
-				if (responses.length != 1) {
+				if (responses.length !== 1) {
 					throw new SecretsError(secretRequest, 'invalid value returned from host')
 				}
 
@@ -259,4 +263,6 @@ export interface RuntimeHelpers {
 	switchModes(mode: Mode): void
 
 	now(): number
+
+	log(message: string): void
 }
