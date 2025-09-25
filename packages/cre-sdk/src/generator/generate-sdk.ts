@@ -9,6 +9,7 @@ import {
 	method as methodOption,
 } from '@cre/generated/tools/generator/v1alpha/cre_metadata_pb'
 import { generateActionMethod } from './generate-action'
+import { generateActionSugarClass } from './generate-sugar'
 import { generateTriggerClass, generateTriggerMethod } from './generate-trigger'
 import { getImportPathForFile, lowerCaseFirstLetter } from './utils'
 
@@ -45,8 +46,16 @@ export function generateSdk(file: GenFile, outputDir: string) {
 		// Generate imports - collect all unique types first
 		const typeImports = new Map<string, Set<string>>()
 
+		var hasTriggers = false
+		var hasActions = false
 		// Process each method to collect types
 		service.methods.forEach((method) => {
+			if (method.methodKind === 'server_streaming') {
+				hasTriggers = true
+			} else {
+				hasActions = true
+			}
+
 			// Handle input type
 			const inputFile = method.input.file
 			const inputPath =
@@ -79,8 +88,6 @@ export function generateSdk(file: GenFile, outputDir: string) {
 			outputPathTypes.add(`type ${method.output.name}`)
 		})
 
-		const hasTriggers = service.methods.some((m) => m.methodKind === 'server_streaming')
-		const hasActions = service.methods.some((m) => m.methodKind !== 'server_streaming')
 		const modePrefix = capOption.mode === Mode.NODE ? 'Node' : ''
 
 		// Build import statements
@@ -99,7 +106,11 @@ export function generateSdk(file: GenFile, outputDir: string) {
 
 		// TODO???
 		if (hasActions || true) {
-			imports.add(`import { type ${modePrefix}Runtime } from "@cre/sdk/runtime"`)
+			if (modePrefix !== '') {
+				imports.add(`import type { Runtime, ${modePrefix}Runtime } from "@cre/sdk/runtime"`)
+			} else {
+				imports.add(`import type { Runtime } from "@cre/sdk/runtime"`)
+			}
 		}
 
 		// Generate deduplicated type imports
@@ -124,6 +135,20 @@ export function generateSdk(file: GenFile, outputDir: string) {
 
 			return !methodMeta?.mapToUntypedApi
 		})
+
+		const sugarClasses = serviceMethods
+			.map((method) => {
+				const methodName = lowerCaseFirstLetter(method.name)
+				return generateActionSugarClass(method, methodName, capabilityClassName, modePrefix)
+			})
+			.filter((method) => method !== '')
+			.join('\n')
+
+		if (sugarClasses.length > 0) {
+			imports.add(
+				'import type { ConsensusAggregation, PrimitiveTypes, UnwrapOptions } from "@cre/sdk/utils"',
+			)
+		}
 
 		// Generate methods
 		const methods = serviceMethods
@@ -195,6 +220,7 @@ ${Object.entries(defaults)
 
 		// Generate the complete file
 		const output = `${Array.from(imports).join('\n')}
+${sugarClasses}
 ${classComment}
 export class ${capabilityClassName} {
   /** The capability ID for this service */

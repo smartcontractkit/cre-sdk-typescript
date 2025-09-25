@@ -6,7 +6,18 @@ import {
 	type NodeOutputs,
 	NodeOutputsSchema,
 } from '@cre/generated/capabilities/internal/nodeaction/v1/node_action_pb'
-import { type NodeRuntime } from '@cre/sdk/runtime'
+import type { NodeRuntime, Runtime } from '@cre/sdk/runtime'
+import type { ConsensusAggregation, PrimitiveTypes, UnwrapOptions } from '@cre/sdk/utils'
+
+export class PerformActioner {
+	constructor(
+		private readonly runtime: NodeRuntime<any>,
+		private readonly client: BasicActionCapability,
+	) {}
+	performAction(input: NodeInputs | NodeInputsJson): { result: () => Promise<NodeOutputs> } {
+		return this.client.performAction(this.runtime, input)
+	}
+}
 
 /**
  * BasicAction Capability
