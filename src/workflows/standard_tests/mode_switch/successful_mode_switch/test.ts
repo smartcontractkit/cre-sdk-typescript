@@ -17,7 +17,7 @@ class Output {
 const handler = async (runtime: Runtime<Uint8Array>, _: Outputs) => {
 	const donInput = { inputThing: true }
 	const basicActionCapability = new BasicActionCapability()
-	const donResponse = await basicActionCapability.performAction(runtime, donInput)
+	const donResponse = await basicActionCapability.performAction(runtime, donInput).result()
 	runtime.now()
 
 	const consensusOutput = await runtime.runInNodeMode(
@@ -26,7 +26,7 @@ const handler = async (runtime: Runtime<Uint8Array>, _: Outputs) => {
 			const nodeActionCapability = new NodeActionCapability()
 			const nodeResponse = await nodeActionCapability.performAction(nodeRuntime, {
 				inputThing: true,
-			})
+			}).result()
 
 			return new Output(new Int64(nodeResponse.outputThing))
 		},

@@ -32,7 +32,7 @@ const randHandler = async (runtime: Runtime<Uint8Array>, _: Outputs) => {
         {
           inputThing: true,
         }
-      );
+      ).result();
 
       if (nodeResponse.outputThing < 100n) {
         hostBindings.log(`***${nodeRandomNumber.toString()}`);

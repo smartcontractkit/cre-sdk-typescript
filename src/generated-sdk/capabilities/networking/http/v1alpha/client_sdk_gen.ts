@@ -1,12 +1,12 @@
 import { fromJson } from '@bufbuild/protobuf'
+import { type NodeRuntime } from '@cre/sdk/runtime'
 import {
+	RequestSchema,
+	ResponseSchema,
 	type Request,
 	type RequestJson,
-	RequestSchema,
 	type Response,
-	ResponseSchema,
 } from '@cre/generated/capabilities/networking/http/v1alpha/client_pb'
-import { type NodeRuntime } from '@cre/sdk/runtime'
 
 /**
  * Client Capability
@@ -24,7 +24,10 @@ export class ClientCapability {
 
 	constructor() {}
 
-	async sendRequest(runtime: NodeRuntime<any>, input: Request | RequestJson): Promise<Response> {
+	sendRequest(
+		runtime: NodeRuntime<any>,
+		input: Request | RequestJson,
+	): { result: () => Promise<Response> } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as Request)
@@ -32,12 +35,18 @@ export class ClientCapability {
 
 		const capabilityId = ClientCapability.CAPABILITY_ID
 
-		return runtime.callCapability<Request, Response>({
+		const capabilityResponse = runtime.callCapability<Request, Response>({
 			capabilityId,
 			method: 'SendRequest',
 			payload,
 			inputSchema: RequestSchema,
 			outputSchema: ResponseSchema,
 		})
+
+		return {
+			result: async () => {
+				return capabilityResponse.result()
+			},
+		}
 	}
 }

@@ -154,9 +154,9 @@ describe('test runtime', () => {
 			const call1 = workflowAction1.performAction(runtime, input1)
 			const workflowAction2 = new BasicCapability()
 			const call2 = workflowAction2.action(runtime, input2)
-			const result2 = await call2
+			const result2 = await call2.result()
 			expect(result2.welcome).toEqual(anyResult2)
-			const result1 = await call1
+			const result1 = await call1.result()
 			expect(result1.adaptedThing).toEqual(anyResult1)
 		})
 
@@ -172,7 +172,7 @@ describe('test runtime', () => {
 			const call1 = workflowAction1.performAction(
 				runtime,
 				create(InputsSchema, { inputThing: true }),
-			)
+			).result()
 
 			expect(call1).rejects.toThrow(
 				new CapabilityError(`Capability not found ${BasicActionCapability.CAPABILITY_ID}`, {
@@ -206,7 +206,7 @@ describe('test runtime', () => {
 			const call1 = workflowAction1.performAction(
 				runtime,
 				create(InputsSchema, { inputThing: true }),
-			)
+			).result()
 
 			expect(call1).rejects.toThrow(
 				new CapabilityError('Error ' + anyError, {
@@ -233,7 +233,7 @@ describe('test runtime', () => {
 			const call1 = workflowAction1.performAction(
 				runtime,
 				create(InputsSchema, { inputThing: true }),
-			)
+			).result()
 
 			expect(call1).rejects.toThrow(
 				new CapabilityError(anyError, {
@@ -259,7 +259,7 @@ describe('test runtime', () => {
 			const call1 = workflowAction1.performAction(
 				runtime,
 				create(InputsSchema, { inputThing: true }),
-			)
+			).result()
 
 			expect(call1).rejects.toThrow(
 				new CapabilityError('No response found for callback ID 1', {
@@ -320,16 +320,18 @@ describe('test run in node mode', () => {
 						factory: () => create(NodeOutputsSchema),
 					}).outputThing,
 				).toEqual(anyObservation)
-				return Promise.resolve(
-					Value.from(create(NodeOutputsSchema, { outputThing: anyMedian })).proto(),
-				)
+				return {
+					result: async () => Value.from(create(NodeOutputsSchema, { outputThing: anyMedian })).proto(),
+				}
 			},
 		)
 
 		NodeActionCapability.prototype.performAction = mock(
 			(_: NodeRuntime<any>, __: NodeInputs | NodeInputsJson) => {
 				expect(modes).toEqual([Mode.DON, Mode.NODE])
-				return Promise.resolve(create(NodeOutputsSchema, { outputThing: anyObservation }))
+				return {
+					result: async () => create(NodeOutputsSchema, { outputThing: anyObservation })
+				}
 			},
 		)
 
@@ -340,7 +342,7 @@ describe('test run in node mode', () => {
 				return await capability.performAction(
 					nodeRuntime,
 					create(NodeInputsSchema, { inputThing: true }),
-				)
+				).result()
 			},
 			ConsensusAggregationByFields<NodeOutputs>({ outputThing: median }),
 		)()
@@ -366,7 +368,7 @@ describe('test run in node mode', () => {
 				const inputsProto = inputs as SimpleConsensusInputs
 				expect(inputsProto.observation.case).toEqual('error')
 				expect(inputsProto.observation.value).toEqual(anyError)
-				return Promise.reject(new Error(anyError))
+				return {result: async () => Promise.reject(new Error(anyError))}
 			},
 		)
 
@@ -388,7 +390,7 @@ describe('test run in node mode', () => {
 
 		ConsensusCapability.prototype.simple = mock(
 			(_: Runtime<any>, __: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
-				return Promise.resolve(Value.from(0).proto())
+				return {result: async () => Promise.resolve(Value.from(0).proto())}
 			},
 		)
 
@@ -402,7 +404,7 @@ describe('test run in node mode', () => {
 		const capability = new NodeActionCapability()
 		expect(nrt).toBeDefined()
 		expect(
-			capability.performAction(nrt!, create(NodeInputsSchema, { inputThing: true })),
+			capability.performAction(nrt!, create(NodeInputsSchema, { inputThing: true })).result(),
 		).rejects.toThrow(new NodeModeError())
 	})
 
@@ -423,14 +425,14 @@ describe('test run in node mode', () => {
 				const inputsProto = inputs as SimpleConsensusInputs
 				expect(inputsProto.observation.case).toEqual('error')
 				expect(inputsProto.observation.value).toEqual(new DonModeError().message)
-				return Promise.reject(new DonModeError())
+				return {result: async () => Promise.reject(new DonModeError())}
 			},
 		)
 
 		const runtime = new RuntimeImpl<any>({}, 1, helpers, anyMaxSize)
 		const result = runtime.runInNodeMode(async (_: NodeRuntime<any>) => {
 			const capability = new BasicActionCapability()
-			await capability.performAction(runtime, create(InputsSchema, { inputThing: true }))
+			await capability.performAction(runtime, create(InputsSchema, { inputThing: true })).result()
 			return 0
 		}, consensusMedianAggregation())()
 		expect(result).rejects.toThrow(new DonModeError())

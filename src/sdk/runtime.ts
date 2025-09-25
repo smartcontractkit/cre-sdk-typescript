@@ -17,7 +17,7 @@ export type BaseRuntime<C> = {
 	// callCapability is meant to be called by generated code only.
 	callCapability<I extends Message, O extends Message>(
 		params: CallCapabilityParams<I, O>,
-	): Promise<O>
+	): {result: () => Promise<O>}
 
 	now(): Date
 }

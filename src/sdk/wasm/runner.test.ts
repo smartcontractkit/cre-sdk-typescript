@@ -286,7 +286,7 @@ describe('runner', () => {
 
 		const dr = getTestRunner(subscribeRequest)
 		await (await dr).run(async (_: string, secretsProvider: SecretsProvider) => {
-			const secret = await secretsProvider.getSecret({ namespace: 'Foo', id: 'Bar' })
+			const secret = await secretsProvider.getSecret({ namespace: 'Foo', id: 'Bar' }).result()
 			expect(secret.namespace).toBe('Foo')
 			expect(secret.id).toBe('Bar')
 			expect(secret.owner).toBe('Baz')

@@ -16,7 +16,7 @@ const handler = async (runtime: Runtime<Uint8Array>, _: Outputs) => {
 	// Now we're back in DON mode, try to use a NODE mode capability
 	// This should trigger assertNodeSafe() and throw "cannot use NodeRuntime outside RunInNodeMode"
 	const nodeActionCapability = new NodeActionCapability()
-	await nodeActionCapability.performAction(nrt!, { inputThing: true })
+	await nodeActionCapability.performAction(nrt!, { inputThing: true }).result()
 	return 'hi'
 }
 
