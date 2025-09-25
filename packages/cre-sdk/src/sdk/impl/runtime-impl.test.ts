@@ -4,7 +4,7 @@ import type { GenMessage } from '@bufbuild/protobuf/codegenv2'
 import { type Any, anyPack, anyUnpack } from '@bufbuild/protobuf/wkt'
 import {
 	InputSchema,
-	OutputSchema as OutputSchema,
+	OutputSchema,
 } from '@cre/generated/capabilities/internal/actionandtrigger/v1/action_and_trigger_pb'
 import {
 	InputsSchema,
@@ -66,6 +66,7 @@ function createRuntimeHelpersMock(overrides: Partial<RuntimeHelpers> = {}): Runt
 		now: mock(() => {
 			throw new Error('Method not implemented: now')
 		}),
+		log: mock(() => {}),
 	}
 
 	// Return a merged object with overrides taking precedence

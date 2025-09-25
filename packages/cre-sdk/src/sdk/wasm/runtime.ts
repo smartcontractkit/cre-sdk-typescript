@@ -83,4 +83,8 @@ class WasmRuntimeHelpers implements RuntimeHelpers {
 	switchModes(mode: Mode): void {
 		hostBindings.switchModes(mode)
 	}
+
+	log(message: string): void {
+		hostBindings.log(message)
+	}
 }

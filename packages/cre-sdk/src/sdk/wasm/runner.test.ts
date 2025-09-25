@@ -297,17 +297,6 @@ describe('runner', () => {
 	})
 })
 
-function assertEnv(r: Runner<string>) {
-	let ran = false
-	const verifyEnv = (config: string, _: SecretsProvider) => {
-		ran = true
-		expect(config).toBe(anyConfig.toString())
-		return []
-	}
-	r.run(verifyEnv)
-	expect(ran).toBe(true)
-}
-
 function getTestRunner(request: ExecuteRequest): Promise<Runner<string>> {
 	const serialized = toBinary(ExecuteRequestSchema, request)
 	const encoded = Buffer.from(serialized).toString('base64')

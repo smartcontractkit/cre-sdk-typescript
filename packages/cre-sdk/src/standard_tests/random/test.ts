@@ -3,7 +3,6 @@ import { BasicActionCapability as NodeActionCapability } from '@cre/generated-sd
 import { cre, type NodeRuntime, type Runtime } from '@cre/sdk/cre'
 import { ConsensusAggregationByFields, Int64, median } from '@cre/sdk/utils'
 import { Runner } from '@cre/sdk/wasm'
-import { hostBindings } from '@cre/sdk/wasm/host-bindings'
 
 class Output {
 	constructor(public OutputThing: Int64) {}
@@ -29,7 +28,7 @@ const randHandler = async (runtime: Runtime<Uint8Array>) => {
 				.result()
 
 			if (nodeResponse.outputThing < 100n) {
-				hostBindings.log(`***${nodeRandomNumber.toString()}`)
+				runtime.log(`***${nodeRandomNumber.toString()}`)
 			}
 
 			return new Output(new Int64(nodeResponse.outputThing))
