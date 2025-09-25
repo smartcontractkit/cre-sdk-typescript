@@ -1,7 +1,7 @@
 import { fromJson, create } from '@bufbuild/protobuf'
 import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 import { type Any, AnySchema, anyPack } from '@bufbuild/protobuf/wkt'
-import { type Runtime } from '@cre/sdk/runtime/runtime'
+import { type Runtime } from '@cre/sdk/runtime'
 import {
 	ConfigSchema,
 	PayloadSchema,

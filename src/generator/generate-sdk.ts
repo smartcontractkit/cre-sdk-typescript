@@ -99,7 +99,7 @@ export function generateSdk(file: GenFile, outputDir: string) {
 
 		// TODO???
 		if (hasActions || true) {
-			imports.add(`import { type ${modePrefix}Runtime } from "@cre/sdk/runtime/runtime"`)
+			imports.add(`import { type ${modePrefix}Runtime } from "@cre/sdk/runtime"`)
 		}
 
 		// Generate deduplicated type imports

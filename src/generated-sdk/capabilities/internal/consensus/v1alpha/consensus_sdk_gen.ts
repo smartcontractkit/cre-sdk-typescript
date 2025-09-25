@@ -1,5 +1,5 @@
 import { fromJson } from '@bufbuild/protobuf'
-import { type Runtime } from '@cre/sdk/runtime/runtime'
+import { type Runtime } from '@cre/sdk/runtime'
 import {
 	ReportRequestSchema,
 	ReportResponseSchema,
@@ -28,10 +28,10 @@ export class ConsensusCapability {
 
 	constructor() {}
 
-	async simple(
+	simple(
 		runtime: Runtime<any>,
 		input: SimpleConsensusInputs | SimpleConsensusInputsJson,
-	): Promise<Value> {
+	): { result: () => Promise<Value> } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as SimpleConsensusInputs)
@@ -39,19 +39,25 @@ export class ConsensusCapability {
 
 		const capabilityId = ConsensusCapability.CAPABILITY_ID
 
-		return runtime.callCapability<SimpleConsensusInputs, Value>({
+		const capabilityResponse = runtime.callCapability<SimpleConsensusInputs, Value>({
 			capabilityId,
 			method: 'Simple',
 			payload,
 			inputSchema: SimpleConsensusInputsSchema,
 			outputSchema: ValueSchema,
 		})
+
+		return {
+			result: async () => {
+				return capabilityResponse.result()
+			},
+		}
 	}
 
-	async report(
+	report(
 		runtime: Runtime<any>,
 		input: ReportRequest | ReportRequestJson,
-	): Promise<ReportResponse> {
+	): { result: () => Promise<ReportResponse> } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as ReportRequest)
@@ -59,12 +65,18 @@ export class ConsensusCapability {
 
 		const capabilityId = ConsensusCapability.CAPABILITY_ID
 
-		return runtime.callCapability<ReportRequest, ReportResponse>({
+		const capabilityResponse = runtime.callCapability<ReportRequest, ReportResponse>({
 			capabilityId,
 			method: 'Report',
 			payload,
 			inputSchema: ReportRequestSchema,
 			outputSchema: ReportResponseSchema,
 		})
+
+		return {
+			result: async () => {
+				return capabilityResponse.result()
+			},
+		}
 	}
 }

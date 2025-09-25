@@ -20,16 +20,7 @@ const castRandomToUint64 = (randomFloat: number) =>
 const randHandler = async (runtime: Runtime<Uint8Array>, _: Outputs) => {
   const donRandomNumber = castRandomToUint64(Math.random());
 
-<<<<<<< HEAD
   let total = donRandomNumber;
-=======
-			const nodeActionCapability = new NodeActionCapability()
-			const nodeResponse = await nodeActionCapability
-				.performAction({
-					inputThing: true,
-				})
-				.result()
->>>>>>> 5eac7d68d4e4e983c7a67da7f51b60d608edc679
 
   await runtime.runInNodeMode(
     async (nodeRuntime: NodeRuntime<Uint8Array>) => {
@@ -41,7 +32,7 @@ const randHandler = async (runtime: Runtime<Uint8Array>, _: Outputs) => {
         {
           inputThing: true,
         }
-      );
+      ).result();
 
       if (nodeResponse.outputThing < 100n) {
         hostBindings.log(`***${nodeRandomNumber.toString()}`);

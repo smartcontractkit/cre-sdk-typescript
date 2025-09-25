@@ -1,5 +1,5 @@
 import { fromJson } from '@bufbuild/protobuf'
-import { type NodeRuntime } from '@cre/sdk/runtime/runtime'
+import { type NodeRuntime } from '@cre/sdk/runtime'
 import {
 	NodeInputsSchema,
 	NodeOutputsSchema,
@@ -24,10 +24,10 @@ export class BasicActionCapability {
 
 	constructor() {}
 
-	async performAction(
+	performAction(
 		runtime: NodeRuntime<any>,
 		input: NodeInputs | NodeInputsJson,
-	): Promise<NodeOutputs> {
+	): { result: () => Promise<NodeOutputs> } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as NodeInputs)
@@ -35,12 +35,18 @@ export class BasicActionCapability {
 
 		const capabilityId = BasicActionCapability.CAPABILITY_ID
 
-		return runtime.callCapability<NodeInputs, NodeOutputs>({
+		const capabilityResponse = runtime.callCapability<NodeInputs, NodeOutputs>({
 			capabilityId,
 			method: 'PerformAction',
 			payload,
 			inputSchema: NodeInputsSchema,
 			outputSchema: NodeOutputsSchema,
 		})
+
+		return {
+			result: async () => {
+				return capabilityResponse.result()
+			},
+		}
 	}
 }

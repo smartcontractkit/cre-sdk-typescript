@@ -1,7 +1,7 @@
 import { fromJson, create } from '@bufbuild/protobuf'
 import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 import { type Any, AnySchema, anyPack } from '@bufbuild/protobuf/wkt'
-import { type Runtime } from '@cre/sdk/runtime/runtime'
+import { type Runtime } from '@cre/sdk/runtime'
 import {
 	ConfigSchema,
 	InputSchema,
@@ -31,7 +31,7 @@ export class BasicCapability {
 
 	constructor() {}
 
-	async action(runtime: Runtime<any>, input: Input | InputJson): Promise<Output> {
+	action(runtime: Runtime<any>, input: Input | InputJson): { result: () => Promise<Output> } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as Input)
@@ -39,13 +39,19 @@ export class BasicCapability {
 
 		const capabilityId = BasicCapability.CAPABILITY_ID
 
-		return runtime.callCapability<Input, Output>({
+		const capabilityResponse = runtime.callCapability<Input, Output>({
 			capabilityId,
 			method: 'Action',
 			payload,
 			inputSchema: InputSchema,
 			outputSchema: OutputSchema,
 		})
+
+		return {
+			result: async () => {
+				return capabilityResponse.result()
+			},
+		}
 	}
 
 	trigger(config: ConfigJson): BasicTrigger {

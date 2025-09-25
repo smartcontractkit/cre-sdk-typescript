@@ -1,7 +1,7 @@
 import { fromJson, create } from '@bufbuild/protobuf'
 import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 import { type Any, AnySchema, anyPack } from '@bufbuild/protobuf/wkt'
-import { type Runtime } from '@cre/sdk/runtime/runtime'
+import { type Runtime } from '@cre/sdk/runtime'
 import {
 	BalanceAtReplySchema,
 	BalanceAtRequestSchema,
@@ -90,10 +90,10 @@ export class ClientCapability {
 
 	constructor(private readonly chainSelector?: bigint) {}
 
-	async callContract(
+	callContract(
 		runtime: Runtime<any>,
 		input: CallContractRequest | CallContractRequestJson,
-	): Promise<CallContractReply> {
+	): { result: () => Promise<CallContractReply> } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as CallContractRequest)
@@ -104,19 +104,25 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		return runtime.callCapability<CallContractRequest, CallContractReply>({
+		const capabilityResponse = runtime.callCapability<CallContractRequest, CallContractReply>({
 			capabilityId,
 			method: 'CallContract',
 			payload,
 			inputSchema: CallContractRequestSchema,
 			outputSchema: CallContractReplySchema,
 		})
+
+		return {
+			result: async () => {
+				return capabilityResponse.result()
+			},
+		}
 	}
 
-	async filterLogs(
+	filterLogs(
 		runtime: Runtime<any>,
 		input: FilterLogsRequest | FilterLogsRequestJson,
-	): Promise<FilterLogsReply> {
+	): { result: () => Promise<FilterLogsReply> } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as FilterLogsRequest)
@@ -127,19 +133,25 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		return runtime.callCapability<FilterLogsRequest, FilterLogsReply>({
+		const capabilityResponse = runtime.callCapability<FilterLogsRequest, FilterLogsReply>({
 			capabilityId,
 			method: 'FilterLogs',
 			payload,
 			inputSchema: FilterLogsRequestSchema,
 			outputSchema: FilterLogsReplySchema,
 		})
+
+		return {
+			result: async () => {
+				return capabilityResponse.result()
+			},
+		}
 	}
 
-	async balanceAt(
+	balanceAt(
 		runtime: Runtime<any>,
 		input: BalanceAtRequest | BalanceAtRequestJson,
-	): Promise<BalanceAtReply> {
+	): { result: () => Promise<BalanceAtReply> } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as BalanceAtRequest)
@@ -150,19 +162,25 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		return runtime.callCapability<BalanceAtRequest, BalanceAtReply>({
+		const capabilityResponse = runtime.callCapability<BalanceAtRequest, BalanceAtReply>({
 			capabilityId,
 			method: 'BalanceAt',
 			payload,
 			inputSchema: BalanceAtRequestSchema,
 			outputSchema: BalanceAtReplySchema,
 		})
+
+		return {
+			result: async () => {
+				return capabilityResponse.result()
+			},
+		}
 	}
 
-	async estimateGas(
+	estimateGas(
 		runtime: Runtime<any>,
 		input: EstimateGasRequest | EstimateGasRequestJson,
-	): Promise<EstimateGasReply> {
+	): { result: () => Promise<EstimateGasReply> } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as EstimateGasRequest)
@@ -173,19 +191,25 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		return runtime.callCapability<EstimateGasRequest, EstimateGasReply>({
+		const capabilityResponse = runtime.callCapability<EstimateGasRequest, EstimateGasReply>({
 			capabilityId,
 			method: 'EstimateGas',
 			payload,
 			inputSchema: EstimateGasRequestSchema,
 			outputSchema: EstimateGasReplySchema,
 		})
+
+		return {
+			result: async () => {
+				return capabilityResponse.result()
+			},
+		}
 	}
 
-	async getTransactionByHash(
+	getTransactionByHash(
 		runtime: Runtime<any>,
 		input: GetTransactionByHashRequest | GetTransactionByHashRequestJson,
-	): Promise<GetTransactionByHashReply> {
+	): { result: () => Promise<GetTransactionByHashReply> } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as GetTransactionByHashRequest)
@@ -196,19 +220,28 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		return runtime.callCapability<GetTransactionByHashRequest, GetTransactionByHashReply>({
+		const capabilityResponse = runtime.callCapability<
+			GetTransactionByHashRequest,
+			GetTransactionByHashReply
+		>({
 			capabilityId,
 			method: 'GetTransactionByHash',
 			payload,
 			inputSchema: GetTransactionByHashRequestSchema,
 			outputSchema: GetTransactionByHashReplySchema,
 		})
+
+		return {
+			result: async () => {
+				return capabilityResponse.result()
+			},
+		}
 	}
 
-	async getTransactionReceipt(
+	getTransactionReceipt(
 		runtime: Runtime<any>,
 		input: GetTransactionReceiptRequest | GetTransactionReceiptRequestJson,
-	): Promise<GetTransactionReceiptReply> {
+	): { result: () => Promise<GetTransactionReceiptReply> } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as GetTransactionReceiptRequest)
@@ -219,19 +252,28 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		return runtime.callCapability<GetTransactionReceiptRequest, GetTransactionReceiptReply>({
+		const capabilityResponse = runtime.callCapability<
+			GetTransactionReceiptRequest,
+			GetTransactionReceiptReply
+		>({
 			capabilityId,
 			method: 'GetTransactionReceipt',
 			payload,
 			inputSchema: GetTransactionReceiptRequestSchema,
 			outputSchema: GetTransactionReceiptReplySchema,
 		})
+
+		return {
+			result: async () => {
+				return capabilityResponse.result()
+			},
+		}
 	}
 
-	async headerByNumber(
+	headerByNumber(
 		runtime: Runtime<any>,
 		input: HeaderByNumberRequest | HeaderByNumberRequestJson,
-	): Promise<HeaderByNumberReply> {
+	): { result: () => Promise<HeaderByNumberReply> } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as HeaderByNumberRequest)
@@ -242,19 +284,25 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		return runtime.callCapability<HeaderByNumberRequest, HeaderByNumberReply>({
+		const capabilityResponse = runtime.callCapability<HeaderByNumberRequest, HeaderByNumberReply>({
 			capabilityId,
 			method: 'HeaderByNumber',
 			payload,
 			inputSchema: HeaderByNumberRequestSchema,
 			outputSchema: HeaderByNumberReplySchema,
 		})
+
+		return {
+			result: async () => {
+				return capabilityResponse.result()
+			},
+		}
 	}
 
-	async registerLogTracking(
+	registerLogTracking(
 		runtime: Runtime<any>,
 		input: RegisterLogTrackingRequest | RegisterLogTrackingRequestJson,
-	): Promise<Empty> {
+	): { result: () => Promise<Empty> } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as RegisterLogTrackingRequest)
@@ -265,19 +313,25 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		return runtime.callCapability<RegisterLogTrackingRequest, Empty>({
+		const capabilityResponse = runtime.callCapability<RegisterLogTrackingRequest, Empty>({
 			capabilityId,
 			method: 'RegisterLogTracking',
 			payload,
 			inputSchema: RegisterLogTrackingRequestSchema,
 			outputSchema: EmptySchema,
 		})
+
+		return {
+			result: async () => {
+				return capabilityResponse.result()
+			},
+		}
 	}
 
-	async unregisterLogTracking(
+	unregisterLogTracking(
 		runtime: Runtime<any>,
 		input: UnregisterLogTrackingRequest | UnregisterLogTrackingRequestJson,
-	): Promise<Empty> {
+	): { result: () => Promise<Empty> } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as UnregisterLogTrackingRequest)
@@ -288,13 +342,19 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		return runtime.callCapability<UnregisterLogTrackingRequest, Empty>({
+		const capabilityResponse = runtime.callCapability<UnregisterLogTrackingRequest, Empty>({
 			capabilityId,
 			method: 'UnregisterLogTracking',
 			payload,
 			inputSchema: UnregisterLogTrackingRequestSchema,
 			outputSchema: EmptySchema,
 		})
+
+		return {
+			result: async () => {
+				return capabilityResponse.result()
+			},
+		}
 	}
 
 	logTrigger(config: FilterLogTriggerRequestJson): ClientLogTrigger {
@@ -305,10 +365,10 @@ export class ClientCapability {
 		return new ClientLogTrigger(config, capabilityId, 'LogTrigger')
 	}
 
-	async writeReport(
+	writeReport(
 		runtime: Runtime<any>,
 		input: WriteReportRequest | WriteReportRequestJson,
-	): Promise<WriteReportReply> {
+	): { result: () => Promise<WriteReportReply> } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as WriteReportRequest)
@@ -319,13 +379,19 @@ export class ClientCapability {
 			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 			: ClientCapability.CAPABILITY_ID
 
-		return runtime.callCapability<WriteReportRequest, WriteReportReply>({
+		const capabilityResponse = runtime.callCapability<WriteReportRequest, WriteReportReply>({
 			capabilityId,
 			method: 'WriteReport',
 			payload,
 			inputSchema: WriteReportRequestSchema,
 			outputSchema: WriteReportReplySchema,
 		})
+
+		return {
+			result: async () => {
+				return capabilityResponse.result()
+			},
+		}
 	}
 }
 
