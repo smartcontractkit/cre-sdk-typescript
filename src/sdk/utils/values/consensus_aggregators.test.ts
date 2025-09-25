@@ -1,19 +1,19 @@
 import { describe, expect, test } from 'bun:test'
+import { AggregationType, type ConsensusDescriptor } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import {
+	type ConsensusAggregation,
+	ConsensusAggregationByFields,
+	type ConsensusFieldAggregation,
 	commonPrefix,
 	commonSuffix,
-	ConsensusAggregationByFields,
 	consensusCommonPrefixAggregation,
 	consensusCommonSuffixAggregation,
-	type ConsensusFieldAggregation,
 	consensusIdenticalAggregation,
 	consensusMedianAggregation,
 	identical,
 	ignore,
 	median,
-	type ConsensusAggregation,
 } from './consensus_aggregators'
-import { AggregationType, type ConsensusDescriptor } from '@cre/generated/sdk/v1alpha/sdk_pb'
 
 // Similar to the tests for serialization, there are portions of the tests to verify that the retuned type is correct.
 // The compilation itself is enough to validate it is correct, but it's broken into tests to make it easier to see what is tested.

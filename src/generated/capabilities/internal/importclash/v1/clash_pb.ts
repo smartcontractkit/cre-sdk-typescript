@@ -4,11 +4,11 @@
 
 import type { GenFile, GenService } from '@bufbuild/protobuf/codegenv2'
 import { fileDesc, serviceDesc } from '@bufbuild/protobuf/codegenv2'
+import { file_tools_generator_v1alpha_cre_metadata } from '../../../../tools/generator/v1alpha/cre_metadata_pb'
 import type { ItemSchema } from '../p1/v1/import_pb'
 import { file_capabilities_internal_importclash_p1_v1_import } from '../p1/v1/import_pb'
 import type { ItemSchema as ItemSchema$1 } from '../p2/v1/import_pb'
 import { file_capabilities_internal_importclash_p2_v1_import } from '../p2/v1/import_pb'
-import { file_tools_generator_v1alpha_cre_metadata } from '../../../../tools/generator/v1alpha/cre_metadata_pb'
 
 /**
  * Describes the file capabilities/internal/importclash/v1/clash.proto.

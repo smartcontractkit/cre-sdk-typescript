@@ -49,5 +49,5 @@ export type Runner<TConfig> = {
 }
 
 export type SecretsProvider = {
-	getSecret(request: SecretRequest | SecretRequestJson): {result: () => Promise<Secret>}
+	getSecret(request: SecretRequest | SecretRequestJson): { result: () => Promise<Secret> }
 }

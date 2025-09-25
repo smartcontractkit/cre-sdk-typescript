@@ -1,61 +1,60 @@
-import { fromJson, create } from "@bufbuild/protobuf";
-import { type Trigger } from "@cre/sdk/utils/triggers/trigger-interface";
-import { type Any, AnySchema, anyPack } from "@bufbuild/protobuf/wkt";
-import { type Runtime } from "@cre/sdk/runtime";
+import { create, fromJson } from '@bufbuild/protobuf'
+import { type Any, AnySchema, anyPack, type Empty, EmptySchema } from '@bufbuild/protobuf/wkt'
 import {
-  BalanceAtReplySchema,
-  BalanceAtRequestSchema,
-  CallContractReplySchema,
-  CallContractRequestSchema,
-  EstimateGasReplySchema,
-  EstimateGasRequestSchema,
-  FilterLogTriggerRequestSchema,
-  FilterLogsReplySchema,
-  FilterLogsRequestSchema,
-  GetTransactionByHashReplySchema,
-  GetTransactionByHashRequestSchema,
-  GetTransactionReceiptReplySchema,
-  GetTransactionReceiptRequestSchema,
-  HeaderByNumberReplySchema,
-  HeaderByNumberRequestSchema,
-  LogSchema,
-  RegisterLogTrackingRequestSchema,
-  UnregisterLogTrackingRequestSchema,
-  WriteReportReplySchema,
-  WriteReportRequestSchema,
-  type BalanceAtReply,
-  type BalanceAtRequest,
-  type BalanceAtRequestJson,
-  type CallContractReply,
-  type CallContractRequest,
-  type CallContractRequestJson,
-  type EstimateGasReply,
-  type EstimateGasRequest,
-  type EstimateGasRequestJson,
-  type FilterLogTriggerRequest,
-  type FilterLogTriggerRequestJson,
-  type FilterLogsReply,
-  type FilterLogsRequest,
-  type FilterLogsRequestJson,
-  type GetTransactionByHashReply,
-  type GetTransactionByHashRequest,
-  type GetTransactionByHashRequestJson,
-  type GetTransactionReceiptReply,
-  type GetTransactionReceiptRequest,
-  type GetTransactionReceiptRequestJson,
-  type HeaderByNumberReply,
-  type HeaderByNumberRequest,
-  type HeaderByNumberRequestJson,
-  type Log,
-  type RegisterLogTrackingRequest,
-  type RegisterLogTrackingRequestJson,
-  type UnregisterLogTrackingRequest,
-  type UnregisterLogTrackingRequestJson,
-  type WriteReportReply,
-  type WriteReportRequest,
-  type WriteReportRequestJson,
-} from "@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb";
-import { EmptySchema, type Empty } from "@bufbuild/protobuf/wkt";
+	type BalanceAtReply,
+	BalanceAtReplySchema,
+	type BalanceAtRequest,
+	type BalanceAtRequestJson,
+	BalanceAtRequestSchema,
+	type CallContractReply,
+	CallContractReplySchema,
+	type CallContractRequest,
+	type CallContractRequestJson,
+	CallContractRequestSchema,
+	type EstimateGasReply,
+	EstimateGasReplySchema,
+	type EstimateGasRequest,
+	type EstimateGasRequestJson,
+	EstimateGasRequestSchema,
+	type FilterLogsReply,
+	FilterLogsReplySchema,
+	type FilterLogsRequest,
+	type FilterLogsRequestJson,
+	FilterLogsRequestSchema,
+	type FilterLogTriggerRequest,
+	type FilterLogTriggerRequestJson,
+	FilterLogTriggerRequestSchema,
+	type GetTransactionByHashReply,
+	GetTransactionByHashReplySchema,
+	type GetTransactionByHashRequest,
+	type GetTransactionByHashRequestJson,
+	GetTransactionByHashRequestSchema,
+	type GetTransactionReceiptReply,
+	GetTransactionReceiptReplySchema,
+	type GetTransactionReceiptRequest,
+	type GetTransactionReceiptRequestJson,
+	GetTransactionReceiptRequestSchema,
+	type HeaderByNumberReply,
+	HeaderByNumberReplySchema,
+	type HeaderByNumberRequest,
+	type HeaderByNumberRequestJson,
+	HeaderByNumberRequestSchema,
+	type Log,
+	LogSchema,
+	type RegisterLogTrackingRequest,
+	type RegisterLogTrackingRequestJson,
+	RegisterLogTrackingRequestSchema,
+	type UnregisterLogTrackingRequest,
+	type UnregisterLogTrackingRequestJson,
+	UnregisterLogTrackingRequestSchema,
+	type WriteReportReply,
+	WriteReportReplySchema,
+	type WriteReportRequest,
+	type WriteReportRequestJson,
+	WriteReportRequestSchema,
+} from '@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb'
+import { type Runtime } from '@cre/sdk/runtime'
+import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 
 /**
  * Client Capability
@@ -65,415 +64,373 @@ import { EmptySchema, type Empty } from "@bufbuild/protobuf/wkt";
  * Capability Version: 1.0.0
  */
 export class ClientCapability {
-  /** The capability ID for this service */
-  static readonly CAPABILITY_ID = "evm@1.0.0";
+	/** The capability ID for this service */
+	static readonly CAPABILITY_ID = 'evm@1.0.0'
 
-  static readonly CAPABILITY_NAME = "evm";
-  static readonly CAPABILITY_VERSION = "1.0.0";
+	static readonly CAPABILITY_NAME = 'evm'
+	static readonly CAPABILITY_VERSION = '1.0.0'
 
-  /** Available chain selectors */
-  static readonly SUPPORTED_CHAINS = {
-    "avalanche-mainnet": 6433500567565415381n,
-    "avalanche-testnet-fuji": 14767482510784806043n,
-    "binance_smart_chain-mainnet-opbnb-1": 465944652040885897n,
-    "binance_smart_chain-testnet-opbnb-1": 13274425992935471758n,
-    "ethereum-mainnet": 5009297550715157269n,
-    "ethereum-mainnet-arbitrum-1": 4949039107694359620n,
-    "ethereum-mainnet-optimism-1": 3734403246176062136n,
-    "ethereum-testnet-sepolia": 16015286601757825753n,
-    "ethereum-testnet-sepolia-arbitrum-1": 3478487238524512106n,
-    "ethereum-testnet-sepolia-base-1": 10344971235874465080n,
-    "ethereum-testnet-sepolia-optimism-1": 5224473277236331295n,
-    "polygon-mainnet": 4051577828743386545n,
-    "polygon-testnet-amoy": 16281711391670634445n,
-  } as const;
+	/** Available chain selectors */
+	static readonly SUPPORTED_CHAINS = {
+		'avalanche-mainnet': 6433500567565415381n,
+		'avalanche-testnet-fuji': 14767482510784806043n,
+		'binance_smart_chain-mainnet-opbnb-1': 465944652040885897n,
+		'binance_smart_chain-testnet-opbnb-1': 13274425992935471758n,
+		'ethereum-mainnet': 5009297550715157269n,
+		'ethereum-mainnet-arbitrum-1': 4949039107694359620n,
+		'ethereum-mainnet-optimism-1': 3734403246176062136n,
+		'ethereum-testnet-sepolia': 16015286601757825753n,
+		'ethereum-testnet-sepolia-arbitrum-1': 3478487238524512106n,
+		'ethereum-testnet-sepolia-base-1': 10344971235874465080n,
+		'ethereum-testnet-sepolia-optimism-1': 5224473277236331295n,
+		'polygon-mainnet': 4051577828743386545n,
+		'polygon-testnet-amoy': 16281711391670634445n,
+	} as const
 
-  constructor(private readonly chainSelector?: bigint) {}
+	constructor(private readonly chainSelector?: bigint) {}
 
-  callContract(
-    runtime: Runtime<any>,
-    input: CallContractRequest | CallContractRequestJson
-  ): { result: () => Promise<CallContractReply> } {
-    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-    const payload = (input as any).$typeName
-      ? (input as CallContractRequest)
-      : fromJson(CallContractRequestSchema, input as CallContractRequestJson);
+	callContract(
+		runtime: Runtime<any>,
+		input: CallContractRequest | CallContractRequestJson,
+	): { result: () => Promise<CallContractReply> } {
+		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+		const payload = (input as any).$typeName
+			? (input as CallContractRequest)
+			: fromJson(CallContractRequestSchema, input as CallContractRequestJson)
 
-    // Include chainSelector in capability ID for routing when specified
-    const capabilityId = this.chainSelector
-      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
-      : ClientCapability.CAPABILITY_ID;
+		// Include chainSelector in capability ID for routing when specified
+		const capabilityId = this.chainSelector
+			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+			: ClientCapability.CAPABILITY_ID
 
-    const capabilityResponse = runtime.callCapability<
-      CallContractRequest,
-      CallContractReply
-    >({
-      capabilityId,
-      method: "CallContract",
-      payload,
-      inputSchema: CallContractRequestSchema,
-      outputSchema: CallContractReplySchema,
-    });
+		const capabilityResponse = runtime.callCapability<CallContractRequest, CallContractReply>({
+			capabilityId,
+			method: 'CallContract',
+			payload,
+			inputSchema: CallContractRequestSchema,
+			outputSchema: CallContractReplySchema,
+		})
 
-    return {
-      result: async () => {
-        return capabilityResponse.result();
-      },
-    };
-  }
+		return {
+			result: async () => {
+				return capabilityResponse.result()
+			},
+		}
+	}
 
-  filterLogs(
-    runtime: Runtime<any>,
-    input: FilterLogsRequest | FilterLogsRequestJson
-  ): { result: () => Promise<FilterLogsReply> } {
-    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-    const payload = (input as any).$typeName
-      ? (input as FilterLogsRequest)
-      : fromJson(FilterLogsRequestSchema, input as FilterLogsRequestJson);
+	filterLogs(
+		runtime: Runtime<any>,
+		input: FilterLogsRequest | FilterLogsRequestJson,
+	): { result: () => Promise<FilterLogsReply> } {
+		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+		const payload = (input as any).$typeName
+			? (input as FilterLogsRequest)
+			: fromJson(FilterLogsRequestSchema, input as FilterLogsRequestJson)
 
-    // Include chainSelector in capability ID for routing when specified
-    const capabilityId = this.chainSelector
-      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
-      : ClientCapability.CAPABILITY_ID;
+		// Include chainSelector in capability ID for routing when specified
+		const capabilityId = this.chainSelector
+			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+			: ClientCapability.CAPABILITY_ID
 
-    const capabilityResponse = runtime.callCapability<
-      FilterLogsRequest,
-      FilterLogsReply
-    >({
-      capabilityId,
-      method: "FilterLogs",
-      payload,
-      inputSchema: FilterLogsRequestSchema,
-      outputSchema: FilterLogsReplySchema,
-    });
+		const capabilityResponse = runtime.callCapability<FilterLogsRequest, FilterLogsReply>({
+			capabilityId,
+			method: 'FilterLogs',
+			payload,
+			inputSchema: FilterLogsRequestSchema,
+			outputSchema: FilterLogsReplySchema,
+		})
 
-    return {
-      result: async () => {
-        return capabilityResponse.result();
-      },
-    };
-  }
+		return {
+			result: async () => {
+				return capabilityResponse.result()
+			},
+		}
+	}
 
-  balanceAt(
-    runtime: Runtime<any>,
-    input: BalanceAtRequest | BalanceAtRequestJson
-  ): { result: () => Promise<BalanceAtReply> } {
-    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-    const payload = (input as any).$typeName
-      ? (input as BalanceAtRequest)
-      : fromJson(BalanceAtRequestSchema, input as BalanceAtRequestJson);
+	balanceAt(
+		runtime: Runtime<any>,
+		input: BalanceAtRequest | BalanceAtRequestJson,
+	): { result: () => Promise<BalanceAtReply> } {
+		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+		const payload = (input as any).$typeName
+			? (input as BalanceAtRequest)
+			: fromJson(BalanceAtRequestSchema, input as BalanceAtRequestJson)
 
-    // Include chainSelector in capability ID for routing when specified
-    const capabilityId = this.chainSelector
-      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
-      : ClientCapability.CAPABILITY_ID;
+		// Include chainSelector in capability ID for routing when specified
+		const capabilityId = this.chainSelector
+			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+			: ClientCapability.CAPABILITY_ID
 
-    const capabilityResponse = runtime.callCapability<
-      BalanceAtRequest,
-      BalanceAtReply
-    >({
-      capabilityId,
-      method: "BalanceAt",
-      payload,
-      inputSchema: BalanceAtRequestSchema,
-      outputSchema: BalanceAtReplySchema,
-    });
+		const capabilityResponse = runtime.callCapability<BalanceAtRequest, BalanceAtReply>({
+			capabilityId,
+			method: 'BalanceAt',
+			payload,
+			inputSchema: BalanceAtRequestSchema,
+			outputSchema: BalanceAtReplySchema,
+		})
 
-    return {
-      result: async () => {
-        return capabilityResponse.result();
-      },
-    };
-  }
+		return {
+			result: async () => {
+				return capabilityResponse.result()
+			},
+		}
+	}
 
-  estimateGas(
-    runtime: Runtime<any>,
-    input: EstimateGasRequest | EstimateGasRequestJson
-  ): { result: () => Promise<EstimateGasReply> } {
-    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-    const payload = (input as any).$typeName
-      ? (input as EstimateGasRequest)
-      : fromJson(EstimateGasRequestSchema, input as EstimateGasRequestJson);
+	estimateGas(
+		runtime: Runtime<any>,
+		input: EstimateGasRequest | EstimateGasRequestJson,
+	): { result: () => Promise<EstimateGasReply> } {
+		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+		const payload = (input as any).$typeName
+			? (input as EstimateGasRequest)
+			: fromJson(EstimateGasRequestSchema, input as EstimateGasRequestJson)
 
-    // Include chainSelector in capability ID for routing when specified
-    const capabilityId = this.chainSelector
-      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
-      : ClientCapability.CAPABILITY_ID;
+		// Include chainSelector in capability ID for routing when specified
+		const capabilityId = this.chainSelector
+			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+			: ClientCapability.CAPABILITY_ID
 
-    const capabilityResponse = runtime.callCapability<
-      EstimateGasRequest,
-      EstimateGasReply
-    >({
-      capabilityId,
-      method: "EstimateGas",
-      payload,
-      inputSchema: EstimateGasRequestSchema,
-      outputSchema: EstimateGasReplySchema,
-    });
+		const capabilityResponse = runtime.callCapability<EstimateGasRequest, EstimateGasReply>({
+			capabilityId,
+			method: 'EstimateGas',
+			payload,
+			inputSchema: EstimateGasRequestSchema,
+			outputSchema: EstimateGasReplySchema,
+		})
 
-    return {
-      result: async () => {
-        return capabilityResponse.result();
-      },
-    };
-  }
+		return {
+			result: async () => {
+				return capabilityResponse.result()
+			},
+		}
+	}
 
-  getTransactionByHash(
-    runtime: Runtime<any>,
-    input: GetTransactionByHashRequest | GetTransactionByHashRequestJson
-  ): { result: () => Promise<GetTransactionByHashReply> } {
-    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-    const payload = (input as any).$typeName
-      ? (input as GetTransactionByHashRequest)
-      : fromJson(
-          GetTransactionByHashRequestSchema,
-          input as GetTransactionByHashRequestJson
-        );
+	getTransactionByHash(
+		runtime: Runtime<any>,
+		input: GetTransactionByHashRequest | GetTransactionByHashRequestJson,
+	): { result: () => Promise<GetTransactionByHashReply> } {
+		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+		const payload = (input as any).$typeName
+			? (input as GetTransactionByHashRequest)
+			: fromJson(GetTransactionByHashRequestSchema, input as GetTransactionByHashRequestJson)
 
-    // Include chainSelector in capability ID for routing when specified
-    const capabilityId = this.chainSelector
-      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
-      : ClientCapability.CAPABILITY_ID;
+		// Include chainSelector in capability ID for routing when specified
+		const capabilityId = this.chainSelector
+			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+			: ClientCapability.CAPABILITY_ID
 
-    const capabilityResponse = runtime.callCapability<
-      GetTransactionByHashRequest,
-      GetTransactionByHashReply
-    >({
-      capabilityId,
-      method: "GetTransactionByHash",
-      payload,
-      inputSchema: GetTransactionByHashRequestSchema,
-      outputSchema: GetTransactionByHashReplySchema,
-    });
+		const capabilityResponse = runtime.callCapability<
+			GetTransactionByHashRequest,
+			GetTransactionByHashReply
+		>({
+			capabilityId,
+			method: 'GetTransactionByHash',
+			payload,
+			inputSchema: GetTransactionByHashRequestSchema,
+			outputSchema: GetTransactionByHashReplySchema,
+		})
 
-    return {
-      result: async () => {
-        return capabilityResponse.result();
-      },
-    };
-  }
+		return {
+			result: async () => {
+				return capabilityResponse.result()
+			},
+		}
+	}
 
-  getTransactionReceipt(
-    runtime: Runtime<any>,
-    input: GetTransactionReceiptRequest | GetTransactionReceiptRequestJson
-  ): { result: () => Promise<GetTransactionReceiptReply> } {
-    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-    const payload = (input as any).$typeName
-      ? (input as GetTransactionReceiptRequest)
-      : fromJson(
-          GetTransactionReceiptRequestSchema,
-          input as GetTransactionReceiptRequestJson
-        );
+	getTransactionReceipt(
+		runtime: Runtime<any>,
+		input: GetTransactionReceiptRequest | GetTransactionReceiptRequestJson,
+	): { result: () => Promise<GetTransactionReceiptReply> } {
+		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+		const payload = (input as any).$typeName
+			? (input as GetTransactionReceiptRequest)
+			: fromJson(GetTransactionReceiptRequestSchema, input as GetTransactionReceiptRequestJson)
 
-    // Include chainSelector in capability ID for routing when specified
-    const capabilityId = this.chainSelector
-      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
-      : ClientCapability.CAPABILITY_ID;
+		// Include chainSelector in capability ID for routing when specified
+		const capabilityId = this.chainSelector
+			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+			: ClientCapability.CAPABILITY_ID
 
-    const capabilityResponse = runtime.callCapability<
-      GetTransactionReceiptRequest,
-      GetTransactionReceiptReply
-    >({
-      capabilityId,
-      method: "GetTransactionReceipt",
-      payload,
-      inputSchema: GetTransactionReceiptRequestSchema,
-      outputSchema: GetTransactionReceiptReplySchema,
-    });
+		const capabilityResponse = runtime.callCapability<
+			GetTransactionReceiptRequest,
+			GetTransactionReceiptReply
+		>({
+			capabilityId,
+			method: 'GetTransactionReceipt',
+			payload,
+			inputSchema: GetTransactionReceiptRequestSchema,
+			outputSchema: GetTransactionReceiptReplySchema,
+		})
 
-    return {
-      result: async () => {
-        return capabilityResponse.result();
-      },
-    };
-  }
+		return {
+			result: async () => {
+				return capabilityResponse.result()
+			},
+		}
+	}
 
-  headerByNumber(
-    runtime: Runtime<any>,
-    input: HeaderByNumberRequest | HeaderByNumberRequestJson
-  ): { result: () => Promise<HeaderByNumberReply> } {
-    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-    const payload = (input as any).$typeName
-      ? (input as HeaderByNumberRequest)
-      : fromJson(
-          HeaderByNumberRequestSchema,
-          input as HeaderByNumberRequestJson
-        );
+	headerByNumber(
+		runtime: Runtime<any>,
+		input: HeaderByNumberRequest | HeaderByNumberRequestJson,
+	): { result: () => Promise<HeaderByNumberReply> } {
+		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+		const payload = (input as any).$typeName
+			? (input as HeaderByNumberRequest)
+			: fromJson(HeaderByNumberRequestSchema, input as HeaderByNumberRequestJson)
 
-    // Include chainSelector in capability ID for routing when specified
-    const capabilityId = this.chainSelector
-      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
-      : ClientCapability.CAPABILITY_ID;
+		// Include chainSelector in capability ID for routing when specified
+		const capabilityId = this.chainSelector
+			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+			: ClientCapability.CAPABILITY_ID
 
-    const capabilityResponse = runtime.callCapability<
-      HeaderByNumberRequest,
-      HeaderByNumberReply
-    >({
-      capabilityId,
-      method: "HeaderByNumber",
-      payload,
-      inputSchema: HeaderByNumberRequestSchema,
-      outputSchema: HeaderByNumberReplySchema,
-    });
+		const capabilityResponse = runtime.callCapability<HeaderByNumberRequest, HeaderByNumberReply>({
+			capabilityId,
+			method: 'HeaderByNumber',
+			payload,
+			inputSchema: HeaderByNumberRequestSchema,
+			outputSchema: HeaderByNumberReplySchema,
+		})
 
-    return {
-      result: async () => {
-        return capabilityResponse.result();
-      },
-    };
-  }
+		return {
+			result: async () => {
+				return capabilityResponse.result()
+			},
+		}
+	}
 
-  registerLogTracking(
-    runtime: Runtime<any>,
-    input: RegisterLogTrackingRequest | RegisterLogTrackingRequestJson
-  ): { result: () => Promise<Empty> } {
-    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-    const payload = (input as any).$typeName
-      ? (input as RegisterLogTrackingRequest)
-      : fromJson(
-          RegisterLogTrackingRequestSchema,
-          input as RegisterLogTrackingRequestJson
-        );
+	registerLogTracking(
+		runtime: Runtime<any>,
+		input: RegisterLogTrackingRequest | RegisterLogTrackingRequestJson,
+	): { result: () => Promise<Empty> } {
+		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+		const payload = (input as any).$typeName
+			? (input as RegisterLogTrackingRequest)
+			: fromJson(RegisterLogTrackingRequestSchema, input as RegisterLogTrackingRequestJson)
 
-    // Include chainSelector in capability ID for routing when specified
-    const capabilityId = this.chainSelector
-      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
-      : ClientCapability.CAPABILITY_ID;
+		// Include chainSelector in capability ID for routing when specified
+		const capabilityId = this.chainSelector
+			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+			: ClientCapability.CAPABILITY_ID
 
-    const capabilityResponse = runtime.callCapability<
-      RegisterLogTrackingRequest,
-      Empty
-    >({
-      capabilityId,
-      method: "RegisterLogTracking",
-      payload,
-      inputSchema: RegisterLogTrackingRequestSchema,
-      outputSchema: EmptySchema,
-    });
+		const capabilityResponse = runtime.callCapability<RegisterLogTrackingRequest, Empty>({
+			capabilityId,
+			method: 'RegisterLogTracking',
+			payload,
+			inputSchema: RegisterLogTrackingRequestSchema,
+			outputSchema: EmptySchema,
+		})
 
-    return {
-      result: async () => {
-        return capabilityResponse.result();
-      },
-    };
-  }
+		return {
+			result: async () => {
+				return capabilityResponse.result()
+			},
+		}
+	}
 
-  unregisterLogTracking(
-    runtime: Runtime<any>,
-    input: UnregisterLogTrackingRequest | UnregisterLogTrackingRequestJson
-  ): { result: () => Promise<Empty> } {
-    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-    const payload = (input as any).$typeName
-      ? (input as UnregisterLogTrackingRequest)
-      : fromJson(
-          UnregisterLogTrackingRequestSchema,
-          input as UnregisterLogTrackingRequestJson
-        );
+	unregisterLogTracking(
+		runtime: Runtime<any>,
+		input: UnregisterLogTrackingRequest | UnregisterLogTrackingRequestJson,
+	): { result: () => Promise<Empty> } {
+		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+		const payload = (input as any).$typeName
+			? (input as UnregisterLogTrackingRequest)
+			: fromJson(UnregisterLogTrackingRequestSchema, input as UnregisterLogTrackingRequestJson)
 
-    // Include chainSelector in capability ID for routing when specified
-    const capabilityId = this.chainSelector
-      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
-      : ClientCapability.CAPABILITY_ID;
+		// Include chainSelector in capability ID for routing when specified
+		const capabilityId = this.chainSelector
+			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+			: ClientCapability.CAPABILITY_ID
 
-    const capabilityResponse = runtime.callCapability<
-      UnregisterLogTrackingRequest,
-      Empty
-    >({
-      capabilityId,
-      method: "UnregisterLogTracking",
-      payload,
-      inputSchema: UnregisterLogTrackingRequestSchema,
-      outputSchema: EmptySchema,
-    });
+		const capabilityResponse = runtime.callCapability<UnregisterLogTrackingRequest, Empty>({
+			capabilityId,
+			method: 'UnregisterLogTracking',
+			payload,
+			inputSchema: UnregisterLogTrackingRequestSchema,
+			outputSchema: EmptySchema,
+		})
 
-    return {
-      result: async () => {
-        return capabilityResponse.result();
-      },
-    };
-  }
+		return {
+			result: async () => {
+				return capabilityResponse.result()
+			},
+		}
+	}
 
-  logTrigger(config: FilterLogTriggerRequestJson): ClientLogTrigger {
-    // Include chainSelector in capability ID for routing when specified
-    const capabilityId = this.chainSelector
-      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
-      : ClientCapability.CAPABILITY_ID;
-    return new ClientLogTrigger(config, capabilityId, "LogTrigger");
-  }
+	logTrigger(config: FilterLogTriggerRequestJson): ClientLogTrigger {
+		// Include chainSelector in capability ID for routing when specified
+		const capabilityId = this.chainSelector
+			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+			: ClientCapability.CAPABILITY_ID
+		return new ClientLogTrigger(config, capabilityId, 'LogTrigger')
+	}
 
-  writeReport(
-    runtime: Runtime<any>,
-    input: WriteReportRequest | WriteReportRequestJson
-  ): { result: () => Promise<WriteReportReply> } {
-    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-    const payload = (input as any).$typeName
-      ? (input as WriteReportRequest)
-      : fromJson(WriteReportRequestSchema, input as WriteReportRequestJson);
+	writeReport(
+		runtime: Runtime<any>,
+		input: WriteReportRequest | WriteReportRequestJson,
+	): { result: () => Promise<WriteReportReply> } {
+		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+		const payload = (input as any).$typeName
+			? (input as WriteReportRequest)
+			: fromJson(WriteReportRequestSchema, input as WriteReportRequestJson)
 
-    // Include chainSelector in capability ID for routing when specified
-    const capabilityId = this.chainSelector
-      ? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
-      : ClientCapability.CAPABILITY_ID;
+		// Include chainSelector in capability ID for routing when specified
+		const capabilityId = this.chainSelector
+			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+			: ClientCapability.CAPABILITY_ID
 
-    const capabilityResponse = runtime.callCapability<
-      WriteReportRequest,
-      WriteReportReply
-    >({
-      capabilityId,
-      method: "WriteReport",
-      payload,
-      inputSchema: WriteReportRequestSchema,
-      outputSchema: WriteReportReplySchema,
-    });
+		const capabilityResponse = runtime.callCapability<WriteReportRequest, WriteReportReply>({
+			capabilityId,
+			method: 'WriteReport',
+			payload,
+			inputSchema: WriteReportRequestSchema,
+			outputSchema: WriteReportReplySchema,
+		})
 
-    return {
-      result: async () => {
-        return capabilityResponse.result();
-      },
-    };
-  }
+		return {
+			result: async () => {
+				return capabilityResponse.result()
+			},
+		}
+	}
 }
 
 /**
  * Trigger implementation for LogTrigger
  */
 class ClientLogTrigger implements Trigger<Log, Log> {
-  public readonly config: FilterLogTriggerRequest;
-  constructor(
-    config: FilterLogTriggerRequest | FilterLogTriggerRequestJson,
-    private readonly _capabilityId: string,
-    private readonly _method: string
-  ) {
-    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-    this.config = (config as any).$typeName
-      ? (config as FilterLogTriggerRequest)
-      : fromJson(
-          FilterLogTriggerRequestSchema,
-          config as FilterLogTriggerRequestJson
-        );
-  }
+	public readonly config: FilterLogTriggerRequest
+	constructor(
+		config: FilterLogTriggerRequest | FilterLogTriggerRequestJson,
+		private readonly _capabilityId: string,
+		private readonly _method: string,
+	) {
+		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+		this.config = (config as any).$typeName
+			? (config as FilterLogTriggerRequest)
+			: fromJson(FilterLogTriggerRequestSchema, config as FilterLogTriggerRequestJson)
+	}
 
-  capabilityId(): string {
-    return this._capabilityId;
-  }
+	capabilityId(): string {
+		return this._capabilityId
+	}
 
-  method(): string {
-    return this._method;
-  }
+	method(): string {
+		return this._method
+	}
 
-  outputSchema() {
-    return LogSchema;
-  }
+	outputSchema() {
+		return LogSchema
+	}
 
-  configAsAny(): Any {
-    return anyPack(FilterLogTriggerRequestSchema, this.config);
-  }
+	configAsAny(): Any {
+		return anyPack(FilterLogTriggerRequestSchema, this.config)
+	}
 
-  /**
-   * Transform the raw trigger output - override this method if needed
-   * Default implementation returns the raw output unchanged
-   */
-  adapt(rawOutput: Log): Log {
-    return rawOutput;
-  }
+	/**
+	 * Transform the raw trigger output - override this method if needed
+	 * Default implementation returns the raw output unchanged
+	 */
+	adapt(rawOutput: Log): Log {
+		return rawOutput
+	}
 }

@@ -1,6 +1,6 @@
-import type { Any } from '@bufbuild/protobuf/wkt'
 import type { Message } from '@bufbuild/protobuf'
 import type { GenMessage } from '@bufbuild/protobuf/codegenv2'
+import type { Any } from '@bufbuild/protobuf/wkt'
 
 /**
  * Full trigger interface with adapt method

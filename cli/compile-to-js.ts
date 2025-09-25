@@ -1,5 +1,5 @@
-import fg from 'fast-glob'
 import { $ } from 'bun'
+import fg from 'fast-glob'
 
 export const main = async () => {
 	console.info('\n\n---> Compile TS source files to JS\n\n')

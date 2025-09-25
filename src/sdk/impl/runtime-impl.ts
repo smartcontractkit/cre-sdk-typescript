@@ -48,9 +48,9 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 		payload,
 		inputSchema,
 		outputSchema,
-	}: CallCapabilityParams<I, O>): {result: () => Promise<O>} {
+	}: CallCapabilityParams<I, O>): { result: () => Promise<O> } {
 		if (this.modeError) {
-			return {result: () => Promise.reject(this.modeError)};
+			return { result: () => Promise.reject(this.modeError) }
 		}
 
 		// nextCallId tracks the unique id for a request to the WASM host.
@@ -83,41 +83,42 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 							capabilityId,
 						}),
 					)
-				}
-			};
+				},
+			}
 		}
 
 		return {
 			result: async () => {
-			const awaitRequest = create(AwaitCapabilitiesRequestSchema, { ids: [callbackId] })
-			const awaitResponse = this.helpers.await(awaitRequest, this.maxResponseSize)
-			const capabilityResponse = awaitResponse.responses[callbackId]
+				const awaitRequest = create(AwaitCapabilitiesRequestSchema, { ids: [callbackId] })
+				const awaitResponse = this.helpers.await(awaitRequest, this.maxResponseSize)
+				const capabilityResponse = awaitResponse.responses[callbackId]
 
-			if (!capabilityResponse) {
-				throw new CapabilityError(`No response found for callback ID ${callbackId}`, {
-					capabilityId,
-					method,
-					callbackId,
-				})
-			}
-
-			const response = capabilityResponse.response
-			switch (response.case) {
-				case 'payload':
-					return anyUnpack(response.value as Any, outputSchema) as O
-				case 'error':
-					throw new CapabilityError(`Error ${response.value}`, {
+				if (!capabilityResponse) {
+					throw new CapabilityError(`No response found for callback ID ${callbackId}`, {
 						capabilityId,
 						method,
 						callbackId,
 					})
-				default:
-					throw new CapabilityError(`Error cannot unwrap ${response.case}`, {
-						capabilityId,
-						method,
-						callbackId,
-					})
-			}}
+				}
+
+				const response = capabilityResponse.response
+				switch (response.case) {
+					case 'payload':
+						return anyUnpack(response.value as Any, outputSchema) as O
+					case 'error':
+						throw new CapabilityError(`Error ${response.value}`, {
+							capabilityId,
+							method,
+							callbackId,
+						})
+					default:
+						throw new CapabilityError(`Error cannot unwrap ${response.case}`, {
+							capabilityId,
+							method,
+							callbackId,
+						})
+				}
+			},
 		}
 	}
 
@@ -189,7 +190,7 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 			}
 
 			const consensus = new ConsensusCapability()
-			const result = await consensus.simple(this, consensusInput).result();
+			const result = await consensus.simple(this, consensusInput).result()
 			const wrappedValue = Value.wrap(result)
 
 			return unwrapOptions
@@ -198,9 +199,9 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 		}
 	}
 
-	getSecret(request: SecretRequest | SecretRequestJson): {result: () => Promise<Secret>} {
+	getSecret(request: SecretRequest | SecretRequestJson): { result: () => Promise<Secret> } {
 		if (this.modeError) {
-			return {result: () => Promise.reject(this.modeError)}
+			return { result: () => Promise.reject(this.modeError) }
 		}
 
 		const secretRequest = (request as any).$typeName
@@ -214,9 +215,8 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 		})
 		if (!this.helpers.getSecrets(secretsReq, this.maxResponseSize)) {
 			return {
-				result: () => Promise.reject(
-					new SecretsError(secretRequest, 'host is not making the secrets request'),
-				)
+				result: () =>
+					Promise.reject(new SecretsError(secretRequest, 'host is not making the secrets request')),
 			}
 		}
 
@@ -244,7 +244,7 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 					default:
 						throw new SecretsError(secretRequest, 'cannot unmashal returned value from host')
 				}
-			}
+			},
 		}
 	}
 }

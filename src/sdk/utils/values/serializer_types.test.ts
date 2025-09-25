@@ -1,10 +1,10 @@
 import { describe, test } from 'bun:test'
 import type {
+	CreSerializable,
+	CreSerializableNested,
+	NonSerializable,
 	NumericType,
 	PrimitiveTypes,
-	NonSerializable,
-	CreSerializableNested,
-	CreSerializable,
 	TypeVerifier,
 } from './serializer_types'
 import type { Decimal, Int64, UInt64, Value } from './value'

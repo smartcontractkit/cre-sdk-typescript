@@ -2,6 +2,7 @@
 // @generated from file capabilities/blockchain/evm/v1alpha/client.proto (package capabilities.blockchain.evm.v1alpha, syntax proto3)
 /* eslint-disable */
 
+import type { Message } from '@bufbuild/protobuf'
 import type { GenEnum, GenFile, GenMessage, GenService } from '@bufbuild/protobuf/codegenv2'
 import { enumDesc, fileDesc, messageDesc, serviceDesc } from '@bufbuild/protobuf/codegenv2'
 import type { EmptySchema } from '@bufbuild/protobuf/wkt'
@@ -11,7 +12,6 @@ import { file_sdk_v1alpha_sdk } from '../../../../sdk/v1alpha/sdk_pb'
 import { file_tools_generator_v1alpha_cre_metadata } from '../../../../tools/generator/v1alpha/cre_metadata_pb'
 import type { BigInt, BigIntJson } from '../../../../values/v1/values_pb'
 import { file_values_v1_values } from '../../../../values/v1/values_pb'
-import type { Message } from '@bufbuild/protobuf'
 
 /**
  * Describes the file capabilities/blockchain/evm/v1alpha/client.proto.
