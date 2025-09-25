@@ -26,7 +26,7 @@ async function fetchMathResult(nodeRuntime: NodeRuntime<Config>): Promise<number
 	const httpCapability = new cre.capabilities.HTTPClient()
 	const response = await httpCapability.sendRequest(nodeRuntime, {
 		url: nodeRuntime.config.apiUrl,
-	})
+	}).result()
 	return Number.parseFloat(Buffer.from(response.body).toString('utf-8').trim())
 }
 
@@ -65,7 +65,7 @@ const onCronTrigger = async (runtime: Runtime<Config>, _: Payload): Promise<bigi
 			absVal: Buffer.from([3]).toString('base64'), // 3 for finalized block
 			sign: '-1', // negative for finalized
 		},
-	})
+	}).result()
 
 	// Decode the result
 	const onchainValue = decodeFunctionResult({

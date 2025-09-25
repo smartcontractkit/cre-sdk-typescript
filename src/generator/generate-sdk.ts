@@ -99,7 +99,7 @@ export function generateSdk(file: GenFile, outputDir: string) {
 
 		// TODO???
 		if (hasActions || true) {
-			imports.add(`import { type ${modePrefix}Runtime } from "@cre/sdk/runtime/runtime"`)
+			imports.add(`import { type ${modePrefix}Runtime } from "@cre/sdk/runtime"`)
 		}
 
 		// Generate deduplicated type imports
@@ -132,7 +132,7 @@ export function generateSdk(file: GenFile, outputDir: string) {
 
 				// Check if this is a streaming method (trigger)
 				if (method.methodKind === 'server_streaming') {
-					return generateTriggerMethod(method, methodName, capabilityClassName, service.name)
+					return generateTriggerMethod(method, methodName, capabilityClassName, service.name, hasChainSelector)
 				}
 
 				// Generate action method

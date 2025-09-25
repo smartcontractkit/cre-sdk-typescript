@@ -28,7 +28,6 @@ import {
 	Value,
 } from '@cre/sdk/utils'
 import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
-import { LazyPromise } from '@cre/sdk/utils/lazy-promise'
 import { DonModeError, NodeModeError, SecretsError } from '../errors'
 
 export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
@@ -49,9 +48,9 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 		payload,
 		inputSchema,
 		outputSchema,
-	}: CallCapabilityParams<I, O>): Promise<O> {
+	}: CallCapabilityParams<I, O>): {result: () => Promise<O>} {
 		if (this.modeError) {
-			return Promise.reject(this.modeError)
+			return {result: () => Promise.reject(this.modeError)};
 		}
 
 		// nextCallId tracks the unique id for a request to the WASM host.
@@ -75,16 +74,21 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 			callbackId,
 		})
 		if (!this.helpers.call(req)) {
-			return Promise.reject(
-				new CapabilityError(`Capability not found ${capabilityId}`, {
-					callbackId,
-					method,
-					capabilityId,
-				}),
-			)
+			return {
+				result: () => {
+					return Promise.reject(
+						new CapabilityError(`Capability not found ${capabilityId}`, {
+							callbackId,
+							method,
+							capabilityId,
+						}),
+					)
+				}
+			};
 		}
 
-		return new LazyPromise(async () => {
+		return {
+			result: async () => {
 			const awaitRequest = create(AwaitCapabilitiesRequestSchema, { ids: [callbackId] })
 			const awaitResponse = this.helpers.await(awaitRequest, this.maxResponseSize)
 			const capabilityResponse = awaitResponse.responses[callbackId]
@@ -113,8 +117,8 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 						method,
 						callbackId,
 					})
-			}
-		})
+			}}
+		}
 	}
 
 	getNextCallId(): number {
@@ -185,7 +189,7 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 			}
 
 			const consensus = new ConsensusCapability()
-			const result = await consensus.simple(this, consensusInput)
+			const result = await consensus.simple(this, consensusInput).result();
 			const wrappedValue = Value.wrap(result)
 
 			return unwrapOptions
@@ -194,9 +198,9 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 		}
 	}
 
-	getSecret(request: SecretRequest | SecretRequestJson): Promise<Secret> {
+	getSecret(request: SecretRequest | SecretRequestJson): {result: () => Promise<Secret>} {
 		if (this.modeError) {
-			return Promise.reject(this.modeError)
+			return {result: () => Promise.reject(this.modeError)}
 		}
 
 		const secretRequest = (request as any).$typeName
@@ -209,35 +213,39 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 			requests: [request],
 		})
 		if (!this.helpers.getSecrets(secretsReq, this.maxResponseSize)) {
-			return Promise.reject(
-				new SecretsError(secretRequest, 'host is not making the secrets request'),
-			)
+			return {
+				result: () => Promise.reject(
+					new SecretsError(secretRequest, 'host is not making the secrets request'),
+				)
+			}
 		}
 
-		return new LazyPromise(async () => {
-			const awaitRequest = create(AwaitSecretsRequestSchema, { ids: [id] })
-			const awaitResponse = this.helpers.awaitSecrets(awaitRequest, this.maxResponseSize)
-			const secretsResponse = awaitResponse.responses[id]
+		return {
+			result: async () => {
+				const awaitRequest = create(AwaitSecretsRequestSchema, { ids: [id] })
+				const awaitResponse = this.helpers.awaitSecrets(awaitRequest, this.maxResponseSize)
+				const secretsResponse = awaitResponse.responses[id]
 
-			if (!secretsResponse) {
-				throw new SecretsError(secretRequest, 'no response')
-			}
+				if (!secretsResponse) {
+					throw new SecretsError(secretRequest, 'no response')
+				}
 
-			const responses = secretsResponse.responses
-			if (responses.length != 1) {
-				throw new SecretsError(secretRequest, 'invalid value returned from host')
-			}
+				const responses = secretsResponse.responses
+				if (responses.length != 1) {
+					throw new SecretsError(secretRequest, 'invalid value returned from host')
+				}
 
-			const response = responses[0].response
-			switch (response.case) {
-				case 'secret':
-					return response.value
-				case 'error':
-					throw new SecretsError(secretRequest, response.value.error)
-				default:
-					throw new SecretsError(secretRequest, 'cannot unmashal returned value from host')
+				const response = responses[0].response
+				switch (response.case) {
+					case 'secret':
+						return response.value
+					case 'error':
+						throw new SecretsError(secretRequest, response.value.error)
+					default:
+						throw new SecretsError(secretRequest, 'cannot unmashal returned value from host')
+				}
 			}
-		})
+		}
 	}
 }
 

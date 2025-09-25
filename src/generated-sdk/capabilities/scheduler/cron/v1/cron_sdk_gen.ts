@@ -1,16 +1,16 @@
 import { fromJson, create } from '@bufbuild/protobuf'
+import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 import { type Any, AnySchema, anyPack } from '@bufbuild/protobuf/wkt'
+import { type Runtime } from '@cre/sdk/runtime'
 import {
+	ConfigSchema,
+	LegacyPayloadSchema,
+	PayloadSchema,
 	type Config,
 	type ConfigJson,
-	ConfigSchema,
 	type LegacyPayload,
-	LegacyPayloadSchema,
 	type Payload,
-	PayloadSchema,
 } from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
-import { type Runtime } from '@cre/sdk/runtime'
-import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 
 /**
  * Cron Capability
@@ -29,7 +29,8 @@ export class CronCapability {
 	constructor() {}
 
 	trigger(config: ConfigJson): CronTrigger {
-		return new CronTrigger(config, CronCapability.CAPABILITY_ID, 'Trigger')
+		const capabilityId = CronCapability.CAPABILITY_ID
+		return new CronTrigger(config, capabilityId, 'Trigger')
 	}
 }
 

@@ -9,7 +9,7 @@ type Config = unknown
 
 const secretAccessInNodeMode = async (runtime: Runtime<Uint8Array>, _: Outputs) => {
 	return await runtime.runInNodeMode(async (_nodeRuntime: NodeRuntime<Uint8Array>) => {
-		return await runtime.getSecret({ id: 'anything' })
+		return await runtime.getSecret({ id: 'anything' }).result()
 	}, consensusIdenticalAggregation())()
 }
 
