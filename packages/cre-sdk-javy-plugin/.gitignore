@@ -1,3 +1,4 @@
 node_modules
 src/javy_chainlink_sdk/target/
 .turbo
+dist/javy-chainlink-sdk.plugin.wasm
