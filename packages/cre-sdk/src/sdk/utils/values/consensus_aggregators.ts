@@ -110,7 +110,7 @@ export class ConsensusFieldAggregation<T, U> {
 }
 
 export type ConsensusAggregationFields<T extends object> = {
-	[K in keyof T]: () => ConsensusFieldAggregation<T[K], true>
+	[K in keyof T as K extends '$typeName' ? never : K]: () => ConsensusFieldAggregation<T[K], true>
 }
 
 export function ConsensusAggregationByFields<T extends object>(
@@ -119,7 +119,7 @@ export function ConsensusAggregationByFields<T extends object>(
 	const fieldMap = create(FieldsMapSchema)
 
 	Object.keys(aggregation).forEach((key) => {
-		const fieldFn = aggregation[key as keyof T]
+		const fieldFn = aggregation[key as keyof ConsensusAggregationFields<T>]
 		const fieldAggregation = fieldFn()
 		if (fieldAggregation.fieldDescriptor) {
 			fieldMap.fields[key] = fieldAggregation.fieldDescriptor

@@ -1,5 +1,5 @@
-import { create, fromBinary, fromJson, toBinary } from '@bufbuild/protobuf'
-import { type Any, AnySchema } from '@bufbuild/protobuf/wkt'
+import { create, fromJson } from '@bufbuild/protobuf'
+import { type Any, AnySchema, anyPack } from '@bufbuild/protobuf/wkt'
 import {
 	type Config,
 	type ConfigJson,
@@ -7,17 +7,13 @@ import {
 	type Outputs,
 	OutputsSchema,
 } from '@cre/generated/capabilities/internal/basictrigger/v1/basic_trigger_pb'
-import { type CapabilityResponse, Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import { callCapability } from '@cre/sdk/utils/capabilities/call-capability'
-import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
+import { type Runtime } from '@cre/sdk/runtime'
 import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
-import { getTypeUrl } from '@cre/sdk/utils/typeurl'
 
 /**
  * Basic Capability
  *
  * Capability ID: basic-test-trigger@1.0.0
- * Default Mode: Mode.DON
  * Capability Name: basic-test-trigger
  * Capability Version: 1.0.0
  */
@@ -25,16 +21,14 @@ export class BasicCapability {
 	/** The capability ID for this service */
 	static readonly CAPABILITY_ID = 'basic-test-trigger@1.0.0'
 
-	/** The default execution mode for this capability */
-	static readonly DEFAULT_MODE = Mode.DON
-
 	static readonly CAPABILITY_NAME = 'basic-test-trigger'
 	static readonly CAPABILITY_VERSION = '1.0.0'
 
-	constructor(private readonly mode: Mode = BasicCapability.DEFAULT_MODE) {}
+	constructor() {}
 
 	trigger(config: ConfigJson): BasicTrigger {
-		return new BasicTrigger(this.mode, config, BasicCapability.CAPABILITY_ID, 'Trigger')
+		const capabilityId = BasicCapability.CAPABILITY_ID
+		return new BasicTrigger(config, capabilityId, 'Trigger')
 	}
 }
 
@@ -44,7 +38,6 @@ export class BasicCapability {
 class BasicTrigger implements Trigger<Outputs, Outputs> {
 	public readonly config: Config
 	constructor(
-		public readonly mode: Mode,
 		config: Config | ConfigJson,
 		private readonly _capabilityId: string,
 		private readonly _method: string,
@@ -68,10 +61,7 @@ class BasicTrigger implements Trigger<Outputs, Outputs> {
 	}
 
 	configAsAny(): Any {
-		return create(AnySchema, {
-			typeUrl: getTypeUrl(ConfigSchema),
-			value: toBinary(ConfigSchema, this.config),
-		})
+		return anyPack(ConfigSchema, this.config)
 	}
 
 	/**

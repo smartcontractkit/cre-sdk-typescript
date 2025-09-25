@@ -1,23 +1,27 @@
-import { cre, type Runtime, Value, withErrorBoundary } from '@chainlink/cre-sdk'
+import { cre, type Runtime, Runner } from "@chainlink/cre-sdk";
 
 type Config = {
-	schedule: string
-}
+  schedule: string;
+};
 
-const onCronTrigger = (_: Config, runtime: Runtime): void => {
-	runtime.logger.log('Hello, Calculator! Workflow triggered.')
-	cre.sendResponseValue(Value.from('Hello, Calculator!'))
-}
+const onCronTrigger = (_: Runtime<Config>): string => {
+  console.log("Hello, Calculator! Workflow triggered.");
+  return "Hello, Calculator!";
+};
 
 const initWorkflow = (config: Config) => {
-	const cron = new cre.capabilities.CronCapability()
+  const cron = new cre.capabilities.CronCapability();
 
-	return [cre.handler(cron.trigger({ schedule: config.schedule }), onCronTrigger)]
-}
+  return [
+    cre.handler(cron.trigger({ schedule: config.schedule }), onCronTrigger),
+  ];
+};
 
 export async function main() {
-	const runner = await cre.newRunner<Config>()
-	await runner.run(initWorkflow)
+  const runner = await Runner.newRunner<Config>({
+    configParser: (b: Uint8Array) => JSON.parse(Buffer.from(b).toString()),
+  });
+  await runner.run(initWorkflow);
 }
 
-withErrorBoundary(main)
+await main();

@@ -1,60 +1,55 @@
 import type { Message } from '@bufbuild/protobuf'
-import type { CapabilityResponse } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import { handleExecuteRequest } from '@cre/sdk/engine/execute'
-import { type Runtime, runtime } from '@cre/sdk/runtime/runtime'
-import { type ConfigHandlerParams, configHandler } from '@cre/sdk/utils/config'
-import { getRequest } from '@cre/sdk/utils/get-request'
+import type {
+	CapabilityResponse,
+	Secret,
+	SecretRequest,
+	SecretRequestJson,
+} from '@cre/generated/sdk/v1alpha/sdk_pb'
+import { type Runtime } from '@cre/sdk/runtime'
 import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
+import type { CreSerializable } from './utils'
 
-export type HandlerFn<TConfig, TTriggerOutput> = (
-	config: TConfig,
-	runtime: Runtime,
+export type HandlerFn<TConfig, TTriggerOutput, TResult> = (
+	runtime: Runtime<TConfig>,
 	triggerOutput: TTriggerOutput,
-) => Promise<unknown> | unknown
+) => Promise<CreSerializable<TResult>> | CreSerializable<TResult>
 
 export interface HandlerEntry<
-	TConfig = unknown,
-	TRawTriggerOutput extends Message<string> = Message<string>,
-	TTriggerOutput = TRawTriggerOutput,
+	TConfig,
+	TRawTriggerOutput extends Message<string>,
+	TTriggerOutput,
+	TResult,
 > {
 	trigger: Trigger<TRawTriggerOutput, TTriggerOutput>
-	fn: HandlerFn<TConfig, TTriggerOutput>
+	fn: HandlerFn<TConfig, TTriggerOutput, TResult>
 }
 
-export type Workflow<TConfig = unknown> = ReadonlyArray<HandlerEntry<TConfig, any, any>>
+export type Workflow<TConfig> = ReadonlyArray<HandlerEntry<TConfig, any, any, any>>
 
 export const handler = <
 	TRawTriggerOutput extends Message<string>,
-	TTriggerOutput = TRawTriggerOutput,
-	TConfig = unknown,
+	TTriggerOutput,
+	TConfig,
+	TResult,
 >(
 	trigger: Trigger<TRawTriggerOutput, TTriggerOutput>,
-	fn: HandlerFn<TConfig, TTriggerOutput>,
-): HandlerEntry<TConfig, TRawTriggerOutput, TTriggerOutput> => ({
+	fn: HandlerFn<TConfig, TTriggerOutput, TResult>,
+): HandlerEntry<TConfig, TRawTriggerOutput, TTriggerOutput, TResult> => ({
 	trigger,
 	fn,
 })
 
-export class Runner<TConfig> {
-	private readonly config: TConfig
-	private readonly runtime: Runtime
+export type Runner<TConfig> = {
+	run(
+		initFn: (
+			config: TConfig,
+			secretsProvider: SecretsProvider,
+		) => Promise<Workflow<TConfig>> | Workflow<TConfig>,
+	): Promise<CapabilityResponse | void>
+}
 
-	private constructor(config: TConfig) {
-		this.config = config
-		this.runtime = runtime
-	}
-
-	static async newRunner<T>(configHandlerParams: ConfigHandlerParams = {}): Promise<Runner<T>> {
-		const config = await configHandler<T>(configHandlerParams)
-		return new Runner<T>(config)
-	}
-
-	async run(
-		initFn: (config: TConfig) => Promise<Workflow<TConfig>> | Workflow<TConfig>,
-	): Promise<CapabilityResponse | void> {
-		const req = getRequest()
-		const workflow = await initFn(this.config)
-
-		return await handleExecuteRequest(req, workflow, this.config, this.runtime)
+export type SecretsProvider = {
+	getSecret(request: SecretRequest | SecretRequestJson): {
+		result: () => Promise<Secret>
 	}
 }

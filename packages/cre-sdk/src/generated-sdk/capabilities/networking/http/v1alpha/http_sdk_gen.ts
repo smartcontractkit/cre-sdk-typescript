@@ -1,5 +1,5 @@
-import { create, fromBinary, fromJson, toBinary } from '@bufbuild/protobuf'
-import { type Any, AnySchema } from '@bufbuild/protobuf/wkt'
+import { create, fromJson } from '@bufbuild/protobuf'
+import { type Any, AnySchema, anyPack } from '@bufbuild/protobuf/wkt'
 import {
 	type Config,
 	type ConfigJson,
@@ -7,17 +7,13 @@ import {
 	type Payload,
 	PayloadSchema,
 } from '@cre/generated/capabilities/networking/http/v1alpha/trigger_pb'
-import { type CapabilityResponse, Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import { callCapability } from '@cre/sdk/utils/capabilities/call-capability'
-import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
+import { type Runtime } from '@cre/sdk/runtime'
 import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
-import { getTypeUrl } from '@cre/sdk/utils/typeurl'
 
 /**
  * HTTP Capability
  *
  * Capability ID: http-trigger@1.0.0-alpha
- * Default Mode: Mode.DON
  * Capability Name: http-trigger
  * Capability Version: 1.0.0-alpha
  */
@@ -25,16 +21,14 @@ export class HTTPCapability {
 	/** The capability ID for this service */
 	static readonly CAPABILITY_ID = 'http-trigger@1.0.0-alpha'
 
-	/** The default execution mode for this capability */
-	static readonly DEFAULT_MODE = Mode.DON
-
 	static readonly CAPABILITY_NAME = 'http-trigger'
 	static readonly CAPABILITY_VERSION = '1.0.0-alpha'
 
-	constructor(private readonly mode: Mode = HTTPCapability.DEFAULT_MODE) {}
+	constructor() {}
 
 	trigger(config: ConfigJson): HTTPTrigger {
-		return new HTTPTrigger(this.mode, config, HTTPCapability.CAPABILITY_ID, 'Trigger')
+		const capabilityId = HTTPCapability.CAPABILITY_ID
+		return new HTTPTrigger(config, capabilityId, 'Trigger')
 	}
 }
 
@@ -44,7 +38,6 @@ export class HTTPCapability {
 class HTTPTrigger implements Trigger<Payload, Payload> {
 	public readonly config: Config
 	constructor(
-		public readonly mode: Mode,
 		config: Config | ConfigJson,
 		private readonly _capabilityId: string,
 		private readonly _method: string,
@@ -68,10 +61,7 @@ class HTTPTrigger implements Trigger<Payload, Payload> {
 	}
 
 	configAsAny(): Any {
-		return create(AnySchema, {
-			typeUrl: getTypeUrl(ConfigSchema),
-			value: toBinary(ConfigSchema, this.config),
-		})
+		return anyPack(ConfigSchema, this.config)
 	}
 
 	/**

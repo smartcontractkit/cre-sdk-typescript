@@ -8,7 +8,10 @@ use javy_plugin_api::javy::quickjs::{
     ArrayBuffer, Ctx, Error, FromJs, TypedArray, Value,
 };
 use std::env;
+use std::collections::HashMap;
 use base64::Engine;
+use rand::{Rng, SeedableRng};
+use rand_chacha::ChaCha8Rng;
 
 // ✅ Host imports: implemented in Go
 #[link(wasm_import_module = "env")]
@@ -27,7 +30,7 @@ unsafe extern "C" {
 
     // Mode switching and versioning
     fn switch_modes(mode: i32);
-    fn version_v2();
+    fn version_v2_typescript();
 
     // Random seed generation
     fn random_seed(mode: i32) -> i64;
@@ -84,6 +87,11 @@ pub unsafe extern "C" fn initialize_runtime() {
 
     javy_plugin_api::initialize_runtime(config, |runtime| {
         runtime.context().with(|ctx| {
+            static mut CURRENT_MODE: i32 = 0;
+            static mut RANDOM_GENERATORS: Option<HashMap<i32, ChaCha8Rng>> = None;
+            unsafe { RANDOM_GENERATORS = Some(HashMap::new()); }
+            
+
             // callCapability(data: Uint8Array | ArrayBuffer | Base64 string) -> i64
             ctx.globals()
                 .set(
@@ -214,7 +222,10 @@ pub unsafe extern "C" fn initialize_runtime() {
                 .set(
                     "switchModes",
                     Func::from(|mode: i32| {
-                        unsafe { switch_modes(mode) };
+                        unsafe { 
+                            CURRENT_MODE = mode;
+                            switch_modes(mode);
+                        };
                     }),
                 )
                 .unwrap();
@@ -224,21 +235,29 @@ pub unsafe extern "C" fn initialize_runtime() {
                 .set(
                     "versionV2",
                     Func::from(|| {
-                        unsafe { version_v2() };
+                        unsafe { version_v2_typescript() };
                     }),
                 )
                 .unwrap();
 
-            // randomSeed(mode: number): number (i64)
-            ctx.globals()
-                .set(
-                    "randomSeed",
-                    Func::from(|mode: i32| {
-                        let result = unsafe { random_seed(mode) };
-                        Ok::<i64, Error>(result)
-                    }),
-                )
-                .unwrap();
+            // Override Math.random to use mode-based seeded generators
+            let math_value = ctx.globals().get::<_, Value>("Math").unwrap();
+            let math_object = math_value.as_object().unwrap();
+            math_object.set("random", Func::from(|| {
+                unsafe {
+                    let generators = (*std::ptr::addr_of_mut!(RANDOM_GENERATORS)).as_mut().unwrap();
+                    let current_mode = *std::ptr::addr_of!(CURRENT_MODE);
+                    
+                    // Get or create a generator for the current mode
+                    if !generators.contains_key(&current_mode) {
+                        let seed = random_seed(current_mode) as u64;
+                        generators.insert(current_mode, ChaCha8Rng::seed_from_u64(seed));
+                    }
+                    
+                    let generator = generators.get_mut(&current_mode).unwrap();
+                    Ok::<f64, Error>(generator.gen_range(0.0..1.0))
+                }
+            })).unwrap();
 
             // getWasiArgs(): string (JSON array)
             ctx.globals()

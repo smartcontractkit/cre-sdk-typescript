@@ -1,34 +1,22 @@
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
 import { BasicActionCapability as NodeActionCapability } from '@cre/generated-sdk/capabilities/internal/nodeaction/v1/basicaction_sdk_gen'
-import { cre, type NodeRuntime } from '@cre/sdk/cre'
-import { NodeModeError } from '@cre/sdk/runtime/errors'
+import { cre, type NodeRuntime, type Runtime } from '@cre/sdk/cre'
 import { consensusIdenticalAggregation } from '@cre/sdk/utils'
+import { Runner } from '@cre/sdk/wasm'
 
-const handler = async () => {
+const handler = async (runtime: Runtime<Uint8Array>) => {
 	// First, run in node mode and do consensus - this makes the expected CallCapability call
-	var nrt: NodeRuntime | undefined
-	await cre.runInNodeMode(async (nodeRuntime: NodeRuntime) => {
+	var nrt: NodeRuntime<Uint8Array> | undefined
+	await runtime.runInNodeMode(async (nodeRuntime: NodeRuntime<Uint8Array>) => {
 		nrt = nodeRuntime
 		return 'hi'
 	}, consensusIdenticalAggregation())()
 
-	try {
-		// Now we're back in DON mode, try to use a NODE mode capability
-		// This should trigger assertNodeSafe() and throw "cannot use NodeRuntime outside RunInNodeMode"
-		// We shoudl be using node runtime here in future...
-		const _ = nrt
-		const nodeActionCapability = new NodeActionCapability()
-		await nodeActionCapability.performAction({ inputThing: true }).result()
-	} catch (e) {
-		console.log('error', e)
-		if (e instanceof NodeModeError) {
-			// The runtime guards should catch this and throw the expected error
-			cre.sendError(e)
-		} else {
-			// Should still fail the test if something else got broken
-			throw e
-		}
-	}
+	// Now we're back in DON mode, try to use a NODE mode capability
+	// This should trigger assertNodeSafe() and throw "cannot use NodeRuntime outside RunInNodeMode"
+	const nodeActionCapability = new NodeActionCapability()
+	await nodeActionCapability.performAction(nrt!, { inputThing: true }).result()
+	return 'hi'
 }
 
 const initWorkflow = () => {
@@ -42,8 +30,8 @@ export async function main() {
 		`TS workflow: standard test: mode_switch: node_runtime_in_don_mode [${new Date().toISOString()}]`,
 	)
 
-	const runner = await cre.newRunner()
+	const runner = await Runner.newRunner<Uint8Array>({})
 	await runner.run(initWorkflow)
 }
 
-cre.withErrorBoundary(main)
+await main()

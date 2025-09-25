@@ -14,6 +14,7 @@ export function generateActionMethod(
 	methodName: string,
 	capabilityClassName: string,
 	hasChainSelector: boolean = false,
+	modePrefix: string,
 ): string {
 	const capabilityIdLogic = hasChainSelector
 		? `
@@ -25,42 +26,23 @@ export function generateActionMethod(
     const capabilityId = ${capabilityClassName}.CAPABILITY_ID;`
 
 	return `
-  ${methodName}(input: ${method.input.name} |  ${method.input.name}Json): {result: () => Promise<${method.output.name}>} {
+  ${methodName}(runtime: ${modePrefix}Runtime<any>, input: ${method.input.name} |  ${method.input.name}Json): {result: () => Promise<${method.output.name}>} {
     // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-    const value = (input as any).$typeName ? input as ${method.input.name} : fromJson(${method.input.name}Schema, input as ${method.input.name}Json)
-    const payload = {
-      typeUrl: getTypeUrl(${method.input.name}Schema),
-      value: toBinary(${method.input.name}Schema, value),
-    };${capabilityIdLogic}
-
-    const capabilityResponse = callCapability({
+    const payload = (input as any).$typeName ? input as ${method.input.name} : fromJson(${method.input.name}Schema, input as ${method.input.name}Json)
+    
+    ${capabilityIdLogic}
+    
+    const capabilityResponse = runtime.callCapability<${method.input.name}, ${method.output.name}>({
       capabilityId,
       method: "${method.name}",
-      mode: this.mode,
-      payload
-    });
+      payload,
+      inputSchema: ${method.input.name}Schema,
+      outputSchema: ${method.output.name}Schema
+    })
 
     return {
       result: async () => {
-        const {response} = await capabilityResponse.result();
-
-        if (response.case === 'error') {
-          throw new CapabilityError(response.value, {
-            capabilityId,
-            method: "${method.name}",
-            mode: this.mode,
-          })
-        }
-
-        if (response.case !== 'payload') {
-          throw new CapabilityError('No payload in response', {
-            capabilityId,
-            method: "${method.name}",
-            mode: this.mode,
-          })
-        }
-
-        return fromBinary(${method.output.name}Schema, response.value.value)
+        return capabilityResponse.result()
       }
     }
   }`

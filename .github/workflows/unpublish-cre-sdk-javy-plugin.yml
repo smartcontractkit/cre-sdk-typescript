@@ -1,0 +1,83 @@
+name: Unpublish CRE SDK Javy Plugin
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to unpublish (e.g., 1.2.3)"
+        required: true
+        type: string
+      dry_run:
+        description: "Run in dry-run mode (show what would be unpublished)"
+        required: false
+        default: true
+        type: boolean
+
+env:
+  BUN_VERSION: "1.2.21"
+  PACKAGE_NAME: "@chainlink/cre-sdk-javy-plugin"
+
+jobs:
+  unpublish-cre-sdk-javy-plugin:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    environment: Publish
+
+    steps:
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Verify npm authentication
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_CRE_SDK_TYPESCRIPT }}
+        run: npm whoami
+
+      - name: Verify version exists
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_CRE_SDK_TYPESCRIPT }}
+        run: |
+          echo "Checking if version ${{ github.event.inputs.version }} exists..."
+          if ! npm view ${{ env.PACKAGE_NAME }}@${{ github.event.inputs.version }} > /dev/null 2>&1; then
+            echo "❌ Version ${{ github.event.inputs.version }} not found"
+            exit 1
+          fi
+          echo "✅ Version ${{ github.event.inputs.version }} found"
+
+      - name: Unpublish version
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_CRE_SDK_TYPESCRIPT }}
+        run: |
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            echo "🧪 DRY RUN: Would unpublish ${{ env.PACKAGE_NAME }}@${{ github.event.inputs.version }}"
+          else
+            echo "🗑️ Unpublishing ${{ env.PACKAGE_NAME }}@${{ github.event.inputs.version }}..."
+            npm unpublish ${{ env.PACKAGE_NAME }}@${{ github.event.inputs.version }}
+            echo "✅ Successfully unpublished version ${{ github.event.inputs.version }}"
+          fi
+
+      - name: Verify unpublish
+        if: ${{ !github.event.inputs.dry_run }}
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_CRE_SDK_TYPESCRIPT }}
+        run: |
+          if npm view ${{ env.PACKAGE_NAME }}@${{ github.event.inputs.version }} > /dev/null 2>&1; then
+            echo "❌ Version still exists after unpublish"
+            exit 1
+          fi
+          echo "✅ Version ${{ github.event.inputs.version }} successfully removed"
+
+      - name: Create summary
+        run: |
+          echo "## 🗑️ Unpublish Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- 📦 **Package**: \`${{ env.PACKAGE_NAME }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- 🏷️ **Version**: \`${{ github.event.inputs.version }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- 🧪 **Dry Run**: \`${{ github.event.inputs.dry_run }}\`" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ github.event.inputs.dry_run }}" = "false" ]; then
+            echo "- ✅ **Status**: Version removed from npm" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- 🧪 **Status**: Dry run completed" >> $GITHUB_STEP_SUMMARY
+          fi
