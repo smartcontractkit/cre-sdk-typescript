@@ -118,7 +118,7 @@ out
 # Nuxt.js build / generate output
 
 .nuxt
-dist
+/dist
 
 # Gatsby files
 
@@ -180,3 +180,5 @@ plugins/javy_chainlink_sdk/target/
 .tools
 
 pkg
+
+.turbo
