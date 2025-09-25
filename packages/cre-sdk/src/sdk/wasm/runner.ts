@@ -19,11 +19,11 @@ export class Runner<TConfig> {
 	) {}
 
 	static async newRunner<TConfig, TIntermediateConfig = TConfig>(
-		configHandlerParams: ConfigHandlerParams<TConfig, TIntermediateConfig>,
+		configHandlerParams?: ConfigHandlerParams<TConfig, TIntermediateConfig>,
 	): Promise<Runner<TConfig>> {
 		hostBindings.versionV2()
 		const request = Runner.getRequest()
-		const config = await configHandler<TConfig, TIntermediateConfig>(configHandlerParams, request)
+		const config = await configHandler<TConfig, TIntermediateConfig>(request, configHandlerParams)
 		return new Runner<TConfig>(config, request)
 	}
 
@@ -54,7 +54,9 @@ export class Runner<TConfig> {
 
 		var result: Promise<ExecutionResult> | ExecutionResult
 		try {
-			const workflow = await initFn(this.config, { getSecret: runtime.getSecret.bind(runtime) })
+			const workflow = await initFn(this.config, {
+				getSecret: runtime.getSecret.bind(runtime),
+			})
 
 			switch (this.request.request.case) {
 				case 'subscribe':
@@ -66,7 +68,9 @@ export class Runner<TConfig> {
 			}
 		} catch (e) {
 			const err = e instanceof Error ? e.message : String(e)
-			result = create(ExecutionResultSchema, { result: { case: 'error', value: err } })
+			result = create(ExecutionResultSchema, {
+				result: { case: 'error', value: err },
+			})
 		}
 
 		const awaitedResult = await result!
@@ -102,10 +106,14 @@ export class Runner<TConfig> {
 			try {
 				const result = await entry.fn(runtime, adapted)
 				const wrapped = Value.wrap(result)
-				return create(ExecutionResultSchema, { result: { case: 'value', value: wrapped.proto() } })
+				return create(ExecutionResultSchema, {
+					result: { case: 'value', value: wrapped.proto() },
+				})
 			} catch (e) {
 				const err = e instanceof Error ? e.message : String(e)
-				return create(ExecutionResultSchema, { result: { case: 'error', value: err } })
+				return create(ExecutionResultSchema, {
+					result: { case: 'error', value: err },
+				})
 			}
 		}
 

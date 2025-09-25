@@ -1,1 +1,1 @@
-export { Runner } from "@cre/sdk/wasm/runner";
+export { Runner } from '@cre/sdk/wasm/runner'
