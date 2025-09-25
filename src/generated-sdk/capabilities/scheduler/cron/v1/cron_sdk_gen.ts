@@ -1,25 +1,21 @@
-import { fromBinary, toBinary, fromJson, create } from '@bufbuild/protobuf'
-import { Mode, type CapabilityResponse } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import { callCapability } from '@cre/sdk/utils/capabilities/call-capability'
-import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
-import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
-import { type Any, AnySchema } from '@bufbuild/protobuf/wkt'
-import { getTypeUrl } from '@cre/sdk/utils/typeurl'
+import { create, fromJson } from '@bufbuild/protobuf'
+import { type Any, AnySchema, anyPack } from '@bufbuild/protobuf/wkt'
 import {
-	ConfigSchema,
-	LegacyPayloadSchema,
-	PayloadSchema,
 	type Config,
 	type ConfigJson,
+	ConfigSchema,
 	type LegacyPayload,
+	LegacyPayloadSchema,
 	type Payload,
+	PayloadSchema,
 } from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
+import { type Runtime } from '@cre/sdk/runtime'
+import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 
 /**
  * Cron Capability
  *
  * Capability ID: cron-trigger@1.0.0
- * Default Mode: Mode.DON
  * Capability Name: cron-trigger
  * Capability Version: 1.0.0
  */
@@ -27,17 +23,14 @@ export class CronCapability {
 	/** The capability ID for this service */
 	static readonly CAPABILITY_ID = 'cron-trigger@1.0.0'
 
-	/** The default execution mode for this capability */
-	static readonly DEFAULT_MODE = Mode.DON
-
 	static readonly CAPABILITY_NAME = 'cron-trigger'
 	static readonly CAPABILITY_VERSION = '1.0.0'
 
-	constructor(private readonly mode: Mode = CronCapability.DEFAULT_MODE) {}
+	constructor() {}
 
 	trigger(config: ConfigJson): CronTrigger {
 		const capabilityId = CronCapability.CAPABILITY_ID
-		return new CronTrigger(this.mode, config, capabilityId, 'Trigger')
+		return new CronTrigger(config, capabilityId, 'Trigger')
 	}
 }
 
@@ -47,7 +40,6 @@ export class CronCapability {
 class CronTrigger implements Trigger<Payload, Payload> {
 	public readonly config: Config
 	constructor(
-		public readonly mode: Mode,
 		config: Config | ConfigJson,
 		private readonly _capabilityId: string,
 		private readonly _method: string,
@@ -71,10 +63,7 @@ class CronTrigger implements Trigger<Payload, Payload> {
 	}
 
 	configAsAny(): Any {
-		return create(AnySchema, {
-			typeUrl: getTypeUrl(ConfigSchema),
-			value: toBinary(ConfigSchema, this.config),
-		})
+		return anyPack(ConfigSchema, this.config)
 	}
 
 	/**

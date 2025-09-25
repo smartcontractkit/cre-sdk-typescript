@@ -1,21 +1,17 @@
-import { fromBinary, toBinary, fromJson } from '@bufbuild/protobuf'
-import { Mode, type CapabilityResponse } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import { callCapability } from '@cre/sdk/utils/capabilities/call-capability'
-import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
-import { getTypeUrl } from '@cre/sdk/utils/typeurl'
+import { fromJson } from '@bufbuild/protobuf'
 import {
-	RequestSchema,
-	ResponseSchema,
 	type Request,
 	type RequestJson,
+	RequestSchema,
 	type Response,
+	ResponseSchema,
 } from '@cre/generated/capabilities/networking/http/v1alpha/client_pb'
+import { type NodeRuntime } from '@cre/sdk/runtime'
 
 /**
  * Client Capability
  *
  * Capability ID: http-actions@1.0.0-alpha
- * Default Mode: Mode.NODE
  * Capability Name: http-actions
  * Capability Version: 1.0.0-alpha
  */
@@ -23,53 +19,33 @@ export class ClientCapability {
 	/** The capability ID for this service */
 	static readonly CAPABILITY_ID = 'http-actions@1.0.0-alpha'
 
-	/** The default execution mode for this capability */
-	static readonly DEFAULT_MODE = Mode.NODE
-
 	static readonly CAPABILITY_NAME = 'http-actions'
 	static readonly CAPABILITY_VERSION = '1.0.0-alpha'
 
-	constructor(private readonly mode: Mode = ClientCapability.DEFAULT_MODE) {}
+	constructor() {}
 
-	sendRequest(input: Request | RequestJson): { result: () => Promise<Response> } {
+	sendRequest(
+		runtime: NodeRuntime<any>,
+		input: Request | RequestJson,
+	): { result: () => Promise<Response> } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-		const value = (input as any).$typeName
+		const payload = (input as any).$typeName
 			? (input as Request)
 			: fromJson(RequestSchema, input as RequestJson)
-		const payload = {
-			typeUrl: getTypeUrl(RequestSchema),
-			value: toBinary(RequestSchema, value),
-		}
+
 		const capabilityId = ClientCapability.CAPABILITY_ID
 
-		const capabilityResponse = callCapability({
+		const capabilityResponse = runtime.callCapability<Request, Response>({
 			capabilityId,
 			method: 'SendRequest',
-			mode: this.mode,
 			payload,
+			inputSchema: RequestSchema,
+			outputSchema: ResponseSchema,
 		})
 
 		return {
 			result: async () => {
-				const { response } = await capabilityResponse.result()
-
-				if (response.case === 'error') {
-					throw new CapabilityError(response.value, {
-						capabilityId,
-						method: 'SendRequest',
-						mode: this.mode,
-					})
-				}
-
-				if (response.case !== 'payload') {
-					throw new CapabilityError('No payload in response', {
-						capabilityId,
-						method: 'SendRequest',
-						mode: this.mode,
-					})
-				}
-
-				return fromBinary(ResponseSchema, response.value.value)
+				return capabilityResponse.result()
 			},
 		}
 	}

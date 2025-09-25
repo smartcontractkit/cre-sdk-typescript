@@ -1,9 +1,9 @@
-import { z } from 'zod'
+import type { Payload } from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
+import type { NodeRuntime, Runtime } from '@cre/sdk/cre'
 import { cre } from '@cre/sdk/cre'
-import type { NodeRuntime } from '@cre/sdk/runtime/runtime'
-import { withErrorBoundary } from '@cre/sdk/utils/error-boundary'
-import { Value, consensusMedianAggregation } from '@cre/sdk/utils'
-import { runInNodeMode } from '@cre/sdk/runtime/run-in-node-mode'
+import { consensusMedianAggregation } from '@cre/sdk/utils'
+import { Runner } from '@cre/sdk/wasm'
+import { z } from 'zod'
 
 const configSchema = z.object({
 	schedule: z.string(),
@@ -12,29 +12,36 @@ const configSchema = z.object({
 
 type Config = z.infer<typeof configSchema>
 
-const fetchMathResult = async (_: NodeRuntime, config: Config) => {
-	const response = await cre.utils.fetch({
-		url: config.apiUrl,
-	})
-	return Number.parseFloat(response.body.trim())
+const fetchMathResult = async (nodeRuntime: NodeRuntime<Config>) => {
+	try {
+		const httpCapability = new cre.capabilities.HTTPClient()
+		const response = await httpCapability
+			.sendRequest(nodeRuntime, {
+				url: nodeRuntime.config.apiUrl,
+			})
+			.result()
+		return Number.parseFloat(Buffer.from(response.body).toString('utf-8').trim())
+	} catch (error) {
+		console.log('fetch error', error)
+		return 0
+	}
 }
 
-const onCronTrigger = async (config: Config) => {
-	const aggregatedValue = await runInNodeMode(fetchMathResult, consensusMedianAggregation())(config)
-	cre.sendResponseValue(Value.from(aggregatedValue))
+const onCronTrigger = async (runtime: Runtime<Config>, _: Payload) => {
+	return await runtime.runInNodeMode(fetchMathResult, consensusMedianAggregation())()
 }
 
 const initWorkflow = (config: Config) => {
 	const cron = new cre.capabilities.CronCapability()
-
 	return [cre.handler(cron.trigger({ schedule: config.schedule }), onCronTrigger)]
 }
 
 export async function main() {
-	const runner = await cre.newRunner<Config>({
+	const runner = await Runner.newRunner<Config>({
+		configParser: (b) => JSON.parse(Buffer.from(b).toString()),
 		configSchema,
 	})
 	await runner.run(initWorkflow)
 }
 
-withErrorBoundary(main)
+await main()

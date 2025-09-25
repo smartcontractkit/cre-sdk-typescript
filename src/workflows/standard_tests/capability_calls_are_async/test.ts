@@ -1,23 +1,24 @@
-import { cre } from '@cre/sdk/cre'
-import { Value } from '@cre/sdk/utils'
+import type { Outputs } from '@cre/generated/capabilities/internal/basictrigger/v1/basic_trigger_pb'
 import { BasicActionCapability } from '@cre/generated-sdk/capabilities/internal/basicaction/v1/basicaction_sdk_gen'
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
+import { cre, type Runtime } from '@cre/sdk/cre'
+import { Runner } from '@cre/sdk/wasm'
 
-const asyncCalls = async () => {
+const asyncCalls = async (runtime: Runtime<Uint8Array>, _: Outputs) => {
 	const basicAction = new BasicActionCapability()
 
 	const input1 = { inputThing: true }
 	const input2 = { inputThing: false }
 
 	// Notice: we call perform action on input1 and then input 2.
-	const p1 = basicAction.performAction(input1)
-	const p2 = basicAction.performAction(input2)
+	const p1 = basicAction.performAction(runtime, input1)
+	const p2 = basicAction.performAction(runtime, input2)
 
 	// We get results in the reverse order.
 	const r2 = await p2.result()
 	const r1 = await p1.result()
 
-	cre.sendResponseValue(Value.from(`${r1.adaptedThing}${r2.adaptedThing}`))
+	return `${r1.adaptedThing}${r2.adaptedThing}`
 }
 
 const initWorkflow = () => {
@@ -30,8 +31,8 @@ export async function main() {
 		`TS workflow: standard test: capability calls are async [${new Date().toISOString()}]`,
 	)
 
-	const runner = await cre.newRunner()
+	const runner = await Runner.newRunner<Uint8Array>({})
 	runner.run(initWorkflow)
 }
 
-cre.withErrorBoundary(main)
+await main()

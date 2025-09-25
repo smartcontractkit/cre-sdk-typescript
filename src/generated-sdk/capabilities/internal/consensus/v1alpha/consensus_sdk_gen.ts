@@ -1,25 +1,21 @@
-import { fromBinary, toBinary, fromJson } from '@bufbuild/protobuf'
-import { Mode, type CapabilityResponse } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import { callCapability } from '@cre/sdk/utils/capabilities/call-capability'
-import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
-import { getTypeUrl } from '@cre/sdk/utils/typeurl'
+import { fromJson } from '@bufbuild/protobuf'
 import {
-	ReportRequestSchema,
-	ReportResponseSchema,
-	SimpleConsensusInputsSchema,
 	type ReportRequest,
 	type ReportRequestJson,
+	ReportRequestSchema,
 	type ReportResponse,
+	ReportResponseSchema,
 	type SimpleConsensusInputs,
 	type SimpleConsensusInputsJson,
+	SimpleConsensusInputsSchema,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import { ValueSchema, type Value } from '@cre/generated/values/v1/values_pb'
+import { type Value, ValueSchema } from '@cre/generated/values/v1/values_pb'
+import { type Runtime } from '@cre/sdk/runtime'
 
 /**
  * Consensus Capability
  *
  * Capability ID: consensus@1.0.0-alpha
- * Default Mode: Mode.DON
  * Capability Name: consensus
  * Capability Version: 1.0.0-alpha
  */
@@ -27,98 +23,59 @@ export class ConsensusCapability {
 	/** The capability ID for this service */
 	static readonly CAPABILITY_ID = 'consensus@1.0.0-alpha'
 
-	/** The default execution mode for this capability */
-	static readonly DEFAULT_MODE = Mode.DON
-
 	static readonly CAPABILITY_NAME = 'consensus'
 	static readonly CAPABILITY_VERSION = '1.0.0-alpha'
 
-	constructor(private readonly mode: Mode = ConsensusCapability.DEFAULT_MODE) {}
+	constructor() {}
 
-	simple(input: SimpleConsensusInputs | SimpleConsensusInputsJson): {
-		result: () => Promise<Value>
-	} {
+	simple(
+		runtime: Runtime<any>,
+		input: SimpleConsensusInputs | SimpleConsensusInputsJson,
+	): { result: () => Promise<Value> } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-		const value = (input as any).$typeName
+		const payload = (input as any).$typeName
 			? (input as SimpleConsensusInputs)
 			: fromJson(SimpleConsensusInputsSchema, input as SimpleConsensusInputsJson)
-		const payload = {
-			typeUrl: getTypeUrl(SimpleConsensusInputsSchema),
-			value: toBinary(SimpleConsensusInputsSchema, value),
-		}
+
 		const capabilityId = ConsensusCapability.CAPABILITY_ID
 
-		const capabilityResponse = callCapability({
+		const capabilityResponse = runtime.callCapability<SimpleConsensusInputs, Value>({
 			capabilityId,
 			method: 'Simple',
-			mode: this.mode,
 			payload,
+			inputSchema: SimpleConsensusInputsSchema,
+			outputSchema: ValueSchema,
 		})
 
 		return {
 			result: async () => {
-				const { response } = await capabilityResponse.result()
-
-				if (response.case === 'error') {
-					throw new CapabilityError(response.value, {
-						capabilityId,
-						method: 'Simple',
-						mode: this.mode,
-					})
-				}
-
-				if (response.case !== 'payload') {
-					throw new CapabilityError('No payload in response', {
-						capabilityId,
-						method: 'Simple',
-						mode: this.mode,
-					})
-				}
-
-				return fromBinary(ValueSchema, response.value.value)
+				return capabilityResponse.result()
 			},
 		}
 	}
 
-	report(input: ReportRequest | ReportRequestJson): { result: () => Promise<ReportResponse> } {
+	report(
+		runtime: Runtime<any>,
+		input: ReportRequest | ReportRequestJson,
+	): { result: () => Promise<ReportResponse> } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-		const value = (input as any).$typeName
+		const payload = (input as any).$typeName
 			? (input as ReportRequest)
 			: fromJson(ReportRequestSchema, input as ReportRequestJson)
-		const payload = {
-			typeUrl: getTypeUrl(ReportRequestSchema),
-			value: toBinary(ReportRequestSchema, value),
-		}
+
 		const capabilityId = ConsensusCapability.CAPABILITY_ID
 
-		const capabilityResponse = callCapability({
+		const capabilityResponse = runtime.callCapability<ReportRequest, ReportResponse>({
 			capabilityId,
 			method: 'Report',
-			mode: this.mode,
 			payload,
+			inputSchema: ReportRequestSchema,
+			outputSchema: ReportResponseSchema,
 		})
 
 		return {
 			result: async () => {
-				const { response } = await capabilityResponse.result()
-
-				if (response.case === 'error') {
-					throw new CapabilityError(response.value, {
-						capabilityId,
-						method: 'Report',
-						mode: this.mode,
-					})
-				}
-
-				if (response.case !== 'payload') {
-					throw new CapabilityError('No payload in response', {
-						capabilityId,
-						method: 'Report',
-						mode: this.mode,
-					})
-				}
-
-				return fromBinary(ReportResponseSchema, response.value.value)
+				return capabilityResponse.result()
 			},
 		}
 	}

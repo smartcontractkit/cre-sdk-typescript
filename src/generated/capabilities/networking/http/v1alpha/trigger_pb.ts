@@ -2,12 +2,10 @@
 // @generated from file capabilities/networking/http/v1alpha/trigger.proto (package capabilities.networking.http.v1alpha, syntax proto3)
 /* eslint-disable */
 
+import type { Message } from '@bufbuild/protobuf'
 import type { GenEnum, GenFile, GenMessage, GenService } from '@bufbuild/protobuf/codegenv2'
 import { enumDesc, fileDesc, messageDesc, serviceDesc } from '@bufbuild/protobuf/codegenv2'
-import type { StructJson } from '@bufbuild/protobuf/wkt'
-import { file_google_protobuf_struct } from '@bufbuild/protobuf/wkt'
 import { file_tools_generator_v1alpha_cre_metadata } from '../../../../tools/generator/v1alpha/cre_metadata_pb'
-import type { JsonObject, Message } from '@bufbuild/protobuf'
 
 /**
  * Describes the file capabilities/networking/http/v1alpha/trigger.proto.
@@ -15,8 +13,8 @@ import type { JsonObject, Message } from '@bufbuild/protobuf'
 export const file_capabilities_networking_http_v1alpha_trigger: GenFile =
 	/*@__PURE__*/
 	fileDesc(
-		'CjJjYXBhYmlsaXRpZXMvbmV0d29ya2luZy9odHRwL3YxYWxwaGEvdHJpZ2dlci5wcm90bxIkY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuaHR0cC52MWFscGhhIlYKBkNvbmZpZxJMCg9hdXRob3JpemVkX2tleXMYASADKAsyMy5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGEuQXV0aG9yaXplZEtleSJzCgdQYXlsb2FkEiYKBWlucHV0GAEgASgLMhcuZ29vZ2xlLnByb3RvYnVmLlN0cnVjdBJACgNrZXkYAiABKAsyMy5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGEuQXV0aG9yaXplZEtleSJgCg1BdXRob3JpemVkS2V5EjsKBHR5cGUYASABKA4yLS5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGEuS2V5VHlwZRISCgpwdWJsaWNfa2V5GAIgASgJKjsKB0tleVR5cGUSGAoUS0VZX1RZUEVfVU5TUEVDSUZJRUQQABIWChJLRVlfVFlQRV9FQ0RTQV9FVk0QATKSAQoESFRUUBJoCgdUcmlnZ2VyEiwuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuaHR0cC52MWFscGhhLkNvbmZpZxotLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmh0dHAudjFhbHBoYS5QYXlsb2FkMAEaIIK1GBwIARIYaHR0cC10cmlnZ2VyQDEuMC4wLWFscGhhQusBCihjb20uY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuaHR0cC52MWFscGhhQgxUcmlnZ2VyUHJvdG9QAaICA0NOSKoCJENhcGFiaWxpdGllcy5OZXR3b3JraW5nLkh0dHAuVjFhbHBoYcoCJENhcGFiaWxpdGllc1xOZXR3b3JraW5nXEh0dHBcVjFhbHBoYeICMENhcGFiaWxpdGllc1xOZXR3b3JraW5nXEh0dHBcVjFhbHBoYVxHUEJNZXRhZGF0YeoCJ0NhcGFiaWxpdGllczo6TmV0d29ya2luZzo6SHR0cDo6VjFhbHBoYWIGcHJvdG8z',
-		[file_google_protobuf_struct, file_tools_generator_v1alpha_cre_metadata],
+		'CjJjYXBhYmlsaXRpZXMvbmV0d29ya2luZy9odHRwL3YxYWxwaGEvdHJpZ2dlci5wcm90bxIkY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuaHR0cC52MWFscGhhIlYKBkNvbmZpZxJMCg9hdXRob3JpemVkX2tleXMYASADKAsyMy5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGEuQXV0aG9yaXplZEtleSJaCgdQYXlsb2FkEg0KBWlucHV0GAEgASgMEkAKA2tleRgCIAEoCzIzLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmh0dHAudjFhbHBoYS5BdXRob3JpemVkS2V5ImAKDUF1dGhvcml6ZWRLZXkSOwoEdHlwZRgBIAEoDjItLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmh0dHAudjFhbHBoYS5LZXlUeXBlEhIKCnB1YmxpY19rZXkYAiABKAkqOwoHS2V5VHlwZRIYChRLRVlfVFlQRV9VTlNQRUNJRklFRBAAEhYKEktFWV9UWVBFX0VDRFNBX0VWTRABMpIBCgRIVFRQEmgKB1RyaWdnZXISLC5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGEuQ29uZmlnGi0uY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuaHR0cC52MWFscGhhLlBheWxvYWQwARoggrUYHAgBEhhodHRwLXRyaWdnZXJAMS4wLjAtYWxwaGFC6wEKKGNvbS5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGFCDFRyaWdnZXJQcm90b1ABogIDQ05IqgIkQ2FwYWJpbGl0aWVzLk5ldHdvcmtpbmcuSHR0cC5WMWFscGhhygIkQ2FwYWJpbGl0aWVzXE5ldHdvcmtpbmdcSHR0cFxWMWFscGhh4gIwQ2FwYWJpbGl0aWVzXE5ldHdvcmtpbmdcSHR0cFxWMWFscGhhXEdQQk1ldGFkYXRh6gInQ2FwYWJpbGl0aWVzOjpOZXR3b3JraW5nOjpIdHRwOjpWMWFscGhhYgZwcm90bzM',
+		[file_tools_generator_v1alpha_cre_metadata],
 	)
 
 /**
@@ -56,11 +54,11 @@ export const ConfigSchema: GenMessage<Config, { jsonType: ConfigJson }> =
  */
 export type Payload = Message<'capabilities.networking.http.v1alpha.Payload'> & {
 	/**
-	 * JSON input in the HTTP trigger request
+	 * JSON input in the HTTP trigger request (as bytes)
 	 *
-	 * @generated from field: google.protobuf.Struct input = 1;
+	 * @generated from field: bytes input = 1;
 	 */
-	input?: JsonObject
+	input: Uint8Array
 
 	/**
 	 * Key used to sign the HTTP trigger request
@@ -75,11 +73,11 @@ export type Payload = Message<'capabilities.networking.http.v1alpha.Payload'> & 
  */
 export type PayloadJson = {
 	/**
-	 * JSON input in the HTTP trigger request
+	 * JSON input in the HTTP trigger request (as bytes)
 	 *
-	 * @generated from field: google.protobuf.Struct input = 1;
+	 * @generated from field: bytes input = 1;
 	 */
-	input?: StructJson
+	input?: string
 
 	/**
 	 * Key used to sign the HTTP trigger request

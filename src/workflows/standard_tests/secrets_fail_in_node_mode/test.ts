@@ -1,18 +1,16 @@
-import { cre, type Runtime, type NodeRuntime } from '@cre/sdk/cre'
+import type { Outputs } from '@cre/generated/capabilities/internal/basictrigger/v1/basic_trigger_pb'
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
-import { consensusMedianAggregation } from '@cre/sdk/utils'
+import { cre, type NodeRuntime, type Runtime } from '@cre/sdk/cre'
+import { consensusIdenticalAggregation } from '@cre/sdk/utils'
+import { Runner } from '@cre/sdk/wasm'
 
 // Doesn't matter for this test
 type Config = unknown
 
-const secretAccessInNodeMode = async (_config: Config, runtime: Runtime) => {
-	try {
-		await cre.runInNodeMode(async (_nodeRuntime: NodeRuntime) => {
-			return await runtime.getSecret('anything')
-		}, consensusMedianAggregation())()
-	} catch {
-		cre.sendError('cannot use Runtime inside RunInNodeMode')
-	}
+const secretAccessInNodeMode = async (runtime: Runtime<Uint8Array>, _: Outputs) => {
+	return await runtime.runInNodeMode(async (_nodeRuntime: NodeRuntime<Uint8Array>) => {
+		return await runtime.getSecret({ id: 'anything' }).result()
+	}, consensusIdenticalAggregation())()
 }
 
 const initWorkflow = () => {
@@ -24,8 +22,8 @@ const initWorkflow = () => {
 export async function main() {
 	console.log(`TS workflow: standard test: secrets_fail_in_node_mode [${new Date().toISOString()}]`)
 
-	const runner = await cre.newRunner<Config>()
+	const runner = await Runner.newRunner<Uint8Array>({})
 	await runner.run(initWorkflow)
 }
 
-cre.withErrorBoundary(main)
+await main()

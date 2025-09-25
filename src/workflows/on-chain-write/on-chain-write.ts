@@ -1,11 +1,10 @@
+import type { Payload } from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
 import { cre, type NodeRuntime, type Runtime } from '@cre/sdk/cre'
-import { withErrorBoundary } from '@cre/sdk/utils/error-boundary'
+import { consensusMedianAggregation, Value } from '@cre/sdk/utils'
 import { bytesToHex, hexToBase64 } from '@cre/sdk/utils/hex-utils'
-import { sendResponseValue } from '@cre/sdk/utils/send-response-value'
+import { Runner } from '@cre/sdk/wasm'
 import { decodeFunctionResult, encodeFunctionData, toHex, zeroAddress } from 'viem'
-import { Value, consensusMedianAggregation } from '@cre/sdk/utils'
 import { z } from 'zod'
-
 // TODO: In production, load ABI from external file or contract metadata
 import { CALCULATOR_CONSUMER_ABI, STORAGE_ABI } from './abi'
 
@@ -24,32 +23,32 @@ const configSchema = z.object({
 
 type Config = z.infer<typeof configSchema>
 
-async function fetchMathResult(_: NodeRuntime, config: Config): Promise<number> {
-	const response = await cre.utils.fetch({
-		url: config.apiUrl,
-	})
-	return Number.parseFloat(response.body.trim())
+async function fetchMathResult(nodeRuntime: NodeRuntime<Config>): Promise<number> {
+	const httpCapability = new cre.capabilities.HTTPClient()
+	const response = await httpCapability
+		.sendRequest(nodeRuntime, {
+			url: nodeRuntime.config.apiUrl,
+		})
+		.result()
+	return Number.parseFloat(Buffer.from(response.body).toString('utf-8').trim())
 }
 
-const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> => {
+const onCronTrigger = async (runtime: Runtime<Config>, _: Payload): Promise<Result> => {
+	const config = runtime.config
 	if (!config.evms?.length) {
 		throw new Error('No EVM configuration provided')
 	}
 
 	// Step 1: Fetch offchain data using consensus (from Part 2)
-	const offchainValue = await cre.runInNodeMode(
-		fetchMathResult,
-		consensusMedianAggregation(),
-	)(config)
+	const offchainValue = await runtime.runInNodeMode(fetchMathResult, consensusMedianAggregation())()
 
-	runtime.logger.log('Successfully fetched offchain value')
+	console.log('Successfully fetched offchain value')
 
 	// Get the first EVM configuration from the list
 	const evmConfig = config.evms[0]
 
 	// Step 2: Read onchain data using the EVM client with chainSelector
 	const evmClient = new cre.capabilities.EVMClient(
-		undefined, // use default mode
 		BigInt(evmConfig.chainSelector), // pass chainSelector as BigInt
 	)
 
@@ -60,7 +59,7 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 	})
 
 	const contractCall = await evmClient
-		.callContract({
+		.callContract(runtime, {
 			call: {
 				from: hexToBase64(zeroAddress),
 				to: hexToBase64(evmConfig.storageAddress),
@@ -80,15 +79,15 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 		data: bytesToHex(contractCall.data),
 	})
 
-	runtime.logger.log(`Successfully read onchain value: ${onchainValue.toString()}`)
+	console.log(`Successfully read onchain value: ${onchainValue.toString()}`)
 
 	// Step 3: Combine the results - convert offchain float to bigint and add
 	const offchainBigInt = BigInt(Math.floor(offchainValue))
 	const finalResult = onchainValue + offchainBigInt
 
-	runtime.logger.log('Final calculated result')
+	console.log('Final calculated result')
 
-	runtime.logger.log('Updating calculator result...')
+	console.log('Updating calculator result...')
 
 	// Encode the contract call data for the 'onReport' function
 	const dryRunCallData = encodeFunctionData({
@@ -103,11 +102,11 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 		],
 	})
 
-	runtime.logger.log('Dry running call to ensure the value is not anomalous...')
+	console.log('Dry running call to ensure the value is not anomalous...')
 
 	// dry run the call to ensure the value is not anomalous
 	const dryRunCall = await evmClient
-		.callContract({
+		.callContract(runtime, {
 			call: {
 				from: hexToBase64(zeroAddress),
 				to: hexToBase64(evmConfig.calculatorConsumerAddress),
@@ -126,7 +125,7 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 		data: bytesToHex(dryRunCall.data),
 	})
 
-	runtime.logger.log(`Dry run response: ${dryRunResponse ? 'Anomalous' : 'Not anomalous'}`)
+	console.log(`Dry run response: ${dryRunResponse ? 'Anomalous' : 'Not anomalous'}`)
 
 	if (dryRunResponse) {
 		throw new Error('Result is anomalous')
@@ -141,7 +140,7 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 	})
 
 	const resp = await evmClient
-		.writeReport({
+		.writeReport(runtime, {
 			receiver: evmConfig.calculatorConsumerAddress,
 			report: {
 				rawReport: writeCallData,
@@ -155,14 +154,12 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 		throw new Error('Failed to write report')
 	}
 
-	sendResponseValue(
-		Value.from({
-			OffchainValue: offchainBigInt,
-			OnchainValue: onchainValue,
-			FinalResult: finalResult,
-			TxHash: txHash.toString(),
-		}),
-	)
+	return {
+		OffchainValue: offchainBigInt,
+		OnchainValue: onchainValue,
+		FinalResult: finalResult,
+		TxHash: txHash.toString(),
+	}
 }
 
 const initWorkflow = (config: Config) => {
@@ -172,10 +169,18 @@ const initWorkflow = (config: Config) => {
 }
 
 export async function main() {
-	const runner = await cre.newRunner<Config>({
+	const runner = await Runner.newRunner<Config>({
+		configParser: (b) => JSON.parse(Buffer.from(b).toString()),
 		configSchema: configSchema,
 	})
 	await runner.run(initWorkflow)
 }
 
-withErrorBoundary(main)
+await main()
+
+type Result = {
+	OffchainValue: bigint
+	OnchainValue: bigint
+	FinalResult: bigint
+	TxHash: string
+}

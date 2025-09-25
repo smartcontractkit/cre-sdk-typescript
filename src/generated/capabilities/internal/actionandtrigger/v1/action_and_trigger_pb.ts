@@ -2,10 +2,10 @@
 // @generated from file capabilities/internal/actionandtrigger/v1/action_and_trigger.proto (package capabilities.internal.actionandtrigger.v1, syntax proto3)
 /* eslint-disable */
 
+import type { Message } from '@bufbuild/protobuf'
 import type { GenFile, GenMessage, GenService } from '@bufbuild/protobuf/codegenv2'
 import { fileDesc, messageDesc, serviceDesc } from '@bufbuild/protobuf/codegenv2'
 import { file_tools_generator_v1alpha_cre_metadata } from '../../../../tools/generator/v1alpha/cre_metadata_pb'
-import type { Message } from '@bufbuild/protobuf'
 
 /**
  * Describes the file capabilities/internal/actionandtrigger/v1/action_and_trigger.proto.

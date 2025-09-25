@@ -9,10 +9,6 @@ const globalHostBindingsSchema = z.object({
 		.function()
 		.args(z.union([z.instanceof(Uint8Array), z.custom<Uint8Array<ArrayBufferLike>>()]))
 		.returns(z.number()),
-	randomSeed: z
-		.function()
-		.args(z.union([z.literal(Mode.DON), z.literal(Mode.NODE)]))
-		.returns(z.number()),
 	versionV2: z.function().args().returns(z.void()),
 	callCapability: z
 		.function()

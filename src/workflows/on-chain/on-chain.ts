@@ -1,13 +1,11 @@
-import { z } from 'zod'
+import type { Payload } from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
 import { cre } from '@cre/sdk/cre'
-import { sendResponseValue } from '@cre/sdk/utils/send-response-value'
-import { Value, consensusMedianAggregation } from '@cre/sdk/utils'
-import { encodeFunctionData, decodeFunctionResult, zeroAddress } from 'viem'
-import { bytesToHex } from '@cre/sdk/utils/hex-utils'
-import type { NodeRuntime, Runtime } from '@cre/sdk/runtime/runtime'
-import { hexToBase64 } from '@cre/sdk/utils/hex-utils'
-import { withErrorBoundary } from '@cre/sdk/utils/error-boundary'
-
+import type { NodeRuntime, Runtime } from '@cre/sdk/runtime'
+import { consensusMedianAggregation, Value } from '@cre/sdk/utils'
+import { bytesToHex, hexToBase64 } from '@cre/sdk/utils/hex-utils'
+import { Runner } from '@cre/sdk/wasm'
+import { decodeFunctionResult, encodeFunctionData, zeroAddress } from 'viem'
+import { z } from 'zod'
 // TODO: In production, load ABI from external file or contract metadata
 import { STORAGE_ABI } from './abi'
 
@@ -24,32 +22,32 @@ const configSchema = z.object({
 
 type Config = z.infer<typeof configSchema>
 
-async function fetchMathResult(_: NodeRuntime, config: Config): Promise<number> {
-	const response = await cre.utils.fetch({
-		url: config.apiUrl,
-	})
-	return Number.parseFloat(response.body.trim())
+async function fetchMathResult(nodeRuntime: NodeRuntime<Config>): Promise<number> {
+	const httpCapability = new cre.capabilities.HTTPClient()
+	const response = await httpCapability
+		.sendRequest(nodeRuntime, {
+			url: nodeRuntime.config.apiUrl,
+		})
+		.result()
+	return Number.parseFloat(Buffer.from(response.body).toString('utf-8').trim())
 }
 
-const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> => {
+const onCronTrigger = async (runtime: Runtime<Config>, _: Payload): Promise<bigint> => {
+	const config = runtime.config
 	if (!config.evms?.length) {
 		throw new Error('No EVM configuration provided')
 	}
 
 	// Step 1: Fetch offchain data using consensus (from Part 2)
-	const offchainValue = await cre.runInNodeMode(
-		fetchMathResult,
-		consensusMedianAggregation(),
-	)(config)
+	const offchainValue = await runtime.runInNodeMode(fetchMathResult, consensusMedianAggregation())()
 
-	runtime.logger.log(`Successfully fetched offchain value: ${offchainValue}`)
+	console.log(`Successfully fetched offchain value: ${offchainValue}`)
 
 	// Get the first EVM configuration from the list
 	const evmConfig = config.evms[0]
 
 	// Step 2: Read onchain data using the EVM client with chainSelector
 	const evmClient = new cre.capabilities.EVMClient(
-		undefined, // use default mode
 		BigInt(evmConfig.chainSelector), // pass chainSelector as BigInt
 	)
 
@@ -60,7 +58,7 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 	})
 
 	const contractCall = await evmClient
-		.callContract({
+		.callContract(runtime, {
 			call: {
 				from: hexToBase64(zeroAddress),
 				to: hexToBase64(evmConfig.storageAddress),
@@ -80,17 +78,11 @@ const onCronTrigger = async (config: Config, runtime: Runtime): Promise<void> =>
 		data: bytesToHex(contractCall.data),
 	})
 
-	runtime.logger.log(`Successfully read onchain value: ${onchainValue.toString()}`)
+	console.log(`Successfully read onchain value: ${onchainValue.toString()}`)
 
 	// Step 3: Combine the results - convert offchain float to bigint and add
 	const offchainBigInt = BigInt(Math.floor(offchainValue))
-	const finalResult = onchainValue + offchainBigInt
-
-	sendResponseValue(
-		Value.from({
-			FinalResult: finalResult,
-		}),
-	)
+	return onchainValue + offchainBigInt
 }
 
 const initWorkflow = (config: Config) => {
@@ -100,10 +92,11 @@ const initWorkflow = (config: Config) => {
 }
 
 export async function main() {
-	const runner = await cre.newRunner<Config>({
+	const runner = await Runner.newRunner<Config>({
+		configParser: (b) => JSON.parse(Buffer.from(b).toString()),
 		configSchema,
 	})
 	await runner.run(initWorkflow)
 }
 
-withErrorBoundary(main)
+await main()

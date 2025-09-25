@@ -1,16 +1,16 @@
-import { writeFileSync, mkdirSync } from 'node:fs'
-import { join, dirname } from 'node:path'
-import { getExtension, type DescService } from '@bufbuild/protobuf'
+import { mkdirSync, writeFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { type DescService, getExtension } from '@bufbuild/protobuf'
+import type { GenFile } from '@bufbuild/protobuf/codegenv2'
+import { Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import type { CapabilityMetadata } from '@cre/generated/tools/generator/v1alpha/cre_metadata_pb'
 import {
 	capability,
 	method as methodOption,
 } from '@cre/generated/tools/generator/v1alpha/cre_metadata_pb'
-import { Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import type { GenFile } from '@bufbuild/protobuf/codegenv2'
-import type { CapabilityMetadata } from '@cre/generated/tools/generator/v1alpha/cre_metadata_pb'
 import { generateActionMethod } from './generate-action'
-import { generateTriggerMethod, generateTriggerClass } from './generate-trigger'
-import { lowerCaseFirstLetter, getImportPathForFile } from './utils'
+import { generateTriggerClass, generateTriggerMethod } from './generate-trigger'
+import { getImportPathForFile, lowerCaseFirstLetter } from './utils'
 
 const getCapabilityServiceOptions = (service: DescService): CapabilityMetadata | false => {
 	if (!service.proto.options) {
@@ -79,38 +79,35 @@ export function generateSdk(file: GenFile, outputDir: string) {
 			outputPathTypes.add(`type ${method.output.name}`)
 		})
 
-		// Check if we have any triggers
 		const hasTriggers = service.methods.some((m) => m.methodKind === 'server_streaming')
+		const hasActions = service.methods.some((m) => m.methodKind !== 'server_streaming')
+		const modePrefix = capOption.mode === Mode.NODE ? 'Node' : ''
 
 		// Build import statements
 		const imports = new Set<string>()
 		if (hasTriggers) {
-			imports.add('import { fromBinary, toBinary, fromJson, create } from "@bufbuild/protobuf";')
+			imports.add('import { fromJson, create } from "@bufbuild/protobuf"')
 		} else {
-			imports.add('import { fromBinary, toBinary, fromJson } from "@bufbuild/protobuf";')
+			imports.add('import { fromJson } from "@bufbuild/protobuf"')
 		}
-		imports.add(`import {
-  Mode,
-  type CapabilityResponse,
-} from "@cre/generated/sdk/v1alpha/sdk_pb";`)
-		imports.add(`import { callCapability } from "@cre/sdk/utils/capabilities/call-capability";`)
-		imports.add(`import { CapabilityError } from "@cre/sdk/utils/capabilities/capability-error";`)
 
 		// Add trigger imports if needed
 		if (hasTriggers) {
-			imports.add(`import { type Trigger } from "@cre/sdk/utils/triggers/trigger-interface";`)
-			imports.add(`import { type Any, AnySchema } from "@bufbuild/protobuf/wkt";`)
+			imports.add(`import { type Trigger } from "@cre/sdk/utils/triggers/trigger-interface"`)
+			imports.add(`import { type Any, AnySchema, anyPack } from "@bufbuild/protobuf/wkt"`)
 		}
 
-		// Always import getTypeUrl when we generate Any payloads
-		imports.add(`import { getTypeUrl } from "@cre/sdk/utils/typeurl";`)
+		// TODO???
+		if (hasActions || true) {
+			imports.add(`import { type ${modePrefix}Runtime } from "@cre/sdk/runtime"`)
+		}
 
 		// Generate deduplicated type imports
 		typeImports.forEach((types, path) => {
 			const sortedTypes = Array.from(types).sort()
 			imports.add(`import {
   ${sortedTypes.join(',\n  ')},
-} from "${path}";`)
+} from "${path}"`)
 		})
 
 		const capabilityClassName = `${service.name}Capability`
@@ -135,11 +132,23 @@ export function generateSdk(file: GenFile, outputDir: string) {
 
 				// Check if this is a streaming method (trigger)
 				if (method.methodKind === 'server_streaming') {
-					return generateTriggerMethod(method, methodName, capabilityClassName, service.name, hasChainSelector)
+					return generateTriggerMethod(
+						method,
+						methodName,
+						capabilityClassName,
+						service.name,
+						hasChainSelector,
+					)
 				}
 
 				// Generate action method
-				return generateActionMethod(method, methodName, capabilityClassName, hasChainSelector)
+				return generateActionMethod(
+					method,
+					methodName,
+					capabilityClassName,
+					hasChainSelector,
+					modePrefix,
+				)
 			})
 			.join('\n')
 
@@ -149,14 +158,11 @@ export function generateSdk(file: GenFile, outputDir: string) {
 			.map((method) => generateTriggerClass(method, service.name))
 			.join('\n')
 
-		// Determine default mode from metadata: NODE is specifically stated, DON otherwise.
-		const defaultMode = capOption.mode === Mode.NODE ? 'Mode.NODE' : 'Mode.DON'
-
 		const [capabilityName, capabilityVersion] = capOption.capabilityId.split('@')
 
 		// Extract chainSelector support
 		let chainSelectorSupport = ''
-		let constructorParams = `private readonly mode: Mode = ${service.name}Capability.DEFAULT_MODE`
+		const constructorParams: string[] = []
 
 		if (hasChainSelector && capOption.labels) {
 			const chainSelectorLabel = capOption.labels.ChainSelector as any
@@ -171,9 +177,9 @@ export function generateSdk(file: GenFile, outputDir: string) {
 ${Object.entries(defaults)
 	.map(([key, value]) => `    "${key}": ${value}n`)
 	.join(',\n')}
-  } as const;`
+  } as const`
 
-				constructorParams = `${constructorParams},\n    private readonly chainSelector?: bigint`
+				constructorParams.push('private readonly chainSelector?: bigint')
 			}
 		}
 
@@ -183,7 +189,6 @@ ${Object.entries(defaults)
  * ${service.name} Capability
  * 
  * Capability ID: ${capOption.capabilityId}
- * Default Mode: ${defaultMode}
  * Capability Name: ${capabilityName}
  * Capability Version: ${capabilityVersion}
  */`
@@ -194,16 +199,13 @@ ${classComment}
 export class ${capabilityClassName} {
   /** The capability ID for this service */
   static readonly CAPABILITY_ID = "${capOption.capabilityId}";
-  
-  /** The default execution mode for this capability */
-  static readonly DEFAULT_MODE = ${defaultMode};
 
   static readonly CAPABILITY_NAME = "${capabilityName}";
   static readonly CAPABILITY_VERSION = "${capabilityVersion}";
 ${chainSelectorSupport}
 
   constructor(
-    ${constructorParams}
+    ${constructorParams.join(',\n    ')}
   ) {}
 ${methods}
 }

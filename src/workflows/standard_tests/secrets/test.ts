@@ -1,25 +1,15 @@
-import { cre, type Runtime } from '@cre/sdk/cre'
+import { toJson } from '@bufbuild/protobuf'
+import type { Outputs } from '@cre/generated/capabilities/internal/basictrigger/v1/basic_trigger_pb'
+import { SecretSchema } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
-import { SecretsError } from '@cre/sdk/utils/secrets-error'
-import { Value } from '@cre/sdk/utils'
+import { cre, type Runtime } from '@cre/sdk/cre'
+import { Runner } from '@cre/sdk/wasm'
 
-// Doesn't matter for this test
-type Config = unknown
+const handleSecret = async (runtime: Runtime<Uint8Array>, _: Outputs) => {
+	const secret = await runtime.getSecret({ id: 'Foo' }).result()
+	const secretJson = toJson(SecretSchema, secret)
 
-const handleSecret = async (_config: Config, runtime: Runtime) => {
-	try {
-		const secret = await runtime.getSecret('Foo')
-		cre.sendResponseValue(Value.from(secret))
-	} catch (error) {
-		// One of the tests covers the lack of particular secret.
-		// We cover that in this catch block, however any other error should still be thrown.
-		// TODO: should SecretsError be exposed via cre?
-		if (error instanceof SecretsError) {
-			cre.sendError(error.message)
-		} else {
-			throw error
-		}
-	}
+	return secretJson.value || ''
 }
 
 const initWorkflow = () => {
@@ -31,8 +21,8 @@ const initWorkflow = () => {
 export async function main() {
 	console.log(`TS workflow: standard test: secrets [${new Date().toISOString()}]`)
 
-	const runner = await cre.newRunner<Config>()
+	const runner = await Runner.newRunner<Uint8Array>({})
 	await runner.run(initWorkflow)
 }
 
-cre.withErrorBoundary(main)
+await main()

@@ -2,11 +2,11 @@
 // @generated from file values/v1/values.proto (package values.v1, syntax proto3)
 /* eslint-disable */
 
+import type { Message } from '@bufbuild/protobuf'
 import type { GenFile, GenMessage } from '@bufbuild/protobuf/codegenv2'
 import { fileDesc, messageDesc } from '@bufbuild/protobuf/codegenv2'
 import type { Timestamp, TimestampJson } from '@bufbuild/protobuf/wkt'
 import { file_google_protobuf_timestamp } from '@bufbuild/protobuf/wkt'
-import type { Message } from '@bufbuild/protobuf'
 
 /**
  * Describes the file values/v1/values.proto.

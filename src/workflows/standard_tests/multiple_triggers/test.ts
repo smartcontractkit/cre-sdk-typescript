@@ -1,23 +1,24 @@
-import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
-import { BasicCapability as ActionAndTriggerCapability } from '@cre/generated-sdk/capabilities/internal/actionandtrigger/v1/basic_sdk_gen'
-import type { Outputs } from '@cre/generated/capabilities/internal/basictrigger/v1/basic_trigger_pb'
 import type { TriggerEvent } from '@cre/generated/capabilities/internal/actionandtrigger/v1/action_and_trigger_pb'
+import type { Outputs } from '@cre/generated/capabilities/internal/basictrigger/v1/basic_trigger_pb'
+import { BasicCapability as ActionAndTriggerCapability } from '@cre/generated-sdk/capabilities/internal/actionandtrigger/v1/basic_sdk_gen'
+import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
 import { cre, type Runtime } from '@cre/sdk/cre'
 import { Value } from '@cre/sdk/utils'
+import { Runner } from '@cre/sdk/wasm'
 
 // Doesn't matter for this test
 type Config = unknown
 
-const doLog0 = (_config: Config, _runtime: Runtime, output: Outputs) => {
-	cre.sendResponseValue(Value.from(`called 0 with ${output.coolOutput}`))
+const doLog0 = (_: Runtime<Uint8Array>, output: Outputs) => {
+	return `called 0 with ${output.coolOutput}`
 }
 
-const doLog1 = (_config: Config, _runtime: Runtime, output: TriggerEvent) => {
-	cre.sendResponseValue(Value.from(`called 1 with ${output.coolOutput}`))
+const doLog1 = (_runtime: Runtime<Uint8Array>, output: TriggerEvent) => {
+	return `called 1 with ${output.coolOutput}`
 }
 
-const doLog2 = (_config: Config, _runtime: Runtime, output: Outputs) => {
-	cre.sendResponseValue(Value.from(`called 2 with ${output.coolOutput}`))
+const doLog2 = (_runtime: Runtime<Uint8Array>, output: Outputs) => {
+	return `called 2 with ${output.coolOutput}`
 }
 
 const initWorkflow = () => {
@@ -34,8 +35,8 @@ const initWorkflow = () => {
 export async function main() {
 	console.log(`TS workflow: standard test: multiple_triggers [${new Date().toISOString()}]`)
 
-	const runner = await cre.newRunner<Config>()
+	const runner = await Runner.newRunner<Uint8Array>({})
 	await runner.run(initWorkflow)
 }
 
-cre.withErrorBoundary(main)
+await main()

@@ -2,9 +2,9 @@
 // @generated from file capabilities/internal/importclash/p2/v1/import.proto (package capabilities.internal.importclash.p2.v1, syntax proto3)
 /* eslint-disable */
 
+import type { Message } from '@bufbuild/protobuf'
 import type { GenFile, GenMessage } from '@bufbuild/protobuf/codegenv2'
 import { fileDesc, messageDesc } from '@bufbuild/protobuf/codegenv2'
-import type { Message } from '@bufbuild/protobuf'
 
 /**
  * Describes the file capabilities/internal/importclash/p2/v1/import.proto.

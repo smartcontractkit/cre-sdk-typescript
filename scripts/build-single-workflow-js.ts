@@ -1,7 +1,7 @@
-import { $ } from 'bun'
-import fg from 'fast-glob'
 import { existsSync } from 'node:fs'
 import { mkdir } from 'node:fs/promises'
+import { $ } from 'bun'
+import fg from 'fast-glob'
 
 export const main = async () => {
 	const args = process.argv.slice(3)

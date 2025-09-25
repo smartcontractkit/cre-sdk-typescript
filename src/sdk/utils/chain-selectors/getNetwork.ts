@@ -1,14 +1,14 @@
-import type { ChainFamily, NetworkInfo } from './types'
 import {
-	mainnetBySelector,
-	testnetBySelector,
 	mainnetByName,
-	testnetByName,
-	mainnetBySelectorByFamily,
-	testnetBySelectorByFamily,
 	mainnetByNameByFamily,
+	mainnetBySelector,
+	mainnetBySelectorByFamily,
+	testnetByName,
 	testnetByNameByFamily,
+	testnetBySelector,
+	testnetBySelectorByFamily,
 } from '@cre/generated/networks'
+import type { ChainFamily, NetworkInfo } from './types'
 
 interface GetNetworkOptions {
 	chainSelector?: string
