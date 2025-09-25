@@ -6,7 +6,6 @@ import {
   type NodeRuntime,
   type Runtime,
   Runner,
-  Value,
 } from "@chainlink/cre-sdk";
 import { decodeFunctionResult, encodeFunctionData, zeroAddress } from "viem";
 import { z } from "zod";

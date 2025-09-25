@@ -3,7 +3,6 @@ import {
   cre,
   type NodeRuntime,
   type Runtime,
-  Value,
   Runner,
 } from "@chainlink/cre-sdk";
 import { z } from "zod";
