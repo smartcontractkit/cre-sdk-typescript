@@ -1,4 +1,4 @@
-import type { DescMethod } from '@bufbuild/protobuf'
+import type { DescMethod } from "@bufbuild/protobuf";
 
 /**
  * Generates the trigger method implementation for a capability
@@ -8,31 +8,41 @@ import type { DescMethod } from '@bufbuild/protobuf'
  * @param capabilityId - The capability ID
  * @param className - The capability class name
  * @param hasChainSelector - Whether this capability supports chainSelector routing
+ * @param hasChainSelector - Whether this capability supports chainSelector routing
  * @returns The generated trigger method code
  */
 export function generateTriggerMethod(
-	method: DescMethod,
-	methodName: string,
-	capabilityClassName: string,
-	className: string,
+  method: DescMethod,
+  methodName: string,
+  capabilityClassName: string,
+  className: string,
   hasChainSelector: boolean,
+  hasChainSelector: boolean
 ): string {
-	const triggerClassName = `${className}${method.name}`
+  const triggerClassName = `${className}${method.name}`;
   const capabilityIdLogic = hasChainSelector
-		? `
+    ? `
     // Include chainSelector in capability ID for routing when specified
     const capabilityId = this.chainSelector
       ? \`\${${capabilityClassName}.CAPABILITY_NAME}:ChainSelector:\${this.chainSelector}@\${${capabilityClassName}.CAPABILITY_VERSION}\`
       : ${capabilityClassName}.CAPABILITY_ID;`
-		: `
-    const capabilityId = ${capabilityClassName}.CAPABILITY_ID;`
-  
+    : `
+    const capabilityId = ${capabilityClassName}.CAPABILITY_ID;`;
 
-	return `
+  const capabilityIdLogic = hasChainSelector
+    ? `
+    // Include chainSelector in capability ID for routing when specified
+    const capabilityId = this.chainSelector
+      ? \`\${${capabilityClassName}.CAPABILITY_NAME}:ChainSelector:\${this.chainSelector}@\${${capabilityClassName}.CAPABILITY_VERSION}\`
+      : ${capabilityClassName}.CAPABILITY_ID;`
+    : `
+    const capabilityId = ${capabilityClassName}.CAPABILITY_ID;`;
+
+  return `
   ${methodName}(config: ${method.input.name}Json): ${triggerClassName} {
     ${capabilityIdLogic}
     return new ${triggerClassName}(config, capabilityId, "${method.name}");
-  }`
+  }`;
 }
 
 /**
@@ -43,10 +53,13 @@ export function generateTriggerMethod(
  * @param className - The capability class name
  * @returns The generated trigger class code
  */
-export function generateTriggerClass(method: DescMethod, className: string): string {
-	const triggerClassName = `${className}${method.name}`
+export function generateTriggerClass(
+  method: DescMethod,
+  className: string
+): string {
+  const triggerClassName = `${className}${method.name}`;
 
-	return `
+  return `
 /**
  * Trigger implementation for ${method.name}
  */
@@ -84,5 +97,5 @@ class ${triggerClassName} implements Trigger<${method.output.name}, ${method.out
   adapt(rawOutput: ${method.output.name}): ${method.output.name} {
     return rawOutput;
   }
-}`
+}`;
 }

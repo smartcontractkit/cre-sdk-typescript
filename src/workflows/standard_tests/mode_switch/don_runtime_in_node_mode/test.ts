@@ -7,8 +7,9 @@ import { Runner } from "@cre/sdk/wasm";
 const handler = async (runtime: Runtime<Uint8Array>) => {
   return await runtime.runInNodeMode(async () => {
     const basicCap = new BasicActionCapability();
-    return (await basicCap.performAction(runtime, { inputThing: true }).result())
-      .adaptedThing;
+    return (
+      await basicCap.performAction(runtime, { inputThing: true }).result()
+    ).adaptedThing;
   }, consensusIdenticalAggregation())();
 };
 

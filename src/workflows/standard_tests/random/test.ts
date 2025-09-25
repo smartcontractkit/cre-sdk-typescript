@@ -27,12 +27,11 @@ const randHandler = async (runtime: Runtime<Uint8Array>, _: Outputs) => {
       const nodeRandomNumber = castRandomToUint64(Math.random());
 
       const nodeActionCapability = new NodeActionCapability();
-      const nodeResponse = await nodeActionCapability.performAction(
-        nodeRuntime,
-        {
+      const nodeResponse = await nodeActionCapability
+        .performAction(nodeRuntime, {
           inputThing: true,
-        }
-      ).result();
+        })
+        .result();
 
       if (nodeResponse.outputThing < 100n) {
         hostBindings.log(`***${nodeRandomNumber.toString()}`);
