@@ -19,30 +19,20 @@ async function standardValidate<TIntermediateConfig, TConfig>(
 	return result.value
 }
 
-export type ConfigHandlerParams<
-	TConfig,
-	TIntermediateConfig = TConfig,
-> = (TIntermediateConfig extends Uint8Array
-	? {
-			configParser?: (config: Uint8Array) => TIntermediateConfig
-		}
-	: {
-			configParser: (config: Uint8Array) => TIntermediateConfig
-		}) &
-	(TIntermediateConfig extends TConfig
-		? {
-				configSchema?: StandardSchemaV1<TIntermediateConfig, TConfig>
-			}
-		: {
-				configSchema: StandardSchemaV1<TIntermediateConfig, TConfig>
-			})
+export type ConfigHandlerParams<TConfig, TIntermediateConfig = TConfig> = {
+	configParser?: (config: Uint8Array) => TIntermediateConfig
+	configSchema?: StandardSchemaV1<TIntermediateConfig, TConfig>
+}
+
+const defaultJsonParser = (config: Uint8Array) => JSON.parse(Buffer.from(config).toString())
 
 export const configHandler = async <TConfig, TIntermediateConfig = TConfig>(
-	{ configParser, configSchema }: ConfigHandlerParams<TConfig, TIntermediateConfig>,
 	request: ExecuteRequest,
+	{ configParser, configSchema }: ConfigHandlerParams<TConfig, TIntermediateConfig> = {},
 ): Promise<TConfig> => {
 	const config = request.config
-	const intermediateConfig = configParser ? configParser(config) : (config as TIntermediateConfig)
+	const parser = configParser || defaultJsonParser
+	const intermediateConfig = parser(config)
 	return configSchema
 		? standardValidate(configSchema, intermediateConfig)
 		: (intermediateConfig as unknown as TConfig)

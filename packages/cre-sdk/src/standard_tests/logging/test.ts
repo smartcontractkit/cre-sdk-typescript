@@ -18,7 +18,7 @@ export async function main() {
 	console.log(`TS workflow: standard test: logging [${new Date().toISOString()}]`)
 
 	const runner = await Runner.newRunner<string>({
-		configParser: (config) => config.toString(),
+		configParser: (c) => c.toString(),
 	})
 	await runner.run(initWorkflow)
 }

@@ -49,7 +49,9 @@ export async function main() {
 		`TS workflow: standard test: mode_switch: successful_mode_switch [${new Date().toISOString()}]`,
 	)
 
-	const runner = await Runner.newRunner<Uint8Array>({})
+	const runner = await Runner.newRunner<Uint8Array>({
+		configParser: (c) => c,
+	})
 	await runner.run(initWorkflow)
 }
 

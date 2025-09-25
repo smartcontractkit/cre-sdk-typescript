@@ -30,7 +30,9 @@ export async function main() {
 		`TS workflow: standard test: capability calls are async [${new Date().toISOString()}]`,
 	)
 
-	const runner = await Runner.newRunner<Uint8Array>({})
+	const runner = await Runner.newRunner<Uint8Array>({
+		configParser: (c) => c,
+	})
 	runner.run(initWorkflow)
 }
 

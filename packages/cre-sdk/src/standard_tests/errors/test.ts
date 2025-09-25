@@ -15,7 +15,9 @@ const initWorkflow = () => {
 export async function main() {
 	console.log(`TS workflow: standard test: errors [${new Date().toISOString()}]`)
 
-	const runner = await Runner.newRunner<Uint8Array>({})
+	const runner = await Runner.newRunner<Uint8Array>({
+		configParser: (c) => c,
+	})
 	await runner.run(initWorkflow)
 }
 
