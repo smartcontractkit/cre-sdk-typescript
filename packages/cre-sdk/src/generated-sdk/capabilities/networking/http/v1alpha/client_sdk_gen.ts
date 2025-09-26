@@ -24,10 +24,7 @@ export class ClientCapability {
 
 	constructor() {}
 
-	sendRequest(
-		runtime: NodeRuntime<any>,
-		input: Request | RequestJson,
-	): { result: () => Promise<Response> } {
+	sendRequest(runtime: NodeRuntime<any>, input: Request | RequestJson): { result: () => Response } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as Request)
@@ -44,7 +41,7 @@ export class ClientCapability {
 		})
 
 		return {
-			result: async () => {
+			result: () => {
 				return capabilityResponse.result()
 			},
 		}

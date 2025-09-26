@@ -24,10 +24,7 @@ export class BasicActionCapability {
 
 	constructor() {}
 
-	performAction(
-		runtime: Runtime<any>,
-		input: Inputs | InputsJson,
-	): { result: () => Promise<Outputs> } {
+	performAction(runtime: Runtime<any>, input: Inputs | InputsJson): { result: () => Outputs } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as Inputs)
@@ -44,7 +41,7 @@ export class BasicActionCapability {
 		})
 
 		return {
-			result: async () => {
+			result: () => {
 				return capabilityResponse.result()
 			},
 		}

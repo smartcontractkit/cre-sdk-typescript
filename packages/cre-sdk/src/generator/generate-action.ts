@@ -26,7 +26,7 @@ export function generateActionMethod(
     const capabilityId = ${capabilityClassName}.CAPABILITY_ID;`
 
 	return `
-  ${methodName}(runtime: ${modePrefix}Runtime<any>, input: ${method.input.name} |  ${method.input.name}Json): {result: () => Promise<${method.output.name}>} {
+  ${methodName}(runtime: ${modePrefix}Runtime<any>, input: ${method.input.name} |  ${method.input.name}Json): {result: () => ${method.output.name}} {
     // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
     const payload = (input as any).$typeName ? input as ${method.input.name} : fromJson(${method.input.name}Schema, input as ${method.input.name}Json)
     
@@ -41,7 +41,7 @@ export function generateActionMethod(
     })
 
     return {
-      result: async () => {
+      result: () => {
         return capabilityResponse.result()
       }
     }

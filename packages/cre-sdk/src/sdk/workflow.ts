@@ -8,6 +8,7 @@ import type {
 import { type Runtime } from '@cre/sdk/runtime'
 import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 import type { CreSerializable } from './utils'
+import type { SecretsError } from './errors'
 
 export type HandlerFn<TConfig, TTriggerOutput, TResult> = (
 	runtime: Runtime<TConfig>,
@@ -41,6 +42,6 @@ export const handler = <
 
 export type SecretsProvider = {
 	getSecret(request: SecretRequest | SecretRequestJson): {
-		result: () => Promise<Secret>
+		result: () => Secret
 	}
 }

@@ -31,7 +31,7 @@ export class ConsensusCapability {
 	simple(
 		runtime: Runtime<any>,
 		input: SimpleConsensusInputs | SimpleConsensusInputsJson,
-	): { result: () => Promise<Value> } {
+	): { result: () => Value } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as SimpleConsensusInputs)
@@ -48,7 +48,7 @@ export class ConsensusCapability {
 		})
 
 		return {
-			result: async () => {
+			result: () => {
 				return capabilityResponse.result()
 			},
 		}
@@ -57,7 +57,7 @@ export class ConsensusCapability {
 	report(
 		runtime: Runtime<any>,
 		input: ReportRequest | ReportRequestJson,
-	): { result: () => Promise<ReportResponse> } {
+	): { result: () => ReportResponse } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as ReportRequest)
@@ -74,7 +74,7 @@ export class ConsensusCapability {
 		})
 
 		return {
-			result: async () => {
+			result: () => {
 				return capabilityResponse.result()
 			},
 		}

@@ -14,8 +14,8 @@ const asyncCalls = async (runtime: Runtime<Uint8Array>) => {
 	const p2 = basicAction.performAction(runtime, input2)
 
 	// We get results in the reverse order.
-	const r2 = await p2.result()
-	const r1 = await p1.result()
+	const r2 = p2.result()
+	const r1 = p1.result()
 
 	return `${r1.adaptedThing}${r2.adaptedThing}`
 }

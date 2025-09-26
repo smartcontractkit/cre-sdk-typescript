@@ -48,9 +48,13 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 		payload,
 		inputSchema,
 		outputSchema,
-	}: CallCapabilityParams<I, O>): { result: () => Promise<O> } {
+	}: CallCapabilityParams<I, O>): { result: () => O } {
 		if (this.modeError) {
-			return { result: () => Promise.reject(this.modeError) }
+			return {
+				result: () => {
+					throw this.modeError
+				},
+			}
 		}
 
 		// nextCallId tracks the unique id for a request to the WASM host.
@@ -76,19 +80,17 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 		if (!this.helpers.call(req)) {
 			return {
 				result: () => {
-					return Promise.reject(
-						new CapabilityError(`Capability not found ${capabilityId}`, {
-							callbackId,
-							method,
-							capabilityId,
-						}),
-					)
+					throw new CapabilityError(`Capability not found ${capabilityId}`, {
+						callbackId,
+						method,
+						capabilityId,
+					})
 				},
 			}
 		}
 
 		return {
-			result: async () => {
+			result: () => {
 				const awaitRequest = create(AwaitCapabilitiesRequestSchema, { ids: [callbackId] })
 				const awaitResponse = this.helpers.await(awaitRequest, this.maxResponseSize)
 				const capabilityResponse = awaitResponse.responses[callbackId]
@@ -194,7 +196,7 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 			}
 
 			const consensus = new ConsensusCapability()
-			const result = await consensus.simple(this, consensusInput).result()
+			const result = consensus.simple(this, consensusInput).result()
 			const wrappedValue = Value.wrap(result)
 
 			return unwrapOptions
@@ -203,9 +205,13 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 		}
 	}
 
-	getSecret(request: SecretRequest | SecretRequestJson): { result: () => Promise<Secret> } {
+	getSecret(request: SecretRequest | SecretRequestJson): { result: () => Secret } {
 		if (this.modeError) {
-			return { result: () => Promise.reject(this.modeError) }
+			return {
+				result: () => {
+					throw this.modeError
+				},
+			}
 		}
 
 		const secretRequest = (request as any).$typeName
@@ -219,13 +225,14 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 		})
 		if (!this.helpers.getSecrets(secretsReq, this.maxResponseSize)) {
 			return {
-				result: () =>
-					Promise.reject(new SecretsError(secretRequest, 'host is not making the secrets request')),
+				result: () => {
+					throw new SecretsError(secretRequest, 'host is not making the secrets request')
+				},
 			}
 		}
 
 		return {
-			result: async () => {
+			result: () => {
 				const awaitRequest = create(AwaitSecretsRequestSchema, { ids: [id] })
 				const awaitResponse = this.helpers.awaitSecrets(awaitRequest, this.maxResponseSize)
 				const secretsResponse = awaitResponse.responses[id]

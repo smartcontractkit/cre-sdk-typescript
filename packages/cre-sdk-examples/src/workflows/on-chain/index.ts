@@ -27,7 +27,7 @@ type Config = z.infer<typeof configSchema>
 
 async function fetchMathResult(nodeRuntime: NodeRuntime<Config>): Promise<number> {
 	const httpCapability = new cre.capabilities.HTTPClient()
-	const response = await httpCapability
+	const response = httpCapability
 		.sendRequest(nodeRuntime, {
 			url: nodeRuntime.config.apiUrl,
 		})
@@ -60,7 +60,7 @@ const onCronTrigger = async (runtime: Runtime<Config>): Promise<bigint> => {
 		functionName: 'get',
 	})
 
-	const contractCall = await evmClient
+	const contractCall = evmClient
 		.callContract(runtime, {
 			call: {
 				from: hexToBase64(zeroAddress),
