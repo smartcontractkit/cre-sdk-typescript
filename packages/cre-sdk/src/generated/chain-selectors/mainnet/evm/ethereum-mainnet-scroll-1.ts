@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '534352',
 	chainSelector: {
 		name: 'ethereum-mainnet-scroll-1',
-		selector: '13204309965629104000',
+		selector: 13204309965629103672n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

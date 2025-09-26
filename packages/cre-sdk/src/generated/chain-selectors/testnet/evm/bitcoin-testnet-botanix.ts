@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '3636',
 	chainSelector: {
 		name: 'bitcoin-testnet-botanix',
-		selector: '1467223411771711500',
+		selector: 1467223411771711614n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

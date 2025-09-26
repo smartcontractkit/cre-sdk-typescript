@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '743111',
 	chainSelector: {
 		name: 'hemi-testnet-sepolia',
-		selector: '16126893759944360000',
+		selector: 16126893759944359622n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

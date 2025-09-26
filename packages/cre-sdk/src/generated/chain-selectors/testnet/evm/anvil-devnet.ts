@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '31337',
 	chainSelector: {
 		name: 'anvil-devnet',
-		selector: '7759470850252069000',
+		selector: 7759470850252068959n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

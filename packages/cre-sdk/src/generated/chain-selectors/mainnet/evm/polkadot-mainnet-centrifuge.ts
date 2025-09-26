@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '2031',
 	chainSelector: {
 		name: 'polkadot-mainnet-centrifuge',
-		selector: '8175830712062618000',
+		selector: 8175830712062617656n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

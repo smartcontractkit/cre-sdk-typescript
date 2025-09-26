@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '2494104990',
 	chainSelector: {
 		name: 'tron-testnet-shasta-evm',
-		selector: '13231703482326770000',
+		selector: 13231703482326770598n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

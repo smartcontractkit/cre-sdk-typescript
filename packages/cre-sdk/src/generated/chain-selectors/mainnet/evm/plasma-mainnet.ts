@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '9745',
 	chainSelector: {
 		name: 'plasma-mainnet',
-		selector: '9335212494177456000',
+		selector: 9335212494177455608n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

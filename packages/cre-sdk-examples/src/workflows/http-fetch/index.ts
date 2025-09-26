@@ -15,18 +15,13 @@ const configSchema = z.object({
 type Config = z.infer<typeof configSchema>
 
 const fetchMathResult = async (nodeRuntime: NodeRuntime<Config>) => {
-	try {
-		const httpCapability = new cre.capabilities.HTTPClient()
-		const response = httpCapability
-			.sendRequest(nodeRuntime, {
-				url: nodeRuntime.config.apiUrl,
-			})
-			.result()
-		return Number.parseFloat(Buffer.from(response.body).toString('utf-8').trim())
-	} catch (error) {
-		console.log('fetch error', error)
-		return 0
-	}
+	const httpCapability = new cre.capabilities.HTTPClient()
+	const response = httpCapability
+		.sendRequest(nodeRuntime, {
+			url: nodeRuntime.config.apiUrl,
+		})
+		.result()
+	return Number.parseFloat(Buffer.from(response.body).toString('utf-8').trim())
 }
 
 const onCronTrigger = async (runtime: Runtime<Config>) => {
@@ -45,4 +40,4 @@ export async function main() {
 	await runner.run(initWorkflow)
 }
 
-await main()
+main()

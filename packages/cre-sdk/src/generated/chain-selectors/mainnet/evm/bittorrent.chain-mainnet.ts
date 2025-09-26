@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '199',
 	chainSelector: {
 		name: 'bittorrent_chain-mainnet',
-		selector: '3776006016387883000',
+		selector: 3776006016387883143n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

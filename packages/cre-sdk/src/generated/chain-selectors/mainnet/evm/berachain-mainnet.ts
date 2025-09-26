@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '80094',
 	chainSelector: {
 		name: 'berachain-mainnet',
-		selector: '1294465214383781000',
+		selector: 1294465214383781161n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

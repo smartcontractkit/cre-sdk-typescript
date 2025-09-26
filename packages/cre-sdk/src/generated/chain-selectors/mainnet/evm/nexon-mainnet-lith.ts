@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '60118',
 	chainSelector: {
 		name: 'nexon-mainnet-lith',
-		selector: '15758750456714168000',
+		selector: 15758750456714168963n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

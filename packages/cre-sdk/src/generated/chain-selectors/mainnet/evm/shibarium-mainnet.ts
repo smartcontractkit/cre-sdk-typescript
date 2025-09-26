@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '109',
 	chainSelector: {
 		name: 'shibarium-mainnet',
-		selector: '3993510008929295400',
+		selector: 3993510008929295315n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

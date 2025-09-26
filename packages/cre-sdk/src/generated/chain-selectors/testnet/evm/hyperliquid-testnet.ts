@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '998',
 	chainSelector: {
 		name: 'hyperliquid-testnet',
-		selector: '4286062357653186600',
+		selector: 4286062357653186312n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

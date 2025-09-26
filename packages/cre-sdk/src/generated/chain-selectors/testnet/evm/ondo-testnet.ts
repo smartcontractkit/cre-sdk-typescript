@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '9000',
 	chainSelector: {
 		name: 'ondo-testnet',
-		selector: '344208382356656600',
+		selector: 344208382356656551n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

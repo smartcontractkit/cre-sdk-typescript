@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '100',
 	chainSelector: {
 		name: 'gnosis_chain-mainnet',
-		selector: '465200170687744400',
+		selector: 465200170687744372n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

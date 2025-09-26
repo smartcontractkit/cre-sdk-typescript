@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '13371',
 	chainSelector: {
 		name: 'ethereum-mainnet-immutable-zkevm-1',
-		selector: '1237925231416732000',
+		selector: 1237925231416731909n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

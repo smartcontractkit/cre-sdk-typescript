@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '48900',
 	chainSelector: {
 		name: 'ethereum-mainnet-zircuit-1',
-		selector: '17198166215261833000',
+		selector: 17198166215261833993n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

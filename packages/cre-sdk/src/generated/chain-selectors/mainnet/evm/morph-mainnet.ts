@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '2818',
 	chainSelector: {
 		name: 'morph-mainnet',
-		selector: '18164309074156128000',
+		selector: 18164309074156128038n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

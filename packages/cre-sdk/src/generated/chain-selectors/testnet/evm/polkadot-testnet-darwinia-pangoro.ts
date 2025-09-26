@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '45',
 	chainSelector: {
 		name: 'polkadot-testnet-darwinia-pangoro',
-		selector: '4340886533089894000',
+		selector: 4340886533089894000n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '1285',
 	chainSelector: {
 		name: 'kusama-mainnet-moonriver',
-		selector: '1355020143337428000',
+		selector: 1355020143337428062n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

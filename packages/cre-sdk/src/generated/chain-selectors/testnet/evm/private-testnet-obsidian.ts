@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '682',
 	chainSelector: {
 		name: 'private-testnet-obsidian',
-		selector: '6260932437388305000',
+		selector: 6260932437388305511n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

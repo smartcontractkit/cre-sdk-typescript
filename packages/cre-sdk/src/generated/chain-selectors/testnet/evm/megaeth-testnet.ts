@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '6342',
 	chainSelector: {
 		name: 'megaeth-testnet',
-		selector: '2443239559770384400',
+		selector: 2443239559770384419n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

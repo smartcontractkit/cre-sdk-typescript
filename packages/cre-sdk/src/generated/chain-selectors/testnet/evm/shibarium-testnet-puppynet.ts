@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '157',
 	chainSelector: {
 		name: 'shibarium-testnet-puppynet',
-		selector: '17833296867764335000',
+		selector: 17833296867764334567n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

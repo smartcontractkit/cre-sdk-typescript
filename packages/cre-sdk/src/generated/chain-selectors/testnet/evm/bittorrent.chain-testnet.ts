@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '1029',
 	chainSelector: {
 		name: 'bittorrent_chain-testnet',
-		selector: '4459371029167934500',
+		selector: 4459371029167934217n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

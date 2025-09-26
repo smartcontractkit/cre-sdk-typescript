@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '595581',
 	chainSelector: {
 		name: 'avalanche-testnet-nexon',
-		selector: '7837562506228496000',
+		selector: 7837562506228496256n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '68414',
 	chainSelector: {
 		name: 'nexon-mainnet-henesys',
-		selector: '12657445206920370000',
+		selector: 12657445206920369324n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

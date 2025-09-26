@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '98866',
 	chainSelector: {
 		name: 'plume-mainnet',
-		selector: '17912061998839310000',
+		selector: 17912061998839310979n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

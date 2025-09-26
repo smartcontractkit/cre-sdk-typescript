@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '45439',
 	chainSelector: {
 		name: 'private-testnet-opala',
-		selector: '8446413392851542000',
+		selector: 8446413392851542429n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

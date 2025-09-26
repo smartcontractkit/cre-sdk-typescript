@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '2025',
 	chainSelector: {
 		name: 'dtcc-testnet-andesite',
-		selector: '15513093881969820000',
+		selector: 15513093881969820114n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

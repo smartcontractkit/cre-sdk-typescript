@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '2522',
 	chainSelector: {
 		name: 'ethereum-testnet-holesky-fraxtal-1',
-		selector: '8901520481741772000',
+		selector: 8901520481741771655n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

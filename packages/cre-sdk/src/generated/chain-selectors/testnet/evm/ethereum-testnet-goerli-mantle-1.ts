@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '5001',
 	chainSelector: {
 		name: 'ethereum-testnet-goerli-mantle-1',
-		selector: '4168263376276232000',
+		selector: 4168263376276232250n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

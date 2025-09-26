@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '47763',
 	chainSelector: {
 		name: 'neox-mainnet',
-		selector: '7222032299962346000',
+		selector: 7222032299962346917n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

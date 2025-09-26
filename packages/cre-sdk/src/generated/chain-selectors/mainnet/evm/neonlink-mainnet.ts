@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '259',
 	chainSelector: {
 		name: 'neonlink-mainnet',
-		selector: '8239338020728974000',
+		selector: 8239338020728974000n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

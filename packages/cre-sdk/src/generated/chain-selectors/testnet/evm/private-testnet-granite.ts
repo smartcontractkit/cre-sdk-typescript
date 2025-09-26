@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '2023',
 	chainSelector: {
 		name: 'private-testnet-granite',
-		selector: '3260900564719373300',
+		selector: 3260900564719373474n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

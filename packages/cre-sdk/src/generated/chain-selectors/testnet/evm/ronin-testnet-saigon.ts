@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '2021',
 	chainSelector: {
 		name: 'ronin-testnet-saigon',
-		selector: '13116810400804393000',
+		selector: 13116810400804392105n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

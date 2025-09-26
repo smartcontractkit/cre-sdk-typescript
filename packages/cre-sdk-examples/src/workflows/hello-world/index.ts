@@ -4,9 +4,9 @@ type Config = {
 	schedule: string
 }
 
-const onCronTrigger = (_: Runtime<Config>): string => {
-	console.log('Hello, Calculator! Workflow triggered.')
-	return 'Hello, Calculator!'
+const onCronTrigger = (runtime: Runtime<Config>): string => {
+	runtime.log('Hello world! Workflow triggered.')
+	return 'Hello world!'
 }
 
 const initWorkflow = (config: Config) => {
@@ -20,4 +20,4 @@ export async function main() {
 	await runner.run(initWorkflow)
 }
 
-await main()
+main()

@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '51888',
 	chainSelector: {
 		name: 'memento-mainnet',
-		selector: '6473245816409426000',
+		selector: 6473245816409426016n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '10143',
 	chainSelector: {
 		name: 'monad-testnet',
-		selector: '2183018362218727400',
+		selector: 2183018362218727504n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

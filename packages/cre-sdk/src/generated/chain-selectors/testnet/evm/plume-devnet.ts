@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '98864',
 	chainSelector: {
 		name: 'plume-devnet',
-		selector: '3743020999916461000',
+		selector: 3743020999916460931n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

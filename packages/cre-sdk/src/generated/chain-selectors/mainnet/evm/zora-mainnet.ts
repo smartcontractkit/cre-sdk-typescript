@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '7777777',
 	chainSelector: {
 		name: 'zora-mainnet',
-		selector: '3555797439612589000',
+		selector: 3555797439612589184n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '12325',
 	chainSelector: {
 		name: 'ethereum-testnet-sepolia-arbitrum-1-l3x-1',
-		selector: '3486622437121596000',
+		selector: 3486622437121596122n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

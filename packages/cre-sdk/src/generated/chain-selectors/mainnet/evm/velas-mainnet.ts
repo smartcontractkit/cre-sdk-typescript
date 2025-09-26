@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '106',
 	chainSelector: {
 		name: 'velas-mainnet',
-		selector: '374210358663784400',
+		selector: 374210358663784372n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

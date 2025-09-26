@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '31',
 	chainSelector: {
 		name: 'bitcoin-testnet-rootstock',
-		selector: '8953668971247136000',
+		selector: 8953668971247136127n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

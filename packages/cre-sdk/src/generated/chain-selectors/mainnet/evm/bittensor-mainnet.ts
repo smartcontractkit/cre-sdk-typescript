@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '964',
 	chainSelector: {
 		name: 'bittensor-mainnet',
-		selector: '2135107236357186800',
+		selector: 2135107236357186872n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

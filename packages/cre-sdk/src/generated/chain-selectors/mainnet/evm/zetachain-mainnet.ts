@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '7000',
 	chainSelector: {
 		name: 'zetachain-mainnet',
-		selector: '10817664450262215000',
+		selector: 10817664450262215148n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '167009',
 	chainSelector: {
 		name: 'ethereum-testnet-holesky-taiko-1',
-		selector: '7248756420937880000',
+		selector: 7248756420937879088n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

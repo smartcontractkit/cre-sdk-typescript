@@ -2,6 +2,7 @@ import {
 	bytesToHex,
 	consensusMedianAggregation,
 	cre,
+	getNetwork,
 	hexToBase64,
 	type NodeRuntime,
 	Runner,
@@ -18,7 +19,7 @@ const configSchema = z.object({
 	evms: z.array(
 		z.object({
 			storageAddress: z.string(),
-			chainSelector: z.string(),
+			chainSelectorName: z.string(),
 		}),
 	),
 })
@@ -36,23 +37,25 @@ async function fetchMathResult(nodeRuntime: NodeRuntime<Config>): Promise<number
 }
 
 const onCronTrigger = async (runtime: Runtime<Config>): Promise<bigint> => {
-	const config = runtime.config
-	if (!config.evms?.length) {
-		throw new Error('No EVM configuration provided')
-	}
-
 	// Step 1: Fetch offchain data using consensus (from Part 2)
 	const offchainValue = await runtime.runInNodeMode(fetchMathResult, consensusMedianAggregation())()
 
-	console.log(`Successfully fetched offchain value: ${offchainValue}`)
+	runtime.log(`Successfully fetched offchain value: ${offchainValue}`)
 
 	// Get the first EVM configuration from the list
-	const evmConfig = config.evms[0]
+	const evmConfig = runtime.config.evms[0]
+	const network = getNetwork({
+		chainFamily: 'evm',
+		chainSelectorName: evmConfig.chainSelectorName,
+		isTestnet: true,
+	})
+
+	if (!network) {
+		throw new Error(`Network not found for chain selector name: ${evmConfig.chainSelectorName}`)
+	}
 
 	// Step 2: Read onchain data using the EVM client with chainSelector
-	const evmClient = new cre.capabilities.EVMClient(
-		BigInt(evmConfig.chainSelector), // pass chainSelector as BigInt
-	)
+	const evmClient = new cre.capabilities.EVMClient(network.chainSelector.selector)
 
 	// Encode the contract call data for the 'get' function
 	const callData = encodeFunctionData({
@@ -81,7 +84,7 @@ const onCronTrigger = async (runtime: Runtime<Config>): Promise<bigint> => {
 		data: bytesToHex(contractCall.data),
 	})
 
-	console.log(`Successfully read onchain value: ${onchainValue.toString()}`)
+	runtime.log(`Successfully read onchain value: ${onchainValue.toString()}`)
 
 	// Step 3: Combine the results - convert offchain float to bigint and add
 	const offchainBigInt = BigInt(Math.floor(offchainValue))
@@ -101,4 +104,4 @@ export async function main() {
 	await runner.run(initWorkflow)
 }
 
-await main()
+main()

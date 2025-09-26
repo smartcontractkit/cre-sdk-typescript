@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '33111',
 	chainSelector: {
 		name: 'apechain-testnet-curtis',
-		selector: '9900119385908781000',
+		selector: 9900119385908781505n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

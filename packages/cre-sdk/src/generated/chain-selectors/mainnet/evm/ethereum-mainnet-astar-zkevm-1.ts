@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '3776',
 	chainSelector: {
 		name: 'ethereum-mainnet-astar-zkevm-1',
-		selector: '1540201334317828000',
+		selector: 1540201334317828111n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

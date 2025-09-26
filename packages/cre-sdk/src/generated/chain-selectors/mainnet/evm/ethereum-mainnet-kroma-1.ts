@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '255',
 	chainSelector: {
 		name: 'ethereum-mainnet-kroma-1',
-		selector: '3719320017875267000',
+		selector: 3719320017875267166n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

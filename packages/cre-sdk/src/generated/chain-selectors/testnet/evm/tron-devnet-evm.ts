@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '3360022319',
 	chainSelector: {
 		name: 'tron-devnet-evm',
-		selector: '13231703482326770000',
+		selector: 13231703482326770600n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',
