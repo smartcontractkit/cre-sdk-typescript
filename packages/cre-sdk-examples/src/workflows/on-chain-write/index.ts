@@ -35,7 +35,7 @@ type Result = {
 
 async function fetchMathResult(nodeRuntime: NodeRuntime<Config>): Promise<number> {
 	const httpCapability = new cre.capabilities.HTTPClient()
-	const response = await httpCapability
+	const response = httpCapability
 		.sendRequest(nodeRuntime, {
 			url: nodeRuntime.config.apiUrl,
 		})
@@ -68,7 +68,7 @@ const onCronTrigger = async (runtime: Runtime<Config>): Promise<Result> => {
 		functionName: 'get',
 	})
 
-	const contractCall = await evmClient
+	const contractCall = evmClient
 		.callContract(runtime, {
 			call: {
 				from: hexToBase64(zeroAddress),
@@ -115,7 +115,7 @@ const onCronTrigger = async (runtime: Runtime<Config>): Promise<Result> => {
 	console.log('Dry running call to ensure the value is not anomalous...')
 
 	// dry run the call to ensure the value is not anomalous
-	const dryRunCall = await evmClient
+	const dryRunCall = evmClient
 		.callContract(runtime, {
 			call: {
 				from: hexToBase64(zeroAddress),
@@ -149,7 +149,7 @@ const onCronTrigger = async (runtime: Runtime<Config>): Promise<Result> => {
 		args: [toHex('0x'), dryRunCallData],
 	})
 
-	const resp = await evmClient
+	const resp = evmClient
 		.writeReport(runtime, {
 			receiver: evmConfig.calculatorConsumerAddress,
 			report: {

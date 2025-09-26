@@ -21,7 +21,7 @@ const randHandler = async (runtime: Runtime<Uint8Array>) => {
 			const nodeRandomNumber = castRandomToUint64(Math.random())
 
 			const nodeActionCapability = new NodeActionCapability()
-			const nodeResponse = await nodeActionCapability
+			const nodeResponse = nodeActionCapability
 				.performAction(nodeRuntime, {
 					inputThing: true,
 				})

@@ -17,7 +17,7 @@ type Config = z.infer<typeof configSchema>
 const fetchMathResult = async (nodeRuntime: NodeRuntime<Config>) => {
 	try {
 		const httpCapability = new cre.capabilities.HTTPClient()
-		const response = await httpCapability
+		const response = httpCapability
 			.sendRequest(nodeRuntime, {
 				url: nodeRuntime.config.apiUrl,
 			})

@@ -5,7 +5,7 @@ import { Runner } from '@cre/sdk/wasm'
 
 const secretAccessInNodeMode = async (runtime: Runtime<Uint8Array>) => {
 	return await runtime.runInNodeMode(async (_nodeRuntime: NodeRuntime<Uint8Array>) => {
-		return await runtime.getSecret({ id: 'anything' }).result()
+		return runtime.getSecret({ id: 'anything' }).result()
 	}, consensusIdenticalAggregation())()
 }
 

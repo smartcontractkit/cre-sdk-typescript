@@ -92,7 +92,7 @@ export class ClientCapability {
 	callContract(
 		runtime: Runtime<any>,
 		input: CallContractRequest | CallContractRequestJson,
-	): { result: () => Promise<CallContractReply> } {
+	): { result: () => CallContractReply } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as CallContractRequest)
@@ -112,7 +112,7 @@ export class ClientCapability {
 		})
 
 		return {
-			result: async () => {
+			result: () => {
 				return capabilityResponse.result()
 			},
 		}
@@ -121,7 +121,7 @@ export class ClientCapability {
 	filterLogs(
 		runtime: Runtime<any>,
 		input: FilterLogsRequest | FilterLogsRequestJson,
-	): { result: () => Promise<FilterLogsReply> } {
+	): { result: () => FilterLogsReply } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as FilterLogsRequest)
@@ -141,7 +141,7 @@ export class ClientCapability {
 		})
 
 		return {
-			result: async () => {
+			result: () => {
 				return capabilityResponse.result()
 			},
 		}
@@ -150,7 +150,7 @@ export class ClientCapability {
 	balanceAt(
 		runtime: Runtime<any>,
 		input: BalanceAtRequest | BalanceAtRequestJson,
-	): { result: () => Promise<BalanceAtReply> } {
+	): { result: () => BalanceAtReply } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as BalanceAtRequest)
@@ -170,7 +170,7 @@ export class ClientCapability {
 		})
 
 		return {
-			result: async () => {
+			result: () => {
 				return capabilityResponse.result()
 			},
 		}
@@ -179,7 +179,7 @@ export class ClientCapability {
 	estimateGas(
 		runtime: Runtime<any>,
 		input: EstimateGasRequest | EstimateGasRequestJson,
-	): { result: () => Promise<EstimateGasReply> } {
+	): { result: () => EstimateGasReply } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as EstimateGasRequest)
@@ -199,7 +199,7 @@ export class ClientCapability {
 		})
 
 		return {
-			result: async () => {
+			result: () => {
 				return capabilityResponse.result()
 			},
 		}
@@ -208,7 +208,7 @@ export class ClientCapability {
 	getTransactionByHash(
 		runtime: Runtime<any>,
 		input: GetTransactionByHashRequest | GetTransactionByHashRequestJson,
-	): { result: () => Promise<GetTransactionByHashReply> } {
+	): { result: () => GetTransactionByHashReply } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as GetTransactionByHashRequest)
@@ -231,7 +231,7 @@ export class ClientCapability {
 		})
 
 		return {
-			result: async () => {
+			result: () => {
 				return capabilityResponse.result()
 			},
 		}
@@ -240,7 +240,7 @@ export class ClientCapability {
 	getTransactionReceipt(
 		runtime: Runtime<any>,
 		input: GetTransactionReceiptRequest | GetTransactionReceiptRequestJson,
-	): { result: () => Promise<GetTransactionReceiptReply> } {
+	): { result: () => GetTransactionReceiptReply } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as GetTransactionReceiptRequest)
@@ -263,7 +263,7 @@ export class ClientCapability {
 		})
 
 		return {
-			result: async () => {
+			result: () => {
 				return capabilityResponse.result()
 			},
 		}
@@ -272,7 +272,7 @@ export class ClientCapability {
 	headerByNumber(
 		runtime: Runtime<any>,
 		input: HeaderByNumberRequest | HeaderByNumberRequestJson,
-	): { result: () => Promise<HeaderByNumberReply> } {
+	): { result: () => HeaderByNumberReply } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as HeaderByNumberRequest)
@@ -292,7 +292,7 @@ export class ClientCapability {
 		})
 
 		return {
-			result: async () => {
+			result: () => {
 				return capabilityResponse.result()
 			},
 		}
@@ -301,7 +301,7 @@ export class ClientCapability {
 	registerLogTracking(
 		runtime: Runtime<any>,
 		input: RegisterLogTrackingRequest | RegisterLogTrackingRequestJson,
-	): { result: () => Promise<Empty> } {
+	): { result: () => Empty } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as RegisterLogTrackingRequest)
@@ -321,7 +321,7 @@ export class ClientCapability {
 		})
 
 		return {
-			result: async () => {
+			result: () => {
 				return capabilityResponse.result()
 			},
 		}
@@ -330,7 +330,7 @@ export class ClientCapability {
 	unregisterLogTracking(
 		runtime: Runtime<any>,
 		input: UnregisterLogTrackingRequest | UnregisterLogTrackingRequestJson,
-	): { result: () => Promise<Empty> } {
+	): { result: () => Empty } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as UnregisterLogTrackingRequest)
@@ -350,7 +350,7 @@ export class ClientCapability {
 		})
 
 		return {
-			result: async () => {
+			result: () => {
 				return capabilityResponse.result()
 			},
 		}
@@ -367,7 +367,7 @@ export class ClientCapability {
 	writeReport(
 		runtime: Runtime<any>,
 		input: WriteReportRequest | WriteReportRequestJson,
-	): { result: () => Promise<WriteReportReply> } {
+	): { result: () => WriteReportReply } {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		const payload = (input as any).$typeName
 			? (input as WriteReportRequest)
@@ -387,7 +387,7 @@ export class ClientCapability {
 		})
 
 		return {
-			result: async () => {
+			result: () => {
 				return capabilityResponse.result()
 			},
 		}
