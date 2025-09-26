@@ -11,6 +11,7 @@
     "clean": "rm -rf dist",
     "check": "biome check --write ${BIOME_PATHS:-.}",
     "format": "biome format --write ${BIOME_PATHS:-.}",
+    "full-checks": "bun typecheck && bun lint",
     "lint": "biome lint --write",
     "typecheck": "tsc",
     "prepublishOnly": "bun typecheck && bun lint"
