@@ -4,18 +4,20 @@ import { cre, type NodeRuntime, type Runtime } from '@cre/sdk/cre'
 import { consensusIdenticalAggregation } from '@cre/sdk/utils'
 import { Runner } from '@cre/sdk/wasm'
 
-const handler = async (runtime: Runtime<Uint8Array>) => {
+const handler = (runtime: Runtime<Uint8Array>) => {
 	// First, run in node mode and do consensus - this makes the expected CallCapability call
 	var nrt: NodeRuntime<Uint8Array> | undefined
-	await runtime.runInNodeMode(async (nodeRuntime: NodeRuntime<Uint8Array>) => {
-		nrt = nodeRuntime
-		return 'hi'
-	}, consensusIdenticalAggregation())()
+	runtime
+		.runInNodeMode((nodeRuntime: NodeRuntime<Uint8Array>) => {
+			nrt = nodeRuntime
+			return 'hi'
+		}, consensusIdenticalAggregation())()
+		.result()
 
 	// Now we're back in DON mode, try to use a NODE mode capability
 	// This should trigger assertNodeSafe() and throw "cannot use NodeRuntime outside RunInNodeMode"
 	const nodeActionCapability = new NodeActionCapability()
-	nodeActionCapability.performAction(nrt!, { inputThing: true }).result()
+	nodeActionCapability.performAction(nrt as NodeRuntime<Uint8Array>, { inputThing: true }).result()
 	return 'hi'
 }
 

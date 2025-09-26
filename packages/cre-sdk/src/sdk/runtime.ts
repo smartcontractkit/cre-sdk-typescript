@@ -26,11 +26,11 @@ export type BaseRuntime<C> = {
 
 export type Runtime<C> = BaseRuntime<C> &
 	SecretsProvider & {
-		runInNodeMode<TArgs extends any[], TOutput>(
-			fn: (nodeRuntime: NodeRuntime<C>, ...args: TArgs) => Promise<TOutput> | TOutput,
+		runInNodeMode<TArgs extends unknown[], TOutput>(
+			fn: (nodeRuntime: NodeRuntime<C>, ...args: TArgs) => TOutput,
 			consensusAggregation: ConsensusAggregation<TOutput, true>,
 			unwrapOptions?: TOutput extends PrimitiveTypes ? never : UnwrapOptions<TOutput>,
-		): (...args: TArgs) => Promise<TOutput>
+		): (...args: TArgs) => { result: () => TOutput }
 	}
 
 export type NodeRuntime<C> = BaseRuntime<C> & {

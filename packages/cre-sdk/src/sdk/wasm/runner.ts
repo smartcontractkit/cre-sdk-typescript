@@ -101,7 +101,7 @@ export class Runner<TConfig> {
 			 * @see https://github.com/smartcontractkit/cre-sdk-go/blob/5a41d81e3e072008484e85dc96d746401aafcba2/cre/wasm/runner.go#L81
 			 * */
 			const decoded = fromBinary(schema, payloadAny.value)
-			const adapted = await entry.trigger.adapt(decoded)
+			const adapted = entry.trigger.adapt(decoded)
 
 			try {
 				const result = await entry.fn(runtime, adapted)

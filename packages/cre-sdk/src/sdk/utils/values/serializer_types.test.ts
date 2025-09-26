@@ -33,11 +33,12 @@ describe('test types', () => {
 
 	test('NonSerializable', () => {
 		verifyType<null, NonSerializable>(true)
-		verifyType<Map<any, any>, NonSerializable>(true)
-		verifyType<Set<any>, NonSerializable>(true)
+		verifyType<Map<string, string>, NonSerializable>(true)
+		verifyType<Set<string>, NonSerializable>(true)
 		verifyType<RegExp, NonSerializable>(true)
 		verifyType<Int8Array, NonSerializable>(true)
 		verifyType<string, NonSerializable>(false)
+		verifyType<Promise<string>, NonSerializable>(true)
 	})
 
 	test('CreSerializableNested', () => {

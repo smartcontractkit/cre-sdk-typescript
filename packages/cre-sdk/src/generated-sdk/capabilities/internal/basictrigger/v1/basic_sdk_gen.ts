@@ -24,8 +24,6 @@ export class BasicCapability {
 	static readonly CAPABILITY_NAME = 'basic-test-trigger'
 	static readonly CAPABILITY_VERSION = '1.0.0'
 
-	constructor() {}
-
 	trigger(config: ConfigJson): BasicTrigger {
 		const capabilityId = BasicCapability.CAPABILITY_ID
 		return new BasicTrigger(config, capabilityId, 'Trigger')

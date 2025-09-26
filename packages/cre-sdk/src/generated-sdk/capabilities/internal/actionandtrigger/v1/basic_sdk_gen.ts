@@ -29,11 +29,8 @@ export class BasicCapability {
 	static readonly CAPABILITY_NAME = 'basic-test-action-trigger'
 	static readonly CAPABILITY_VERSION = '1.0.0'
 
-	constructor() {}
-
-	action(runtime: Runtime<any>, input: Input | InputJson): { result: () => Output } {
-		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-		const payload = (input as any).$typeName
+	action(runtime: Runtime<unknown>, input: Input | InputJson): { result: () => Output } {
+		const payload = (input as unknown as { $typeName?: string }).$typeName
 			? (input as Input)
 			: fromJson(InputSchema, input as InputJson)
 

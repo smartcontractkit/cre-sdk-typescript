@@ -25,5 +25,5 @@ export interface Trigger<
 	configAsAny(): Any
 
 	/** Transform the raw trigger output to the adapted type */
-	adapt(rawOutput: TRawTriggerOutput): TTriggerOutput | Promise<TTriggerOutput>
+	adapt(rawOutput: TRawTriggerOutput): TTriggerOutput
 }

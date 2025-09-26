@@ -3,7 +3,7 @@ import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/ca
 import { cre, type Runtime } from '@cre/sdk/cre'
 import { Runner } from '@cre/sdk/wasm'
 
-const asyncCalls = async (runtime: Runtime<Uint8Array>) => {
+const asyncCalls = (runtime: Runtime<Uint8Array>) => {
 	const basicAction = new BasicActionCapability()
 
 	const input1 = { inputThing: true }

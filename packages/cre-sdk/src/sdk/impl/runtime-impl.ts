@@ -91,7 +91,9 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 
 		return {
 			result: () => {
-				const awaitRequest = create(AwaitCapabilitiesRequestSchema, { ids: [callbackId] })
+				const awaitRequest = create(AwaitCapabilitiesRequestSchema, {
+					ids: [callbackId],
+				})
 				const awaitResponse = this.helpers.await(awaitRequest, this.maxResponseSize)
 				const capabilityResponse = awaitResponse.responses[callbackId]
 
@@ -154,12 +156,12 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 		super(config, nextCallId, helpers, maxResponseSize, Mode.DON)
 	}
 
-	runInNodeMode<TArgs extends any[], TOutput>(
-		fn: (nodeRuntime: NodeRuntime<C>, ...args: TArgs) => Promise<TOutput> | TOutput,
+	runInNodeMode<TArgs extends unknown[], TOutput>(
+		fn: (nodeRuntime: NodeRuntime<C>, ...args: TArgs) => TOutput,
 		consesusAggretation: ConsensusAggregation<TOutput, true>,
 		unwrapOptions?: TOutput extends PrimitiveTypes ? never : UnwrapOptions<TOutput>,
-	): (...args: TArgs) => Promise<TOutput> {
-		return async (...args: TArgs): Promise<TOutput> => {
+	): (...args: TArgs) => { result: () => TOutput } {
+		return (...args: TArgs): { result: () => TOutput } => {
 			this.modeError = new DonModeError()
 			const nodeRuntime = new NodeRuntimeImpl(
 				this.config,
@@ -179,14 +181,17 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 			}
 
 			try {
-				const observation = await fn(nodeRuntime, ...args)
+				const observation = fn(nodeRuntime, ...args)
 				// This cast is safe, since ConsensusAggregation can only have true its second argument if T extends CreSerializable<TOutput>
 				consensusInput.observation = {
 					case: 'value',
 					value: Value.from(observation as CreSerializable<TOutput>).proto(),
 				}
-			} catch (e: any) {
-				consensusInput.observation = { case: 'error', value: e.message || String(e) }
+			} catch (e: unknown) {
+				consensusInput.observation = {
+					case: 'error',
+					value: (e instanceof Error && e.message) || String(e),
+				}
 			} finally {
 				// Always restore DON mode before invoking consensus
 				this.modeError = undefined
@@ -196,16 +201,23 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 			}
 
 			const consensus = new ConsensusCapability()
-			const result = consensus.simple(this, consensusInput).result()
-			const wrappedValue = Value.wrap(result)
+			const call = consensus.simple(this, consensusInput)
+			return {
+				result: () => {
+					const result = call.result()
+					const wrappedValue = Value.wrap(result)
 
-			return unwrapOptions
-				? wrappedValue.unwrapToType(unwrapOptions)
-				: (wrappedValue.unwrap() as TOutput)
+					return unwrapOptions
+						? wrappedValue.unwrapToType(unwrapOptions)
+						: (wrappedValue.unwrap() as TOutput)
+				},
+			}
 		}
 	}
 
-	getSecret(request: SecretRequest | SecretRequestJson): { result: () => Secret } {
+	getSecret(request: SecretRequest | SecretRequestJson): {
+		result: () => Secret
+	} {
 		if (this.modeError) {
 			return {
 				result: () => {
@@ -214,7 +226,7 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 			}
 		}
 
-		const secretRequest = (request as any).$typeName
+		const secretRequest = (request as unknown as { $typeName?: string }).$typeName
 			? create(SecretRequestSchema, request)
 			: (request as SecretRequest)
 		const id = this.nextCallId

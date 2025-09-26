@@ -208,6 +208,14 @@ ${Object.entries(defaults)
 			}
 		}
 
+		const constructorCode =
+			constructorParams.length > 0
+				? `
+	constructor(
+    	${constructorParams.join(',\n    ')}
+  	) {}`
+				: ``
+
 		// Add JSDoc with metadata information
 		const classComment = `
 /**
@@ -229,10 +237,7 @@ export class ${capabilityClassName} {
   static readonly CAPABILITY_NAME = "${capabilityName}";
   static readonly CAPABILITY_VERSION = "${capabilityVersion}";
 ${chainSelectorSupport}
-
-  constructor(
-    ${constructorParams.join(',\n    ')}
-  ) {}
+${constructorCode}
 ${methods}
 }
 ${triggerClasses}`

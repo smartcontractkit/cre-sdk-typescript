@@ -159,7 +159,9 @@ describe('runner', () => {
 			expect(sentResponse).toBeDefined()
 			expect(sentResponse!.result.case).toBe('value')
 			expect(
-				Value.wrap(sentResponse!.result.value as ProtoValue).unwrapToType({ instance: 10 }),
+				Value.wrap(sentResponse!.result.value as ProtoValue).unwrapToType({
+					instance: 10,
+				}),
 			).toBe(10)
 		})
 	})
@@ -242,7 +244,9 @@ describe('runner', () => {
 		expect(sentResponse).toBeDefined()
 		expect(sentResponse!.result.case).toBe('value')
 		expect(
-			Value.wrap(sentResponse!.result.value as ProtoValue).unwrapToType({ instance: 10 }),
+			Value.wrap(sentResponse!.result.value as ProtoValue).unwrapToType({
+				instance: 10,
+			}),
 		).toBe(20)
 	})
 
@@ -250,7 +254,12 @@ describe('runner', () => {
 		const anySecretResponse = create(SecretResponseSchema, {
 			response: {
 				case: 'secret',
-				value: create(SecretSchema, { id: 'Bar', namespace: 'Foo', owner: 'Baz', value: 'Qux' }),
+				value: create(SecretSchema, {
+					id: 'Bar',
+					namespace: 'Foo',
+					owner: 'Baz',
+					value: 'Qux',
+				}),
 			},
 		})
 		const anySecretsResponse = create(SecretResponsesSchema, {

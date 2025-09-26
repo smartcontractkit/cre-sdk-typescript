@@ -24,8 +24,6 @@ export class HTTPCapability {
 	static readonly CAPABILITY_NAME = 'http-trigger'
 	static readonly CAPABILITY_VERSION = '1.0.0-alpha'
 
-	constructor() {}
-
 	trigger(config: ConfigJson): HTTPTrigger {
 		const capabilityId = HTTPCapability.CAPABILITY_ID
 		return new HTTPTrigger(config, capabilityId, 'Trigger')

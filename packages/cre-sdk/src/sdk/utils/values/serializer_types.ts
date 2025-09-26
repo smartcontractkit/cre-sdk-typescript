@@ -2,7 +2,13 @@ import type { Decimal, Int64, UInt64 } from './value'
 
 export type NumericType = number | bigint | Date | Decimal | Int64 | UInt64
 export type PrimitiveTypes = NumericType | boolean | string
-export type NonSerializable = null | Map<any, any> | Set<any> | RegExp | Int8Array
+export type NonSerializable =
+	| null
+	| Map<unknown, unknown>
+	| Set<unknown>
+	| RegExp
+	| Int8Array
+	| Promise<unknown>
 
 export type CreSerializableNested<T> = T extends PrimitiveTypes
 	? T
