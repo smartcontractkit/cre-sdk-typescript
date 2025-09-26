@@ -6,7 +6,18 @@ import {
 	type Response,
 	ResponseSchema,
 } from '@cre/generated/capabilities/networking/http/v1alpha/client_pb'
-import { type NodeRuntime } from '@cre/sdk/runtime'
+import type { NodeRuntime, Runtime } from '@cre/sdk/runtime'
+import type { ConsensusAggregation, PrimitiveTypes, UnwrapOptions } from '@cre/sdk/utils'
+
+export class SendRequester {
+	constructor(
+		private readonly runtime: NodeRuntime<any>,
+		private readonly client: ClientCapability,
+	) {}
+	sendRequest(input: Request | RequestJson): { result: () => Response } {
+		return this.client.sendRequest(this.runtime, input)
+	}
+}
 
 /**
  * Client Capability

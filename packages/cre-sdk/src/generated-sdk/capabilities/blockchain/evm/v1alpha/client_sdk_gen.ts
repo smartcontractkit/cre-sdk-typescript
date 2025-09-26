@@ -53,7 +53,7 @@ import {
 	type WriteReportRequestJson,
 	WriteReportRequestSchema,
 } from '@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb'
-import { type Runtime } from '@cre/sdk/runtime'
+import type { Runtime } from '@cre/sdk/runtime'
 import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 
 /**

@@ -10,7 +10,7 @@ import {
 	SimpleConsensusInputsSchema,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { type Value, ValueSchema } from '@cre/generated/values/v1/values_pb'
-import { type Runtime } from '@cre/sdk/runtime'
+import type { Runtime } from '@cre/sdk/runtime'
 
 /**
  * Consensus Capability

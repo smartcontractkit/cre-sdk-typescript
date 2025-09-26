@@ -3,8 +3,8 @@ import {
 	consensusMedianAggregation,
 	cre,
 	getNetwork,
+	type HTTPSendRequester,
 	hexToBase64,
-	type NodeRuntime,
 	Runner,
 	type Runtime,
 } from '@chainlink/cre-sdk'
@@ -34,11 +34,10 @@ type Result = {
 	TxHash: string
 }
 
-async function fetchMathResult(nodeRuntime: NodeRuntime<Config>): Promise<number> {
-	const httpCapability = new cre.capabilities.HTTPClient()
-	const response = httpCapability
-		.sendRequest(nodeRuntime, {
-			url: nodeRuntime.config.apiUrl,
+async function fetchMathResult(sendRequester: HTTPSendRequester, config: Config) {
+	const response = await sendRequester
+		.sendRequest({
+			url: config.apiUrl,
 		})
 		.result()
 	return Number.parseFloat(Buffer.from(response.body).toString('utf-8').trim())
@@ -46,7 +45,12 @@ async function fetchMathResult(nodeRuntime: NodeRuntime<Config>): Promise<number
 
 const onCronTrigger = async (runtime: Runtime<Config>): Promise<Result> => {
 	// Step 1: Fetch offchain data using consensus (from Part 2)
-	const offchainValue = await runtime.runInNodeMode(fetchMathResult, consensusMedianAggregation())()
+	const httpCapability = new cre.capabilities.HTTPClient()
+	const offchainValue = await httpCapability.sendRequest(
+		runtime,
+		fetchMathResult,
+		consensusMedianAggregation(),
+	)(runtime.config)
 
 	runtime.log('Successfully fetched offchain value')
 
