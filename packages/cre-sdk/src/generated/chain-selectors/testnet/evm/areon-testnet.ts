@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '462',
 	chainSelector: {
 		name: 'areon-testnet',
-		selector: '7317911323415911000',
+		selector: 7317911323415911000n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

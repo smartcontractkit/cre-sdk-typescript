@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '3360022319',
 	chainSelector: {
 		name: 'tron-devnet',
-		selector: '13231703482326770000',
+		selector: 13231703482326770599n,
 	},
 	chainFamily: 'tron',
 	networkType: 'testnet',

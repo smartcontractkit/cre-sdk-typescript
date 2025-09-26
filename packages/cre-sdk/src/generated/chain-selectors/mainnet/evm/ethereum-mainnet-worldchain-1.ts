@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '480',
 	chainSelector: {
 		name: 'ethereum-mainnet-worldchain-1',
-		selector: '2049429975587534800',
+		selector: 2049429975587534727n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

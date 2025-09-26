@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '1',
 	chainSelector: {
 		name: 'sui-mainnet',
-		selector: '17529533435026248000',
+		selector: 17529533435026248318n,
 	},
 	chainFamily: 'sui',
 	networkType: 'mainnet',

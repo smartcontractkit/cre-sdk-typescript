@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '747474',
 	chainSelector: {
 		name: 'polygon-mainnet-katana',
-		selector: '2459028469735686000',
+		selector: 2459028469735686113n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

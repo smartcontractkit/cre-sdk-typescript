@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '808813',
 	chainSelector: {
 		name: 'bitcoin-testnet-sepolia-bob-1',
-		selector: '5535534526963509000',
+		selector: 5535534526963509396n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

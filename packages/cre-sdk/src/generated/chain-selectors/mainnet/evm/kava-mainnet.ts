@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '2222',
 	chainSelector: {
 		name: 'kava-mainnet',
-		selector: '7550000543357438000',
+		selector: 7550000543357438061n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

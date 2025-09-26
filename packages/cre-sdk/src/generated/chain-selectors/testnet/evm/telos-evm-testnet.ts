@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '41',
 	chainSelector: {
 		name: 'telos-evm-testnet',
-		selector: '729797994450396300',
+		selector: 729797994450396300n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

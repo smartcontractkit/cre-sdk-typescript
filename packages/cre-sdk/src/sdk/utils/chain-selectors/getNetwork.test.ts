@@ -5,38 +5,38 @@ const mockModulePath = '@cre/generated/networks'
 
 const evmMain = {
 	chainId: '1',
-	chainSelector: { name: 'EVM_MAIN', selector: '100' },
+	chainSelector: { name: 'EVM_MAIN', selector: 100n },
 	chainFamily: 'evm',
 	networkType: 'mainnet',
 } as const
 
 const evmTest = {
 	chainId: '5',
-	chainSelector: { name: 'EVM_TEST', selector: '200' },
+	chainSelector: { name: 'EVM_TEST', selector: 200n },
 	chainFamily: 'evm',
 	networkType: 'testnet',
 } as const
 
 const solMain = {
 	chainId: 'sol-main',
-	chainSelector: { name: 'SOL_MAIN', selector: '300' },
+	chainSelector: { name: 'SOL_MAIN', selector: 300n },
 	chainFamily: 'solana',
 	networkType: 'mainnet',
 } as const
 
 const solTest = {
 	chainId: 'sol-test',
-	chainSelector: { name: 'SOL_TEST', selector: '400' },
+	chainSelector: { name: 'SOL_TEST', selector: 400n },
 	chainFamily: 'solana',
 	networkType: 'testnet',
 } as const
 
 // Create all maps required by getNetwork
-const mainnetBySelector = new Map<string, any>([
+const mainnetBySelector = new Map<bigint, any>([
 	[evmMain.chainSelector.selector, evmMain],
 	[solMain.chainSelector.selector, solMain],
 ])
-const testnetBySelector = new Map<string, any>([
+const testnetBySelector = new Map<bigint, any>([
 	[evmTest.chainSelector.selector, evmTest],
 	[solTest.chainSelector.selector, solTest],
 ])
@@ -50,8 +50,8 @@ const testnetByName = new Map<string, any>([
 ])
 
 const mainnetBySelectorByFamily = {
-	evm: new Map<string, any>([[evmMain.chainSelector.selector, evmMain]]),
-	solana: new Map<string, any>([[solMain.chainSelector.selector, solMain]]),
+	evm: new Map<bigint, any>([[evmMain.chainSelector.selector, evmMain]]),
+	solana: new Map<bigint, any>([[solMain.chainSelector.selector, solMain]]),
 	aptos: new Map(),
 	sui: new Map(),
 	ton: new Map(),
@@ -59,8 +59,8 @@ const mainnetBySelectorByFamily = {
 } as const
 
 const testnetBySelectorByFamily = {
-	evm: new Map<string, any>([[evmTest.chainSelector.selector, evmTest]]),
-	solana: new Map<string, any>([[solTest.chainSelector.selector, solTest]]),
+	evm: new Map<bigint, any>([[evmTest.chainSelector.selector, evmTest]]),
+	solana: new Map<bigint, any>([[solTest.chainSelector.selector, solTest]]),
 	aptos: new Map(),
 	sui: new Map(),
 	ton: new Map(),
@@ -108,7 +108,7 @@ describe('getNetwork', () => {
 	it('uses family+selector with isTestnet=true (testnet family map)', () => {
 		const result = getNetwork({
 			chainFamily: 'evm',
-			chainSelector: '200',
+			chainSelector: 200n,
 			isTestnet: true,
 		})
 		expect(result).toEqual(evmTest)
@@ -117,26 +117,26 @@ describe('getNetwork', () => {
 	it('uses family+selector with isTestnet=false (mainnet family map)', () => {
 		const result = getNetwork({
 			chainFamily: 'evm',
-			chainSelector: '100',
+			chainSelector: 100n,
 			isTestnet: false,
 		})
 		expect(result).toEqual(evmMain)
 	})
 
 	it('uses family+selector with isTestnet undefined defaults to mainnet map', () => {
-		const result = getNetwork({ chainFamily: 'solana', chainSelector: '300' })
+		const result = getNetwork({ chainFamily: 'solana', chainSelector: 300n })
 		expect(result).toEqual(solMain)
 	})
 
 	it('uses family+selector with isTestnet undefined prefers testnet when present', () => {
-		const result = getNetwork({ chainFamily: 'evm', chainSelector: '200' })
+		const result = getNetwork({ chainFamily: 'evm', chainSelector: 200n })
 		expect(result).toEqual(evmTest)
 	})
 
 	it('family+selector returns undefined when selector not in that family', () => {
 		const result = getNetwork({
 			chainFamily: 'evm',
-			chainSelector: '300',
+			chainSelector: 300n,
 			isTestnet: false,
 		})
 		expect(result).toBeUndefined()
@@ -188,12 +188,12 @@ describe('getNetwork', () => {
 
 	// selector only
 	it('selector only with isTestnet=false returns mainnet', () => {
-		const result = getNetwork({ chainSelector: '100', isTestnet: false })
+		const result = getNetwork({ chainSelector: 100n, isTestnet: false })
 		expect(result).toEqual(evmMain)
 	})
 
 	it('selector only with isTestnet=true returns testnet', () => {
-		const result = getNetwork({ chainSelector: '200', isTestnet: true })
+		const result = getNetwork({ chainSelector: 200n, isTestnet: true })
 		expect(result).toEqual(evmTest)
 	})
 
@@ -203,7 +203,7 @@ describe('getNetwork', () => {
 			...evmMain,
 			chainSelector: {
 				...evmMain.chainSelector,
-				selector: '900',
+				selector: 900n,
 				name: 'DUP_MAIN',
 			},
 		}
@@ -211,31 +211,31 @@ describe('getNetwork', () => {
 			...evmTest,
 			chainSelector: {
 				...evmTest.chainSelector,
-				selector: '900',
+				selector: 900n,
 				name: 'DUP_TEST',
 			},
 		}
-		mainnetBySelector.set('900', dupMain)
-		testnetBySelector.set('900', dupTest)
+		mainnetBySelector.set(900n, dupMain)
+		testnetBySelector.set(900n, dupTest)
 
-		const result = getNetwork({ chainSelector: '900' })
+		const result = getNetwork({ chainSelector: 900n })
 		expect(result).toEqual(dupTest)
 	})
 
 	it('selector only with isTestnet undefined falls back to mainnet if not in testnet', () => {
-		const result = getNetwork({ chainSelector: '300' })
+		const result = getNetwork({ chainSelector: 300n })
 		expect(result).toEqual(solMain)
 	})
 
 	it('selector only returns undefined when not found anywhere', () => {
-		const result = getNetwork({ chainSelector: '9999' })
+		const result = getNetwork({ chainSelector: 9999n })
 		expect(result).toBeUndefined()
 	})
 
 	// both selector and name provided - selector takes precedence
 	it('both selector and name provided without family uses selector path', () => {
 		const result = getNetwork({
-			chainSelector: '100',
+			chainSelector: 100n,
 			chainSelectorName: 'SOL_MAIN',
 			isTestnet: false,
 		})
@@ -245,7 +245,7 @@ describe('getNetwork', () => {
 	it('both selector and name provided with family uses selector path', () => {
 		const result = getNetwork({
 			chainFamily: 'solana',
-			chainSelector: '300',
+			chainSelector: 300n,
 			chainSelectorName: 'EVM_MAIN',
 		})
 		expect(result).toEqual(solMain)
@@ -257,7 +257,7 @@ describe('getNetwork', () => {
 			...evmMain,
 			chainSelector: {
 				...evmMain.chainSelector,
-				selector: '901',
+				selector: 901n,
 				name: 'DUP2_MAIN',
 			},
 		}
@@ -265,15 +265,15 @@ describe('getNetwork', () => {
 			...evmTest,
 			chainSelector: {
 				...evmTest.chainSelector,
-				selector: '901',
+				selector: 901n,
 				name: 'DUP2_TEST',
 			},
 		}
-		mainnetBySelector.set('901', dupMain)
-		testnetBySelector.set('901', dupTest)
+		mainnetBySelector.set(901n, dupMain)
+		testnetBySelector.set(901n, dupTest)
 
 		const result = getNetwork({
-			chainSelector: '901',
+			chainSelector: 901n,
 			chainSelectorName: 'DUP2_MAIN',
 		})
 		expect(result).toEqual(dupTest)
@@ -317,7 +317,7 @@ describe('getNetwork', () => {
 	it('returns undefined for unsupported family when maps are empty (selector)', () => {
 		const result = getNetwork({
 			chainFamily: 'aptos',
-			chainSelector: '100',
+			chainSelector: 100n,
 			isTestnet: false,
 		})
 		expect(result).toBeUndefined()

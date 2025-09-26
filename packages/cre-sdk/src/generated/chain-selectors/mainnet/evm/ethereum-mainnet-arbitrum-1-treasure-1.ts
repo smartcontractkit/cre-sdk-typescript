@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '978670',
 	chainSelector: {
 		name: 'ethereum-mainnet-arbitrum-1-treasure-1',
-		selector: '1010349088906778000',
+		selector: 1010349088906777999n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

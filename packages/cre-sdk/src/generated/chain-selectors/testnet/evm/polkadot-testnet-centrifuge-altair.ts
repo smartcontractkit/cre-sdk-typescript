@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '2088',
 	chainSelector: {
 		name: 'polkadot-testnet-centrifuge-altair',
-		selector: '2333097300889805000',
+		selector: 2333097300889804761n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '204',
 	chainSelector: {
 		name: 'binance_smart_chain-mainnet-opbnb-1',
-		selector: '465944652040885900',
+		selector: 465944652040885897n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

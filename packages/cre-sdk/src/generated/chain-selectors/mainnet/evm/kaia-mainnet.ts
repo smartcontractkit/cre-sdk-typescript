@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '8217',
 	chainSelector: {
 		name: 'kaia-mainnet',
-		selector: '9813823125703492000',
+		selector: 9813823125703490621n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

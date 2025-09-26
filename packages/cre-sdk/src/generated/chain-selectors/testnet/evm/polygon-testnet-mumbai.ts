@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '80001',
 	chainSelector: {
 		name: 'polygon-testnet-mumbai',
-		selector: '12532609583862917000',
+		selector: 12532609583862916517n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

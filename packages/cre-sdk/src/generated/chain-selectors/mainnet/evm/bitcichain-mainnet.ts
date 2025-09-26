@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '1907',
 	chainSelector: {
 		name: 'bitcichain-mainnet',
-		selector: '4874388048629246000',
+		selector: 4874388048629246000n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

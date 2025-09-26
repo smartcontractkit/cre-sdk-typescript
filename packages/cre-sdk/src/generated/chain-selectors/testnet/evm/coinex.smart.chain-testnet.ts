@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '53',
 	chainSelector: {
 		name: 'coinex_smart_chain-testnet',
-		selector: '8955032871639343000',
+		selector: 8955032871639343000n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

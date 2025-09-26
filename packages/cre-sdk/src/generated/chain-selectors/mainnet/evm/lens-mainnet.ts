@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '232',
 	chainSelector: {
 		name: 'lens-mainnet',
-		selector: '5608378062013573000',
+		selector: 5608378062013572713n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

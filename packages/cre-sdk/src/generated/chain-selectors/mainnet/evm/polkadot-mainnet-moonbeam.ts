@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '1284',
 	chainSelector: {
 		name: 'polkadot-mainnet-moonbeam',
-		selector: '1252863800116739600',
+		selector: 1252863800116739621n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

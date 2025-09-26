@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '2391',
 	chainSelector: {
 		name: 'tac-testnet',
-		selector: '9488606126177219000',
+		selector: 9488606126177218005n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

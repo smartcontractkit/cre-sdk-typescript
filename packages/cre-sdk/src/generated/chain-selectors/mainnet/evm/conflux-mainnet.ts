@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '1030',
 	chainSelector: {
 		name: 'conflux-mainnet',
-		selector: '3358365939762719000',
+		selector: 3358365939762719202n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '81',
 	chainSelector: {
 		name: 'polkadot-testnet-astar-shibuya',
-		selector: '6955638871347137000',
+		selector: 6955638871347136141n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

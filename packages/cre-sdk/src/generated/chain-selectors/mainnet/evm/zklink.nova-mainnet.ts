@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '810180',
 	chainSelector: {
 		name: 'zklink_nova-mainnet',
-		selector: '4350319965322102000',
+		selector: 4350319965322101699n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

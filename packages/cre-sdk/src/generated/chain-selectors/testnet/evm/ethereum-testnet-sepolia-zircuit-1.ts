@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '48899',
 	chainSelector: {
 		name: 'ethereum-testnet-sepolia-zircuit-1',
-		selector: '4562743618362911000',
+		selector: 4562743618362911021n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '1750',
 	chainSelector: {
 		name: 'metal-mainnet',
-		selector: '13447077090413146000',
+		selector: 13447077090413146373n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

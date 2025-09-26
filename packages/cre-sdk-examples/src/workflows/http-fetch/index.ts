@@ -1,48 +1,43 @@
 import {
-  consensusMedianAggregation,
-  cre,
-  type NodeRuntime,
-  Runner,
-  type Runtime,
-} from "@chainlink/cre-sdk";
-import { z } from "zod";
+	consensusMedianAggregation,
+	cre,
+	type NodeRuntime,
+	Runner,
+	type Runtime,
+} from '@chainlink/cre-sdk'
+import { z } from 'zod'
 
 const configSchema = z.object({
-  schedule: z.string(),
-  apiUrl: z.string(),
-});
+	schedule: z.string(),
+	apiUrl: z.string(),
+})
 
-type Config = z.infer<typeof configSchema>;
+type Config = z.infer<typeof configSchema>
 
 const fetchMathResult = async (nodeRuntime: NodeRuntime<Config>) => {
-  const httpCapability = new cre.capabilities.HTTPClient();
-  const response = httpCapability
-    .sendRequest(nodeRuntime, {
-      url: nodeRuntime.config.apiUrl,
-    })
-    .result();
-  return Number.parseFloat(Buffer.from(response.body).toString("utf-8").trim());
-};
-
-const onCronTrigger = async (runtime: Runtime<Config>) => {
-  return await runtime.runInNodeMode(
-    fetchMathResult,
-    consensusMedianAggregation()
-  )();
-};
-
-const initWorkflow = (config: Config) => {
-  const cron = new cre.capabilities.CronCapability();
-  return [
-    cre.handler(cron.trigger({ schedule: config.schedule }), onCronTrigger),
-  ];
-};
-
-export async function main() {
-  const runner = await Runner.newRunner<Config>({
-    configSchema,
-  });
-  await runner.run(initWorkflow);
+	const httpCapability = new cre.capabilities.HTTPClient()
+	const response = httpCapability
+		.sendRequest(nodeRuntime, {
+			url: nodeRuntime.config.apiUrl,
+		})
+		.result()
+	return Number.parseFloat(Buffer.from(response.body).toString('utf-8').trim())
 }
 
-main();
+const onCronTrigger = async (runtime: Runtime<Config>) => {
+	return await runtime.runInNodeMode(fetchMathResult, consensusMedianAggregation())()
+}
+
+const initWorkflow = (config: Config) => {
+	const cron = new cre.capabilities.CronCapability()
+	return [cre.handler(cron.trigger({ schedule: config.schedule }), onCronTrigger)]
+}
+
+export async function main() {
+	const runner = await Runner.newRunner<Config>({
+		configSchema,
+	})
+	await runner.run(initWorkflow)
+}
+
+main()

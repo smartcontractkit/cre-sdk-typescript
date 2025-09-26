@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '97',
 	chainSelector: {
 		name: 'binance_smart_chain-testnet',
-		selector: '13264668187771770000',
+		selector: 13264668187771770619n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

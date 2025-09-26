@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '763373',
 	chainSelector: {
 		name: 'ink-testnet-sepolia',
-		selector: '9763904284804119000',
+		selector: 9763904284804119144n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

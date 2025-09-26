@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '6930',
 	chainSelector: {
 		name: 'nibiru-testnet',
-		selector: '305104239123120450',
+		selector: 305104239123120457n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

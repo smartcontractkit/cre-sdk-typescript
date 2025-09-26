@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '1687',
 	chainSelector: {
 		name: 'mint-testnet',
-		selector: '10749384167430722000',
+		selector: 10749384167430721561n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '42793',
 	chainSelector: {
 		name: 'etherlink-mainnet',
-		selector: '13624601974233774000',
+		selector: 13624601974233774587n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

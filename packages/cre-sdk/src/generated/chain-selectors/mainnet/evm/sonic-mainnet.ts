@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '146',
 	chainSelector: {
 		name: 'sonic-mainnet',
-		selector: '1673871237479750000',
+		selector: 1673871237479749969n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '463',
 	chainSelector: {
 		name: 'areon-mainnet',
-		selector: '1939936305787790600',
+		selector: 1939936305787790600n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '2221',
 	chainSelector: {
 		name: 'kava-testnet',
-		selector: '2110537777356199200',
+		selector: 2110537777356199208n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

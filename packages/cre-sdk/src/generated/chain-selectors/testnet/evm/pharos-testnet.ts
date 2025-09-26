@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '688688',
 	chainSelector: {
 		name: 'pharos-testnet',
-		selector: '4012524741200567300',
+		selector: 4012524741200567430n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

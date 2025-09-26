@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '424242',
 	chainSelector: {
 		name: 'private-testnet-mica',
-		selector: '4489326297382772000',
+		selector: 4489326297382772450n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

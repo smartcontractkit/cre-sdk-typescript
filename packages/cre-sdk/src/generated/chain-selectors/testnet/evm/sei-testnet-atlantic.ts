@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '1328',
 	chainSelector: {
 		name: 'sei-testnet-atlantic',
-		selector: '1216300075444106800',
+		selector: 1216300075444106652n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

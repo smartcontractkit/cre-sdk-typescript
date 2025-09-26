@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '432204',
 	chainSelector: {
 		name: 'avalanche-subnet-dexalot-mainnet',
-		selector: '5463201557265485000',
+		selector: 5463201557265485081n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '3637',
 	chainSelector: {
 		name: 'bitcoin-mainnet-botanix',
-		selector: '4560701533377838000',
+		selector: 4560701533377838164n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

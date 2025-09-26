@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '223',
 	chainSelector: {
 		name: 'bitcoin-mainnet-bsquared-1',
-		selector: '5406759801798338000',
+		selector: 5406759801798337480n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

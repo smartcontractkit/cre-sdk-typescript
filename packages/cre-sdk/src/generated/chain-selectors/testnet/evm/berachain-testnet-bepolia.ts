@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '80069',
 	chainSelector: {
 		name: 'berachain-testnet-bepolia',
-		selector: '7728255861635209000',
+		selector: 7728255861635209484n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

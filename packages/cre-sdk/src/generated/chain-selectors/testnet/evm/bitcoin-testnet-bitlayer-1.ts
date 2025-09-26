@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '200810',
 	chainSelector: {
 		name: 'bitcoin-testnet-bitlayer-1',
-		selector: '3789623672476206000',
+		selector: 3789623672476206327n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

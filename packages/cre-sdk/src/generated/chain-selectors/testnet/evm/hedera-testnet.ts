@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '296',
 	chainSelector: {
 		name: 'hedera-testnet',
-		selector: '222782988166878820',
+		selector: 222782988166878823n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

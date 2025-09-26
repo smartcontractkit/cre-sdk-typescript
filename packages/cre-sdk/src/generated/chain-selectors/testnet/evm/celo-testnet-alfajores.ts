@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '44787',
 	chainSelector: {
 		name: 'celo-testnet-alfajores',
-		selector: '3552045678561919000',
+		selector: 3552045678561919002n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

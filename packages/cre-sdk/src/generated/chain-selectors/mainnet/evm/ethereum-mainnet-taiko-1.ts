@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '167000',
 	chainSelector: {
 		name: 'ethereum-mainnet-taiko-1',
-		selector: '16468599424800719000',
+		selector: 16468599424800719238n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '80085',
 	chainSelector: {
 		name: 'berachain-testnet-artio',
-		selector: '12336603543561912000',
+		selector: 12336603543561911511n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

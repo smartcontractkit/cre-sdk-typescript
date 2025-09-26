@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '1337',
 	chainSelector: {
 		name: 'geth-testnet',
-		selector: '3379446385462418400',
+		selector: 3379446385462418246n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

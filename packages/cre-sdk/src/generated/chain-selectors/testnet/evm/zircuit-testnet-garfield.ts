@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '48898',
 	chainSelector: {
 		name: 'zircuit-testnet-garfield',
-		selector: '13781831279385220000',
+		selector: 13781831279385219069n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',
