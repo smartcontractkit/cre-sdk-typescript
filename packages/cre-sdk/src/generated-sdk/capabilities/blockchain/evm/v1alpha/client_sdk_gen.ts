@@ -90,11 +90,10 @@ export class ClientCapability {
 	constructor(private readonly chainSelector?: bigint) {}
 
 	callContract(
-		runtime: Runtime<any>,
+		runtime: Runtime<unknown>,
 		input: CallContractRequest | CallContractRequestJson,
 	): { result: () => CallContractReply } {
-		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-		const payload = (input as any).$typeName
+		const payload = (input as unknown as { $typeName?: string }).$typeName
 			? (input as CallContractRequest)
 			: fromJson(CallContractRequestSchema, input as CallContractRequestJson)
 
@@ -119,11 +118,10 @@ export class ClientCapability {
 	}
 
 	filterLogs(
-		runtime: Runtime<any>,
+		runtime: Runtime<unknown>,
 		input: FilterLogsRequest | FilterLogsRequestJson,
 	): { result: () => FilterLogsReply } {
-		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-		const payload = (input as any).$typeName
+		const payload = (input as unknown as { $typeName?: string }).$typeName
 			? (input as FilterLogsRequest)
 			: fromJson(FilterLogsRequestSchema, input as FilterLogsRequestJson)
 
@@ -148,11 +146,10 @@ export class ClientCapability {
 	}
 
 	balanceAt(
-		runtime: Runtime<any>,
+		runtime: Runtime<unknown>,
 		input: BalanceAtRequest | BalanceAtRequestJson,
 	): { result: () => BalanceAtReply } {
-		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-		const payload = (input as any).$typeName
+		const payload = (input as unknown as { $typeName?: string }).$typeName
 			? (input as BalanceAtRequest)
 			: fromJson(BalanceAtRequestSchema, input as BalanceAtRequestJson)
 
@@ -177,11 +174,10 @@ export class ClientCapability {
 	}
 
 	estimateGas(
-		runtime: Runtime<any>,
+		runtime: Runtime<unknown>,
 		input: EstimateGasRequest | EstimateGasRequestJson,
 	): { result: () => EstimateGasReply } {
-		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-		const payload = (input as any).$typeName
+		const payload = (input as unknown as { $typeName?: string }).$typeName
 			? (input as EstimateGasRequest)
 			: fromJson(EstimateGasRequestSchema, input as EstimateGasRequestJson)
 
@@ -206,11 +202,10 @@ export class ClientCapability {
 	}
 
 	getTransactionByHash(
-		runtime: Runtime<any>,
+		runtime: Runtime<unknown>,
 		input: GetTransactionByHashRequest | GetTransactionByHashRequestJson,
 	): { result: () => GetTransactionByHashReply } {
-		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-		const payload = (input as any).$typeName
+		const payload = (input as unknown as { $typeName?: string }).$typeName
 			? (input as GetTransactionByHashRequest)
 			: fromJson(GetTransactionByHashRequestSchema, input as GetTransactionByHashRequestJson)
 
@@ -238,11 +233,10 @@ export class ClientCapability {
 	}
 
 	getTransactionReceipt(
-		runtime: Runtime<any>,
+		runtime: Runtime<unknown>,
 		input: GetTransactionReceiptRequest | GetTransactionReceiptRequestJson,
 	): { result: () => GetTransactionReceiptReply } {
-		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-		const payload = (input as any).$typeName
+		const payload = (input as unknown as { $typeName?: string }).$typeName
 			? (input as GetTransactionReceiptRequest)
 			: fromJson(GetTransactionReceiptRequestSchema, input as GetTransactionReceiptRequestJson)
 
@@ -270,11 +264,10 @@ export class ClientCapability {
 	}
 
 	headerByNumber(
-		runtime: Runtime<any>,
+		runtime: Runtime<unknown>,
 		input: HeaderByNumberRequest | HeaderByNumberRequestJson,
 	): { result: () => HeaderByNumberReply } {
-		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-		const payload = (input as any).$typeName
+		const payload = (input as unknown as { $typeName?: string }).$typeName
 			? (input as HeaderByNumberRequest)
 			: fromJson(HeaderByNumberRequestSchema, input as HeaderByNumberRequestJson)
 
@@ -299,11 +292,10 @@ export class ClientCapability {
 	}
 
 	registerLogTracking(
-		runtime: Runtime<any>,
+		runtime: Runtime<unknown>,
 		input: RegisterLogTrackingRequest | RegisterLogTrackingRequestJson,
 	): { result: () => Empty } {
-		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-		const payload = (input as any).$typeName
+		const payload = (input as unknown as { $typeName?: string }).$typeName
 			? (input as RegisterLogTrackingRequest)
 			: fromJson(RegisterLogTrackingRequestSchema, input as RegisterLogTrackingRequestJson)
 
@@ -328,11 +320,10 @@ export class ClientCapability {
 	}
 
 	unregisterLogTracking(
-		runtime: Runtime<any>,
+		runtime: Runtime<unknown>,
 		input: UnregisterLogTrackingRequest | UnregisterLogTrackingRequestJson,
 	): { result: () => Empty } {
-		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-		const payload = (input as any).$typeName
+		const payload = (input as unknown as { $typeName?: string }).$typeName
 			? (input as UnregisterLogTrackingRequest)
 			: fromJson(UnregisterLogTrackingRequestSchema, input as UnregisterLogTrackingRequestJson)
 
@@ -365,11 +356,10 @@ export class ClientCapability {
 	}
 
 	writeReport(
-		runtime: Runtime<any>,
+		runtime: Runtime<unknown>,
 		input: WriteReportRequest | WriteReportRequestJson,
 	): { result: () => WriteReportReply } {
-		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-		const payload = (input as any).$typeName
+		const payload = (input as unknown as { $typeName?: string }).$typeName
 			? (input as WriteReportRequest)
 			: fromJson(WriteReportRequestSchema, input as WriteReportRequestJson)
 

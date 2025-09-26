@@ -2,7 +2,7 @@ import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/ca
 import { cre, type Runtime } from '@cre/sdk/cre'
 import { Runner } from '@cre/sdk/wasm'
 
-const simulateWorkflowFailure = (runtime: Runtime<Uint8Array>) => {
+const simulateWorkflowFailure = (_: Runtime<Uint8Array>) => {
 	throw new Error('workflow execution failure')
 }
 

@@ -26,8 +26,6 @@ export class CronCapability {
 	static readonly CAPABILITY_NAME = 'cron-trigger'
 	static readonly CAPABILITY_VERSION = '1.0.0'
 
-	constructor() {}
-
 	trigger(config: ConfigJson): CronTrigger {
 		const capabilityId = CronCapability.CAPABILITY_ID
 		return new CronTrigger(config, capabilityId, 'Trigger')

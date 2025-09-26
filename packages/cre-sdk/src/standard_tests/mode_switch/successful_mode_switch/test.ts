@@ -10,14 +10,14 @@ class Output {
 	constructor(public OutputThing: Int64) {}
 }
 
-const handler = async (runtime: Runtime<Uint8Array>) => {
+const handler = (runtime: Runtime<Uint8Array>) => {
 	const donInput = { inputThing: true }
 	const basicActionCapability = new BasicActionCapability()
 	const donResponse = basicActionCapability.performAction(runtime, donInput).result()
 	runtime.now()
 
-	const consensusOutput = await runtime.runInNodeMode(
-		async (nodeRuntime: NodeRuntime<Uint8Array>): Promise<Output> => {
+	const consensusOutput = runtime.runInNodeMode(
+		(nodeRuntime: NodeRuntime<Uint8Array>): Output => {
 			nodeRuntime.now()
 			const nodeActionCapability = new NodeActionCapability()
 			const nodeResponse = nodeActionCapability
@@ -35,7 +35,7 @@ const handler = async (runtime: Runtime<Uint8Array>) => {
 
 	runtime.now()
 
-	return `${donResponse.adaptedThing}${consensusOutput.OutputThing.value}`
+	return `${donResponse.adaptedThing}${consensusOutput.result().OutputThing.value}`
 }
 
 const initWorkflow = () => {
@@ -52,7 +52,7 @@ export async function main() {
 	const runner = await Runner.newRunner<Uint8Array>({
 		configParser: (c) => c,
 	})
-	await runner.run(initWorkflow)
+	runner.run(initWorkflow)
 }
 
 await main()

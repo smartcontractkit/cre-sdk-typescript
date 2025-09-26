@@ -5,7 +5,6 @@ import {
 	getNetwork,
 	type HTTPSendRequester,
 	hexToBase64,
-	type NodeRuntime,
 	Runner,
 	type Runtime,
 } from '@chainlink/cre-sdk'
@@ -27,19 +26,20 @@ const configSchema = z.object({
 
 type Config = z.infer<typeof configSchema>
 
-const fetchMathResult = async (sendRequester: HTTPSendRequester, config: Config) => {
-	const response = await sendRequester.sendRequest({ url: config.apiUrl }).result()
+const fetchMathResult = (sendRequester: HTTPSendRequester, config: Config) => {
+	const response = sendRequester.sendRequest({ url: config.apiUrl }).result()
 	return Number.parseFloat(Buffer.from(response.body).toString('utf-8').trim())
 }
 
-const onCronTrigger = async (runtime: Runtime<Config>): Promise<bigint> => {
-	// Step 1: Fetch offchain data using consensus (from Part 2)
+const onCronTrigger = (runtime: Runtime<Config>) => {
 	const httpCapability = new cre.capabilities.HTTPClient()
-	const offchainValue = await httpCapability.sendRequest(
-		runtime,
-		fetchMathResult,
-		consensusMedianAggregation(),
-	)(runtime.config)
+	const offchainValue = httpCapability
+		.sendRequest(
+			runtime,
+			fetchMathResult,
+			consensusMedianAggregation(),
+		)(runtime.config)
+		.result()
 
 	runtime.log(`Successfully fetched offchain value: ${offchainValue}`)
 
