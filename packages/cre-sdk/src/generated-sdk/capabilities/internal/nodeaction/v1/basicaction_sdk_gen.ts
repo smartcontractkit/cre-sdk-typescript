@@ -14,7 +14,7 @@ export class PerformActioner {
 		private readonly runtime: NodeRuntime<any>,
 		private readonly client: BasicActionCapability,
 	) {}
-	performAction(input: NodeInputs | NodeInputsJson): { result: () => Promise<NodeOutputs> } {
+	performAction(input: NodeInputs | NodeInputsJson): { result: () => NodeOutputs } {
 		return this.client.performAction(this.runtime, input)
 	}
 }

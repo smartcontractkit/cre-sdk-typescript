@@ -10,7 +10,7 @@ export function generateActionSugarClass(
 	return `
 export class ${sugarClassName} {
 	constructor(private readonly runtime: NodeRuntime<any>, private readonly client: ${capabilityClassName}) {}
-	${methodName}(input: ${method.input.name} |  ${method.input.name}Json): {result: () => Promise<${method.output.name}>} {
+	${methodName}(input: ${method.input.name} |  ${method.input.name}Json): {result: () =>${method.output.name}} {
 		return this.client.${methodName}(this.runtime, input)
 	}
 }`

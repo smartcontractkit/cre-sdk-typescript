@@ -14,7 +14,7 @@ export class SendRequester {
 		private readonly runtime: NodeRuntime<any>,
 		private readonly client: ClientCapability,
 	) {}
-	sendRequest(input: Request | RequestJson): { result: () => Promise<Response> } {
+	sendRequest(input: Request | RequestJson): { result: () => Response } {
 		return this.client.sendRequest(this.runtime, input)
 	}
 }

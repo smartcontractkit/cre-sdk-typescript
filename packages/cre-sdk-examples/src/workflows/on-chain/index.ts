@@ -3,6 +3,7 @@ import {
 	consensusMedianAggregation,
 	cre,
 	getNetwork,
+	type HTTPSendRequester,
 	hexToBase64,
 	type NodeRuntime,
 	Runner,
@@ -26,19 +27,19 @@ const configSchema = z.object({
 
 type Config = z.infer<typeof configSchema>
 
-async function fetchMathResult(nodeRuntime: NodeRuntime<Config>): Promise<number> {
-	const httpCapability = new cre.capabilities.HTTPClient()
-	const response = httpCapability
-		.sendRequest(nodeRuntime, {
-			url: nodeRuntime.config.apiUrl,
-		})
-		.result()
+const fetchMathResult = async (sendRequester: HTTPSendRequester, config: Config) => {
+	const response = await sendRequester.sendRequest({ url: config.apiUrl }).result()
 	return Number.parseFloat(Buffer.from(response.body).toString('utf-8').trim())
 }
 
 const onCronTrigger = async (runtime: Runtime<Config>): Promise<bigint> => {
 	// Step 1: Fetch offchain data using consensus (from Part 2)
-	const offchainValue = await runtime.runInNodeMode(fetchMathResult, consensusMedianAggregation())()
+	const httpCapability = new cre.capabilities.HTTPClient()
+	const offchainValue = await httpCapability.sendRequest(
+		runtime,
+		fetchMathResult,
+		consensusMedianAggregation(),
+	)(runtime.config)
 
 	runtime.log(`Successfully fetched offchain value: ${offchainValue}`)
 

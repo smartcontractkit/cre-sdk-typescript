@@ -15,17 +15,8 @@ const configSchema = z.object({
 type Config = z.infer<typeof configSchema>
 
 const fetchMathResult = async (sendRequester: HTTPSendRequester, config: Config) => {
-	try {
-		const response = await sendRequester
-			.sendRequest({
-				url: config.apiUrl,
-			})
-			.result()
-		return Number.parseFloat(Buffer.from(response.body).toString('utf-8').trim())
-	} catch (error) {
-		console.log('fetch error', error)
-		return 0
-	}
+	const response = await sendRequester.sendRequest({ url: config.apiUrl }).result()
+	return Number.parseFloat(Buffer.from(response.body).toString('utf-8').trim())
 }
 
 const onCronTrigger = async (runtime: Runtime<Config>) => {
@@ -37,7 +28,7 @@ const onCronTrigger = async (runtime: Runtime<Config>) => {
 	)(runtime.config)
 }
 
-const initWorkflow = (config: Config) => {
+const initWorkflow = (config: Config) => { 
 	const cron = new cre.capabilities.CronCapability()
 	return [cre.handler(cron.trigger({ schedule: config.schedule }), onCronTrigger)]
 }
