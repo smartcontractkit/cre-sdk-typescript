@@ -1,0 +1,50 @@
+# ==========================================================================
+# CRE PROJECT SETTINGS FILE
+# ==========================================================================
+# This file defines environment-specific targets used by the CRE CLI.
+# Each top-level key is a target (e.g., `production`, `production-testnet`, etc.).
+#
+# You can define your own custom target names, such as `my-target`, and point
+# the CLI to it via an environment variable.
+#
+# Below is an example `my-target`:
+#
+# my-target:
+#   cre-cli:
+#     # Required: Workflow DON ID used for registering and operating workflows.
+#     don-family: "small"
+#   logging:
+#     # Optional: Path to the seth configuration file (TOML). Used for logging configuration.
+#     seth-config-path: "/path/to/seth-config.toml"
+#   rpcs:
+#     # Required: Map each used chain selector to a corresponding RPC URL (HTTPS)
+#     - chain-name: ethereum-mainnet
+#       url: "https://sepolia.infura.io/v3/YOUR_API_KEY"
+
+# ==========================================================================
+local-simulation:
+  rpcs:
+    - chain-name: ethereum-testnet-sepolia
+      url: https://por.bcy-p.metalhosts.com/cre-alpha/MvqtrdftrbxcP3ZgGBJb3bK5/ethereum/sepolia
+
+# ==========================================================================
+production-testnet:
+  cre-cli:
+    don-family: "zone-a"
+  logging:
+    seth-config-path: ""
+  rpcs:
+    - chain-name: ethereum-testnet-sepolia
+      url: https://por.bcy-p.metalhosts.com/cre-alpha/MvqtrdftrbxcP3ZgGBJb3bK5/ethereum/sepolia
+    - chain-name: ethereum-testnet-sepolia-base-1
+      url: <select your own rpc url>
+  dev-platform:
+    don-id: 4
+  contracts:
+    registries:
+      - name: WorkflowRegistry
+        address: "0xF3f93fc4dc177748E7557568b5354cB009e3818a"
+        chain-selector: 16015286601757825753 #ethereum-sepolia
+      - name: CapabilitiesRegistry
+        address: "0x02471a03A86ac92DE793af303E9f756f0aE60677"
+        chain-selector: 16015286601757825753

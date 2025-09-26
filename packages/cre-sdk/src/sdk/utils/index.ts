@@ -1,3 +1,4 @@
+export * from './chain-selectors'
 export * from './hex-utils'
 export * from './values/consensus_aggregators'
 export * from './values/serializer_types'

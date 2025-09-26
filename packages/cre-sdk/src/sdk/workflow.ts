@@ -7,8 +7,8 @@ import type {
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { type Runtime } from '@cre/sdk/runtime'
 import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
-import type { CreSerializable } from './utils'
 import type { SecretsError } from './errors'
+import type { CreSerializable } from './utils'
 
 export type HandlerFn<TConfig, TTriggerOutput, TResult> = (
 	runtime: Runtime<TConfig>,

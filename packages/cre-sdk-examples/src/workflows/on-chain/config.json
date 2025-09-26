@@ -1,0 +1,12 @@
+{
+  "schedule": "0 */1 * * * *",
+  "apiUrl": "https://api.mathjs.org/v4/?expr=randomInt(1,3)",
+  "evms": [
+    {
+      "storageAddress": "0xa17CF997C28FF154eDBae1422e6a50BeF23927F4",
+      "calculatorConsumerAddress": "0x00307d6d1f885c24c2bF7568A13089aEb88D9aCc",
+      "chainSelectorName": "ethereum-testnet-sepolia",
+      "gasLimit": "500000"
+    }
+  ]
+}
