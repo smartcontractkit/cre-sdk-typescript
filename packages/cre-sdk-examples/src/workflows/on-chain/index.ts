@@ -45,7 +45,9 @@ const onCronTrigger = async (runtime: Runtime<Config>): Promise<bigint> => {
 	// Get the first EVM configuration from the list
 	const evmConfig = runtime.config.evms[0]
 	const network = getNetwork({
+		chainFamily: 'evm',
 		chainSelectorName: evmConfig.chainSelectorName,
+		isTestnet: true,
 	})
 
 	if (!network) {
