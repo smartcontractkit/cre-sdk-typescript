@@ -18,7 +18,7 @@
   },
   "keywords": [],
   "author": "SmartContract Chainlink Limited SEZC",
-  "license": "SEE LICENSE IN LICENSE.md",
+  "license": "BUSL-1.1",
   "description": "Chainlink CRE SDK Javy Plugin.",
   "files": [
     "bin/",

@@ -4,7 +4,7 @@
   "version": "0.0.3-alpha",
   "type": "module",
   "author": "Ernest Nowacki",
-  "license": "MIT",
+  "license": "BUSL-1.1",
   "description": "Demo app with example workflows utilizing CRE TypeScript SDK. It presents usage of CRE SDK and allows SDK developers to test workflows.",
   "scripts": {
     "check": "biome check --write ${BIOME_PATHS:-.}",
