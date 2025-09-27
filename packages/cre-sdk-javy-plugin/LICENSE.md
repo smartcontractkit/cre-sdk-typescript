@@ -1,9 +1,9 @@
-Business Source License 1.1
+Business Source License 1.1 (BUSL-1.1)
 
 License text copyright (c) 2017 MariaDB Corporation Ab, All Rights Reserved.
 "Business Source License" is a trademark of MariaDB Corporation Ab.
 
------------------------------------------------------------------------------
+---
 
 Parameters
 
@@ -17,7 +17,7 @@ Change Date: May 20, 2029
 
 Change License: MIT
 
------------------------------------------------------------------------------
+---
 
 Terms
 
@@ -37,13 +37,13 @@ This License does not grant you any right in any trademark or logo of Licensor o
 
 TO THE EXTENT PERMITTED BY APPLICABLE LAW, THE LICENSED WORK IS PROVIDED ON AN "AS IS" BASIS. LICENSOR HEREBY DISCLAIMS ALL WARRANTIES AND CONDITIONS, EXPRESS OR IMPLIED, INCLUDING (WITHOUT LIMITATION) WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, AND TITLE.
 
-MariaDB hereby grants you permission to use this License’s text to license your works, and to refer to it using the trademark "Business Source License", as long as you comply with the Covenants of Licensor below.
+MariaDB hereby grants you permission to use this License's text to license your works, and to refer to it using the trademark "Business Source License", as long as you comply with the Covenants of Licensor below.
 
------------------------------------------------------------------------------
+---
 
 Covenants of Licensor
 
-In consideration of the right to use this License’s text and the "Business Source License" name and trademark, Licensor covenants to MariaDB, and to all other recipients of the licensed work to be provided by Licensor:
+In consideration of the right to use this License's text and the "Business Source License" name and trademark, Licensor covenants to MariaDB, and to all other recipients of the licensed work to be provided by Licensor:
 
 1. To specify as the Change License the GPL Version 2.0 or any later version, or a license that is compatible with GPL Version 2.0 or a later version, where "compatible" means that software provided under the Change License can be included in a program with software provided under GPL Version 2.0 or a later version. Licensor may specify additional Change Licenses without limitation.
 

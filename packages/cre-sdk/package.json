@@ -1,6 +1,6 @@
 {
 	"name": "@chainlink/cre-sdk",
-	"version": "0.0.2-alpha",
+	"version": "0.0.3-alpha",
 	"type": "module",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -64,7 +64,7 @@
 		"access": "public"
 	},
 	"author": "SmartContract Chainlink Limited SEZC",
-	"license": "SEE LICENSE IN LICENSE.md",
+	"license": "BUSL-1.1",
 	"engines": {
 		"bun": ">=1.2.21"
 	}

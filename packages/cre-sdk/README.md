@@ -91,22 +91,26 @@ Fetch data from external APIs with built-in consensus mechanisms:
 import {
   cre,
   consensusMedianAggregation,
-  type NodeRuntime,
+  type HTTPSendRequester,
   type Runtime,
 } from "@chainlink/cre-sdk";
 
 type Config = { apiUrl: string };
 
-const fetchData = async (nodeRuntime: NodeRuntime<Config>) => {
-  const http = new cre.capabilities.HTTPClient();
-  const response = http
-    .sendRequest(nodeRuntime, { url: nodeRuntime.config.apiUrl })
-    .result();
+const fetchData = (sendRequester: HTTPSendRequester, config: Config) => {
+  const response = sendRequester.sendRequest({ url: config.apiUrl }).result();
   return Number.parseFloat(Buffer.from(response.body).toString("utf-8").trim());
 };
 
-const onCronTrigger = async (runtime: Runtime<Config>) => {
-  return await runtime.runInNodeMode(fetchData, consensusMedianAggregation())();
+const onCronTrigger = (runtime: Runtime<Config>) => {
+  const httpCapability = new cre.capabilities.HTTPClient();
+  return httpCapability
+    .sendRequest(
+      runtime,
+      fetchData,
+      consensusMedianAggregation()
+    )(runtime.config)
+    .result();
 };
 ```
 
@@ -295,8 +299,7 @@ See the [on-chain example](https://github.com/smartcontractkit/cre-sdk-typescrip
 ### Capabilities
 
 - `cre.capabilities.CronCapability`: Schedule-based triggers
-- `cre.capabilities.HTTPCapability`: HTTP request handling
-- `cre.capabilities.HTTPClient`: HTTP client for requests
+- `cre.capabilities.HTTPClient`: HTTP client for requests with consensus support
 - `cre.capabilities.EVMClient`: EVM blockchain interactions
 
 ### Utilities
