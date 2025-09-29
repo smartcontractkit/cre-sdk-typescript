@@ -1,4 +1,4 @@
-import type { Response } from './client_pb'
+import type { Response } from '../../generated/capabilities/networking/http/v1alpha/client_pb'
 
 /**
  * HTTP Response Helper Functions
@@ -8,36 +8,52 @@ import type { Response } from './client_pb'
  *
  * @example
  * ```typescript
- * import { text, json, ok, getHeader } from './client_helpers'
+ * import { text, json, ok, getHeader } from './http-helpers'
  *
+ * // Direct usage with Response object
  * const response = sendRequester.sendRequest({ url: 'https://api.example.com/data' }).result()
  *
  * // Check if response is successful
- * if (!ok(response).result()) {
+ * if (!ok(response)) {
  *   throw new Error(`Request failed with status: ${response.statusCode}`)
  * }
  *
- * // Get response as text
- * const responseText = text(response).result()
+ * // Get response as text (automatically trimmed)
+ * const responseText = text(response)
  *
  * // Parse JSON response
- * const data = json(response).result()
+ * const data = json(response)
  *
  * // Get specific header
- * const contentType = getHeader(response, 'content-type').result()
+ * const contentType = getHeader(response, 'content-type')
+ * ```
+ *
+ * @example
+ * ```typescript
+ * // Function overload usage
+ * const responseFn = sendRequester.sendRequest({ url: 'https://api.example.com/data' })
+ *
+ * // Check if response is successful
+ * if (!ok(() => ({ result: responseFn.result() })).result()) {
+ *   const response = responseFn.result()
+ *   throw new Error(`Request failed with status: ${response.statusCode}`)
+ * }
+ *
+ * // Get response as text (automatically trimmed)
+ * const responseText = text(() => ({ result: responseFn.result() })).result()
  * ```
  */
 
 /**
- * Returns the response body as a UTF-8 string
+ * Returns the response body as a UTF-8 string, automatically trimmed
  * @param response - The Response object
- * @returns The body as a string
+ * @returns The body as a trimmed string
  */
 export function text(response: Response): string
 /**
- * Returns the response body as a UTF-8 string
+ * Returns the response body as a UTF-8 string, automatically trimmed
  * @param responseFn - Function that returns an object with result function that returns Response
- * @returns Object with result function that returns the body as a string
+ * @returns Object with result function that returns the body as a trimmed string
  */
 export function text(responseFn: () => { result: Response }): {
 	result: () => string
@@ -47,15 +63,11 @@ export function text(
 ): string | { result: () => string } {
 	if (typeof responseOrFn === 'function') {
 		return {
-			result: () => {
-				const response = responseOrFn().result
-				const decoder = new TextDecoder('utf-8')
-				return decoder.decode(response.body)
-			},
+			result: () => text(responseOrFn().result),
 		}
 	} else {
 		const decoder = new TextDecoder('utf-8')
-		return decoder.decode(responseOrFn.body)
+		return decoder.decode(responseOrFn.body).trim()
 	}
 }
 
@@ -80,12 +92,7 @@ export function json(
 ): unknown | { result: () => unknown } {
 	if (typeof responseOrFn === 'function') {
 		return {
-			result: () => {
-				const response = responseOrFn().result
-				const decoder = new TextDecoder('utf-8')
-				const textBody = decoder.decode(response.body)
-				return JSON.parse(textBody)
-			},
+			result: () => json(responseOrFn().result),
 		}
 	} else {
 		const decoder = new TextDecoder('utf-8')
@@ -117,13 +124,7 @@ export function getHeader(
 ): string | undefined | { result: () => string | undefined } {
 	if (typeof responseOrFn === 'function') {
 		return {
-			result: () => {
-				const response = responseOrFn().result
-				const lowerName = name.toLowerCase()
-				return Object.entries(response.headers).find(
-					([key]) => key.toLowerCase() === lowerName,
-				)?.[1]
-			},
+			result: () => getHeader(responseOrFn().result, name),
 		}
 	} else {
 		const lowerName = name.toLowerCase()
@@ -152,10 +153,7 @@ export function ok(
 ): boolean | { result: () => boolean } {
 	if (typeof responseOrFn === 'function') {
 		return {
-			result: () => {
-				const response = responseOrFn().result
-				return response.statusCode >= 200 && response.statusCode < 300
-			},
+			result: () => ok(responseOrFn().result),
 		}
 	} else {
 		return responseOrFn.statusCode >= 200 && responseOrFn.statusCode < 300

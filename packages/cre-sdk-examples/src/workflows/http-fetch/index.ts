@@ -26,7 +26,7 @@ const fetchMathResult = (sendRequester: HTTPSendRequester, config: Config) => {
 
 	// Convert response body to text using the helper function
 	const responseText = text(response)
-	return Number.parseFloat(responseText.trim())
+	return Number.parseFloat(responseText)
 }
 
 const onCronTrigger = (runtime: Runtime<Config>) => {

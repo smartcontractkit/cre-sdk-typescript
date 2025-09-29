@@ -1,8 +1,8 @@
 /// <reference types="./sdk/types/global" />
 
-// Export HTTP response helpers
-export * from './generated/capabilities/networking/http/v1alpha/client_helpers'
 export * from './sdk'
 export * from './sdk/runtime'
 export * from './sdk/utils'
+// Export HTTP response helpers
+export * from './sdk/utils/http-helpers'
 export * from './sdk/wasm'
