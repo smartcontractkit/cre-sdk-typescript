@@ -17,18 +17,20 @@ export type BaseRuntime<C> = {
 	// callCapability is meant to be called by generated code only.
 	callCapability<I extends Message, O extends Message>(
 		params: CallCapabilityParams<I, O>,
-	): { result: () => Promise<O> }
+	): { result: () => O }
 
 	now(): Date
+
+	log(message: string): void
 }
 
 export type Runtime<C> = BaseRuntime<C> &
 	SecretsProvider & {
-		runInNodeMode<TArgs extends any[], TOutput>(
-			fn: (nodeRuntime: NodeRuntime<C>, ...args: TArgs) => Promise<TOutput> | TOutput,
+		runInNodeMode<TArgs extends unknown[], TOutput>(
+			fn: (nodeRuntime: NodeRuntime<C>, ...args: TArgs) => TOutput,
 			consensusAggregation: ConsensusAggregation<TOutput, true>,
 			unwrapOptions?: TOutput extends PrimitiveTypes ? never : UnwrapOptions<TOutput>,
-		): (...args: TArgs) => Promise<TOutput>
+		): (...args: TArgs) => { result: () => TOutput }
 	}
 
 export type NodeRuntime<C> = BaseRuntime<C> & {

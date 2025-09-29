@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '25',
 	chainSelector: {
 		name: 'cronos-mainnet',
-		selector: '1456215246176062200',
+		selector: 1456215246176062136n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

@@ -12,6 +12,7 @@
     "build": "turbo run build",
     "check": "turbo run check",
     "format": "turbo run format",
+    "full-checks": "turbo run full-checks",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck"
   },

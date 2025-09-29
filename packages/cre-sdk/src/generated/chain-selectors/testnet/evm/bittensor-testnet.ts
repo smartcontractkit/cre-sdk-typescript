@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '945',
 	chainSelector: {
 		name: 'bittensor-testnet',
-		selector: '2177900824115119000',
+		selector: 2177900824115119161n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '81224',
 	chainSelector: {
 		name: 'codex-mainnet',
-		selector: '9478124434908828000',
+		selector: 9478124434908827753n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

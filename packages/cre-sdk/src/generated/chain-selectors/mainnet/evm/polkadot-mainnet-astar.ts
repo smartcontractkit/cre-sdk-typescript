@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '592',
 	chainSelector: {
 		name: 'polkadot-mainnet-astar',
-		selector: '6422105447186081000',
+		selector: 6422105447186081193n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

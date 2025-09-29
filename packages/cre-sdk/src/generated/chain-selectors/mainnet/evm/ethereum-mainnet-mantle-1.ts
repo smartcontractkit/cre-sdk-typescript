@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '5000',
 	chainSelector: {
 		name: 'ethereum-mainnet-mantle-1',
-		selector: '1556008542357238800',
+		selector: 1556008542357238666n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

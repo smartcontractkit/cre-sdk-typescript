@@ -1,6 +1,6 @@
 {
 	"name": "@chainlink/cre-sdk",
-	"version": "0.0.2-alpha",
+	"version": "0.0.3-alpha",
 	"type": "module",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -32,6 +32,7 @@
 		"compile:workflow": "bun scripts/run.ts compile-workflow",
 		"fix-imports": "bun scripts/run.ts fix-imports",
 		"format": "biome format --write ${BIOME_PATHS:-.}",
+		"full-checks": "bun generate:sdk && bun check && bun typecheck && bun lint && bun test && bun test:standard",
 		"generate:chain-selectors": "bun scripts/run.ts generate-chain-selectors && BIOME_PATHS=\"src/generated\" bun check",
 		"generate:proto": "bunx @bufbuild/buf generate && BIOME_PATHS=\"src/generated\" bun check",
 		"generate:sdk": "bun generate:proto && bun generate:chain-selectors && bun scripts/run generate-sdks && BIOME_PATHS=\"src/generated src/generated-sdk\" bun check",
@@ -63,7 +64,7 @@
 		"access": "public"
 	},
 	"author": "SmartContract Chainlink Limited SEZC",
-	"license": "SEE LICENSE IN LICENSE.md",
+	"license": "BUSL-1.1",
 	"engines": {
 		"bun": ">=1.2.21"
 	}

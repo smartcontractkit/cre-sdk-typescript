@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '10200',
 	chainSelector: {
 		name: 'gnosis_chain-testnet-chiado',
-		selector: '8871595565390010000',
+		selector: 8871595565390010547n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

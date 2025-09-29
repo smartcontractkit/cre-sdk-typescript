@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '2810',
 	chainSelector: {
 		name: 'ethereum-testnet-holesky-morph-1',
-		selector: '8304510386741731000',
+		selector: 8304510386741731151n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

@@ -4,7 +4,7 @@ import type { GenMessage } from '@bufbuild/protobuf/codegenv2'
 import { type Any, anyPack, anyUnpack } from '@bufbuild/protobuf/wkt'
 import {
 	InputSchema,
-	OutputSchema as OutputSchema,
+	OutputSchema,
 } from '@cre/generated/capabilities/internal/actionandtrigger/v1/action_and_trigger_pb'
 import {
 	InputsSchema,
@@ -66,6 +66,7 @@ function createRuntimeHelpersMock(overrides: Partial<RuntimeHelpers> = {}): Runt
 		now: mock(() => {
 			throw new Error('Method not implemented: now')
 		}),
+		log: mock(() => {}),
 	}
 
 	// Return a merged object with overrides taking precedence
@@ -89,7 +90,7 @@ afterEach(() => {
 describe('test runtime', () => {
 	describe('test call capability', () => {
 		// TODO:
-		test.skip('runs async - proper async implementation in progress', async () => {
+		test.skip('runs async - proper async implementation in progress', () => {
 			const anyResult1 = 'ok1'
 			const anyResult2 = 'ok2'
 			var expectedCall = 1
@@ -149,31 +150,32 @@ describe('test runtime', () => {
 				}),
 			})
 
-			const runtime = new RuntimeImpl<any>({}, 1, helpers, anyMaxSize)
+			const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
 			const workflowAction1 = new BasicActionCapability()
 			const call1 = workflowAction1.performAction(runtime, input1)
 			const workflowAction2 = new BasicCapability()
 			const call2 = workflowAction2.action(runtime, input2)
-			const result2 = await call2.result()
+			const result2 = call2.result()
 			expect(result2.welcome).toEqual(anyResult2)
-			const result1 = await call1.result()
+			const result1 = call1.result()
 			expect(result1.adaptedThing).toEqual(anyResult1)
 		})
 
-		test('call capability errors', async () => {
+		test('call capability errors', () => {
 			const helpers = createRuntimeHelpersMock({
 				call: mock((_: CapabilityRequest) => {
 					return false
 				}),
 			})
 
-			const runtime = new RuntimeImpl<any>({}, 1, helpers, anyMaxSize)
+			const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
 			const workflowAction1 = new BasicActionCapability()
-			const call1 = workflowAction1
-				.performAction(runtime, create(InputsSchema, { inputThing: true }))
-				.result()
+			const call1 = workflowAction1.performAction(
+				runtime,
+				create(InputsSchema, { inputThing: true }),
+			)
 
-			expect(call1).rejects.toThrow(
+			expect(() => call1.result()).toThrow(
 				new CapabilityError(`Capability not found ${BasicActionCapability.CAPABILITY_ID}`, {
 					callbackId: 1,
 					capabilityId: BasicActionCapability.CAPABILITY_ID,
@@ -182,7 +184,7 @@ describe('test runtime', () => {
 			)
 		})
 
-		test('capability errors are returned to the caller', async () => {
+		test('capability errors are returned to the caller', () => {
 			const anyError = 'error'
 			const helpers = createRuntimeHelpersMock({
 				call: mock((_: CapabilityRequest) => {
@@ -200,14 +202,15 @@ describe('test runtime', () => {
 				}),
 			})
 
-			const runtime = new RuntimeImpl<any>({}, 1, helpers, anyMaxSize)
+			const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
 			const workflowAction1 = new BasicActionCapability()
-			const call1 = workflowAction1
-				.performAction(runtime, create(InputsSchema, { inputThing: true }))
-				.result()
+			const call1 = workflowAction1.performAction(
+				runtime,
+				create(InputsSchema, { inputThing: true }),
+			)
 
-			expect(call1).rejects.toThrow(
-				new CapabilityError('Error ' + anyError, {
+			expect(() => call1.result()).toThrow(
+				new CapabilityError(`Error ${anyError}`, {
 					callbackId: 1,
 					capabilityId: BasicActionCapability.CAPABILITY_ID,
 					method: 'PerformAction',
@@ -215,7 +218,7 @@ describe('test runtime', () => {
 			)
 		})
 
-		test('await errors', async () => {
+		test('await errors', () => {
 			const anyError = 'error'
 			const helpers = createRuntimeHelpersMock({
 				call: mock((_: CapabilityRequest) => {
@@ -226,13 +229,14 @@ describe('test runtime', () => {
 				}),
 			})
 
-			const runtime = new RuntimeImpl<any>({}, 1, helpers, anyMaxSize)
+			const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
 			const workflowAction1 = new BasicActionCapability()
-			const call1 = workflowAction1
-				.performAction(runtime, create(InputsSchema, { inputThing: true }))
-				.result()
+			const call1 = workflowAction1.performAction(
+				runtime,
+				create(InputsSchema, { inputThing: true }),
+			)
 
-			expect(call1).rejects.toThrow(
+			expect(() => call1.result()).toThrow(
 				new CapabilityError(anyError, {
 					callbackId: 1,
 					capabilityId: BasicActionCapability.CAPABILITY_ID,
@@ -241,7 +245,7 @@ describe('test runtime', () => {
 			)
 		})
 
-		test('await missing response', async () => {
+		test('await missing response', () => {
 			const helpers = createRuntimeHelpersMock({
 				call: mock((_: CapabilityRequest) => {
 					return true
@@ -251,13 +255,14 @@ describe('test runtime', () => {
 				}),
 			})
 
-			const runtime = new RuntimeImpl<any>({}, 1, helpers, anyMaxSize)
+			const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
 			const workflowAction1 = new BasicActionCapability()
-			const call1 = workflowAction1
-				.performAction(runtime, create(InputsSchema, { inputThing: true }))
-				.result()
+			const call1 = workflowAction1.performAction(
+				runtime,
+				create(InputsSchema, { inputThing: true }),
+			)
 
-			expect(call1).rejects.toThrow(
+			expect(() => call1.result()).toThrow(
 				new CapabilityError('No response found for callback ID 1', {
 					callbackId: 1,
 					capabilityId: BasicActionCapability.CAPABILITY_ID,
@@ -274,14 +279,14 @@ describe('test now conversts to date', () => {
 			now: mock(() => 1716153600000),
 		})
 
-		const runtime = new RuntimeImpl<any>({}, 1, helpers, anyMaxSize)
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
 		const now = runtime.now()
 		expect(now).toEqual(new Date(1716153600000 / 1000000))
 	})
 })
 
 describe('test run in node mode', () => {
-	test('successful consensus', async () => {
+	test('successful consensus', () => {
 		const anyObservation = 10
 		const anyMedian = 11
 		const modes: Mode[] = []
@@ -292,7 +297,7 @@ describe('test run in node mode', () => {
 		})
 
 		ConsensusCapability.prototype.simple = mock(
-			(_: Runtime<any>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
+			(_: Runtime<unknown>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
 				expect(modes).toEqual([Mode.DON, Mode.NODE, Mode.DON])
 				expect(inputs.default).toBeUndefined()
 				const consensusDescriptor = create(ConsensusDescriptorSchema, {
@@ -301,14 +306,17 @@ describe('test run in node mode', () => {
 						value: create(FieldsMapSchema, {
 							fields: {
 								outputThing: create(ConsensusDescriptorSchema, {
-									descriptor: { case: 'aggregation', value: AggregationType.MEDIAN },
+									descriptor: {
+										case: 'aggregation',
+										value: AggregationType.MEDIAN,
+									},
 								}),
 							},
 						}),
 					},
 				})
 				expect(inputs.descriptors).toEqual(consensusDescriptor)
-				expect((inputs as any).$typeName).not.toBeUndefined()
+				expect((inputs as { $typeName?: string }).$typeName).not.toBeUndefined()
 				const inputsProto = inputs as SimpleConsensusInputs
 				expect(inputsProto.observation.case).toEqual('value')
 				expect(
@@ -317,65 +325,80 @@ describe('test run in node mode', () => {
 					}).outputThing,
 				).toEqual(anyObservation)
 				return {
-					result: async () =>
-						Value.from(create(NodeOutputsSchema, { outputThing: anyMedian })).proto(),
+					result: () => Value.from(create(NodeOutputsSchema, { outputThing: anyMedian })).proto(),
 				}
 			},
 		)
 
-		NodeActionCapability.prototype.performAction = mock(
-			(_: NodeRuntime<any>, __: NodeInputs | NodeInputsJson) => {
-				expect(modes).toEqual([Mode.DON, Mode.NODE])
-				return {
-					result: async () => create(NodeOutputsSchema, { outputThing: anyObservation }),
-				}
-			},
-		)
+		// Create a mock that handles both overloads properly
+		const performActionMock = function (this: NodeActionCapability, ...args: unknown[]): unknown {
+			// Check if this is the sugar syntax overload (has function parameter)
+			if (typeof args[0] === 'function') {
+				// This test doesn't expect sugar syntax to be used
+				throw new Error('Sugar syntax should not be used in this test')
+			}
+			// Otherwise, this is the basic call overload
+			const [_, __] = args as [NodeRuntime<unknown>, NodeInputs | NodeInputsJson]
+			expect(modes).toEqual([Mode.DON, Mode.NODE])
+			return {
+				result: () => create(NodeOutputsSchema, { outputThing: anyObservation }),
+			}
+		}
 
-		const runtime = new RuntimeImpl<any>({}, 1, helpers, anyMaxSize)
-		const result = await runtime.runInNodeMode(
-			async (nodeRuntime: NodeRuntime<any>) => {
-				const capability = new NodeActionCapability()
-				return await capability
-					.performAction(nodeRuntime, create(NodeInputsSchema, { inputThing: true }))
-					.result()
-			},
-			ConsensusAggregationByFields<NodeOutputs>({ outputThing: median }),
-		)()
+		// Apply the mock with proper typing
+		// biome-ignore lint/suspicious/noExplicitAny: Mock assignment requires any due to overloaded function signature
+		;(NodeActionCapability.prototype as any).performAction = mock(performActionMock)
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		const result = runtime
+			.runInNodeMode(
+				(nodeRuntime: NodeRuntime<unknown>) => {
+					const capability = new NodeActionCapability()
+					return capability
+						.performAction(nodeRuntime, create(NodeInputsSchema, { inputThing: true }))
+						.result()
+				},
+				ConsensusAggregationByFields<NodeOutputs>({ outputThing: median }),
+			)()
+			.result()
 
 		expect(result.outputThing).toEqual(anyMedian)
 	})
 
-	test('failed consensus', async () => {
+	test('failed consensus', () => {
 		const anyError = 'error'
 		const helpers = createRuntimeHelpersMock({
 			switchModes: mock((_: Mode) => {}),
 		})
 
 		ConsensusCapability.prototype.simple = mock(
-			(_: Runtime<any>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
+			(_: Runtime<unknown>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
 				expect(inputs.default).toBeUndefined()
 				expect(inputs.descriptors).toEqual(
 					create(ConsensusDescriptorSchema, {
 						descriptor: { case: 'aggregation', value: AggregationType.MEDIAN },
 					}),
 				)
-				expect((inputs as any).$typeName).not.toBeUndefined()
+				expect((inputs as { $typeName?: string }).$typeName).not.toBeUndefined()
 				const inputsProto = inputs as SimpleConsensusInputs
 				expect(inputsProto.observation.case).toEqual('error')
 				expect(inputsProto.observation.value).toEqual(anyError)
-				return { result: async () => Promise.reject(new Error(anyError)) }
+				return {
+					result: () => {
+						throw new Error(anyError)
+					},
+				}
 			},
 		)
 
-		const runtime = new RuntimeImpl<any>({}, 1, helpers, anyMaxSize)
-		const result = runtime.runInNodeMode(async (nodeRuntime: NodeRuntime<any>) => {
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		const result = runtime.runInNodeMode((_: NodeRuntime<unknown>) => {
 			throw new Error(anyError)
 		}, consensusMedianAggregation())()
-		expect(result).rejects.toThrow(new Error(anyError))
+		expect(() => result.result()).toThrow(new Error(anyError))
 	})
 
-	test('node runtime in don mode fails', async () => {
+	test('node runtime in don mode fails', () => {
 		const helpers = createRuntimeHelpersMock({
 			switchModes: mock((_: Mode) => {}),
 			call: mock((_: CapabilityRequest) => {
@@ -385,53 +408,59 @@ describe('test run in node mode', () => {
 		})
 
 		ConsensusCapability.prototype.simple = mock(
-			(_: Runtime<any>, __: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
-				return { result: async () => Promise.resolve(Value.from(0).proto()) }
+			(_: Runtime<unknown>, __: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
+				return { result: () => Value.from(0).proto() }
 			},
 		)
 
-		const runtime = new RuntimeImpl<any>({}, 1, helpers, anyMaxSize)
-		var nrt: NodeRuntime<any> | undefined
-		await runtime.runInNodeMode(async (nodeRuntime: NodeRuntime<any>) => {
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		var nrt: NodeRuntime<unknown> | undefined
+		runtime.runInNodeMode((nodeRuntime: NodeRuntime<unknown>) => {
 			nrt = nodeRuntime
 			return 0
 		}, consensusMedianAggregation())()
 
 		const capability = new NodeActionCapability()
 		expect(nrt).toBeDefined()
-		expect(
-			capability.performAction(nrt!, create(NodeInputsSchema, { inputThing: true })).result(),
-		).rejects.toThrow(new NodeModeError())
+		expect(() =>
+			capability
+				.performAction(nrt as NodeRuntime<unknown>, create(NodeInputsSchema, { inputThing: true }))
+				.result(),
+		).toThrow(new NodeModeError())
 	})
 
-	test('don runtime in node mode fails', async () => {
+	test('don runtime in node mode fails', () => {
 		const helpers = createRuntimeHelpersMock({
 			switchModes: mock((_: Mode) => {}),
 		})
 
 		ConsensusCapability.prototype.simple = mock(
-			(_: Runtime<any>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
+			(_: Runtime<unknown>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
 				expect(inputs.default).toBeUndefined()
 				expect(inputs.descriptors).toEqual(
 					create(ConsensusDescriptorSchema, {
 						descriptor: { case: 'aggregation', value: AggregationType.MEDIAN },
 					}),
 				)
-				expect((inputs as any).$typeName).not.toBeUndefined()
+				expect((inputs as { $typeName?: string }).$typeName).not.toBeUndefined()
 				const inputsProto = inputs as SimpleConsensusInputs
 				expect(inputsProto.observation.case).toEqual('error')
 				expect(inputsProto.observation.value).toEqual(new DonModeError().message)
-				return { result: async () => Promise.reject(new DonModeError()) }
+				return {
+					result: () => {
+						throw new DonModeError()
+					},
+				}
 			},
 		)
 
-		const runtime = new RuntimeImpl<any>({}, 1, helpers, anyMaxSize)
-		const result = runtime.runInNodeMode(async (_: NodeRuntime<any>) => {
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		const result = runtime.runInNodeMode((_: NodeRuntime<unknown>) => {
 			const capability = new BasicActionCapability()
-			await capability.performAction(runtime, create(InputsSchema, { inputThing: true })).result()
+			capability.performAction(runtime, create(InputsSchema, { inputThing: true })).result()
 			return 0
 		}, consensusMedianAggregation())()
-		expect(result).rejects.toThrow(new DonModeError())
+		expect(() => result.result()).toThrow(new DonModeError())
 	})
 })
 
@@ -446,7 +475,7 @@ function expectCapabilityCall<T extends Message>(
 	expect(request.method).toEqual('PerformAction')
 	expect(request.callbackId).toEqual(expectedCallbackId)
 	expect(request.payload).toBeDefined()
-	const payload = anyUnpack(request.payload!, desc)
+	const payload = anyUnpack(request.payload as Any, desc)
 	expect(payload).toEqual(expectedPayload)
 	return true
 }

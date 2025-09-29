@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '686868',
 	chainSelector: {
 		name: 'bitcoin-testnet-merlin',
-		selector: '5269261765892944000',
+		selector: 5269261765892944301n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

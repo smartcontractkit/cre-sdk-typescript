@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '388',
 	chainSelector: {
 		name: 'cronos-zkevm-mainnet',
-		selector: '8788096068760391000',
+		selector: 8788096068760390840n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

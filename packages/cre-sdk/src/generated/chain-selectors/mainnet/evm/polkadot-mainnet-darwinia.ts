@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '46',
 	chainSelector: {
 		name: 'polkadot-mainnet-darwinia',
-		selector: '8866418665544333000',
+		selector: 8866418665544333000n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

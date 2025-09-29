@@ -7,7 +7,7 @@ import {
 	type Payload,
 	PayloadSchema,
 } from '@cre/generated/capabilities/networking/http/v1alpha/trigger_pb'
-import { type Runtime } from '@cre/sdk/runtime'
+import type { Runtime } from '@cre/sdk/runtime'
 import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 
 /**
@@ -23,8 +23,6 @@ export class HTTPCapability {
 
 	static readonly CAPABILITY_NAME = 'http-trigger'
 	static readonly CAPABILITY_VERSION = '1.0.0-alpha'
-
-	constructor() {}
 
 	trigger(config: ConfigJson): HTTPTrigger {
 		const capabilityId = HTTPCapability.CAPABILITY_ID

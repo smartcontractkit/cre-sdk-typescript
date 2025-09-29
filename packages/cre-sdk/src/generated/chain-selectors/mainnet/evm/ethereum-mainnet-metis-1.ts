@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '1088',
 	chainSelector: {
 		name: 'ethereum-mainnet-metis-1',
-		selector: '8805746078405599000',
+		selector: 8805746078405598895n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

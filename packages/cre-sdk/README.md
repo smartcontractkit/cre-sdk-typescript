@@ -6,6 +6,16 @@ The Chainlink Runtime Environment (CRE) SDK for TypeScript enables developers to
 
 Ready to clone repo with example workflows and cre-sdk set up: [cre-sdk-examples](https://github.com/smartcontractkit/cre-sdk-typescript/tree/main/packages/cre-sdk-examples).
 
+## Simulate locally with CRE CLI
+
+You can run and debug your TypeScript workflows locally using the CRE CLI simulation:
+
+```bash
+cre workflow simulate --target local-simulation --config config.json your-workflow-file.ts
+```
+
+See the CLI docs for additional flags (e.g. config file, secrets, HTTP payloads, EVM log params).
+
 ## Installation
 
 ```bash
@@ -15,14 +25,16 @@ bun add @chainlink/cre-sdk
 ## Quick Start
 
 ```typescript
-import { cre, Value, withErrorBoundary } from "@chainlink/cre-sdk";
+import { cre, Runner, type Runtime } from "@chainlink/cre-sdk";
 
-const onCronTrigger = async (config: { schedule: string }) => {
-  // Your workflow logic here
-  cre.sendResponseValue(Value.from("Hello, CRE!"));
+type Config = { schedule: string };
+
+const onCronTrigger = (runtime: Runtime<Config>) => {
+  runtime.log("Hello, CRE!");
+  return "Hello, CRE!";
 };
 
-const initWorkflow = (config: { schedule: string }) => {
+const initWorkflow = (config: Config) => {
   const cron = new cre.capabilities.CronCapability();
   return [
     cre.handler(cron.trigger({ schedule: config.schedule }), onCronTrigger),
@@ -30,11 +42,11 @@ const initWorkflow = (config: { schedule: string }) => {
 };
 
 export async function main() {
-  const runner = await cre.newRunner<{ schedule: string }>();
+  const runner = await Runner.newRunner<Config>();
   await runner.run(initWorkflow);
 }
 
-withErrorBoundary(main);
+main();
 ```
 
 ## Core Concepts
@@ -54,15 +66,9 @@ CRE supports two execution modes:
 - **DON Mode**: Distributed execution across multiple nodes for consensus and reliability
 - **Node Mode**: Individual node execution for specific tasks requiring node-level operations
 
-Use `cre.runInNodeMode()` to execute functions that require individual node processing, such as fetching data from different sources for consensus aggregation.
+Use `runtime.runInNodeMode()` to execute functions that require individual node processing, such as fetching data from different sources for consensus aggregation.
 
-### Error Handling
-
-Always wrap your main function with `withErrorBoundary()` to ensure proper error handling and workflow termination:
-
-```typescript
-withErrorBoundary(main);
-```
+The SDK wires runtime safety internally; you can call `main()` directly as shown in the examples.
 
 ## Available Capabilities
 
@@ -82,18 +88,30 @@ const trigger = cron.trigger({ schedule: "0 */5 * * * *" }); // Every 5 minutes
 Fetch data from external APIs with built-in consensus mechanisms:
 
 ```typescript
-import { cre, consensusMedianAggregation } from "@chainlink/cre-sdk";
+import {
+  cre,
+  consensusMedianAggregation,
+  type HTTPSendRequester,
+  type Runtime,
+} from "@chainlink/cre-sdk";
 
-const fetchData = async (config: { apiUrl: string }) => {
-  const response = await cre.utils.fetch({ url: config.apiUrl });
-  return Number.parseFloat(response.body.trim());
+type Config = { apiUrl: string };
+
+const fetchData = (sendRequester: HTTPSendRequester, config: Config) => {
+  const response = sendRequester.sendRequest({ url: config.apiUrl }).result();
+  return Number.parseFloat(Buffer.from(response.body).toString("utf-8").trim());
 };
 
-// Execute with consensus across multiple nodes
-const result = await cre.runInNodeMode(
-  fetchData,
-  consensusMedianAggregation()
-)(config);
+const onCronTrigger = (runtime: Runtime<Config>) => {
+  const httpCapability = new cre.capabilities.HTTPClient();
+  return httpCapability
+    .sendRequest(
+      runtime,
+      fetchData,
+      consensusMedianAggregation()
+    )(runtime.config)
+    .result();
+};
 ```
 
 ### Blockchain Interactions
@@ -101,40 +119,66 @@ const result = await cre.runInNodeMode(
 Read from and write to EVM-compatible blockchains:
 
 ```typescript
-import { cre, hexToBase64 } from "@chainlink/cre-sdk";
-import { encodeFunctionData, decodeFunctionResult } from "viem";
+import {
+  bytesToHex,
+  cre,
+  getNetwork,
+  hexToBase64,
+  type Runtime,
+} from "@chainlink/cre-sdk";
+import { decodeFunctionResult, encodeFunctionData, zeroAddress } from "viem";
 
-// Initialize EVM client with chain selector
-const evmClient = new cre.capabilities.EVMClient(
-  undefined, // default mode
-  BigInt("5009297550715157269") // Ethereum Sepolia
-);
+type Config = { evm: { chainSelectorName: string; contractAddress: string } };
 
-// Read from contract
-const callData = encodeFunctionData({
-  abi: CONTRACT_ABI,
-  functionName: "getValue",
-});
+const onCronTrigger = async (runtime: Runtime<Config>) => {
+  const { chainSelectorName, contractAddress } = runtime.config.evm;
+  const network = getNetwork({
+    chainFamily: "evm",
+    chainSelectorName,
+    isTestnet: true,
+  });
+  if (!network) throw new Error("Network not found");
 
-const result = await evmClient.callContract({
-  call: {
-    from: hexToBase64("0x0000000000000000000000000000000000000000"),
-    to: hexToBase64(contractAddress),
-    data: hexToBase64(callData),
-  },
-  blockNumber: {
-    absVal: Buffer.from([3]).toString("base64"), // finalized block
-    sign: "-1",
-  },
-});
+  const evmClient = new cre.capabilities.EVMClient(
+    network.chainSelector.selector
+  );
 
-// Write to contract
-await evmClient.writeReport({
-  receiver: contractAddress,
-  report: {
-    rawReport: callData,
-  },
-});
+  const callData = encodeFunctionData({
+    abi: CONTRACT_ABI,
+    functionName: "getValue",
+  });
+
+  const contractCall = evmClient
+    .callContract(runtime, {
+      call: {
+        from: hexToBase64(zeroAddress),
+        to: hexToBase64(contractAddress),
+        data: hexToBase64(callData),
+      },
+      blockNumber: { absVal: Buffer.from([3]).toString("base64"), sign: "-1" },
+    })
+    .result();
+
+  const onchainValue = decodeFunctionResult({
+    abi: CONTRACT_ABI,
+    functionName: "getValue",
+    data: bytesToHex(contractCall.data),
+  });
+
+  // Write example
+  const writeData = encodeFunctionData({
+    abi: CONTRACT_ABI,
+    functionName: "setValue",
+    args: [onchainValue],
+  });
+  const tx = evmClient
+    .writeReport(runtime, {
+      receiver: contractAddress,
+      report: { rawReport: writeData },
+    })
+    .result();
+  return { onchainValue, txHash: tx.txHash?.toString() };
+};
 ```
 
 ## Configuration & Type Safety
@@ -149,7 +193,7 @@ const configSchema = z.object({
   apiUrl: z.string(),
   evms: z.array(
     z.object({
-      chainSelector: z.string(),
+      chainSelectorName: z.string(),
       contractAddress: z.string(),
     })
   ),
@@ -158,7 +202,7 @@ const configSchema = z.object({
 type Config = z.infer<typeof configSchema>;
 
 export async function main() {
-  const runner = await cre.newRunner<Config>({ configSchema });
+  const runner = await Runner.newRunner<Config>({ configSchema });
   await runner.run(initWorkflow);
 }
 ```
@@ -168,31 +212,22 @@ export async function main() {
 CRE provides built-in consensus mechanisms for aggregating data from multiple nodes:
 
 ```typescript
-import { consensusMedianAggregation } from "@chainlink/cre-sdk";
+import {
+  consensusMedianAggregation,
+  type NodeRuntime,
+  type Runtime,
+} from "@chainlink/cre-sdk";
+
+const fetchDataFunction = async (nodeRuntime: NodeRuntime<Config>) => 42;
 
 // Execute function across multiple nodes and aggregate results
-const aggregatedValue = await cre.runInNodeMode(
+const aggregatedValue = await runtime.runInNodeMode(
   fetchDataFunction,
   consensusMedianAggregation()
-)(config);
+)();
 ```
 
 ## Utility Functions
-
-### Value Serialization
-
-```typescript
-import { Value } from "@chainlink/cre-sdk";
-
-// Send structured response data
-cre.sendResponseValue(
-  Value.from({
-    price: 1234.56,
-    timestamp: Date.now(),
-    source: "api.example.com",
-  })
-);
-```
 
 ### Hex Utilities
 
@@ -208,8 +243,12 @@ const hexData = bytesToHex(buffer);
 ```typescript
 import { getAllNetworks, getNetwork } from "@chainlink/cre-sdk";
 
-const networks = getAllNetworks();
-const ethereum = getNetwork("ethereum-mainnet");
+const allNetworks = getAllNetworks();
+const ethereumSepolia = getNetwork({
+  chainFamily: "evm",
+  chainSelectorName: "ethereum-sepolia",
+  isTestnet: true,
+});
 ```
 
 ## Example Workflows
@@ -217,14 +256,16 @@ const ethereum = getNetwork("ethereum-mainnet");
 ### 1. Simple Scheduled Task
 
 ```typescript
-import { cre, Value, withErrorBoundary } from "@chainlink/cre-sdk";
+import { cre, Runner, type Runtime } from "@chainlink/cre-sdk";
 
-const onCronTrigger = () => {
-  console.log("Workflow executed!");
-  cre.sendResponseValue(Value.from("Task completed"));
+type Config = { schedule: string };
+
+const onCronTrigger = (runtime: Runtime<Config>) => {
+  runtime.log("Workflow executed!");
+  return "Task completed";
 };
 
-const initWorkflow = (config: { schedule: string }) => {
+const initWorkflow = (config: Config) => {
   const cron = new cre.capabilities.CronCapability();
   return [
     cre.handler(cron.trigger({ schedule: config.schedule }), onCronTrigger),
@@ -232,193 +273,40 @@ const initWorkflow = (config: { schedule: string }) => {
 };
 
 export async function main() {
-  const runner = await cre.newRunner<{ schedule: string }>();
+  const runner = await Runner.newRunner<Config>();
   await runner.run(initWorkflow);
 }
 
-withErrorBoundary(main);
+main();
 ```
 
 ### 2. API Data Aggregation
 
-```typescript
-import {
-  cre,
-  consensusMedianAggregation,
-  Value,
-  withErrorBoundary,
-} from "@chainlink/cre-sdk";
-import { z } from "zod";
-
-const configSchema = z.object({
-  schedule: z.string(),
-  apiUrl: z.string(),
-});
-
-type Config = z.infer<typeof configSchema>;
-
-const fetchPrice = async (config: Config) => {
-  const response = await cre.utils.fetch({ url: config.apiUrl });
-  return Number.parseFloat(response.body.trim());
-};
-
-const onCronTrigger = async (config: Config) => {
-  const price = await cre.runInNodeMode(
-    fetchPrice,
-    consensusMedianAggregation()
-  )(config);
-
-  cre.sendResponseValue(Value.from({ price }));
-};
-
-const initWorkflow = (config: Config) => {
-  const cron = new cre.capabilities.CronCapability();
-  return [
-    cre.handler(cron.trigger({ schedule: config.schedule }), onCronTrigger),
-  ];
-};
-
-export async function main() {
-  const runner = await cre.newRunner<Config>({ configSchema });
-  await runner.run(initWorkflow);
-}
-
-withErrorBoundary(main);
-```
+See the [http-fetch example](https://github.com/smartcontractkit/cre-sdk-typescript/tree/main/packages/cre-sdk-examples/src/workflows/http-fetch) for a complete implementation that fetches data from external APIs with consensus aggregation.
 
 ### 3. On-Chain Data Integration
 
-```typescript
-import {
-  cre,
-  consensusMedianAggregation,
-  Value,
-  withErrorBoundary,
-  hexToBase64,
-  bytesToHex,
-} from "@chainlink/cre-sdk";
-import { encodeFunctionData, decodeFunctionResult, zeroAddress } from "viem";
-import { z } from "zod";
-
-const configSchema = z.object({
-  schedule: z.string(),
-  apiUrl: z.string(),
-  evms: z.array(
-    z.object({
-      chainSelector: z.string(),
-      contractAddress: z.string(),
-    })
-  ),
-});
-
-type Config = z.infer<typeof configSchema>;
-
-const fetchOffchainData = async (config: Config) => {
-  const response = await cre.utils.fetch({ url: config.apiUrl });
-  return Number.parseFloat(response.body.trim());
-};
-
-const onCronTrigger = async (config: Config) => {
-  // Get off-chain data with consensus
-  const offchainValue = await cre.runInNodeMode(
-    fetchOffchainData,
-    consensusMedianAggregation()
-  )(config);
-
-  // Read on-chain data
-  const evmConfig = config.evms[0];
-  const evmClient = new cre.capabilities.EVMClient(
-    undefined,
-    BigInt(evmConfig.chainSelector)
-  );
-
-  const callData = encodeFunctionData({
-    abi: [
-      {
-        name: "getValue",
-        type: "function",
-        inputs: [],
-        outputs: [{ type: "uint256" }],
-      },
-    ],
-    functionName: "getValue",
-  });
-
-  const contractCall = await evmClient.callContract({
-    call: {
-      from: hexToBase64(zeroAddress),
-      to: hexToBase64(evmConfig.contractAddress),
-      data: hexToBase64(callData),
-    },
-    blockNumber: {
-      absVal: Buffer.from([3]).toString("base64"),
-      sign: "-1",
-    },
-  });
-
-  const onchainValue = decodeFunctionResult({
-    abi: [
-      {
-        name: "getValue",
-        type: "function",
-        inputs: [],
-        outputs: [{ type: "uint256" }],
-      },
-    ],
-    functionName: "getValue",
-    data: bytesToHex(contractCall.data),
-  });
-
-  // Combine and return results
-  const finalResult = Number(onchainValue) + offchainValue;
-
-  cre.sendResponseValue(
-    Value.from({
-      offchainValue,
-      onchainValue: Number(onchainValue),
-      finalResult,
-    })
-  );
-};
-
-const initWorkflow = (config: Config) => {
-  const cron = new cre.capabilities.CronCapability();
-  return [
-    cre.handler(cron.trigger({ schedule: config.schedule }), onCronTrigger),
-  ];
-};
-
-export async function main() {
-  const runner = await cre.newRunner<Config>({ configSchema });
-  await runner.run(initWorkflow);
-}
-
-withErrorBoundary(main);
-```
+See the [on-chain example](https://github.com/smartcontractkit/cre-sdk-typescript/tree/main/packages/cre-sdk-examples/src/workflows/on-chain) for reading from smart contracts, and the [on-chain-write example](https://github.com/smartcontractkit/cre-sdk-typescript/tree/main/packages/cre-sdk-examples/src/workflows/on-chain-write) for writing to smart contracts.
 
 ## API Reference
 
 ### Core Functions
 
-- `cre.newRunner<T>(options?)`: Create a new workflow runner
+- `Runner.newRunner<T>(options?)`: Create a new workflow runner
 - `cre.handler(trigger, handler)`: Create a trigger-handler pair
-- `cre.sendResponseValue(value)`: Send workflow response
-- `cre.runInNodeMode(fn, aggregator)`: Execute function in node mode with consensus
-- `withErrorBoundary(fn)`: Wrap function with error handling
+- `runtime.runInNodeMode(fn, aggregator)`: Execute function in node mode with consensus
 
 ### Capabilities
 
 - `cre.capabilities.CronCapability`: Schedule-based triggers
-- `cre.capabilities.HTTPCapability`: HTTP request handling
-- `cre.capabilities.HTTPClient`: HTTP client for requests
+- `cre.capabilities.HTTPClient`: HTTP client for requests with consensus support
 - `cre.capabilities.EVMClient`: EVM blockchain interactions
 
 ### Utilities
 
-- `cre.utils.fetch()`: HTTP requests with consensus support
-- `Value.from()`: Serialize response values
 - `consensusMedianAggregation()`: Median consensus aggregator
 - `hexToBase64()`, `bytesToHex()`: Data format conversions
+- `getAllNetworks()`, `getNetwork(...)`: Chain selector metadata
 
 ## Building from Source
 
@@ -427,6 +315,9 @@ To build the SDK locally:
 ```bash
 # Install dependencies (from monorepo root)
 bun install
+
+# Make sure Chainlink CRE Javy Plugin is ready
+bun cre-setup
 
 # Generate protocol buffers and SDK types
 bun generate:sdk
@@ -443,11 +334,11 @@ bun test:standard
 
 ### Protobuf Generation
 
-This SDK uses [ts-proto](https://github.com/stephenh/ts-proto) for generating TypeScript types from Protocol Buffers.
+This SDK uses [@bufbuild/protobuf](https://www.npmjs.com/package/@bufbuild/protobuf) for generating TypeScript types from Protocol Buffers.
 
 **Available Commands:**
 
-- `bun generate:proto` - Generate TypeScript types from .proto files
+- `bun generate:sdk` - Generate TypeScript types from .proto files as well as custom tailored utility classes
 - `bun proto:lint` - Lint .proto files
 - `bun proto:format` - Format .proto files
 
@@ -472,7 +363,11 @@ bun generate:chain-selectors
 ```typescript
 import { getAllNetworks, getNetwork } from "@chainlink/cre-sdk";
 
-const ethereum = getNetwork("ethereum-mainnet");
+const ethereum = getNetwork({
+  chainFamily: "evm",
+  chainSelectorName: "ethereum-mainnet",
+  isTestnet: false,
+});
 const allNetworks = getAllNetworks();
 ```
 

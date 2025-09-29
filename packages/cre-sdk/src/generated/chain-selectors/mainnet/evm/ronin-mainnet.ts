@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '2020',
 	chainSelector: {
 		name: 'ronin-mainnet',
-		selector: '6916147374840168000',
+		selector: 6916147374840168594n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

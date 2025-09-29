@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '57054',
 	chainSelector: {
 		name: 'sonic-testnet-blaze',
-		selector: '3676871237479449000',
+		selector: 3676871237479449268n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

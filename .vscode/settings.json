@@ -1,21 +1,29 @@
 {
-	"typescript.tsdk": "node_modules/typescript/lib",
 	"editor.formatOnSave": true,
-	"editor.codeActionsOnSave": {
-		"quickfix.biome": "explicit",
-		"source.organizeImports.biome": "explicit"
-	},
 	"editor.defaultFormatter": "biomejs.biome",
-	"[javascript]": {
-		"editor.defaultFormatter": "biomejs.biome"
+	"editor.codeActionsOnSave": {
+		"source.fixAll.biome": "explicit"
 	},
+	"typescript.preferences.semicolons": "remove",
+	"javascript.preferences.semicolons": "remove",
+	"typescript.format.semicolons": "remove",
+	"javascript.format.semicolons": "remove",
+	"typescript.format.enable": false,
+	"javascript.format.enable": false,
 	"[typescript]": {
-		"editor.defaultFormatter": "biomejs.biome"
+		"editor.defaultFormatter": "biomejs.biome",
+		"editor.formatOnSave": true
 	},
-	"[json]": {
-		"editor.defaultFormatter": "biomejs.biome"
+	"[javascript]": {
+		"editor.defaultFormatter": "biomejs.biome",
+		"editor.formatOnSave": true
 	},
-	"[jsonc]": {
-		"editor.defaultFormatter": "biomejs.biome"
+	"[typescriptreact]": {
+		"editor.defaultFormatter": "biomejs.biome",
+		"editor.formatOnSave": true
+	},
+	"[javascriptreact]": {
+		"editor.defaultFormatter": "biomejs.biome",
+		"editor.formatOnSave": true
 	}
 }

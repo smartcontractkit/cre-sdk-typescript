@@ -38,5 +38,5 @@
 	},
 
 	"include": ["src/index.ts", "src/sdk/**/*"],
-	"exclude": ["cli/**/*"]
+	"exclude": ["cli/**/*", "**/*.test.ts", "**/*.test.js"]
 }

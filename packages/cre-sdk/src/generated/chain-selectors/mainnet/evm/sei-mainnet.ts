@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '1329',
 	chainSelector: {
 		name: 'sei-mainnet',
-		selector: '9027416829622343000',
+		selector: 9027416829622342829n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

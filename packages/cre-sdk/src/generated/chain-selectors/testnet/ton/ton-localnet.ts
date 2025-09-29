@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '-217',
 	chainSelector: {
 		name: 'ton-localnet',
-		selector: '13879075125137744000',
+		selector: 13879075125137744094n,
 	},
 	chainFamily: 'ton',
 	networkType: 'testnet',

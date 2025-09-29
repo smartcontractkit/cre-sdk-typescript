@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '13473',
 	chainSelector: {
 		name: 'ethereum-testnet-sepolia-immutable-zkevm-1',
-		selector: '4526165231216332000',
+		selector: 4526165231216331901n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

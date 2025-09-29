@@ -3,7 +3,6 @@ import { BasicActionCapability as NodeActionCapability } from '@cre/generated-sd
 import { cre, type NodeRuntime, type Runtime } from '@cre/sdk/cre'
 import { ConsensusAggregationByFields, Int64, median } from '@cre/sdk/utils'
 import { Runner } from '@cre/sdk/wasm'
-import { hostBindings } from '@cre/sdk/wasm/host-bindings'
 
 class Output {
 	constructor(public OutputThing: Int64) {}
@@ -12,32 +11,34 @@ class Output {
 const castRandomToUint64 = (randomFloat: number) =>
 	BigInt(Math.floor(randomFloat * Number.MAX_SAFE_INTEGER))
 
-const randHandler = async (runtime: Runtime<Uint8Array>) => {
+const randHandler = (runtime: Runtime<Uint8Array>) => {
 	const donRandomNumber = castRandomToUint64(Math.random())
 
 	let total = donRandomNumber
 
-	await runtime.runInNodeMode(
-		async (nodeRuntime: NodeRuntime<Uint8Array>) => {
-			const nodeRandomNumber = castRandomToUint64(Math.random())
+	runtime
+		.runInNodeMode(
+			(nodeRuntime: NodeRuntime<Uint8Array>) => {
+				const nodeRandomNumber = castRandomToUint64(Math.random())
 
-			const nodeActionCapability = new NodeActionCapability()
-			const nodeResponse = await nodeActionCapability
-				.performAction(nodeRuntime, {
-					inputThing: true,
-				})
-				.result()
+				const nodeActionCapability = new NodeActionCapability()
+				const nodeResponse = nodeActionCapability
+					.performAction(nodeRuntime, {
+						inputThing: true,
+					})
+					.result()
 
-			if (nodeResponse.outputThing < 100n) {
-				hostBindings.log(`***${nodeRandomNumber.toString()}`)
-			}
+				if (nodeResponse.outputThing < 100n) {
+					runtime.log(`***${nodeRandomNumber.toString()}`)
+				}
 
-			return new Output(new Int64(nodeResponse.outputThing))
-		},
-		ConsensusAggregationByFields<Output>({
-			OutputThing: median,
-		}).withDefault(new Output(new Int64(123n))),
-	)()
+				return new Output(new Int64(nodeResponse.outputThing))
+			},
+			ConsensusAggregationByFields<Output>({
+				OutputThing: median,
+			}).withDefault(new Output(new Int64(123n))),
+		)()
+		.result()
 
 	total += donRandomNumber
 

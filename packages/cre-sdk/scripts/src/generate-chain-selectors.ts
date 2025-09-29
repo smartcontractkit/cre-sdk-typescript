@@ -6,13 +6,15 @@ import { parse } from 'yaml'
 import { z } from 'zod'
 
 // Zod schemas for validation
+const SelectorValueSchema = z.union([z.bigint(), z.string(), z.number()])
+
 const EvmSelectorSchema = z.object({
-	selector: z.number(),
+	selector: SelectorValueSchema,
 	name: z.string().optional(),
 })
 
 const NonEvmSelectorSchema = z.object({
-	selector: z.number(),
+	selector: SelectorValueSchema,
 	name: z.string().optional(),
 })
 
@@ -31,7 +33,7 @@ interface NetworkInfo {
 	chainId: string
 	chainSelector: {
 		name: string
-		selector: string
+		selector: bigint
 	}
 	chainFamily: ChainFamily
 	networkType: NetworkType
@@ -94,12 +96,12 @@ const parseChainSelectors = (): NetworkInfo[] => {
 		try {
 			console.log(`📂 Reading ${config.family} selectors from ${config.filename}...`)
 			const yamlContent = readYamlFile(config.filename)
-			const parsed = parse(yamlContent)
+			const parsed = parse(yamlContent, { intAsBigInt: true })
 			const validated = config.schema.parse(parsed)
 
 			for (const [chainId, selectorData] of Object.entries(validated.selectors)) {
 				const typedSelectorData = selectorData as {
-					selector: number
+					selector: bigint | string | number
 					name?: string
 				}
 				// Skip entries without names (they might be test or incomplete entries)
@@ -108,11 +110,16 @@ const parseChainSelectors = (): NetworkInfo[] => {
 					continue
 				}
 
+				const selectorBigInt: bigint =
+					typeof typedSelectorData.selector === 'bigint'
+						? typedSelectorData.selector
+						: BigInt(typedSelectorData.selector)
+
 				allNetworks.push({
 					chainId,
 					chainSelector: {
 						name: typedSelectorData.name,
-						selector: typedSelectorData.selector.toString(),
+						selector: selectorBigInt,
 					},
 					chainFamily: config.family,
 					networkType: detectNetworkType(typedSelectorData.name),
@@ -220,7 +227,7 @@ const network: NetworkInfo = {
 	chainId: "${network.chainId}",
 	chainSelector: {
 		name: "${network.chainSelector.name}",
-		selector: "${network.chainSelector.selector}",
+		selector: ${network.chainSelector.selector}n,
 	},
 	chainFamily: "${network.chainFamily}",
 	networkType: "${network.networkType}",
@@ -320,18 +327,18 @@ ${familyImports.map(({ importName }) => `		${importName},`).join('\n')}
 	.join('\n')}
 } as const;
 
-// Optimized Maps for fast lookups by chain selector
-export const mainnetBySelector = new Map<string, NetworkInfo>([
+// Optimized Maps for fast lookups by chain selector (bigint keys)
+export const mainnetBySelector = new Map<bigint, NetworkInfo>([
 ${allImports
 	.filter(({ network }) => network.networkType === 'mainnet')
-	.map(({ importName, network }) => `	["${network.chainSelector.selector}", ${importName}],`)
+	.map(({ importName, network }) => `	[${network.chainSelector.selector}n, ${importName}],`)
 	.join('\n')}
 ]);
 
-export const testnetBySelector = new Map<string, NetworkInfo>([
+export const testnetBySelector = new Map<bigint, NetworkInfo>([
 ${allImports
 	.filter(({ network }) => network.networkType === 'testnet')
-	.map(({ importName, network }) => `	["${network.chainSelector.selector}", ${importName}],`)
+	.map(({ importName, network }) => `	[${network.chainSelector.selector}n, ${importName}],`)
 	.join('\n')}
 ]);
 
@@ -357,9 +364,9 @@ ${Object.entries(mainnetByFamily)
 		const familyImports = allImports.filter(
 			({ network }) => network.chainFamily === family && network.networkType === 'mainnet',
 		)
-		return `	${family}: new Map<string, NetworkInfo>([
+		return `	${family}: new Map<bigint, NetworkInfo>([
 ${familyImports
-	.map(({ importName, network }) => `		["${network.chainSelector.selector}", ${importName}],`)
+	.map(({ importName, network }) => `		[${network.chainSelector.selector}n, ${importName}],`)
 	.join('\n')}
 	]),`
 	})
@@ -372,9 +379,9 @@ ${Object.entries(testnetByFamily)
 		const familyImports = allImports.filter(
 			({ network }) => network.chainFamily === family && network.networkType === 'testnet',
 		)
-		return `	${family}: new Map<string, NetworkInfo>([
+		return `	${family}: new Map<bigint, NetworkInfo>([
 ${familyImports
-	.map(({ importName, network }) => `		["${network.chainSelector.selector}", ${importName}],`)
+	.map(({ importName, network }) => `		[${network.chainSelector.selector}n, ${importName}],`)
 	.join('\n')}
 	]),`
 	})

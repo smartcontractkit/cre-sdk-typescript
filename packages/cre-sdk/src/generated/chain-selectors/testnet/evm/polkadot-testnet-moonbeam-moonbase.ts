@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '1287',
 	chainSelector: {
 		name: 'polkadot-testnet-moonbeam-moonbase',
-		selector: '5361632739113537000',
+		selector: 5361632739113536121n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

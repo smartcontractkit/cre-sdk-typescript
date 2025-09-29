@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '1001',
 	chainSelector: {
 		name: 'kaia-testnet-kairos',
-		selector: '2624132734533622000',
+		selector: 2624132734533621656n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

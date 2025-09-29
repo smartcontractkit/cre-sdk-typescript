@@ -25,10 +25,9 @@ export function generateActionMethod(
 		: `
     const capabilityId = ${capabilityClassName}.CAPABILITY_ID;`
 
-	return `
-  ${methodName}(runtime: ${modePrefix}Runtime<any>, input: ${method.input.name} |  ${method.input.name}Json): {result: () => Promise<${method.output.name}>} {
-    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-    const payload = (input as any).$typeName ? input as ${method.input.name} : fromJson(${method.input.name}Schema, input as ${method.input.name}Json)
+	const callSig = `(runtime: ${modePrefix}Runtime<unknown>, input: ${method.input.name} |  ${method.input.name}Json): {result: () => ${method.output.name}}`
+	const callSigAndBody = `${callSig} {
+    const payload = (input as unknown as { $typeName?: string }).$typeName ? input as ${method.input.name} : fromJson(${method.input.name}Schema, input as ${method.input.name}Json)
     
     ${capabilityIdLogic}
     
@@ -41,9 +40,44 @@ export function generateActionMethod(
     })
 
     return {
-      result: async () => {
+      result: () => {
         return capabilityResponse.result()
       }
     }
   }`
+
+	if (modePrefix === 'Node') {
+		const sugarClassName = `${methodName.charAt(0).toUpperCase() + methodName.slice(1)}er`
+		const sugarSig = `<TArgs extends unknown[], TOutput>(
+    runtime: Runtime<unknown>,
+    fn: (${methodName}er: ${sugarClassName}, ...args: TArgs) => TOutput,
+    consensusAggregation: ConsensusAggregation<TOutput, true>,
+    unwrapOptions?: TOutput extends PrimitiveTypes
+      ? never
+      : UnwrapOptions<TOutput>,
+  ): (...args: TArgs) => { result: () => TOutput }`
+		return `
+  ${methodName}${callSig}
+  ${methodName}${sugarSig}
+  ${methodName}(...args: unknown[]): unknown {
+    // Check if this is the sugar syntax overload (has function parameter)
+    if (typeof args[1] === 'function') {
+      const [runtime, fn, consensusAggregation, unwrapOptions] = args as [Runtime<unknown>, (${methodName}er: ${sugarClassName}, ...args: unknown[]) => unknown, ConsensusAggregation<unknown, true>, UnwrapOptions<unknown> | undefined]
+      return this.${methodName}SugarHelper(runtime, fn, consensusAggregation, unwrapOptions)
+    }
+    // Otherwise, this is the basic call overload
+    const [runtime, input] = args as [${modePrefix}Runtime<unknown>, ${method.input.name} |  ${method.input.name}Json]
+    return this.${methodName}CallHelper(runtime, input)
+  }
+  private ${methodName}CallHelper${callSigAndBody}
+  private ${methodName}SugarHelper${sugarSig} {
+    const wrappedFn = (runtime: NodeRuntime<unknown>, ...args: TArgs) => {
+      const ${methodName}er = new ${sugarClassName}(runtime, this)
+      return fn(${methodName}er, ...args)
+    }
+      return runtime.runInNodeMode(wrappedFn, consensusAggregation, unwrapOptions)
+    }`
+	}
+	return `
+  ${methodName}${callSigAndBody}`
 }

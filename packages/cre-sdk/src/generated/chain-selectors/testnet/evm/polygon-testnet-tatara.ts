@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '129399',
 	chainSelector: {
 		name: 'polygon-testnet-tatara',
-		selector: '9090863410735740000',
+		selector: 9090863410735740267n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

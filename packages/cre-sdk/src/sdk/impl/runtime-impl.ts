@@ -48,9 +48,13 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 		payload,
 		inputSchema,
 		outputSchema,
-	}: CallCapabilityParams<I, O>): { result: () => Promise<O> } {
+	}: CallCapabilityParams<I, O>): { result: () => O } {
 		if (this.modeError) {
-			return { result: () => Promise.reject(this.modeError) }
+			return {
+				result: () => {
+					throw this.modeError
+				},
+			}
 		}
 
 		// nextCallId tracks the unique id for a request to the WASM host.
@@ -64,7 +68,7 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 
 		const anyPayload = anyPack(inputSchema, payload)
 		const callbackId = this.nextCallId
-		if (this.mode == Mode.DON) this.nextCallId++
+		if (this.mode === Mode.DON) this.nextCallId++
 		else this.nextCallId--
 
 		const req = create(CapabilityRequestSchema, {
@@ -76,20 +80,20 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 		if (!this.helpers.call(req)) {
 			return {
 				result: () => {
-					return Promise.reject(
-						new CapabilityError(`Capability not found ${capabilityId}`, {
-							callbackId,
-							method,
-							capabilityId,
-						}),
-					)
+					throw new CapabilityError(`Capability not found ${capabilityId}`, {
+						callbackId,
+						method,
+						capabilityId,
+					})
 				},
 			}
 		}
 
 		return {
-			result: async () => {
-				const awaitRequest = create(AwaitCapabilitiesRequestSchema, { ids: [callbackId] })
+			result: () => {
+				const awaitRequest = create(AwaitCapabilitiesRequestSchema, {
+					ids: [callbackId],
+				})
 				const awaitResponse = this.helpers.await(awaitRequest, this.maxResponseSize)
 				const capabilityResponse = awaitResponse.responses[callbackId]
 
@@ -130,6 +134,10 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 		// ns to ms
 		return new Date(this.helpers.now() / 1000000)
 	}
+
+	log(message: string): void {
+		this.helpers.log(message)
+	}
 }
 
 export class NodeRuntimeImpl<C> extends BaseRuntimeImpl<C> implements NodeRuntime<C> {
@@ -148,12 +156,12 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 		super(config, nextCallId, helpers, maxResponseSize, Mode.DON)
 	}
 
-	runInNodeMode<TArgs extends any[], TOutput>(
-		fn: (nodeRuntime: NodeRuntime<C>, ...args: TArgs) => Promise<TOutput> | TOutput,
+	runInNodeMode<TArgs extends unknown[], TOutput>(
+		fn: (nodeRuntime: NodeRuntime<C>, ...args: TArgs) => TOutput,
 		consesusAggretation: ConsensusAggregation<TOutput, true>,
 		unwrapOptions?: TOutput extends PrimitiveTypes ? never : UnwrapOptions<TOutput>,
-	): (...args: TArgs) => Promise<TOutput> {
-		return async (...args: TArgs): Promise<TOutput> => {
+	): (...args: TArgs) => { result: () => TOutput } {
+		return (...args: TArgs): { result: () => TOutput } => {
 			this.modeError = new DonModeError()
 			const nodeRuntime = new NodeRuntimeImpl(
 				this.config,
@@ -173,14 +181,17 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 			}
 
 			try {
-				const observation = await fn(nodeRuntime, ...args)
+				const observation = fn(nodeRuntime, ...args)
 				// This cast is safe, since ConsensusAggregation can only have true its second argument if T extends CreSerializable<TOutput>
 				consensusInput.observation = {
 					case: 'value',
 					value: Value.from(observation as CreSerializable<TOutput>).proto(),
 				}
-			} catch (e: any) {
-				consensusInput.observation = { case: 'error', value: e.message || String(e) }
+			} catch (e: unknown) {
+				consensusInput.observation = {
+					case: 'error',
+					value: (e instanceof Error && e.message) || String(e),
+				}
 			} finally {
 				// Always restore DON mode before invoking consensus
 				this.modeError = undefined
@@ -190,21 +201,32 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 			}
 
 			const consensus = new ConsensusCapability()
-			const result = await consensus.simple(this, consensusInput).result()
-			const wrappedValue = Value.wrap(result)
+			const call = consensus.simple(this, consensusInput)
+			return {
+				result: () => {
+					const result = call.result()
+					const wrappedValue = Value.wrap(result)
 
-			return unwrapOptions
-				? wrappedValue.unwrapToType(unwrapOptions)
-				: (wrappedValue.unwrap() as TOutput)
+					return unwrapOptions
+						? wrappedValue.unwrapToType(unwrapOptions)
+						: (wrappedValue.unwrap() as TOutput)
+				},
+			}
 		}
 	}
 
-	getSecret(request: SecretRequest | SecretRequestJson): { result: () => Promise<Secret> } {
+	getSecret(request: SecretRequest | SecretRequestJson): {
+		result: () => Secret
+	} {
 		if (this.modeError) {
-			return { result: () => Promise.reject(this.modeError) }
+			return {
+				result: () => {
+					throw this.modeError
+				},
+			}
 		}
 
-		const secretRequest = (request as any).$typeName
+		const secretRequest = (request as unknown as { $typeName?: string }).$typeName
 			? create(SecretRequestSchema, request)
 			: (request as SecretRequest)
 		const id = this.nextCallId
@@ -215,13 +237,14 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 		})
 		if (!this.helpers.getSecrets(secretsReq, this.maxResponseSize)) {
 			return {
-				result: () =>
-					Promise.reject(new SecretsError(secretRequest, 'host is not making the secrets request')),
+				result: () => {
+					throw new SecretsError(secretRequest, 'host is not making the secrets request')
+				},
 			}
 		}
 
 		return {
-			result: async () => {
+			result: () => {
 				const awaitRequest = create(AwaitSecretsRequestSchema, { ids: [id] })
 				const awaitResponse = this.helpers.awaitSecrets(awaitRequest, this.maxResponseSize)
 				const secretsResponse = awaitResponse.responses[id]
@@ -231,7 +254,7 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 				}
 
 				const responses = secretsResponse.responses
-				if (responses.length != 1) {
+				if (responses.length !== 1) {
 					throw new SecretsError(secretRequest, 'invalid value returned from host')
 				}
 
@@ -259,4 +282,6 @@ export interface RuntimeHelpers {
 	switchModes(mode: Mode): void
 
 	now(): number
+
+	log(message: string): void
 }

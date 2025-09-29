@@ -2,8 +2,9 @@ import {
 	bytesToHex,
 	consensusMedianAggregation,
 	cre,
+	getNetwork,
+	type HTTPSendRequester,
 	hexToBase64,
-	type NodeRuntime,
 	Runner,
 	type Runtime,
 } from '@chainlink/cre-sdk'
@@ -18,7 +19,7 @@ const configSchema = z.object({
 		z.object({
 			storageAddress: z.string(),
 			calculatorConsumerAddress: z.string(),
-			chainSelector: z.string(),
+			chainSelectorName: z.string(),
 			gasLimit: z.string(),
 		}),
 	),
@@ -33,34 +34,37 @@ type Result = {
 	TxHash: string
 }
 
-async function fetchMathResult(nodeRuntime: NodeRuntime<Config>): Promise<number> {
-	const httpCapability = new cre.capabilities.HTTPClient()
-	const response = await httpCapability
-		.sendRequest(nodeRuntime, {
-			url: nodeRuntime.config.apiUrl,
-		})
-		.result()
+const fetchMathResult = (sendRequester: HTTPSendRequester, config: Config) => {
+	const response = sendRequester.sendRequest({ url: config.apiUrl }).result()
 	return Number.parseFloat(Buffer.from(response.body).toString('utf-8').trim())
 }
 
-const onCronTrigger = async (runtime: Runtime<Config>): Promise<Result> => {
-	const config = runtime.config
-	if (!config.evms?.length) {
-		throw new Error('No EVM configuration provided')
-	}
+const onCronTrigger = (runtime: Runtime<Config>) => {
+	const httpCapability = new cre.capabilities.HTTPClient()
+	const offchainValue = httpCapability
+		.sendRequest(
+			runtime,
+			fetchMathResult,
+			consensusMedianAggregation(),
+		)(runtime.config)
+		.result()
 
-	// Step 1: Fetch offchain data using consensus (from Part 2)
-	const offchainValue = await runtime.runInNodeMode(fetchMathResult, consensusMedianAggregation())()
-
-	console.log('Successfully fetched offchain value')
+	runtime.log('Successfully fetched offchain value')
 
 	// Get the first EVM configuration from the list
-	const evmConfig = config.evms[0]
+	const evmConfig = runtime.config.evms[0]
+	const network = getNetwork({
+		chainFamily: 'evm',
+		chainSelectorName: evmConfig.chainSelectorName,
+		isTestnet: true,
+	})
+
+	if (!network) {
+		throw new Error(`Network not found for chain selector name: ${evmConfig.chainSelectorName}`)
+	}
 
 	// Step 2: Read onchain data using the EVM client with chainSelector
-	const evmClient = new cre.capabilities.EVMClient(
-		BigInt(evmConfig.chainSelector), // pass chainSelector as BigInt
-	)
+	const evmClient = new cre.capabilities.EVMClient(network.chainSelector.selector)
 
 	// Encode the contract call data for the 'get' function
 	const callData = encodeFunctionData({
@@ -68,7 +72,7 @@ const onCronTrigger = async (runtime: Runtime<Config>): Promise<Result> => {
 		functionName: 'get',
 	})
 
-	const contractCall = await evmClient
+	const contractCall = evmClient
 		.callContract(runtime, {
 			call: {
 				from: hexToBase64(zeroAddress),
@@ -89,15 +93,15 @@ const onCronTrigger = async (runtime: Runtime<Config>): Promise<Result> => {
 		data: bytesToHex(contractCall.data),
 	})
 
-	console.log(`Successfully read onchain value: ${onchainValue.toString()}`)
+	runtime.log(`Successfully read onchain value: ${onchainValue.toString()}`)
 
 	// Step 3: Combine the results - convert offchain float to bigint and add
 	const offchainBigInt = BigInt(Math.floor(offchainValue))
 	const finalResult = onchainValue + offchainBigInt
 
-	console.log('Final calculated result')
+	runtime.log('Final calculated result')
 
-	console.log('Updating calculator result...')
+	runtime.log('Updating calculator result...')
 
 	// Encode the contract call data for the 'onReport' function
 	const dryRunCallData = encodeFunctionData({
@@ -112,10 +116,10 @@ const onCronTrigger = async (runtime: Runtime<Config>): Promise<Result> => {
 		],
 	})
 
-	console.log('Dry running call to ensure the value is not anomalous...')
+	runtime.log('Dry running call to ensure the value is not anomalous...')
 
 	// dry run the call to ensure the value is not anomalous
-	const dryRunCall = await evmClient
+	const dryRunCall = evmClient
 		.callContract(runtime, {
 			call: {
 				from: hexToBase64(zeroAddress),
@@ -135,7 +139,7 @@ const onCronTrigger = async (runtime: Runtime<Config>): Promise<Result> => {
 		data: bytesToHex(dryRunCall.data),
 	})
 
-	console.log(`Dry run response: ${dryRunResponse ? 'Anomalous' : 'Not anomalous'}`)
+	runtime.log(`Dry run response: ${dryRunResponse ? 'Anomalous' : 'Not anomalous'}`)
 
 	if (dryRunResponse) {
 		throw new Error('Result is anomalous')
@@ -149,7 +153,7 @@ const onCronTrigger = async (runtime: Runtime<Config>): Promise<Result> => {
 		args: [toHex('0x'), dryRunCallData],
 	})
 
-	const resp = await evmClient
+	const resp = evmClient
 		.writeReport(runtime, {
 			receiver: evmConfig.calculatorConsumerAddress,
 			report: {
@@ -185,4 +189,4 @@ export async function main() {
 	await runner.run(initWorkflow)
 }
 
-await main()
+main()

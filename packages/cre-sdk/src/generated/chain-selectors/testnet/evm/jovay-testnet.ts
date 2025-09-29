@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '2019775',
 	chainSelector: {
 		name: 'jovay-testnet',
-		selector: '945045181441419300',
+		selector: 945045181441419236n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

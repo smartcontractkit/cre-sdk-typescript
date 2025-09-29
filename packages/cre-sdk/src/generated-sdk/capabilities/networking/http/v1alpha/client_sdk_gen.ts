@@ -6,7 +6,18 @@ import {
 	type Response,
 	ResponseSchema,
 } from '@cre/generated/capabilities/networking/http/v1alpha/client_pb'
-import { type NodeRuntime } from '@cre/sdk/runtime'
+import type { NodeRuntime, Runtime } from '@cre/sdk/runtime'
+import type { ConsensusAggregation, PrimitiveTypes, UnwrapOptions } from '@cre/sdk/utils'
+
+export class SendRequester {
+	constructor(
+		private readonly runtime: NodeRuntime<unknown>,
+		private readonly client: ClientCapability,
+	) {}
+	sendRequest(input: Request | RequestJson): { result: () => Response } {
+		return this.client.sendRequest(this.runtime, input)
+	}
+}
 
 /**
  * Client Capability
@@ -22,14 +33,36 @@ export class ClientCapability {
 	static readonly CAPABILITY_NAME = 'http-actions'
 	static readonly CAPABILITY_VERSION = '1.0.0-alpha'
 
-	constructor() {}
-
 	sendRequest(
-		runtime: NodeRuntime<any>,
+		runtime: NodeRuntime<unknown>,
 		input: Request | RequestJson,
-	): { result: () => Promise<Response> } {
-		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-		const payload = (input as any).$typeName
+	): { result: () => Response }
+	sendRequest<TArgs extends unknown[], TOutput>(
+		runtime: Runtime<unknown>,
+		fn: (sendRequester: SendRequester, ...args: TArgs) => TOutput,
+		consensusAggregation: ConsensusAggregation<TOutput, true>,
+		unwrapOptions?: TOutput extends PrimitiveTypes ? never : UnwrapOptions<TOutput>,
+	): (...args: TArgs) => { result: () => TOutput }
+	sendRequest(...args: unknown[]): unknown {
+		// Check if this is the sugar syntax overload (has function parameter)
+		if (typeof args[1] === 'function') {
+			const [runtime, fn, consensusAggregation, unwrapOptions] = args as [
+				Runtime<unknown>,
+				(sendRequester: SendRequester, ...args: unknown[]) => unknown,
+				ConsensusAggregation<unknown, true>,
+				UnwrapOptions<unknown> | undefined,
+			]
+			return this.sendRequestSugarHelper(runtime, fn, consensusAggregation, unwrapOptions)
+		}
+		// Otherwise, this is the basic call overload
+		const [runtime, input] = args as [NodeRuntime<unknown>, Request | RequestJson]
+		return this.sendRequestCallHelper(runtime, input)
+	}
+	private sendRequestCallHelper(
+		runtime: NodeRuntime<unknown>,
+		input: Request | RequestJson,
+	): { result: () => Response } {
+		const payload = (input as unknown as { $typeName?: string }).$typeName
 			? (input as Request)
 			: fromJson(RequestSchema, input as RequestJson)
 
@@ -44,9 +77,21 @@ export class ClientCapability {
 		})
 
 		return {
-			result: async () => {
+			result: () => {
 				return capabilityResponse.result()
 			},
 		}
+	}
+	private sendRequestSugarHelper<TArgs extends unknown[], TOutput>(
+		runtime: Runtime<unknown>,
+		fn: (sendRequester: SendRequester, ...args: TArgs) => TOutput,
+		consensusAggregation: ConsensusAggregation<TOutput, true>,
+		unwrapOptions?: TOutput extends PrimitiveTypes ? never : UnwrapOptions<TOutput>,
+	): (...args: TArgs) => { result: () => TOutput } {
+		const wrappedFn = (runtime: NodeRuntime<unknown>, ...args: TArgs) => {
+			const sendRequester = new SendRequester(runtime, this)
+			return fn(sendRequester, ...args)
+		}
+		return runtime.runInNodeMode(wrappedFn, consensusAggregation, unwrapOptions)
 	}
 }

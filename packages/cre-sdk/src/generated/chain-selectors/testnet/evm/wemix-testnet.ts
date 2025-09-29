@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '1112',
 	chainSelector: {
 		name: 'wemix-testnet',
-		selector: '9284632837123596000',
+		selector: 9284632837123596123n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

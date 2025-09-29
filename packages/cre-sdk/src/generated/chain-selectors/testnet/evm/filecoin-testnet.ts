@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '31415926',
 	chainSelector: {
 		name: 'filecoin-testnet',
-		selector: '7060342227814389000',
+		selector: 7060342227814389000n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

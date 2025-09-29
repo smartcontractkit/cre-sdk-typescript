@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '1135',
 	chainSelector: {
 		name: 'lisk-mainnet',
-		selector: '15293031020466096000',
+		selector: 15293031020466096408n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '12227332',
 	chainSelector: {
 		name: 'neox-testnet-t4',
-		selector: '2217764097022649300',
+		selector: 2217764097022649312n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

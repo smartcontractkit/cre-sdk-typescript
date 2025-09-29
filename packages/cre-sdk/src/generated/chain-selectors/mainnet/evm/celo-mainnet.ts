@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '42220',
 	chainSelector: {
 		name: 'celo-mainnet',
-		selector: '1346049177634351600',
+		selector: 1346049177634351622n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

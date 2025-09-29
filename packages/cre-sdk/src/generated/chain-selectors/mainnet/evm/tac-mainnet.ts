@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '239',
 	chainSelector: {
 		name: 'tac-mainnet',
-		selector: '5936861837188149000',
+		selector: 5936861837188149645n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

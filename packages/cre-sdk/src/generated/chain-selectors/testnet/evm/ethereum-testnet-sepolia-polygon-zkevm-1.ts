@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '2442',
 	chainSelector: {
 		name: 'ethereum-testnet-sepolia-polygon-zkevm-1',
-		selector: '1654667687261492700',
+		selector: 1654667687261492630n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

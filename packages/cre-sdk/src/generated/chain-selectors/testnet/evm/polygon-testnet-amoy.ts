@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '80002',
 	chainSelector: {
 		name: 'polygon-testnet-amoy',
-		selector: '16281711391670634000',
+		selector: 16281711391670634445n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

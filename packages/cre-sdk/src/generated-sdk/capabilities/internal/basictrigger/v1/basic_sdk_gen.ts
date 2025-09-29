@@ -7,7 +7,7 @@ import {
 	type Outputs,
 	OutputsSchema,
 } from '@cre/generated/capabilities/internal/basictrigger/v1/basic_trigger_pb'
-import { type Runtime } from '@cre/sdk/runtime'
+import type { Runtime } from '@cre/sdk/runtime'
 import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 
 /**
@@ -23,8 +23,6 @@ export class BasicCapability {
 
 	static readonly CAPABILITY_NAME = 'basic-test-trigger'
 	static readonly CAPABILITY_VERSION = '1.0.0'
-
-	constructor() {}
 
 	trigger(config: ConfigJson): BasicTrigger {
 		const capabilityId = BasicCapability.CAPABILITY_ID

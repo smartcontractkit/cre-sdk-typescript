@@ -6,7 +6,7 @@ import { cre, type Runtime } from '@cre/sdk/cre'
 import { Runner } from '@cre/sdk/wasm'
 
 const handleSecret = async (runtime: Runtime<Uint8Array>, _: Outputs) => {
-	const secret = await runtime.getSecret({ id: 'Foo' }).result()
+	const secret = runtime.getSecret({ id: 'Foo' }).result()
 	const secretJson = toJson(SecretSchema, secret)
 
 	return secretJson.value || ''

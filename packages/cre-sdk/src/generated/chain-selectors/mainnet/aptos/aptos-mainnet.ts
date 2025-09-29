@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '1',
 	chainSelector: {
 		name: 'aptos-mainnet',
-		selector: '4741433654826278000',
+		selector: 4741433654826277614n,
 	},
 	chainFamily: 'aptos',
 	networkType: 'mainnet',

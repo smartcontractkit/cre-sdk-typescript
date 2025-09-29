@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '98867',
 	chainSelector: {
 		name: 'plume-testnet-sepolia',
-		selector: '13874588925447303000',
+		selector: 13874588925447303949n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

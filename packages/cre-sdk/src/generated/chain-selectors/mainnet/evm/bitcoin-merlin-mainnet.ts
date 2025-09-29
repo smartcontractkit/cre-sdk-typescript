@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '4200',
 	chainSelector: {
 		name: 'bitcoin-merlin-mainnet',
-		selector: '241851231317829000',
+		selector: 241851231317828981n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

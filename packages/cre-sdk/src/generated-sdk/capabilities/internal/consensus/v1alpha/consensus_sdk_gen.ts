@@ -10,7 +10,7 @@ import {
 	SimpleConsensusInputsSchema,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { type Value, ValueSchema } from '@cre/generated/values/v1/values_pb'
-import { type Runtime } from '@cre/sdk/runtime'
+import type { Runtime } from '@cre/sdk/runtime'
 
 /**
  * Consensus Capability
@@ -26,14 +26,11 @@ export class ConsensusCapability {
 	static readonly CAPABILITY_NAME = 'consensus'
 	static readonly CAPABILITY_VERSION = '1.0.0-alpha'
 
-	constructor() {}
-
 	simple(
-		runtime: Runtime<any>,
+		runtime: Runtime<unknown>,
 		input: SimpleConsensusInputs | SimpleConsensusInputsJson,
-	): { result: () => Promise<Value> } {
-		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-		const payload = (input as any).$typeName
+	): { result: () => Value } {
+		const payload = (input as unknown as { $typeName?: string }).$typeName
 			? (input as SimpleConsensusInputs)
 			: fromJson(SimpleConsensusInputsSchema, input as SimpleConsensusInputsJson)
 
@@ -48,18 +45,17 @@ export class ConsensusCapability {
 		})
 
 		return {
-			result: async () => {
+			result: () => {
 				return capabilityResponse.result()
 			},
 		}
 	}
 
 	report(
-		runtime: Runtime<any>,
+		runtime: Runtime<unknown>,
 		input: ReportRequest | ReportRequestJson,
-	): { result: () => Promise<ReportResponse> } {
-		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-		const payload = (input as any).$typeName
+	): { result: () => ReportResponse } {
+		const payload = (input as unknown as { $typeName?: string }).$typeName
 			? (input as ReportRequest)
 			: fromJson(ReportRequestSchema, input as ReportRequestJson)
 
@@ -74,7 +70,7 @@ export class ConsensusCapability {
 		})
 
 		return {
-			result: async () => {
+			result: () => {
 				return capabilityResponse.result()
 			},
 		}

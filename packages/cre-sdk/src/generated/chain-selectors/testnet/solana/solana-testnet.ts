@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3zQawwpjk2NsNY',
 	chainSelector: {
 		name: 'solana-testnet',
-		selector: '6302590918974934000',
+		selector: 6302590918974934319n,
 	},
 	chainFamily: 'solana',
 	networkType: 'testnet',

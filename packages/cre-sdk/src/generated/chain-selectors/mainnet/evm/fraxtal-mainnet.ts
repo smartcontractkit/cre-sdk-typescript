@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '252',
 	chainSelector: {
 		name: 'fraxtal-mainnet',
-		selector: '1462016016387883300',
+		selector: 1462016016387883143n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

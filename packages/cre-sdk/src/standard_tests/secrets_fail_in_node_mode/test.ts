@@ -3,10 +3,12 @@ import { cre, type NodeRuntime, type Runtime } from '@cre/sdk/cre'
 import { consensusIdenticalAggregation } from '@cre/sdk/utils'
 import { Runner } from '@cre/sdk/wasm'
 
-const secretAccessInNodeMode = async (runtime: Runtime<Uint8Array>) => {
-	return await runtime.runInNodeMode(async (_nodeRuntime: NodeRuntime<Uint8Array>) => {
-		return await runtime.getSecret({ id: 'anything' }).result()
-	}, consensusIdenticalAggregation())()
+const secretAccessInNodeMode = (runtime: Runtime<Uint8Array>) => {
+	return runtime
+		.runInNodeMode((_nodeRuntime: NodeRuntime<Uint8Array>) => {
+			return runtime.getSecret({ id: 'anything' }).result()
+		}, consensusIdenticalAggregation())()
+		.result()
 }
 
 const initWorkflow = () => {

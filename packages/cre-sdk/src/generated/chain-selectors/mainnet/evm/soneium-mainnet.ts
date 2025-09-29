@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '1868',
 	chainSelector: {
 		name: 'soneium-mainnet',
-		selector: '12505351618335764000',
+		selector: 12505351618335765396n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

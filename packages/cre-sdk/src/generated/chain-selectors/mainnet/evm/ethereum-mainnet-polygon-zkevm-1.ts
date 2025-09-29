@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '1101',
 	chainSelector: {
 		name: 'ethereum-mainnet-polygon-zkevm-1',
-		selector: '4348158687435793400',
+		selector: 4348158687435793198n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

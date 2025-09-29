@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '80087',
 	chainSelector: {
 		name: 'zero-g-testnet-galileo',
-		selector: '2285225387454015700',
+		selector: 2285225387454015855n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

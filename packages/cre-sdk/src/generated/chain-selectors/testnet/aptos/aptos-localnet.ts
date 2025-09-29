@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '4',
 	chainSelector: {
 		name: 'aptos-localnet',
-		selector: '4457093679053095400',
+		selector: 4457093679053095497n,
 	},
 	chainFamily: 'aptos',
 	networkType: 'testnet',

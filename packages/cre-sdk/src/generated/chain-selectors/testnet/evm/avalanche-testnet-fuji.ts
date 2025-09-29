@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '43113',
 	chainSelector: {
 		name: 'avalanche-testnet-fuji',
-		selector: '14767482510784807000',
+		selector: 14767482510784806043n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

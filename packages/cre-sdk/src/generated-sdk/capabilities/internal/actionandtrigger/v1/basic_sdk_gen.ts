@@ -12,7 +12,7 @@ import {
 	type TriggerEvent,
 	TriggerEventSchema,
 } from '@cre/generated/capabilities/internal/actionandtrigger/v1/action_and_trigger_pb'
-import { type Runtime } from '@cre/sdk/runtime'
+import type { Runtime } from '@cre/sdk/runtime'
 import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 
 /**
@@ -29,11 +29,8 @@ export class BasicCapability {
 	static readonly CAPABILITY_NAME = 'basic-test-action-trigger'
 	static readonly CAPABILITY_VERSION = '1.0.0'
 
-	constructor() {}
-
-	action(runtime: Runtime<any>, input: Input | InputJson): { result: () => Promise<Output> } {
-		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-		const payload = (input as any).$typeName
+	action(runtime: Runtime<unknown>, input: Input | InputJson): { result: () => Output } {
+		const payload = (input as unknown as { $typeName?: string }).$typeName
 			? (input as Input)
 			: fromJson(InputSchema, input as InputJson)
 
@@ -48,7 +45,7 @@ export class BasicCapability {
 		})
 
 		return {
-			result: async () => {
+			result: () => {
 				return capabilityResponse.result()
 			},
 		}

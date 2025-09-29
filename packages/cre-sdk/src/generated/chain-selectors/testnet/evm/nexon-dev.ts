@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '5668',
 	chainSelector: {
 		name: 'nexon-dev',
-		selector: '8911150974185440000',
+		selector: 8911150974185440581n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '57073',
 	chainSelector: {
 		name: 'ethereum-mainnet-ink-1',
-		selector: '3461204551265786000',
+		selector: 3461204551265785888n,
 	},
 	chainFamily: 'evm',
 	networkType: 'mainnet',

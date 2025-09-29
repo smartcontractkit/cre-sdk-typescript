@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '240',
 	chainSelector: {
 		name: 'cronos-zkevm-testnet-sepolia',
-		selector: '16487132492576885000',
+		selector: 16487132492576884721n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',

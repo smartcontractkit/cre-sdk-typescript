@@ -7,7 +7,7 @@ const network: NetworkInfo = {
 	chainId: '978658',
 	chainSelector: {
 		name: 'treasure-testnet-topaz',
-		selector: '3676916124122458000',
+		selector: 3676916124122457866n,
 	},
 	chainFamily: 'evm',
 	networkType: 'testnet',
