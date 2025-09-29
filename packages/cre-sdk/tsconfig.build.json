@@ -37,6 +37,6 @@
 		"emitDecoratorMetadata": true
 	},
 
-	"include": ["src/index.ts", "src/sdk/**/*"],
+	"include": ["src/index.ts", "src/sdk/**/*", "src/generated/**/*"],
 	"exclude": ["cli/**/*", "**/*.test.ts", "**/*.test.js"]
 }

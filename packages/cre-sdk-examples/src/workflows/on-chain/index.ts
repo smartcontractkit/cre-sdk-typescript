@@ -5,8 +5,10 @@ import {
 	getNetwork,
 	type HTTPSendRequester,
 	hexToBase64,
+	ok,
 	Runner,
 	type Runtime,
+	text,
 } from '@chainlink/cre-sdk'
 import { decodeFunctionResult, encodeFunctionData, zeroAddress } from 'viem'
 import { z } from 'zod'
@@ -28,7 +30,15 @@ type Config = z.infer<typeof configSchema>
 
 const fetchMathResult = (sendRequester: HTTPSendRequester, config: Config) => {
 	const response = sendRequester.sendRequest({ url: config.apiUrl }).result()
-	return Number.parseFloat(Buffer.from(response.body).toString('utf-8').trim())
+
+	// Check if the response is successful using the helper function
+	if (!ok(response)) {
+		throw new Error(`HTTP request failed with status: ${response.statusCode}`)
+	}
+
+	// Convert response body to text using the helper function
+	const responseText = text(response)
+	return Number.parseFloat(responseText.trim())
 }
 
 const onCronTrigger = (runtime: Runtime<Config>) => {
