@@ -1,18 +1,25 @@
-import { type Timestamp, timestampNow } from "@bufbuild/protobuf/wkt";
 import {
   type CronPayload,
-  consensusMedianAggregation,
+  median,
+  ConsensusAggregationByFields,
   cre,
   getNetwork,
   type EVMLog,
   type HTTPPayload,
-  hexToBytes,
-  type NodeRuntime,
   Runner,
   type Runtime,
-  Value,
+  type HTTPSendRequester,
+  bytesToHex,
+  hexToBase64,
 } from "@chainlink/cre-sdk";
+import { decodeFunctionResult, encodeFunctionData, zeroAddress } from "viem";
 import { z } from "zod";
+import {
+  BALANCE_READER_ABI,
+  IERC20_ABI,
+  MESSAGE_EMITTER_ABI,
+  RESERVE_MANAGER_ABI,
+} from "./abi";
 
 const configSchema = z.object({
   schedule: z.string(),
@@ -32,22 +39,55 @@ const configSchema = z.object({
 
 type Config = z.infer<typeof configSchema>;
 
-async function fetchReserveInfo(nodeRuntime: NodeRuntime<Config>) {
-  const httpCapability = new cre.capabilities.HTTPClient();
-  const response = httpCapability
-    .sendRequest(nodeRuntime, {
-      url: nodeRuntime.config.url,
-    })
-    .result();
-  return JSON.parse(Buffer.from(response.body).toString("utf-8").trim());
+interface PORResponse {
+  accountName: string;
+  totalTrust: number;
+  totalToken: number;
+  ripcord: boolean;
+  updatedAt: string;
 }
 
-async function fetchNativeTokenBalance(
+interface ReserveInfo {
+  lastUpdated: Date;
+  totalReserve: bigint;
+}
+
+// Utility function to safely stringify objects with bigints
+const safeJsonStringify = (obj: any): string =>
+  JSON.stringify(
+    obj,
+    (_, value) => (typeof value === "bigint" ? value.toString() : value),
+    2
+  );
+
+const fetchReserveInfo = (
+  sendRequester: HTTPSendRequester,
+  config: Config
+): ReserveInfo => {
+  const response = sendRequester.sendRequest({ url: config.url }).result();
+
+  if (response.statusCode !== 200) {
+    throw new Error(`HTTP request failed with status: ${response.statusCode}`);
+  }
+
+  const responseText = Buffer.from(response.body).toString("utf-8");
+  const porResp: PORResponse = JSON.parse(responseText);
+
+  if (porResp.ripcord) {
+    throw new Error("ripcord is true");
+  }
+
+  return {
+    lastUpdated: new Date(porResp.updatedAt),
+    totalReserve: BigInt(Math.floor(porResp.totalToken * 1e18)), // Scale to 18 decimals
+  };
+};
+
+const fetchNativeTokenBalance = (
   runtime: Runtime<Config>,
+  evmConfig: Config["evms"][0],
   tokenHolderAddress: string
-) {
-  // Get the first EVM configuration from the list
-  const evmConfig = runtime.config.evms[0];
+): bigint => {
   const network = getNetwork({
     chainFamily: "evm",
     chainSelectorName: evmConfig.chainSelectorName,
@@ -64,19 +104,42 @@ async function fetchNativeTokenBalance(
     network.chainSelector.selector
   );
 
-  // TODO: Do we need a hexToAddress util?
-  const balanceReaderAddress = hexToBytes(evmConfig.balanceReaderAddress);
-  // balanceReader, err := balance_reader.NewBalanceReader(evmClient, balanceReaderAddress, nil) TODO: Where do we get a BalanceReader?
-  // const balanceReader = new BalanceReader(evmClient, balanceReaderAddress)
-  const tokenAddress = hexToBytes(tokenHolderAddress);
-  // const balances = balanceReader.getNativeBalances(runtime, {addresses: [tokenAddress]});
+  // Encode the contract call data for getNativeBalances
+  const callData = encodeFunctionData({
+    abi: BALANCE_READER_ABI,
+    functionName: "getNativeBalances",
+    args: [[tokenHolderAddress as `0x${string}`]],
+  });
 
-  // return balances[0];
+  const contractCall = evmClient
+    .callContract(runtime, {
+      call: {
+        from: hexToBase64(zeroAddress),
+        to: hexToBase64(evmConfig.balanceReaderAddress),
+        data: hexToBase64(callData),
+      },
+      blockNumber: {
+        absVal: Buffer.from([3]).toString("base64"), // 3 for finalized block
+        sign: "-1", // negative for finalized
+      },
+    })
+    .result();
 
-  return 0;
-}
+  // Decode the result
+  const balances = decodeFunctionResult({
+    abi: BALANCE_READER_ABI,
+    functionName: "getNativeBalances",
+    data: bytesToHex(contractCall.data),
+  });
 
-async function getTotalSupply(runtime: Runtime<Config>) {
+  if (!balances || balances.length === 0) {
+    throw new Error("No balances returned from contract");
+  }
+
+  return balances[0];
+};
+
+const getTotalSupply = (runtime: Runtime<Config>): bigint => {
   const evms = runtime.config.evms;
   let totalSupply = 0n;
 
@@ -97,22 +160,44 @@ async function getTotalSupply(runtime: Runtime<Config>) {
       network.chainSelector.selector
     );
 
-    // TODO: Do we need hexToAddress util?
-    const address = hexToBytes(evmConfig.tokenAddress);
-    // const token = ierc20.NewIERC20(evmClient, address) // TODO: How do we do this?
-    // const supply = await token.TotalSupply(runtime, big.NewInt(8771643))
-    //
-    // totalSupply += supply;
+    // Encode the contract call data for totalSupply
+    const callData = encodeFunctionData({
+      abi: IERC20_ABI,
+      functionName: "totalSupply",
+    });
+
+    const contractCall = evmClient
+      .callContract(runtime, {
+        call: {
+          from: hexToBase64(zeroAddress),
+          to: hexToBase64(evmConfig.tokenAddress),
+          data: hexToBase64(callData),
+        },
+        blockNumber: {
+          absVal: Buffer.from([3]).toString("base64"), // 3 for finalized block
+          sign: "-1", // negative for finalized
+        },
+      })
+      .result();
+
+    // Decode the result
+    const supply = decodeFunctionResult({
+      abi: IERC20_ABI,
+      functionName: "totalSupply",
+      data: bytesToHex(contractCall.data),
+    });
+
+    totalSupply += supply;
   }
 
   return totalSupply;
-}
+};
 
-async function updateReserves(
+const updateReserves = (
   runtime: Runtime<Config>,
   totalSupply: bigint,
   totalReserveScaled: bigint
-) {
+): string => {
   const evmConfig = runtime.config.evms[0];
   const network = getNetwork({
     chainFamily: "evm",
@@ -130,69 +215,92 @@ async function updateReserves(
     network.chainSelector.selector
   );
 
-  console.log(
-    `Updating reserves totalSupply ${totalSupply} totalReserveScaled ${totalReserveScaled}`
+  runtime.log(
+    `Updating reserves totalSupply ${totalSupply.toString()} totalReserveScaled ${totalReserveScaled.toString()}`
   );
 
-  // TODO: How do we generate a ReserveManager?
-  // reserveManager, err := reserve_manager.NewReserveManager(evmClient, common.HexToAddress(evmCfg.ProxyAddress), nil)
-  // 	resp, err := reserveManager.WriteReportFromUpdateReserves(runtime, reserve_manager.UpdateReserves{
-  // 		TotalMinted:  totalSupply,
-  // 		TotalReserve: totalReserveScaled,
-  // 	}, nil).Await()
-}
+  // Encode the contract call data for writeReportFromUpdateReserves
+  const callData = encodeFunctionData({
+    abi: RESERVE_MANAGER_ABI,
+    functionName: "writeReportFromUpdateReserves",
+    args: [
+      {
+        totalMinted: totalSupply,
+        totalReserve: totalReserveScaled,
+      },
+    ],
+  });
 
-async function doPOR(runtime: Runtime<Config>, time: Timestamp) {
-  console.log(`fetching por url ${runtime.config.url}`);
+  const resp = evmClient
+    .writeReport(runtime, {
+      receiver: evmConfig.proxyAddress,
+      report: {
+        rawReport: callData,
+      },
+    })
+    .result();
 
-  const reserveInfo = await runtime.runInNodeMode(
-    fetchReserveInfo,
-    // consensusAggregationFromTags() // TODO: How do we do this from tags?
-    consensusMedianAggregation()
-  )();
+  const txHash = resp.txHash;
 
-  console.log(`ReserveInfo ${JSON.stringify(reserveInfo)}`);
+  if (!txHash) {
+    throw new Error("Failed to write report");
+  }
 
-  const totalSupply = await getTotalSupply(runtime);
+  runtime.log(
+    `Write report transaction succeeded at txHash: ${txHash.toString()}`
+  );
+  return txHash.toString();
+};
 
-  console.log(`TotalSupply ${totalSupply}`);
+const doPOR = (runtime: Runtime<Config>): string => {
+  runtime.log(`fetching por url ${runtime.config.url}`);
 
-  // totalReserveScaled := reserveInfo.TotalReserve.Mul(decimal.NewFromUint64(1e18)).BigInt() // TODO get totalReserve
-  const totalReserveScaled = 0n;
+  const httpCapability = new cre.capabilities.HTTPClient();
+  const reserveInfo = httpCapability
+    .sendRequest(
+      runtime,
+      fetchReserveInfo,
+      ConsensusAggregationByFields<ReserveInfo>({
+        lastUpdated: median,
+        totalReserve: median,
+      })
+    )(runtime.config)
+    .result();
 
-  console.log(`TotalReserveScaled ${totalReserveScaled}`);
+  runtime.log(`ReserveInfo ${safeJsonStringify(reserveInfo)}`);
 
-  const nativeTokenBalance = await fetchNativeTokenBalance(
+  const totalSupply = getTotalSupply(runtime);
+  runtime.log(`TotalSupply ${totalSupply.toString()}`);
+
+  const totalReserveScaled = (reserveInfo as unknown as ReserveInfo)
+    .totalReserve;
+  runtime.log(`TotalReserveScaled ${totalReserveScaled.toString()}`);
+
+  const nativeTokenBalance = fetchNativeTokenBalance(
     runtime,
+    runtime.config.evms[0],
     runtime.config.evms[0].tokenAddress
   );
+  runtime.log(`NativeTokenBalance ${nativeTokenBalance.toString()}`);
 
-  console.log(`NativeTokenBalance ${nativeTokenBalance}`);
-
-  const secretAddress = await runtime
-    .getSecret({ id: "SECRET_ADDRESS" })
-    .result();
-  const secretAddressBalance = await fetchNativeTokenBalance(
+  const secretAddress = runtime.getSecret({ id: "SECRET_ADDRESS" }).result();
+  const secretAddressBalance = fetchNativeTokenBalance(
     runtime,
+    runtime.config.evms[0],
     secretAddress.value
   );
-
-  console.log(`SecretAddressBalance ${secretAddressBalance}`);
+  runtime.log(`SecretAddressBalance ${secretAddressBalance.toString()}`);
 
   updateReserves(runtime, totalSupply, totalReserveScaled);
 
-  // Update reserves
-  // if err := updateReserves(config, runtime, totalSupply, totalReserveScaled); err != nil {
-  // 	return "", fmt.Errorf("failed to update reserves: %w", err)
-  // }
+  return totalReserveScaled.toString();
+};
 
-  // return reserveInfo.TotalReserve.String(), nil
-
-  return "TotalReserve 0";
-}
-
-function prepareMessageEmitter(runtime: Runtime<Config>) {
-  const evmConfig = runtime.config.evms[0];
+const getLastMessage = (
+  runtime: Runtime<Config>,
+  evmConfig: Config["evms"][0],
+  emitter: string
+): string => {
   const network = getNetwork({
     chainFamily: "evm",
     chainSelectorName: evmConfig.chainSelectorName,
@@ -208,57 +316,100 @@ function prepareMessageEmitter(runtime: Runtime<Config>) {
   const evmClient = new cre.capabilities.EVMClient(
     network.chainSelector.selector
   );
-  const address = hexToBytes(evmConfig.messageEmitterAddress); // TODO: do we need a hexToAddress helper?
 
-  // TODO: Where do we get a MessageEmitter
-  // return new MessageEmitter(evmClient, address);
-}
+  // Encode the contract call data for getLastMessage
+  const callData = encodeFunctionData({
+    abi: MESSAGE_EMITTER_ABI,
+    functionName: "getLastMessage",
+    args: [emitter as `0x${string}`],
+  });
 
-async function onCronTrigger(runtime: Runtime<Config>, payload: CronPayload) {
+  const contractCall = evmClient
+    .callContract(runtime, {
+      call: {
+        from: hexToBase64(zeroAddress),
+        to: hexToBase64(evmConfig.messageEmitterAddress),
+        data: hexToBase64(callData),
+      },
+      blockNumber: {
+        absVal: Buffer.from([3]).toString("base64"), // 3 for finalized block
+        sign: "-1", // negative for finalized
+      },
+    })
+    .result();
+
+  // Decode the result
+  const message = decodeFunctionResult({
+    abi: MESSAGE_EMITTER_ABI,
+    functionName: "getLastMessage",
+    data: bytesToHex(contractCall.data),
+  });
+
+  return message;
+};
+
+const onCronTrigger = (
+  runtime: Runtime<Config>,
+  payload: CronPayload
+): string => {
   if (!payload.scheduledExecutionTime) {
     throw new Error("Scheduled execution time is required");
   }
 
-  return doPOR(runtime, payload.scheduledExecutionTime);
-}
+  return doPOR(runtime);
+};
 
-async function onLogTrigger(runtime: Runtime<Config>, payload: EVMLog) {
-  console.log("Running LogTrigger");
+const onLogTrigger = (runtime: Runtime<Config>, payload: EVMLog): string => {
+  runtime.log("Running LogTrigger");
 
-  const messageEmitter = prepareMessageEmitter(runtime);
   const topics = payload.topics;
 
   if (topics.length < 3) {
-    console.log("Log payload does not contain enough topics");
+    runtime.log("Log payload does not contain enough topics");
     throw new Error(
       `log payload does not contain enough topics ${topics.length}`
     );
   }
 
-  const emitter = topics[1].slice(12);
-  console.log(`Emitter ${emitter}`);
-  // lastMessageInput := message_emitter.GetLastMessageInput{
-  // 	Emitter: common.Address(emitter),
-  // }
-  // const lastMessageInput = messageEmitter.getLastMessageInput({
-  //   emitter: address(emitter); // TODO: Do we need an address helper?
-  // });
-  // const message = messageEmitter.getLastMessage(runtime, lastMessageInput, 8771643n);
-  const message = "FAKE_MESSAGE";
+  // topics[1] is a 32-byte topic, but the address is the last 20 bytes
+  const emitter = bytesToHex(topics[1].slice(12));
+  runtime.log(`Emitter ${emitter}`);
 
-  console.log(`Message retrieved from the contract ${message}`);
+  const message = getLastMessage(runtime, runtime.config.evms[0], emitter);
+
+  runtime.log(`Message retrieved from the contract ${message}`);
 
   return message;
-}
+};
 
-async function onHTTPTrigger(runtime: Runtime<Config>, _payload: HTTPPayload) {
-  // TODO: Figure out why this won't run without erroring out
-  console.log("Raw HTTP trigger received");
+const onHTTPTrigger = (
+  runtime: Runtime<Config>,
+  payload: HTTPPayload
+): string => {
+  runtime.log("Raw HTTP trigger received");
 
-  return "FINISHED HTTP TRIGGER";
-}
+  // If there's no input, fall back to "now"
+  if (!payload.input || payload.input.length === 0) {
+    runtime.log(
+      "HTTP trigger payload is empty; defaulting execution time to now"
+    );
 
-function initWorkflow(config: Config) {
+    return doPOR(runtime);
+  }
+
+  // Log the raw JSON for debugging
+  runtime.log("Payload bytes");
+
+  try {
+    runtime.log("Parsed HTTP trigger received");
+    return doPOR(runtime);
+  } catch (error) {
+    runtime.log("Failed to parse HTTP trigger payload");
+    throw new Error("Failed to parse HTTP trigger payload");
+  }
+};
+
+const initWorkflow = (config: Config) => {
   const cronTrigger = new cre.capabilities.CronCapability();
   const httpTrigger = new cre.capabilities.HTTPCapability();
 
@@ -293,10 +444,12 @@ function initWorkflow(config: Config) {
     ),
     cre.handler(httpTrigger.trigger({}), onHTTPTrigger),
   ];
-}
+};
 
 export async function main() {
-  const runner = await Runner.newRunner<Config>();
+  const runner = await Runner.newRunner<Config>({
+    configSchema,
+  });
   await runner.run(initWorkflow);
 }
 
