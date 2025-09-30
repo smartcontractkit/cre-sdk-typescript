@@ -1,7 +1,6 @@
 # @chainlink/cre-sdk
 
-The Chainlink Runtime Environment (CRE) SDK for TypeScript enables developers to write decentralized [Chainlink Runtime Environment Workflows](https://docs.chain.link/cre/) in Typescript. 
-
+The Chainlink Runtime Environment (CRE) SDK for TypeScript enables developers to write decentralized [Chainlink Runtime Environment Workflows](https://docs.chain.link/cre/) in Typescript.
 
 ## Table of Contents
 
@@ -36,39 +35,42 @@ The Chainlink Runtime Environment (CRE) SDK for TypeScript enables developers to
 - [License](#license)
 
 ## How to use this SDK
+
 This package exposes the APIs you use to write CRE Workflows in TypeScript, and then compile them to WASM.
 
-This package must be used along with the [CRE CLI tool](https://github.com/smartcontractkit/cre-cli) to deploy your WASM-compiled workflows.  
+This package must be used along with the [CRE CLI tool](https://github.com/smartcontractkit/cre-cli) to deploy your WASM-compiled workflows.
 
 ## Prerequisites
-1. the [bun runtime](https://bun.com/).  The wasm compilation currently is only supported by the bun runtime which has near-complete NodeJS compatibility.
+
+1. the [bun runtime](https://bun.com/). The wasm compilation currently is only supported by the bun runtime which has near-complete NodeJS compatibility.
 
 2. the [CRE CLI tool](https://github.com/smartcontractkit/cre-cli) installed.
 
-
-
 ## Getting Started
-We recommend you consult the [getting started docs](https://docs.chain.link/cre/getting-started/cli-installation) and install the CRE CLI.  
+
+We recommend you consult the [getting started docs](https://docs.chain.link/cre/getting-started/cli-installation) and install the CRE CLI.
 
 Then run `cre init`, name your project and choose TypeScript as the language to define your workflows in.
 
 ## Examples
 
-This TypeScript CRE SDK also includes some reference examples - [cre-sdk-examples](https://github.com/smartcontractkit/cre-sdk-typescript/tree/main/packages/cre-sdk-examples).  These can be copied and pasted into your project as needed.
+This TypeScript CRE SDK also includes some reference examples - [cre-sdk-examples](https://github.com/smartcontractkit/cre-sdk-typescript/tree/main/packages/cre-sdk-examples). These can be copied and pasted into your project as needed.
 
 ⚠️ Note however that these are refence TypeScript workflows and may require some additional steps (having the CRE CLI installed, running `bunx cre-setup` from inside a workflow example directory, etc) to get them to work within this repo.
 
- __We recommend you setup your project using the CRE CLI and then copy and paste these examples into your project__
+**We recommend you setup your project using the CRE CLI and then copy and paste these examples into your project**
 
 ## Simulate locally with CRE CLI
 
-You can run and debug your TypeScript workflows locally using [the CRE CLI's](https://github.com/smartcontractkit/cre-cli) simulation functionality.  
+You can run and debug your TypeScript workflows locally using [the CRE CLI's](https://github.com/smartcontractkit/cre-cli) simulation functionality.
 
-Make sure you `cd` into the directory that contain's your workflow's TypeScript file and the associated `config.json`.  Then:
+Make sure you `cd` into the directory that contain's your workflow's TypeScript file and the associated `config.json`. Then:
 
 ```bash
 cre workflow simulate --target local-simulation --config config.json index.ts
 ```
+
+When simulating workflows that write to the blockchain, remember to pass extra flag `--broadcast` to broadcast the transactions to the blockchain.
 
 See the CLI docs for additional flags (e.g. config file, secrets, HTTP payloads, EVM log params).
 
@@ -211,8 +213,8 @@ const onCronTrigger = async (runtime: Runtime<Config>) => {
 ```
 
 ## Configuration & Type Safety
-You, the developer, must declare config files in config.json files, co-located with your TypeScript workflow definition.
 
+You, the developer, must declare config files in config.json files, co-located with your TypeScript workflow definition.
 
 Use Zod schemas for type-safe configuration.
 
@@ -294,8 +296,8 @@ const ethereumSepolia = getNetwork({
 ## Example Workflows
 
 ### 1. Simple Cron-scheduled task
-See the [hello-world](https://github.com/smartcontractkit/cre-sdk-typescript/tree/main/packages/cre-sdk-examples/src/hello-world) example for a simple example that runs a cron-based operation on CRE at intervals you define in the `config.js` file.
 
+See the [hello-world](https://github.com/smartcontractkit/cre-sdk-typescript/tree/main/packages/cre-sdk-examples/src/hello-world) example for a simple example that runs a cron-based operation on CRE at intervals you define in the `config.js` file.
 
 ### 2. API Data Aggregation
 
