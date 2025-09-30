@@ -1,6 +1,6 @@
 import { toJson } from '@bufbuild/protobuf'
 import type { Outputs } from '@cre/generated/capabilities/internal/basictrigger/v1/basic_trigger_pb'
-import { SecretSchema } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import { SecretSchema } from '@cre/generated/sdk/v1beta/sdk_pb'
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
 import { cre, type Runtime } from '@cre/sdk/cre'
 import { Runner } from '@cre/sdk/wasm'

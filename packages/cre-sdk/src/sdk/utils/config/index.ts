@@ -1,4 +1,4 @@
-import type { ExecuteRequest } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import type { ExecuteRequest } from '@cre/generated/sdk/v1beta/sdk_pb'
 import type { StandardSchemaV1 } from '@standard-schema/spec'
 
 async function standardValidate<TIntermediateConfig, TConfig>(

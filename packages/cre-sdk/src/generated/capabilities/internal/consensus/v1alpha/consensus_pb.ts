@@ -8,9 +8,9 @@ import type {
 	ReportRequestSchema,
 	ReportResponseSchema,
 	SimpleConsensusInputsSchema,
-} from '../../../../sdk/v1alpha/sdk_pb'
-import { file_sdk_v1alpha_sdk } from '../../../../sdk/v1alpha/sdk_pb'
-import { file_tools_generator_v1alpha_cre_metadata } from '../../../../tools/generator/v1alpha/cre_metadata_pb'
+} from '../../../../sdk/v1beta/sdk_pb'
+import { file_sdk_v1beta_sdk } from '../../../../sdk/v1beta/sdk_pb'
+import { file_tools_generator_v1beta_cre_metadata } from '../../../../tools/generator/v1beta/cre_metadata_pb'
 import type { ValueSchema } from '../../../../values/v1/values_pb'
 import { file_values_v1_values } from '../../../../values/v1/values_pb'
 
@@ -20,8 +20,8 @@ import { file_values_v1_values } from '../../../../values/v1/values_pb'
 export const file_capabilities_internal_consensus_v1alpha_consensus: GenFile =
 	/*@__PURE__*/
 	fileDesc(
-		'CjdjYXBhYmlsaXRpZXMvaW50ZXJuYWwvY29uc2Vuc3VzL3YxYWxwaGEvY29uc2Vuc3VzLnByb3RvEidjYXBhYmlsaXRpZXMuaW50ZXJuYWwuY29uc2Vuc3VzLnYxYWxwaGEyrQEKCUNvbnNlbnN1cxI+CgZTaW1wbGUSIi5zZGsudjFhbHBoYS5TaW1wbGVDb25zZW5zdXNJbnB1dHMaEC52YWx1ZXMudjEuVmFsdWUSQQoGUmVwb3J0Ehouc2RrLnYxYWxwaGEuUmVwb3J0UmVxdWVzdBobLnNkay52MWFscGhhLlJlcG9ydFJlc3BvbnNlGh2CtRgZCAESFWNvbnNlbnN1c0AxLjAuMC1hbHBoYUL8AQorY29tLmNhcGFiaWxpdGllcy5pbnRlcm5hbC5jb25zZW5zdXMudjFhbHBoYUIOQ29uc2Vuc3VzUHJvdG9QAaICA0NJQ6oCJ0NhcGFiaWxpdGllcy5JbnRlcm5hbC5Db25zZW5zdXMuVjFhbHBoYcoCJ0NhcGFiaWxpdGllc1xJbnRlcm5hbFxDb25zZW5zdXNcVjFhbHBoYeICM0NhcGFiaWxpdGllc1xJbnRlcm5hbFxDb25zZW5zdXNcVjFhbHBoYVxHUEJNZXRhZGF0YeoCKkNhcGFiaWxpdGllczo6SW50ZXJuYWw6OkNvbnNlbnN1czo6VjFhbHBoYWIGcHJvdG8z',
-		[file_sdk_v1alpha_sdk, file_tools_generator_v1alpha_cre_metadata, file_values_v1_values],
+		'CjdjYXBhYmlsaXRpZXMvaW50ZXJuYWwvY29uc2Vuc3VzL3YxYWxwaGEvY29uc2Vuc3VzLnByb3RvEidjYXBhYmlsaXRpZXMuaW50ZXJuYWwuY29uc2Vuc3VzLnYxYWxwaGEyngEKCUNvbnNlbnN1cxI5CgZTaW1wbGUSHS5zZGsudjEuU2ltcGxlQ29uc2Vuc3VzSW5wdXRzGhAudmFsdWVzLnYxLlZhbHVlEjcKBlJlcG9ydBIVLnNkay52MS5SZXBvcnRSZXF1ZXN0GhYuc2RrLnYxLlJlcG9ydFJlc3BvbnNlGh2StRgZCAESFWNvbnNlbnN1c0AxLjAuMC1hbHBoYUL8AQorY29tLmNhcGFiaWxpdGllcy5pbnRlcm5hbC5jb25zZW5zdXMudjFhbHBoYUIOQ29uc2Vuc3VzUHJvdG9QAaICA0NJQ6oCJ0NhcGFiaWxpdGllcy5JbnRlcm5hbC5Db25zZW5zdXMuVjFhbHBoYcoCJ0NhcGFiaWxpdGllc1xJbnRlcm5hbFxDb25zZW5zdXNcVjFhbHBoYeICM0NhcGFiaWxpdGllc1xJbnRlcm5hbFxDb25zZW5zdXNcVjFhbHBoYVxHUEJNZXRhZGF0YeoCKkNhcGFiaWxpdGllczo6SW50ZXJuYWw6OkNvbnNlbnN1czo6VjFhbHBoYWIGcHJvdG8z',
+		[file_sdk_v1beta_sdk, file_tools_generator_v1beta_cre_metadata, file_values_v1_values],
 	)
 
 /**

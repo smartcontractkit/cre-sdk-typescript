@@ -28,7 +28,7 @@ import {
 	Mode,
 	type SimpleConsensusInputs,
 	type SimpleConsensusInputsJson,
-} from '@cre/generated/sdk/v1alpha/sdk_pb'
+} from '@cre/generated/sdk/v1beta/sdk_pb'
 import type { Value as ProtoValue } from '@cre/generated/values/v1/values_pb'
 import { BasicCapability } from '@cre/generated-sdk/capabilities/internal/actionandtrigger/v1/basic_sdk_gen'
 import { BasicActionCapability } from '@cre/generated-sdk/capabilities/internal/basicaction/v1/basicaction_sdk_gen'

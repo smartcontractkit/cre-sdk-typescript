@@ -2,12 +2,12 @@ import { mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { type DescService, getExtension } from '@bufbuild/protobuf'
 import type { GenFile } from '@bufbuild/protobuf/codegenv2'
-import { Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import type { CapabilityMetadata } from '@cre/generated/tools/generator/v1alpha/cre_metadata_pb'
+import { Mode } from '@cre/generated/sdk/v1beta/sdk_pb'
+import type { CapabilityMetadata } from '@cre/generated/tools/generator/v1beta/cre_metadata_pb'
 import {
 	capability,
 	method as methodOption,
-} from '@cre/generated/tools/generator/v1alpha/cre_metadata_pb'
+} from '@cre/generated/tools/generator/v1beta/cre_metadata_pb'
 import { generateActionMethod } from './generate-action'
 import { generateActionSugarClass } from './generate-sugar'
 import { generateTriggerClass, generateTriggerMethod } from './generate-trigger'

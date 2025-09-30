@@ -4,7 +4,7 @@ import type {
 	Secret,
 	SecretRequest,
 	SecretRequestJson,
-} from '@cre/generated/sdk/v1alpha/sdk_pb'
+} from '@cre/generated/sdk/v1beta/sdk_pb'
 import { type Runtime } from '@cre/sdk/runtime'
 import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 import type { SecretsError } from './errors'

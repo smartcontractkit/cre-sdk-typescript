@@ -19,7 +19,7 @@ import {
 	type Trigger,
 	TriggerSchema,
 	type TriggerSubscriptionRequest,
-} from '@cre/generated/sdk/v1alpha/sdk_pb'
+} from '@cre/generated/sdk/v1beta/sdk_pb'
 import type { Value as ProtoValue } from '@cre/generated/values/v1/values_pb'
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
 import { cre } from '@cre/sdk/cre'

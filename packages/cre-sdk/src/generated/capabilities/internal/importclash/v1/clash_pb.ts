@@ -4,7 +4,7 @@
 
 import type { GenFile, GenService } from '@bufbuild/protobuf/codegenv2'
 import { fileDesc, serviceDesc } from '@bufbuild/protobuf/codegenv2'
-import { file_tools_generator_v1alpha_cre_metadata } from '../../../../tools/generator/v1alpha/cre_metadata_pb'
+import { file_tools_generator_v1beta_cre_metadata } from '../../../../tools/generator/v1beta/cre_metadata_pb'
 import type { ItemSchema } from '../p1/v1/import_pb'
 import { file_capabilities_internal_importclash_p1_v1_import } from '../p1/v1/import_pb'
 import type { ItemSchema as ItemSchema$1 } from '../p2/v1/import_pb'
@@ -16,11 +16,11 @@ import { file_capabilities_internal_importclash_p2_v1_import } from '../p2/v1/im
 export const file_capabilities_internal_importclash_v1_clash: GenFile =
 	/*@__PURE__*/
 	fileDesc(
-		'CjBjYXBhYmlsaXRpZXMvaW50ZXJuYWwvaW1wb3J0Y2xhc2gvdjEvY2xhc2gucHJvdG8SJGNhcGFiaWxpdGllcy5pbnRlcm5hbC5pbXBvcnRjbGFzaC52MTKYAQoLQmFzaWNBY3Rpb24SbQoNUGVyZm9ybUFjdGlvbhItLmNhcGFiaWxpdGllcy5pbnRlcm5hbC5pbXBvcnRjbGFzaC5wMS52MS5JdGVtGi0uY2FwYWJpbGl0aWVzLmludGVybmFsLmltcG9ydGNsYXNoLnAyLnYxLkl0ZW0aGoK1GBYIARISaW1wb3J0LWNsYXNoQDEuMC4wQukBCihjb20uY2FwYWJpbGl0aWVzLmludGVybmFsLmltcG9ydGNsYXNoLnYxQgpDbGFzaFByb3RvUAGiAgNDSUmqAiRDYXBhYmlsaXRpZXMuSW50ZXJuYWwuSW1wb3J0Y2xhc2guVjHKAiRDYXBhYmlsaXRpZXNcSW50ZXJuYWxcSW1wb3J0Y2xhc2hcVjHiAjBDYXBhYmlsaXRpZXNcSW50ZXJuYWxcSW1wb3J0Y2xhc2hcVjFcR1BCTWV0YWRhdGHqAidDYXBhYmlsaXRpZXM6OkludGVybmFsOjpJbXBvcnRjbGFzaDo6VjFiBnByb3RvMw',
+		'CjBjYXBhYmlsaXRpZXMvaW50ZXJuYWwvaW1wb3J0Y2xhc2gvdjEvY2xhc2gucHJvdG8SJGNhcGFiaWxpdGllcy5pbnRlcm5hbC5pbXBvcnRjbGFzaC52MTKYAQoLQmFzaWNBY3Rpb24SbQoNUGVyZm9ybUFjdGlvbhItLmNhcGFiaWxpdGllcy5pbnRlcm5hbC5pbXBvcnRjbGFzaC5wMS52MS5JdGVtGi0uY2FwYWJpbGl0aWVzLmludGVybmFsLmltcG9ydGNsYXNoLnAyLnYxLkl0ZW0aGpK1GBYIARISaW1wb3J0LWNsYXNoQDEuMC4wQukBCihjb20uY2FwYWJpbGl0aWVzLmludGVybmFsLmltcG9ydGNsYXNoLnYxQgpDbGFzaFByb3RvUAGiAgNDSUmqAiRDYXBhYmlsaXRpZXMuSW50ZXJuYWwuSW1wb3J0Y2xhc2guVjHKAiRDYXBhYmlsaXRpZXNcSW50ZXJuYWxcSW1wb3J0Y2xhc2hcVjHiAjBDYXBhYmlsaXRpZXNcSW50ZXJuYWxcSW1wb3J0Y2xhc2hcVjFcR1BCTWV0YWRhdGHqAidDYXBhYmlsaXRpZXM6OkludGVybmFsOjpJbXBvcnRjbGFzaDo6VjFiBnByb3RvMw',
 		[
 			file_capabilities_internal_importclash_p1_v1_import,
 			file_capabilities_internal_importclash_p2_v1_import,
-			file_tools_generator_v1alpha_cre_metadata,
+			file_tools_generator_v1beta_cre_metadata,
 		],
 	)
 

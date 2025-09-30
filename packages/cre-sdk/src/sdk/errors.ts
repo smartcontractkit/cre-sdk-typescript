@@ -1,4 +1,4 @@
-import { Mode, type SecretRequest } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import { Mode, type SecretRequest } from '@cre/generated/sdk/v1beta/sdk_pb'
 
 export class DonModeError extends Error {
 	constructor() {

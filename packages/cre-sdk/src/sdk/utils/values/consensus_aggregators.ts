@@ -3,9 +3,8 @@ import {
 	AggregationType,
 	type ConsensusDescriptor,
 	ConsensusDescriptorSchema,
-	type FieldsMap,
 	FieldsMapSchema,
-} from '@cre/generated/sdk/v1alpha/sdk_pb'
+} from '@cre/generated/sdk/v1beta/sdk_pb'
 import type { CreSerializable, NumericType, TypeVerifier } from './serializer_types'
 
 export type ConsensusAggregation<T, U> = {

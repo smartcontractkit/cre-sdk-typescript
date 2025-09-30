@@ -1,5 +1,5 @@
 import { create, fromJson } from '@bufbuild/protobuf'
-import { type Any, AnySchema, anyPack, type Empty, EmptySchema } from '@bufbuild/protobuf/wkt'
+import { type Any, AnySchema, anyPack } from '@bufbuild/protobuf/wkt'
 import {
 	type BalanceAtReply,
 	BalanceAtReplySchema,
@@ -41,12 +41,6 @@ import {
 	HeaderByNumberRequestSchema,
 	type Log,
 	LogSchema,
-	type RegisterLogTrackingRequest,
-	type RegisterLogTrackingRequestJson,
-	RegisterLogTrackingRequestSchema,
-	type UnregisterLogTrackingRequest,
-	type UnregisterLogTrackingRequestJson,
-	UnregisterLogTrackingRequestSchema,
 	type WriteReportReply,
 	WriteReportReplySchema,
 	type WriteReportRequest,
@@ -282,62 +276,6 @@ export class ClientCapability {
 			payload,
 			inputSchema: HeaderByNumberRequestSchema,
 			outputSchema: HeaderByNumberReplySchema,
-		})
-
-		return {
-			result: () => {
-				return capabilityResponse.result()
-			},
-		}
-	}
-
-	registerLogTracking(
-		runtime: Runtime<unknown>,
-		input: RegisterLogTrackingRequest | RegisterLogTrackingRequestJson,
-	): { result: () => Empty } {
-		const payload = (input as unknown as { $typeName?: string }).$typeName
-			? (input as RegisterLogTrackingRequest)
-			: fromJson(RegisterLogTrackingRequestSchema, input as RegisterLogTrackingRequestJson)
-
-		// Include chainSelector in capability ID for routing when specified
-		const capabilityId = this.chainSelector
-			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
-			: ClientCapability.CAPABILITY_ID
-
-		const capabilityResponse = runtime.callCapability<RegisterLogTrackingRequest, Empty>({
-			capabilityId,
-			method: 'RegisterLogTracking',
-			payload,
-			inputSchema: RegisterLogTrackingRequestSchema,
-			outputSchema: EmptySchema,
-		})
-
-		return {
-			result: () => {
-				return capabilityResponse.result()
-			},
-		}
-	}
-
-	unregisterLogTracking(
-		runtime: Runtime<unknown>,
-		input: UnregisterLogTrackingRequest | UnregisterLogTrackingRequestJson,
-	): { result: () => Empty } {
-		const payload = (input as unknown as { $typeName?: string }).$typeName
-			? (input as UnregisterLogTrackingRequest)
-			: fromJson(UnregisterLogTrackingRequestSchema, input as UnregisterLogTrackingRequestJson)
-
-		// Include chainSelector in capability ID for routing when specified
-		const capabilityId = this.chainSelector
-			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
-			: ClientCapability.CAPABILITY_ID
-
-		const capabilityResponse = runtime.callCapability<UnregisterLogTrackingRequest, Empty>({
-			capabilityId,
-			method: 'UnregisterLogTracking',
-			payload,
-			inputSchema: UnregisterLogTrackingRequestSchema,
-			outputSchema: EmptySchema,
 		})
 
 		return {

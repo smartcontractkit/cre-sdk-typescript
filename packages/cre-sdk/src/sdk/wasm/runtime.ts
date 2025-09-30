@@ -13,7 +13,7 @@ import {
 	type GetSecretsRequest,
 	GetSecretsRequestSchema,
 	type Mode,
-} from '@cre/generated/sdk/v1alpha/sdk_pb'
+} from '@cre/generated/sdk/v1beta/sdk_pb'
 import { NodeRuntimeImpl, type RuntimeHelpers, RuntimeImpl } from '../impl/runtime-impl'
 import { hostBindings } from './host-bindings'
 

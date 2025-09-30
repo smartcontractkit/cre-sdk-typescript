@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import type { ExecuteRequest } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import type { ExecuteRequest } from '@cre/generated/sdk/v1beta/sdk_pb'
 import type { StandardSchemaV1 } from '@standard-schema/spec'
 import { z } from 'zod'
 import { type ConfigHandlerParams, configHandler } from './index'

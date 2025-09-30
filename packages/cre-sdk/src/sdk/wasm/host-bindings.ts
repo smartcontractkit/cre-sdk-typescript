@@ -1,4 +1,4 @@
-import { Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import { Mode } from '@cre/generated/sdk/v1beta/sdk_pb'
 import { z } from 'zod'
 
 // Zod schema for validating global host functions

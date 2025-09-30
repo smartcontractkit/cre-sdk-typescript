@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import { AggregationType, type ConsensusDescriptor } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import { AggregationType, type ConsensusDescriptor } from '@cre/generated/sdk/v1beta/sdk_pb'
 import {
 	type ConsensusAggregation,
 	ConsensusAggregationByFields,

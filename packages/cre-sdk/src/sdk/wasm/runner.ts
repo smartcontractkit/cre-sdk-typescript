@@ -5,7 +5,7 @@ import {
 	type ExecutionResult,
 	ExecutionResultSchema,
 	TriggerSubscriptionRequestSchema,
-} from '@cre/generated/sdk/v1alpha/sdk_pb'
+} from '@cre/generated/sdk/v1beta/sdk_pb'
 import { type ConfigHandlerParams, configHandler } from '@cre/sdk/utils/config'
 import type { SecretsProvider, Workflow } from '@cre/sdk/workflow'
 import { Value } from '../utils'

@@ -17,7 +17,7 @@ import {
 	type SecretRequestJson,
 	SecretRequestSchema,
 	SimpleConsensusInputsSchema,
-} from '@cre/generated/sdk/v1alpha/sdk_pb'
+} from '@cre/generated/sdk/v1beta/sdk_pb'
 import { ConsensusCapability } from '@cre/generated-sdk/capabilities/internal/consensus/v1alpha/consensus_sdk_gen'
 import type { BaseRuntime, CallCapabilityParams, NodeRuntime, Runtime } from '@cre/sdk/runtime'
 import {
