@@ -54,7 +54,7 @@ Then run `cre init`, name your project and choose TypeScript as the language to 
 
 ## Examples
 
-This TypeScripe CRE SDK also includes some reference examples - [cre-sdk-examples](https://github.com/smartcontractkit/cre-sdk-typescript/tree/main/packages/cre-sdk-examples).  These can be copied and pasted into your project as needed.
+This TypeScript CRE SDK also includes some reference examples - [cre-sdk-examples](https://github.com/smartcontractkit/cre-sdk-typescript/tree/main/packages/cre-sdk-examples).  These can be copied and pasted into your project as needed.
 
 ⚠️ Note however that these are refence TypeScript workflows and may require some additional steps (having the CRE CLI installed, running `bunx cre-setup` from inside a workflow example directory, etc) to get them to work within this repo.
 
