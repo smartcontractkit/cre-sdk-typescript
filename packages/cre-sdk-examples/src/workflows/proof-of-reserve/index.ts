@@ -49,7 +49,7 @@ interface PORResponse {
 
 interface ReserveInfo {
   lastUpdated: Date;
-  totalReserve: bigint;
+  totalReserve: number;
 }
 
 // Utility function to safely stringify objects with bigints
@@ -79,7 +79,7 @@ const fetchReserveInfo = (
 
   return {
     lastUpdated: new Date(porResp.updatedAt),
-    totalReserve: BigInt(Math.floor(porResp.totalToken * 1e18)), // Scale to 18 decimals
+    totalReserve: porResp.totalToken
   };
 };
 
@@ -240,16 +240,17 @@ const updateReserves = (
     })
     .result();
 
-  const txHash = resp.txHash;
+  // TODO: Why does the writeReport fail with an "execution reverted" error?
+  const txHash = resp.txHash || Uint8Array.from('0x000000000000000000000000000000')
 
   if (!txHash) {
-    throw new Error("Failed to write report");
+    throw new Error(`Failed to write report: ${resp.errorMessage}`)
   }
 
   runtime.log(
-    `Write report transaction succeeded at txHash: ${txHash.toString()}`
+    `Write report transaction succeeded at txHash: ${bytesToHex(txHash)}`
   );
-  return txHash.toString();
+  return txHash.toString()
 };
 
 const doPOR = (runtime: Runtime<Config>): string => {
@@ -272,8 +273,7 @@ const doPOR = (runtime: Runtime<Config>): string => {
   const totalSupply = getTotalSupply(runtime);
   runtime.log(`TotalSupply ${totalSupply.toString()}`);
 
-  const totalReserveScaled = (reserveInfo as unknown as ReserveInfo)
-    .totalReserve;
+  const totalReserveScaled = BigInt(reserveInfo.totalReserve * 1e18);
   runtime.log(`TotalReserveScaled ${totalReserveScaled.toString()}`);
 
   const nativeTokenBalance = fetchNativeTokenBalance(
@@ -293,7 +293,7 @@ const doPOR = (runtime: Runtime<Config>): string => {
 
   updateReserves(runtime, totalSupply, totalReserveScaled);
 
-  return totalReserveScaled.toString();
+  return reserveInfo.totalReserve.toString();
 };
 
 const getLastMessage = (
@@ -356,6 +356,8 @@ const onCronTrigger = (
     throw new Error("Scheduled execution time is required");
   }
 
+  runtime.log('Running CronTrigger');
+
   return doPOR(runtime);
 };
 
@@ -397,11 +399,11 @@ const onHTTPTrigger = (
     return doPOR(runtime);
   }
 
-  // Log the raw JSON for debugging
-  runtime.log("Payload bytes");
+  	// Log the raw JSON for debugging (human-readable).
+	runtime.log(`Payload bytes payloadBytes ${payload.input.toString()}`)
 
   try {
-    runtime.log("Parsed HTTP trigger received");
+    runtime.log(`Parsed HTTP trigger received payload ${payload.input.toString()}`);
     return doPOR(runtime);
   } catch (error) {
     runtime.log("Failed to parse HTTP trigger payload");
@@ -412,7 +414,6 @@ const onHTTPTrigger = (
 const initWorkflow = (config: Config) => {
   const cronTrigger = new cre.capabilities.CronCapability();
   const httpTrigger = new cre.capabilities.HTTPCapability();
-
   const network = getNetwork({
     chainFamily: "evm",
     chainSelectorName: config.evms[0].chainSelectorName,
