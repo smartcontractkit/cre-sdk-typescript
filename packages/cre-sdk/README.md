@@ -1,17 +1,73 @@
 # @chainlink/cre-sdk
 
-The Chainlink Runtime Environment (CRE) SDK for TypeScript enables developers to build decentralized workflows that combine off-chain computation with on-chain execution. Create workflows that fetch data from APIs, interact with smart contracts, and coordinate complex multi-step operations across blockchain networks.
+The Chainlink Runtime Environment (CRE) SDK for TypeScript enables developers to write decentralized [Chainlink Runtime Environment Workflows](https://docs.chain.link/cre/) in Typescript. 
+
+
+## Table of Contents
+
+- [How to use this SDK](#how-to-use-this-sdk)
+- [Examples](#examples)
+- [Simulate locally with CRE CLI](#simulate-locally-with-cre-cli)
+- [Installation](#installation)
+- [Core Concepts](#core-concepts)
+  - [Workflows](#workflows)
+  - [Runtime Modes](#runtime-modes)
+- [Available Capabilities](#available-capabilities)
+  - [Scheduling](#scheduling)
+  - [HTTP Operations](#http-operations)
+  - [Blockchain Interactions](#blockchain-interactions)
+- [Configuration & Type Safety](#configuration--type-safety)
+- [Consensus & Aggregation](#consensus--aggregation)
+- [Utility Functions](#utility-functions)
+  - [Hex Utilities](#hex-utilities)
+  - [Chain Selectors](#chain-selectors)
+- [Example Workflows](#example-workflows)
+  - [1. Simple Scheduled Task](#1-simple-scheduled-task)
+  - [2. API Data Aggregation](#2-api-data-aggregation)
+  - [3. On-Chain Data Integration](#3-on-chain-data-integration)
+- [API Reference](#api-reference)
+  - [Core Functions](#core-functions)
+  - [Capabilities](#capabilities)
+  - [Utilities](#utilities)
+- [Building from Source](#building-from-source)
+  - [Protobuf Generation](#protobuf-generation)
+  - [Chain Selectors Generation](#chain-selectors-generation)
+- [Requirements](#requirements)
+- [License](#license)
+
+## How to use this SDK
+This package exposes the APIs you use to write CRE Workflows in TypeScript, and then compile them to WASM.
+
+This package must be used along with the [CRE CLI tool](https://github.com/smartcontractkit/cre-cli) to deploy your WASM-compiled workflows.  
+
+## Prerequisites
+1. the [bun runtime](https://bun.com/).  The wasm compilation currently is only supported by the bun runtime which has near-complete NodeJS compatibility.
+
+2. the [CRE CLI tool](https://github.com/smartcontractkit/cre-cli) installed.
+
+
+
+## Getting Started
+We recommend you consult the [getting started docs](https://docs.chain.link/cre/getting-started/cli-installation) and install the CRE CLI.  
+
+Then run `cre init`, name your project and choose TypeScript as the language to define your workflows in.
 
 ## Examples
 
-Ready to clone repo with example workflows and cre-sdk set up: [cre-sdk-examples](https://github.com/smartcontractkit/cre-sdk-typescript/tree/main/packages/cre-sdk-examples).
+This TypeScripe CRE SDK also includes some reference examples - [cre-sdk-examples](https://github.com/smartcontractkit/cre-sdk-typescript/tree/main/packages/cre-sdk-examples).  These can be copied and pasted into your project as needed.
+
+⚠️ Note however that these are refence TypeScript workflows and may require some additional steps (having the CRE CLI installed, running `bunx cre-setup` from inside a workflow example directory, etc) to get them to work within this repo.
+
+ __We recommend you setup your project using the CRE CLI and then copy and paste these examples into your project__
 
 ## Simulate locally with CRE CLI
 
-You can run and debug your TypeScript workflows locally using the CRE CLI simulation:
+You can run and debug your TypeScript workflows locally using [the CRE CLI's](https://github.com/smartcontractkit/cre-cli) simulation functionality.  
+
+Make sure you `cd` into the directory that contain's your workflow's TypeScript file and the associated `config.json`.  Then:
 
 ```bash
-cre workflow simulate --target local-simulation --config config.json your-workflow-file.ts
+cre workflow simulate --target local-simulation --config config.json index.ts
 ```
 
 See the CLI docs for additional flags (e.g. config file, secrets, HTTP payloads, EVM log params).
@@ -22,33 +78,6 @@ See the CLI docs for additional flags (e.g. config file, secrets, HTTP payloads,
 bun add @chainlink/cre-sdk
 ```
 
-## Quick Start
-
-```typescript
-import { cre, Runner, type Runtime } from "@chainlink/cre-sdk";
-
-type Config = { schedule: string };
-
-const onCronTrigger = (runtime: Runtime<Config>) => {
-  runtime.log("Hello, CRE!");
-  return "Hello, CRE!";
-};
-
-const initWorkflow = (config: Config) => {
-  const cron = new cre.capabilities.CronCapability();
-  return [
-    cre.handler(cron.trigger({ schedule: config.schedule }), onCronTrigger),
-  ];
-};
-
-export async function main() {
-  const runner = await Runner.newRunner<Config>();
-  await runner.run(initWorkflow);
-}
-
-main();
-```
-
 ## Core Concepts
 
 ### Workflows
@@ -56,7 +85,7 @@ main();
 Workflows are the fundamental building blocks of CRE applications. They define how your application responds to triggers and what actions to take. Each workflow consists of:
 
 - **Triggers**: Events that initiate workflow execution (cron schedules, HTTP requests, etc.)
-- **Handlers**: Functions that process trigger events and execute your business logic
+- **Handlers**: Functions that process trigger events and execute your business logic as provided in a callback function.
 - **Capabilities**: Built-in services for interacting with external systems
 
 ### Runtime Modes
@@ -182,8 +211,12 @@ const onCronTrigger = async (runtime: Runtime<Config>) => {
 ```
 
 ## Configuration & Type Safety
+You, the developer, must declare config files in config.json files, co-located with your TypeScript workflow definition.
 
-Use Zod schemas for type-safe configuration:
+
+Use Zod schemas for type-safe configuration.
+
+Here's an example of zod usage for the config specified in `../cre-sdk-examples/src/workflows/on-chain/config.json`
 
 ```typescript
 import { z } from "zod";
@@ -231,10 +264,17 @@ const aggregatedValue = await runtime.runInNodeMode(
 
 ### Hex Utilities
 
+CRE capabilities (like EVM client) expect data in base64 format for serialization. You may need to convert a hex string to base64 format for CRE protocol communication.
+
+Or you may need to convert binary data back to hex format for blockchain operations. This can be Useful for decoding responses from CRE capabilities and transforming data for libraries like viem (which expect hex format)
+
 ```typescript
 import { hexToBase64, bytesToHex } from "@chainlink/cre-sdk";
 
+// Example: "0x1234567890abcdef" → "EjRWeJCrze8="
 const base64Data = hexToBase64("0x1234567890abcdef");
+
+// Example: Uint8Array([18, 52, 86...]) → "0x1234567890abcdef"
 const hexData = bytesToHex(buffer);
 ```
 
@@ -253,36 +293,13 @@ const ethereumSepolia = getNetwork({
 
 ## Example Workflows
 
-### 1. Simple Scheduled Task
+### 1. Simple Cron-scheduled task
+See the [hello-world](https://github.com/smartcontractkit/cre-sdk-typescript/tree/main/packages/cre-sdk-examples/src/hello-world) example for a simple example that runs a cron-based operation on CRE at intervals you define in the `config.js` file.
 
-```typescript
-import { cre, Runner, type Runtime } from "@chainlink/cre-sdk";
-
-type Config = { schedule: string };
-
-const onCronTrigger = (runtime: Runtime<Config>) => {
-  runtime.log("Workflow executed!");
-  return "Task completed";
-};
-
-const initWorkflow = (config: Config) => {
-  const cron = new cre.capabilities.CronCapability();
-  return [
-    cre.handler(cron.trigger({ schedule: config.schedule }), onCronTrigger),
-  ];
-};
-
-export async function main() {
-  const runner = await Runner.newRunner<Config>();
-  await runner.run(initWorkflow);
-}
-
-main();
-```
 
 ### 2. API Data Aggregation
 
-See the [http-fetch example](https://github.com/smartcontractkit/cre-sdk-typescript/tree/main/packages/cre-sdk-examples/src/workflows/http-fetch) for a complete implementation that fetches data from external APIs with consensus aggregation.
+See the [http-fetch example](https://github.com/smartcontractkit/cre-sdk-typescript/tree/main/packages/cre-sdk-examples/src/workflows/http-fetch) for a complete implementation that fetches data from external APIs, with Chainlink CRE consensus aggregation applied.
 
 ### 3. On-Chain Data Integration
 
