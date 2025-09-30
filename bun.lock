@@ -12,7 +12,7 @@
     },
     "packages/cre-sdk": {
       "name": "@chainlink/cre-sdk",
-      "version": "0.0.1",
+      "version": "0.0.3-alpha",
       "bin": {
         "cre-compile": "bin/cre-compile.ts",
       },
@@ -37,14 +37,15 @@
     },
     "packages/cre-sdk-examples": {
       "name": "@chainlink/cre-sdk-examples",
-      "version": "0.0.1",
+      "version": "0.0.3-alpha",
       "dependencies": {
+        "@bufbuild/protobuf": "2.6.3",
         "@chainlink/cre-sdk": "workspace:*",
       },
     },
     "packages/cre-sdk-javy-plugin": {
       "name": "@chainlink/cre-sdk-javy-plugin",
-      "version": "0.0.1",
+      "version": "0.0.3-alpha",
       "bin": {
         "cre-setup": "bin/setup.ts",
         "cre-compile-workflow": "bin/compile-workflow.ts",

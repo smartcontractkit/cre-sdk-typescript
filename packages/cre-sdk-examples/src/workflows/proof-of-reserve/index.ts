@@ -4,10 +4,12 @@ import {
 	type CronPayload,
 	cre,
 	type EVMLog,
+	encodeCallMsg,
 	getNetwork,
 	type HTTPPayload,
 	type HTTPSendRequester,
 	hexToBase64,
+	LAST_FINALIZED_BLOCK_NUMBER,
 	median,
 	Runner,
 	type Runtime,
@@ -97,15 +99,12 @@ const fetchNativeTokenBalance = (
 
 	const contractCall = evmClient
 		.callContract(runtime, {
-			call: {
-				from: hexToBase64(zeroAddress),
-				to: hexToBase64(evmConfig.balanceReaderAddress),
-				data: hexToBase64(callData),
-			},
-			blockNumber: {
-				absVal: Buffer.from([3]).toString('base64'), // 3 for finalized block
-				sign: '-1', // negative for finalized
-			},
+			call: encodeCallMsg({
+				from: zeroAddress,
+				to: evmConfig.balanceReaderAddress as Address,
+				data: callData,
+			}),
+			blockNumber: LAST_FINALIZED_BLOCK_NUMBER,
 		})
 		.result()
 
@@ -148,15 +147,12 @@ const getTotalSupply = (runtime: Runtime<Config>): bigint => {
 
 		const contractCall = evmClient
 			.callContract(runtime, {
-				call: {
-					from: hexToBase64(zeroAddress),
-					to: hexToBase64(evmConfig.tokenAddress),
-					data: hexToBase64(callData),
-				},
-				blockNumber: {
-					absVal: Buffer.from([3]).toString('base64'), // 3 for finalized block
-					sign: '-1', // negative for finalized
-				},
+				call: encodeCallMsg({
+					from: zeroAddress,
+					to: evmConfig.tokenAddress as Address,
+					data: callData,
+				}),
+				blockNumber: LAST_FINALIZED_BLOCK_NUMBER,
 			})
 			.result()
 
@@ -316,15 +312,12 @@ const getLastMessage = (
 
 	const contractCall = evmClient
 		.callContract(runtime, {
-			call: {
-				from: hexToBase64(zeroAddress),
-				to: hexToBase64(evmConfig.messageEmitterAddress),
-				data: hexToBase64(callData),
-			},
-			blockNumber: {
-				absVal: Buffer.from([3]).toString('base64'), // 3 for finalized block
-				sign: '-1', // negative for finalized
-			},
+			call: encodeCallMsg({
+				from: zeroAddress,
+				to: evmConfig.messageEmitterAddress as Address,
+				data: callData,
+			}),
+			blockNumber: LAST_FINALIZED_BLOCK_NUMBER,
 		})
 		.result()
 

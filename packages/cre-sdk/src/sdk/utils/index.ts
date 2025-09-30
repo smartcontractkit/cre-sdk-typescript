@@ -1,3 +1,4 @@
+export * from './capabilities/blockchain/blockchain-helpers'
 export * from './capabilities/http/http-helpers'
 export * from './chain-selectors'
 export * from './hex-utils'
