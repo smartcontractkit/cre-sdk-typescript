@@ -6,7 +6,8 @@ import {
 	type Response,
 	ResponseSchema,
 } from '@cre/generated/capabilities/networking/http/v1alpha/client_pb'
-import type { NodeRuntime, Runtime } from '@cre/sdk/runtime'
+import { type NodeRuntime, type Runtime } from '@cre/sdk'
+import { Report } from '@cre/sdk/report'
 import type { ConsensusAggregation, PrimitiveTypes, UnwrapOptions } from '@cre/sdk/utils'
 
 export class SendRequester {
@@ -62,9 +63,16 @@ export class ClientCapability {
 		runtime: NodeRuntime<unknown>,
 		input: Request | RequestJson,
 	): { result: () => Response } {
-		const payload = (input as unknown as { $typeName?: string }).$typeName
-			? (input as Request)
-			: fromJson(RequestSchema, input as RequestJson)
+		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
+		let payload: Request
+
+		if ((input as unknown as { $typeName?: string }).$typeName) {
+			// It's the original protobuf type
+			payload = input as Request
+		} else {
+			// It's regular JSON, convert using fromJson
+			payload = fromJson(RequestSchema, input as RequestJson)
+		}
 
 		const capabilityId = ClientCapability.CAPABILITY_ID
 
@@ -78,7 +86,9 @@ export class ClientCapability {
 
 		return {
 			result: () => {
-				return capabilityResponse.result()
+				const result = capabilityResponse.result()
+
+				return result
 			},
 		}
 	}

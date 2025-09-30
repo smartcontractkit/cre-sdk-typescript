@@ -10,7 +10,8 @@ import {
 	SimpleConsensusInputsSchema,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { type Value, ValueSchema } from '@cre/generated/values/v1/values_pb'
-import type { Runtime } from '@cre/sdk/runtime'
+import { type Runtime } from '@cre/sdk'
+import { Report } from '@cre/sdk/report'
 
 /**
  * Consensus Capability
@@ -30,9 +31,16 @@ export class ConsensusCapability {
 		runtime: Runtime<unknown>,
 		input: SimpleConsensusInputs | SimpleConsensusInputsJson,
 	): { result: () => Value } {
-		const payload = (input as unknown as { $typeName?: string }).$typeName
-			? (input as SimpleConsensusInputs)
-			: fromJson(SimpleConsensusInputsSchema, input as SimpleConsensusInputsJson)
+		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
+		let payload: SimpleConsensusInputs
+
+		if ((input as unknown as { $typeName?: string }).$typeName) {
+			// It's the original protobuf type
+			payload = input as SimpleConsensusInputs
+		} else {
+			// It's regular JSON, convert using fromJson
+			payload = fromJson(SimpleConsensusInputsSchema, input as SimpleConsensusInputsJson)
+		}
 
 		const capabilityId = ConsensusCapability.CAPABILITY_ID
 
@@ -46,7 +54,9 @@ export class ConsensusCapability {
 
 		return {
 			result: () => {
-				return capabilityResponse.result()
+				const result = capabilityResponse.result()
+
+				return result
 			},
 		}
 	}
@@ -54,10 +64,17 @@ export class ConsensusCapability {
 	report(
 		runtime: Runtime<unknown>,
 		input: ReportRequest | ReportRequestJson,
-	): { result: () => ReportResponse } {
-		const payload = (input as unknown as { $typeName?: string }).$typeName
-			? (input as ReportRequest)
-			: fromJson(ReportRequestSchema, input as ReportRequestJson)
+	): { result: () => Report } {
+		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
+		let payload: ReportRequest
+
+		if ((input as unknown as { $typeName?: string }).$typeName) {
+			// It's the original protobuf type
+			payload = input as ReportRequest
+		} else {
+			// It's regular JSON, convert using fromJson
+			payload = fromJson(ReportRequestSchema, input as ReportRequestJson)
+		}
 
 		const capabilityId = ConsensusCapability.CAPABILITY_ID
 
@@ -71,7 +88,9 @@ export class ConsensusCapability {
 
 		return {
 			result: () => {
-				return capabilityResponse.result()
+				const result = capabilityResponse.result()
+
+				return new Report(result)
 			},
 		}
 	}

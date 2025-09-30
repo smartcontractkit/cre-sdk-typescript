@@ -12,7 +12,8 @@ import {
 	type TriggerEvent,
 	TriggerEventSchema,
 } from '@cre/generated/capabilities/internal/actionandtrigger/v1/action_and_trigger_pb'
-import type { Runtime } from '@cre/sdk/runtime'
+import { type Runtime } from '@cre/sdk'
+import { Report } from '@cre/sdk/report'
 import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 
 /**
@@ -30,9 +31,16 @@ export class BasicCapability {
 	static readonly CAPABILITY_VERSION = '1.0.0'
 
 	action(runtime: Runtime<unknown>, input: Input | InputJson): { result: () => Output } {
-		const payload = (input as unknown as { $typeName?: string }).$typeName
-			? (input as Input)
-			: fromJson(InputSchema, input as InputJson)
+		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
+		let payload: Input
+
+		if ((input as unknown as { $typeName?: string }).$typeName) {
+			// It's the original protobuf type
+			payload = input as Input
+		} else {
+			// It's regular JSON, convert using fromJson
+			payload = fromJson(InputSchema, input as InputJson)
+		}
 
 		const capabilityId = BasicCapability.CAPABILITY_ID
 
@@ -46,7 +54,9 @@ export class BasicCapability {
 
 		return {
 			result: () => {
-				return capabilityResponse.result()
+				const result = capabilityResponse.result()
+
+				return result
 			},
 		}
 	}

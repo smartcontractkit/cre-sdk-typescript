@@ -1,3 +1,6 @@
+import type { DescMessage } from '@bufbuild/protobuf'
+import { ReportRequestSchema, ReportResponseSchema } from '@cre/generated/sdk/v1alpha/sdk_pb'
+
 /**
  * Converts first letter of string to lowercase
  */
@@ -15,4 +18,38 @@ export const getImportPathForFile = (fileName: string): string => {
 
 	// Default to local generated path
 	return `@cre/generated/${fileName.replace('.proto', '')}_pb`
+}
+
+export const wrappedReportDesc: DescMessage = {
+	...ReportResponseSchema,
+	name: 'Report',
+}
+
+export function wrapType(desc: DescMessage): DescMessage {
+	// Don't wrap ReportResponse itself - it should remain as is
+	if (desc === ReportResponseSchema) {
+		return desc
+	}
+
+	const fields = desc.fields
+	for (let i = 0; i < fields.length; i++) {
+		const field = fields[i]
+		if (field.message === ReportResponseSchema) {
+			const wrappedTypeName = desc.name.replace('Report', 'CreReport')
+
+			const newFields = [...fields]
+			newFields[i] = {
+				...field,
+				message: wrappedReportDesc,
+			} as typeof field
+
+			return {
+				...desc,
+				name: wrappedTypeName,
+				fields: newFields,
+			}
+		}
+	}
+
+	return desc
 }

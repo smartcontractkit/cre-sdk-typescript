@@ -1,7 +1,10 @@
 import type { Message } from '@bufbuild/protobuf'
 import type { GenMessage } from '@bufbuild/protobuf/codegenv2'
+import type { ReportRequest, ReportRequestJson } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import type { ConsensusAggregation, PrimitiveTypes, UnwrapOptions } from '@cre/sdk/utils'
 import type { SecretsProvider } from '.'
+
+export type { ReportRequest, ReportRequestJson }
 
 export type CallCapabilityParams<I extends Message, O extends Message> = {
 	capabilityId: string
@@ -10,6 +13,8 @@ export type CallCapabilityParams<I extends Message, O extends Message> = {
 	inputSchema: GenMessage<I>
 	outputSchema: GenMessage<O>
 }
+
+import type { Report } from '@cre/sdk/report'
 
 export type BaseRuntime<C> = {
 	config: C
@@ -31,6 +36,7 @@ export type Runtime<C> = BaseRuntime<C> &
 			consensusAggregation: ConsensusAggregation<TOutput, true>,
 			unwrapOptions?: TOutput extends PrimitiveTypes ? never : UnwrapOptions<TOutput>,
 		): (...args: TArgs) => { result: () => TOutput }
+		report(input: ReportRequest | ReportRequestJson): { result: () => Report }
 	}
 
 export type NodeRuntime<C> = BaseRuntime<C> & {

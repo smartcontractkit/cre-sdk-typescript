@@ -19,7 +19,15 @@ import {
 	SimpleConsensusInputsSchema,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { ConsensusCapability } from '@cre/generated-sdk/capabilities/internal/consensus/v1alpha/consensus_sdk_gen'
-import type { BaseRuntime, CallCapabilityParams, NodeRuntime, Runtime } from '@cre/sdk/runtime'
+import type {
+	BaseRuntime,
+	CallCapabilityParams,
+	NodeRuntime,
+	ReportRequest,
+	ReportRequestJson,
+	Runtime,
+} from '@cre/sdk'
+import type { Report } from '@cre/sdk/report'
 import {
 	type ConsensusAggregation,
 	type CreSerializable,
@@ -270,6 +278,16 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 					default:
 						throw new SecretsError(secretRequest, 'cannot unmashal returned value from host')
 				}
+			},
+		}
+	}
+
+	report(input: ReportRequest | ReportRequestJson): { result: () => Report } {
+		const consensus = new ConsensusCapability()
+		const call = consensus.report(this, input)
+		return {
+			result: () => {
+				return call.result()
 			},
 		}
 	}

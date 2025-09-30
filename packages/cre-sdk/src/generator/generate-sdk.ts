@@ -8,6 +8,7 @@ import {
 	capability,
 	method as methodOption,
 } from '@cre/generated/tools/generator/v1alpha/cre_metadata_pb'
+import { generateReportWrapper } from './generate_report_wrapper'
 import { generateActionMethod } from './generate-action'
 import { generateActionSugarClass } from './generate-sugar'
 import { generateTriggerClass, generateTriggerMethod } from './generate-trigger'
@@ -107,19 +108,13 @@ export function generateSdk(file: GenFile, outputDir: string) {
 		// TODO???
 		if (hasActions || true) {
 			if (modePrefix !== '') {
-				imports.add(`import type { Runtime, ${modePrefix}Runtime } from "@cre/sdk/runtime"`)
+				imports.add(`import { type Runtime, type ${modePrefix}Runtime } from "@cre/sdk"`)
+				imports.add(`import { Report } from "@cre/sdk/report"`)
 			} else {
-				imports.add(`import type { Runtime } from "@cre/sdk/runtime"`)
+				imports.add(`import { type Runtime } from "@cre/sdk"`)
+				imports.add(`import { Report } from "@cre/sdk/report"`)
 			}
 		}
-
-		// Generate deduplicated type imports
-		typeImports.forEach((types, path) => {
-			const sortedTypes = Array.from(types).sort()
-			imports.add(`import {
-  ${sortedTypes.join(',\n  ')},
-} from "${path}"`)
-		})
 
 		const capabilityClassName = `${service.name}Capability`
 
@@ -149,6 +144,45 @@ export function generateSdk(file: GenFile, outputDir: string) {
 				'import type { ConsensusAggregation, PrimitiveTypes, UnwrapOptions } from "@cre/sdk/utils"',
 			)
 		}
+
+		const reportWrappers = serviceMethods
+			.map((method) => {
+				const [outputWrapper, outputImports] = generateReportWrapper(method.output)
+				const [inputWrapper, inputImports] = generateReportWrapper(method.input)
+				if (outputWrapper !== '' || inputWrapper !== '') {
+					// Add the imports to typeImports
+					outputImports.forEach((types, path) => {
+						if (!typeImports.has(path)) {
+							typeImports.set(path, new Set())
+						}
+						const existingTypes = typeImports.get(path)!
+						types.forEach((type) => {
+							existingTypes.add(type)
+						})
+					})
+					inputImports.forEach((types, path) => {
+						if (!typeImports.has(path)) {
+							typeImports.set(path, new Set())
+						}
+						const existingTypes = typeImports.get(path)!
+						types.forEach((type) => {
+							existingTypes.add(type)
+						})
+					})
+					return `${outputWrapper}\n${inputWrapper}`
+				}
+				return ''
+			})
+			.filter((wrapper) => wrapper !== '')
+			.join('\n')
+
+		// Generate deduplicated type imports (after report wrapper processing)
+		typeImports.forEach((types, path) => {
+			const sortedTypes = Array.from(types).sort()
+			imports.add(`import {
+  ${sortedTypes.join(',\n  ')},
+} from "${path}"`)
+		})
 
 		// Generate methods
 		const methods = serviceMethods
@@ -229,6 +263,7 @@ ${Object.entries(defaults)
 		// Generate the complete file
 		const output = `${Array.from(imports).join('\n')}
 ${sugarClasses}
+${reportWrappers}
 ${classComment}
 export class ${capabilityClassName} {
   /** The capability ID for this service */
