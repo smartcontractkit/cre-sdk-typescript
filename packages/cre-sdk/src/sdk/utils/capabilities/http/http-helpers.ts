@@ -1,4 +1,4 @@
-import type { Response } from '../../generated/capabilities/networking/http/v1alpha/client_pb'
+import type { Response } from '@cre/generated/capabilities/networking/http/v1alpha/client_pb'
 
 /**
  * HTTP Response Helper Functions
