@@ -12,7 +12,7 @@ import {
 	Runner,
 	type Runtime,
 } from '@chainlink/cre-sdk'
-import { decodeFunctionResult, encodeFunctionData, zeroAddress } from 'viem'
+import { type Address, decodeFunctionResult, encodeFunctionData, zeroAddress } from 'viem'
 import { z } from 'zod'
 import { BalanceReader, IERC20, MessageEmitter, ReserveManager } from './abi'
 
@@ -92,7 +92,7 @@ const fetchNativeTokenBalance = (
 	const callData = encodeFunctionData({
 		abi: BalanceReader,
 		functionName: 'getNativeBalances',
-		args: [[tokenHolderAddress as `0x${string}`]],
+		args: [[tokenHolderAddress as Address]],
 	})
 
 	const contractCall = evmClient
@@ -311,7 +311,7 @@ const getLastMessage = (
 	const callData = encodeFunctionData({
 		abi: MessageEmitter,
 		functionName: 'getLastMessage',
-		args: [emitter as `0x${string}`],
+		args: [emitter as Address],
 	})
 
 	const contractCall = evmClient
