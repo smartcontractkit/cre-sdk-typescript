@@ -3,6 +3,7 @@
  */
 
 import { ClientCapability as EVMClient } from '@cre/generated-sdk/capabilities/blockchain/evm/v1alpha/client_sdk_gen'
+import { ConsensusCapability } from '@cre/generated-sdk/capabilities/internal/consensus/v1alpha/consensus_sdk_gen'
 import {
 	ClientCapability as HTTPClient,
 	type SendRequester as HTTPSendRequester,
@@ -26,6 +27,7 @@ export const cre = {
 		HTTPCapability,
 		HTTPClient,
 		EVMClient,
+		ConsensusCapability,
 	},
 	handler,
 }
