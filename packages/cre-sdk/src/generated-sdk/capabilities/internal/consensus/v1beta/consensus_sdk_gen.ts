@@ -1,0 +1,78 @@
+import { fromJson } from '@bufbuild/protobuf'
+import {
+	type ReportRequest,
+	type ReportRequestJson,
+	ReportRequestSchema,
+	type ReportResponse,
+	ReportResponseSchema,
+	type SimpleConsensusInputs,
+	type SimpleConsensusInputsJson,
+	SimpleConsensusInputsSchema,
+} from '@cre/generated/sdk/v1beta/sdk_pb'
+import { type Value, ValueSchema } from '@cre/generated/values/v1/values_pb'
+import type { Runtime } from '@cre/sdk/runtime'
+
+/**
+ * Consensus Capability
+ *
+ * Capability ID: consensus@1.0.0
+ * Capability Name: consensus
+ * Capability Version: 1.0.0
+ */
+export class ConsensusCapability {
+	/** The capability ID for this service */
+	static readonly CAPABILITY_ID = 'consensus@1.0.0'
+
+	static readonly CAPABILITY_NAME = 'consensus'
+	static readonly CAPABILITY_VERSION = '1.0.0'
+
+	simple(
+		runtime: Runtime<unknown>,
+		input: SimpleConsensusInputs | SimpleConsensusInputsJson,
+	): { result: () => Value } {
+		const payload = (input as unknown as { $typeName?: string }).$typeName
+			? (input as SimpleConsensusInputs)
+			: fromJson(SimpleConsensusInputsSchema, input as SimpleConsensusInputsJson)
+
+		const capabilityId = ConsensusCapability.CAPABILITY_ID
+
+		const capabilityResponse = runtime.callCapability<SimpleConsensusInputs, Value>({
+			capabilityId,
+			method: 'Simple',
+			payload,
+			inputSchema: SimpleConsensusInputsSchema,
+			outputSchema: ValueSchema,
+		})
+
+		return {
+			result: () => {
+				return capabilityResponse.result()
+			},
+		}
+	}
+
+	report(
+		runtime: Runtime<unknown>,
+		input: ReportRequest | ReportRequestJson,
+	): { result: () => ReportResponse } {
+		const payload = (input as unknown as { $typeName?: string }).$typeName
+			? (input as ReportRequest)
+			: fromJson(ReportRequestSchema, input as ReportRequestJson)
+
+		const capabilityId = ConsensusCapability.CAPABILITY_ID
+
+		const capabilityResponse = runtime.callCapability<ReportRequest, ReportResponse>({
+			capabilityId,
+			method: 'Report',
+			payload,
+			inputSchema: ReportRequestSchema,
+			outputSchema: ReportResponseSchema,
+		})
+
+		return {
+			result: () => {
+				return capabilityResponse.result()
+			},
+		}
+	}
+}

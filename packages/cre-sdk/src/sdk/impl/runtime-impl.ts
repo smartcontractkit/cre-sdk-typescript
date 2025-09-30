@@ -18,7 +18,7 @@ import {
 	SecretRequestSchema,
 	SimpleConsensusInputsSchema,
 } from '@cre/generated/sdk/v1beta/sdk_pb'
-import { ConsensusCapability } from '@cre/generated-sdk/capabilities/internal/consensus/v1alpha/consensus_sdk_gen'
+import { ConsensusCapability } from '@cre/generated-sdk/capabilities/internal/consensus/v1beta/consensus_sdk_gen'
 import type { BaseRuntime, CallCapabilityParams, NodeRuntime, Runtime } from '@cre/sdk/runtime'
 import {
 	type ConsensusAggregation,
