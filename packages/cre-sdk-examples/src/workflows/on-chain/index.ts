@@ -2,15 +2,16 @@ import {
 	bytesToHex,
 	consensusMedianAggregation,
 	cre,
+	encodeCallMsg,
 	getNetwork,
 	type HTTPSendRequester,
-	hexToBase64,
+	LAST_FINALIZED_BLOCK_NUMBER,
 	ok,
 	Runner,
 	type Runtime,
 	text,
 } from '@chainlink/cre-sdk'
-import { decodeFunctionResult, encodeFunctionData, zeroAddress } from 'viem'
+import { type Address, decodeFunctionResult, encodeFunctionData, zeroAddress } from 'viem'
 import { z } from 'zod'
 
 import { STORAGE_ABI } from './abi'
@@ -76,15 +77,12 @@ const onCronTrigger = (runtime: Runtime<Config>) => {
 
 	const contractCall = evmClient
 		.callContract(runtime, {
-			call: {
-				from: hexToBase64(zeroAddress),
-				to: hexToBase64(evmConfig.storageAddress),
-				data: hexToBase64(callData),
-			},
-			blockNumber: {
-				absVal: Buffer.from([3]).toString('base64'), // 3 for finalized block
-				sign: '-1', // negative for finalized
-			},
+			call: encodeCallMsg({
+				from: zeroAddress,
+				to: evmConfig.storageAddress as Address,
+				data: callData,
+			}),
+			blockNumber: LAST_FINALIZED_BLOCK_NUMBER,
 		})
 		.result()
 

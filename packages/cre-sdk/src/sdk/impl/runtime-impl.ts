@@ -68,8 +68,11 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 
 		const anyPayload = anyPack(inputSchema, payload)
 		const callbackId = this.nextCallId
-		if (this.mode === Mode.DON) this.nextCallId++
-		else this.nextCallId--
+		if (this.mode === Mode.DON) {
+			this.nextCallId++
+		} else {
+			this.nextCallId--
+		}
 
 		const req = create(CapabilityRequestSchema, {
 			id: capabilityId,

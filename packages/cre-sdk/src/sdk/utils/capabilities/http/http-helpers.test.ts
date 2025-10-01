@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import type { Response } from '../../generated/capabilities/networking/http/v1alpha/client_pb'
+import type { Response } from '@cre/generated/capabilities/networking/http/v1alpha/client_pb'
 import { getHeader, json, ok, text } from './http-helpers'
 
 // Mock Response object for testing
