@@ -1,0 +1,60 @@
+name: CI
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+
+jobs:
+  full-checks:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: zsh
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y make zsh curl libclang-dev git build-essential
+
+      - name: Install asdf and toolchain from .tool-versions
+        run: |
+          # Install asdf
+          git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0
+
+          # Make asdf available to subsequent steps without re-sourcing
+          echo "$HOME/.asdf/bin" >> $GITHUB_PATH
+          echo "$HOME/.asdf/shims" >> $GITHUB_PATH
+
+          # Init asdf in this step (zsh is fine to source asdf.sh)
+          source ~/.asdf/asdf.sh
+
+          # Add plugins required for the project
+          asdf plugin add bun
+          asdf plugin add golang
+          asdf plugin add rust
+          asdf plugin add nodejs
+
+          # Install all versions pinned in .tool-versions
+          asdf install
+          asdf reshim
+
+          # Add Rust target for WASM (asdf-rust uses rustup under the hood)
+          rustup target add wasm32-wasip1
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Run full checks
+        run: bun full-checks
