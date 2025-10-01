@@ -12,10 +12,6 @@ jobs:
   full-checks:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        shell: zsh
-
     steps:
       - name: Checkout code
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -37,7 +33,7 @@ jobs:
           echo "$HOME/.asdf/bin" >> $GITHUB_PATH
           echo "$HOME/.asdf/shims" >> $GITHUB_PATH
 
-          # Init asdf in this step (zsh is fine to source asdf.sh)
+          # Init asdf
           source ~/.asdf/asdf.sh
 
           # Add plugins required for the project
