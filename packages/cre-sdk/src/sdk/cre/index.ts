@@ -2,6 +2,7 @@
  * Public API for the CRE SDK.
  */
 
+import { ReportResponseSchema } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { ClientCapability as EVMClient } from '@cre/generated-sdk/capabilities/blockchain/evm/v1alpha/client_sdk_gen'
 import {
 	ClientCapability as HTTPClient,
@@ -17,6 +18,7 @@ export type { Payload as HTTPPayload } from '@cre/generated/capabilities/network
 export type { Payload as CronPayload } from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
 export type { NodeRuntime, Runtime } from '@cre/sdk/runtime'
 export type { HTTPSendRequester }
+export { ReportResponseSchema }
 
 prepareRuntime()
 

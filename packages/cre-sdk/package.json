@@ -33,7 +33,7 @@
 		"compile:workflow": "bun scripts/run.ts compile-workflow",
 		"fix-imports": "bun scripts/run.ts fix-imports",
 		"format": "biome format --write ${BIOME_PATHS:-.}",
-		"full-checks": "bun generate:sdk && bun build && bun check && bun typecheck && bun lint && bun test && bun test:standard",
+		"full-checks": "bun generate:sdk && bun check && bun build && bun typecheck && bun lint && bun test && bun test:standard",
 		"generate:chain-selectors": "bun scripts/run.ts generate-chain-selectors && BIOME_PATHS=\"src/generated\" bun check",
 		"generate:proto": "bunx @bufbuild/buf generate && BIOME_PATHS=\"src/generated\" bun check",
 		"generate:sdk": "bun generate:proto && bun generate:chain-selectors && bun scripts/run generate-sdks && BIOME_PATHS=\"src/generated src/generated-sdk\" bun check",

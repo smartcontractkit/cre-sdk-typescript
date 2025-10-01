@@ -1,0 +1,87 @@
+name: CI
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+
+jobs:
+  full-checks:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+        
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        with:
+          bun-version: latest
+          
+      - name: Install dependencies
+        run: bun install
+        
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y make zsh curl libclang-dev git build-essential
+          
+      - name: Install asdf and tools from .tool-versions
+        run: |
+          # Install asdf
+          git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0
+          echo '. "$HOME/.asdf/asdf.sh"' >> ~/.bashrc
+          echo '. "$HOME/.asdf/completions/asdf.bash"' >> ~/.bashrc
+          source ~/.asdf/asdf.sh
+          
+          # Add plugins (skip bun since it's already installed)
+          asdf plugin add golang https://github.com/kennyp/asdf-golang.git
+          asdf plugin add rust https://github.com/code-lever/asdf-rust.git
+          asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+          
+          # Install tools from .tool-versions (excluding bun)
+          asdf install golang 1.24.5
+          asdf install rust 1.87.0
+          asdf install nodejs 22.19.0
+          asdf reshim
+          
+          # Add Rust target for WASM
+          source ~/.asdf/asdf.sh
+          rustup target add wasm32-wasip1
+        
+      - name: Run full checks
+        run: |
+          # Source asdf environment to make tools available
+          source ~/.asdf/asdf.sh
+          bun run full-checks
+          
+      - name: Verify no source files changed
+        run: |
+          echo "Checking for modified files after full-checks..."
+          
+          # Get all modified files, excluding .wasm files
+          MODIFIED_FILES=$(git status --porcelain | grep -v '\.wasm$' || true)
+          
+          if [ -n "$MODIFIED_FILES" ]; then
+            echo "❌ The following source files were modified during full-checks:"
+            echo "$MODIFIED_FILES"
+            echo ""
+            echo "📋 Human-readable diff:"
+            git diff --name-status
+            echo ""
+            echo "🔍 Detailed diff:"
+            git diff
+            echo ""
+            echo "Only .wasm files should be modified. Please check your build process."
+            exit 1
+          else
+            echo "✅ No source files were modified during full-checks"
+            echo "📁 .wasm files that were generated/updated:"
+            git status --porcelain | grep '\.wasm$' || echo "No .wasm files changed"
+          fi
