@@ -12,6 +12,8 @@ import {
 	type GetSecretsRequest,
 	GetSecretsRequestSchema,
 	Mode,
+	type ReportRequestJson,
+	ReportRequestSchema,
 	type Secret,
 	type SecretRequest,
 	type SecretRequestJson,
@@ -27,6 +29,12 @@ import {
 	type UnwrapOptions,
 	Value,
 } from '@cre/sdk/utils'
+import {
+	createReportRequest,
+	Report,
+	type ReportRequest,
+	type ReportRequestParams,
+} from '@cre/sdk/utils/capabilities/blockchain/report'
 import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
 import { DonModeError, NodeModeError, SecretsError } from '../errors'
 
@@ -270,6 +278,51 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 					default:
 						throw new SecretsError(secretRequest, 'cannot unmashal returned value from host')
 				}
+			},
+		}
+	}
+
+	generateReport(request: ReportRequest | ReportRequestJson | ReportRequestParams): {
+		result: () => Report
+	} {
+		if (this.modeError) {
+			return {
+				result: () => {
+					throw this.modeError
+				},
+			}
+		}
+
+		// Normalize input to protobuf message using createReportRequest helper
+		let reportRequest: ReportRequest
+		if ((request as unknown as { $typeName?: string }).$typeName) {
+			// Already a protobuf ReportRequest
+			reportRequest = request as ReportRequest
+		} else if ('encodedPayload' in request) {
+			// ReportRequestParams or ReportRequestJson - use createReportRequest for defaults and conversion
+			reportRequest = createReportRequest(request as ReportRequestParams)
+		} else {
+			// Fallback: explicit JSON conversion (shouldn't normally hit this)
+			const jsonReq = request as ReportRequestJson
+			reportRequest = create(ReportRequestSchema, {
+				encodedPayload:
+					typeof jsonReq.encodedPayload === 'string'
+						? new Uint8Array(Buffer.from(jsonReq.encodedPayload, 'base64'))
+						: jsonReq.encodedPayload,
+				encoderName: jsonReq.encoderName,
+				signingAlgo: jsonReq.signingAlgo,
+				hashingAlgo: jsonReq.hashingAlgo,
+			})
+		}
+
+		// Use internal ConsensusCapability - not exposed to users
+		const consensus = new ConsensusCapability()
+		const call = consensus.report(this, reportRequest)
+
+		return {
+			result: () => {
+				const response = call.result()
+				return new Report(response)
 			},
 		}
 	}
