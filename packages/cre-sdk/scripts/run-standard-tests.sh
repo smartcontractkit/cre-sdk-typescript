@@ -5,9 +5,6 @@
 
 set -e
 
-# Set GOROOT to the correct location for Homebrew Go installation
-export GOROOT=/opt/homebrew/opt/go/libexec
-
 # Create dist test workflow folder
 mkdir -p ./dist/workflows/standard_tests
 
