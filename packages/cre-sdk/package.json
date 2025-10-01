@@ -27,6 +27,7 @@
 		"clean": "rm -rf dist",
 		"compile:all-standard-tests": "bun scripts/run.ts compile-all-standard-tests",
 		"compile:build": "tsc -p tsconfig.build.json",
+		"compile:cre-setup": "bun scripts/run.ts cre-setup",
 		"compile:js-to-wasm": "bun scripts/run.ts compile-to-wasm",
 		"compile:ts-to-js": "bun scripts/run.ts compile-to-js",
 		"compile:workflow": "bun scripts/run.ts compile-workflow",
