@@ -24,6 +24,9 @@ import {
 	type FilterLogTriggerRequest,
 	type FilterLogTriggerRequestJson,
 	FilterLogTriggerRequestSchema,
+	type GasConfig,
+	type GasConfigJson,
+	GasConfigSchema,
 	type GetTransactionByHashReply,
 	GetTransactionByHashReplySchema,
 	type GetTransactionByHashRequest,
@@ -53,8 +56,60 @@ import {
 	type WriteReportRequestJson,
 	WriteReportRequestSchema,
 } from '@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb'
-import type { Runtime } from '@cre/sdk/runtime'
+import {
+	type ReportResponse,
+	type ReportResponseJson,
+	ReportResponseSchema,
+} from '@cre/generated/sdk/v1alpha/sdk_pb'
+import { type Runtime } from '@cre/sdk'
+import { Report } from '@cre/sdk/report'
 import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
+
+export type WriteCreReportRequest = {
+	receiver: Uint8Array
+	report?: Report
+	gasConfig?: GasConfig
+	$report: true
+}
+
+export type WriteCreReportRequestJson = {
+	receiver: string
+	report?: Report
+	gasConfig?: GasConfigJson
+}
+
+export function x_generatedCodeOnly_wrap_WriteCreReportRequest(
+	input: WriteReportRequest,
+): WriteCreReportRequest {
+	return {
+		receiver: input.receiver,
+		report: input.report !== undefined ? new Report(input.report) : undefined,
+		gasConfig: input.gasConfig,
+		$report: true,
+	}
+}
+
+export function createWriteCreReportRequest(
+	input: WriteCreReportRequestJson,
+): WriteCreReportRequest {
+	return {
+		receiver: new Uint8Array(Buffer.from(input.receiver, 'base64')),
+		report: input.report,
+		gasConfig:
+			input.gasConfig !== undefined ? fromJson(GasConfigSchema, input.gasConfig) : undefined,
+		$report: true,
+	}
+}
+
+export function x_generatedCodeOnly_unwrap_WriteCreReportRequest(
+	input: WriteCreReportRequest,
+): WriteReportRequest {
+	return create(WriteReportRequestSchema, {
+		receiver: input.receiver,
+		report: input.report !== undefined ? input.report.x_generatedCodeOnly_unwrap() : undefined,
+		gasConfig: input.gasConfig,
+	})
+}
 
 /**
  * Client Capability
@@ -93,9 +148,16 @@ export class ClientCapability {
 		runtime: Runtime<unknown>,
 		input: CallContractRequest | CallContractRequestJson,
 	): { result: () => CallContractReply } {
-		const payload = (input as unknown as { $typeName?: string }).$typeName
-			? (input as CallContractRequest)
-			: fromJson(CallContractRequestSchema, input as CallContractRequestJson)
+		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
+		let payload: CallContractRequest
+
+		if ((input as unknown as { $typeName?: string }).$typeName) {
+			// It's the original protobuf type
+			payload = input as CallContractRequest
+		} else {
+			// It's regular JSON, convert using fromJson
+			payload = fromJson(CallContractRequestSchema, input as CallContractRequestJson)
+		}
 
 		// Include chainSelector in capability ID for routing when specified
 		const capabilityId = this.chainSelector
@@ -112,7 +174,9 @@ export class ClientCapability {
 
 		return {
 			result: () => {
-				return capabilityResponse.result()
+				const result = capabilityResponse.result()
+
+				return result
 			},
 		}
 	}
@@ -121,9 +185,16 @@ export class ClientCapability {
 		runtime: Runtime<unknown>,
 		input: FilterLogsRequest | FilterLogsRequestJson,
 	): { result: () => FilterLogsReply } {
-		const payload = (input as unknown as { $typeName?: string }).$typeName
-			? (input as FilterLogsRequest)
-			: fromJson(FilterLogsRequestSchema, input as FilterLogsRequestJson)
+		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
+		let payload: FilterLogsRequest
+
+		if ((input as unknown as { $typeName?: string }).$typeName) {
+			// It's the original protobuf type
+			payload = input as FilterLogsRequest
+		} else {
+			// It's regular JSON, convert using fromJson
+			payload = fromJson(FilterLogsRequestSchema, input as FilterLogsRequestJson)
+		}
 
 		// Include chainSelector in capability ID for routing when specified
 		const capabilityId = this.chainSelector
@@ -140,7 +211,9 @@ export class ClientCapability {
 
 		return {
 			result: () => {
-				return capabilityResponse.result()
+				const result = capabilityResponse.result()
+
+				return result
 			},
 		}
 	}
@@ -149,9 +222,16 @@ export class ClientCapability {
 		runtime: Runtime<unknown>,
 		input: BalanceAtRequest | BalanceAtRequestJson,
 	): { result: () => BalanceAtReply } {
-		const payload = (input as unknown as { $typeName?: string }).$typeName
-			? (input as BalanceAtRequest)
-			: fromJson(BalanceAtRequestSchema, input as BalanceAtRequestJson)
+		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
+		let payload: BalanceAtRequest
+
+		if ((input as unknown as { $typeName?: string }).$typeName) {
+			// It's the original protobuf type
+			payload = input as BalanceAtRequest
+		} else {
+			// It's regular JSON, convert using fromJson
+			payload = fromJson(BalanceAtRequestSchema, input as BalanceAtRequestJson)
+		}
 
 		// Include chainSelector in capability ID for routing when specified
 		const capabilityId = this.chainSelector
@@ -168,7 +248,9 @@ export class ClientCapability {
 
 		return {
 			result: () => {
-				return capabilityResponse.result()
+				const result = capabilityResponse.result()
+
+				return result
 			},
 		}
 	}
@@ -177,9 +259,16 @@ export class ClientCapability {
 		runtime: Runtime<unknown>,
 		input: EstimateGasRequest | EstimateGasRequestJson,
 	): { result: () => EstimateGasReply } {
-		const payload = (input as unknown as { $typeName?: string }).$typeName
-			? (input as EstimateGasRequest)
-			: fromJson(EstimateGasRequestSchema, input as EstimateGasRequestJson)
+		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
+		let payload: EstimateGasRequest
+
+		if ((input as unknown as { $typeName?: string }).$typeName) {
+			// It's the original protobuf type
+			payload = input as EstimateGasRequest
+		} else {
+			// It's regular JSON, convert using fromJson
+			payload = fromJson(EstimateGasRequestSchema, input as EstimateGasRequestJson)
+		}
 
 		// Include chainSelector in capability ID for routing when specified
 		const capabilityId = this.chainSelector
@@ -196,7 +285,9 @@ export class ClientCapability {
 
 		return {
 			result: () => {
-				return capabilityResponse.result()
+				const result = capabilityResponse.result()
+
+				return result
 			},
 		}
 	}
@@ -205,9 +296,19 @@ export class ClientCapability {
 		runtime: Runtime<unknown>,
 		input: GetTransactionByHashRequest | GetTransactionByHashRequestJson,
 	): { result: () => GetTransactionByHashReply } {
-		const payload = (input as unknown as { $typeName?: string }).$typeName
-			? (input as GetTransactionByHashRequest)
-			: fromJson(GetTransactionByHashRequestSchema, input as GetTransactionByHashRequestJson)
+		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
+		let payload: GetTransactionByHashRequest
+
+		if ((input as unknown as { $typeName?: string }).$typeName) {
+			// It's the original protobuf type
+			payload = input as GetTransactionByHashRequest
+		} else {
+			// It's regular JSON, convert using fromJson
+			payload = fromJson(
+				GetTransactionByHashRequestSchema,
+				input as GetTransactionByHashRequestJson,
+			)
+		}
 
 		// Include chainSelector in capability ID for routing when specified
 		const capabilityId = this.chainSelector
@@ -227,7 +328,9 @@ export class ClientCapability {
 
 		return {
 			result: () => {
-				return capabilityResponse.result()
+				const result = capabilityResponse.result()
+
+				return result
 			},
 		}
 	}
@@ -236,9 +339,19 @@ export class ClientCapability {
 		runtime: Runtime<unknown>,
 		input: GetTransactionReceiptRequest | GetTransactionReceiptRequestJson,
 	): { result: () => GetTransactionReceiptReply } {
-		const payload = (input as unknown as { $typeName?: string }).$typeName
-			? (input as GetTransactionReceiptRequest)
-			: fromJson(GetTransactionReceiptRequestSchema, input as GetTransactionReceiptRequestJson)
+		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
+		let payload: GetTransactionReceiptRequest
+
+		if ((input as unknown as { $typeName?: string }).$typeName) {
+			// It's the original protobuf type
+			payload = input as GetTransactionReceiptRequest
+		} else {
+			// It's regular JSON, convert using fromJson
+			payload = fromJson(
+				GetTransactionReceiptRequestSchema,
+				input as GetTransactionReceiptRequestJson,
+			)
+		}
 
 		// Include chainSelector in capability ID for routing when specified
 		const capabilityId = this.chainSelector
@@ -258,7 +371,9 @@ export class ClientCapability {
 
 		return {
 			result: () => {
-				return capabilityResponse.result()
+				const result = capabilityResponse.result()
+
+				return result
 			},
 		}
 	}
@@ -267,9 +382,16 @@ export class ClientCapability {
 		runtime: Runtime<unknown>,
 		input: HeaderByNumberRequest | HeaderByNumberRequestJson,
 	): { result: () => HeaderByNumberReply } {
-		const payload = (input as unknown as { $typeName?: string }).$typeName
-			? (input as HeaderByNumberRequest)
-			: fromJson(HeaderByNumberRequestSchema, input as HeaderByNumberRequestJson)
+		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
+		let payload: HeaderByNumberRequest
+
+		if ((input as unknown as { $typeName?: string }).$typeName) {
+			// It's the original protobuf type
+			payload = input as HeaderByNumberRequest
+		} else {
+			// It's regular JSON, convert using fromJson
+			payload = fromJson(HeaderByNumberRequestSchema, input as HeaderByNumberRequestJson)
+		}
 
 		// Include chainSelector in capability ID for routing when specified
 		const capabilityId = this.chainSelector
@@ -286,7 +408,9 @@ export class ClientCapability {
 
 		return {
 			result: () => {
-				return capabilityResponse.result()
+				const result = capabilityResponse.result()
+
+				return result
 			},
 		}
 	}
@@ -295,9 +419,16 @@ export class ClientCapability {
 		runtime: Runtime<unknown>,
 		input: RegisterLogTrackingRequest | RegisterLogTrackingRequestJson,
 	): { result: () => Empty } {
-		const payload = (input as unknown as { $typeName?: string }).$typeName
-			? (input as RegisterLogTrackingRequest)
-			: fromJson(RegisterLogTrackingRequestSchema, input as RegisterLogTrackingRequestJson)
+		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
+		let payload: RegisterLogTrackingRequest
+
+		if ((input as unknown as { $typeName?: string }).$typeName) {
+			// It's the original protobuf type
+			payload = input as RegisterLogTrackingRequest
+		} else {
+			// It's regular JSON, convert using fromJson
+			payload = fromJson(RegisterLogTrackingRequestSchema, input as RegisterLogTrackingRequestJson)
+		}
 
 		// Include chainSelector in capability ID for routing when specified
 		const capabilityId = this.chainSelector
@@ -314,7 +445,9 @@ export class ClientCapability {
 
 		return {
 			result: () => {
-				return capabilityResponse.result()
+				const result = capabilityResponse.result()
+
+				return result
 			},
 		}
 	}
@@ -323,9 +456,19 @@ export class ClientCapability {
 		runtime: Runtime<unknown>,
 		input: UnregisterLogTrackingRequest | UnregisterLogTrackingRequestJson,
 	): { result: () => Empty } {
-		const payload = (input as unknown as { $typeName?: string }).$typeName
-			? (input as UnregisterLogTrackingRequest)
-			: fromJson(UnregisterLogTrackingRequestSchema, input as UnregisterLogTrackingRequestJson)
+		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
+		let payload: UnregisterLogTrackingRequest
+
+		if ((input as unknown as { $typeName?: string }).$typeName) {
+			// It's the original protobuf type
+			payload = input as UnregisterLogTrackingRequest
+		} else {
+			// It's regular JSON, convert using fromJson
+			payload = fromJson(
+				UnregisterLogTrackingRequestSchema,
+				input as UnregisterLogTrackingRequestJson,
+			)
+		}
 
 		// Include chainSelector in capability ID for routing when specified
 		const capabilityId = this.chainSelector
@@ -342,7 +485,9 @@ export class ClientCapability {
 
 		return {
 			result: () => {
-				return capabilityResponse.result()
+				const result = capabilityResponse.result()
+
+				return result
 			},
 		}
 	}
@@ -357,11 +502,21 @@ export class ClientCapability {
 
 	writeReport(
 		runtime: Runtime<unknown>,
-		input: WriteReportRequest | WriteReportRequestJson,
+		input: WriteCreReportRequest | WriteCreReportRequestJson,
 	): { result: () => WriteReportReply } {
-		const payload = (input as unknown as { $typeName?: string }).$typeName
-			? (input as WriteReportRequest)
-			: fromJson(WriteReportRequestSchema, input as WriteReportRequestJson)
+		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
+		let payload: WriteReportRequest
+
+		// Check if it's a wrapped type by looking for the $report property
+		if ((input as unknown as { $report?: string }).$report) {
+			// It's a wrapped type, unwrap it
+			payload = x_generatedCodeOnly_unwrap_WriteCreReportRequest(input as WriteCreReportRequest)
+		} else {
+			// It's wrapped JSON, convert using create function
+			payload = x_generatedCodeOnly_unwrap_WriteCreReportRequest(
+				createWriteCreReportRequest(input as WriteCreReportRequestJson),
+			)
+		}
 
 		// Include chainSelector in capability ID for routing when specified
 		const capabilityId = this.chainSelector
@@ -378,7 +533,9 @@ export class ClientCapability {
 
 		return {
 			result: () => {
-				return capabilityResponse.result()
+				const result = capabilityResponse.result()
+
+				return result
 			},
 		}
 	}

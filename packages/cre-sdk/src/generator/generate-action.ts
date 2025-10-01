@@ -1,4 +1,5 @@
 import type { DescMethod } from '@bufbuild/protobuf'
+import { wrapType } from './utils'
 
 /**
  * Generates the action method implementation for a capability
@@ -25,9 +26,50 @@ export function generateActionMethod(
 		: `
     const capabilityId = ${capabilityClassName}.CAPABILITY_ID;`
 
-	const callSig = `(runtime: ${modePrefix}Runtime<unknown>, input: ${method.input.name} |  ${method.input.name}Json): {result: () => ${method.output.name}}`
+	// Check if we have wrapped types
+	const wrappedInputType = wrapType(method.input)
+	const wrappedOutputType = wrapType(method.output)
+
+	// Build input type union - if we have wrapped types, use only those, otherwise use original
+	const hasWrappedInput = wrappedInputType !== method.input
+	const inputTypes = hasWrappedInput
+		? [wrappedInputType.name, `${wrappedInputType.name}Json`]
+		: [method.input.name, `${method.input.name}Json`]
+
+	// Build output type
+	const hasWrappedOutput = wrappedOutputType !== method.output
+	// Special case: if output is ReportResponse, wrap it with Report
+	const isReportResponse = method.output.name === 'ReportResponse'
+	const outputType = hasWrappedOutput
+		? wrappedOutputType.name
+		: isReportResponse
+			? 'Report'
+			: method.output.name
+
+	const callSig = `(runtime: ${modePrefix}Runtime<unknown>, input: ${inputTypes.join(' | ')}): {result: () => ${outputType}}`
 	const callSigAndBody = `${callSig} {
-    const payload = (input as unknown as { $typeName?: string }).$typeName ? input as ${method.input.name} : fromJson(${method.input.name}Schema, input as ${method.input.name}Json)
+    // Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
+    let payload: ${method.input.name}
+    ${
+			hasWrappedInput
+				? `
+    // Check if it's a wrapped type by looking for the $report property
+    if ((input as unknown as { $report?: string }).$report) {
+      // It's a wrapped type, unwrap it
+      payload = x_generatedCodeOnly_unwrap_${wrappedInputType.name}(input as ${wrappedInputType.name})
+    } else {
+      // It's wrapped JSON, convert using create function
+      payload = x_generatedCodeOnly_unwrap_${wrappedInputType.name}(create${wrappedInputType.name}(input as ${wrappedInputType.name}Json))
+    }`
+				: `
+    if ((input as unknown as { $typeName?: string }).$typeName) {
+      // It's the original protobuf type
+      payload = input as ${method.input.name}
+    } else {
+      // It's regular JSON, convert using fromJson
+      payload = fromJson(${method.input.name}Schema, input as ${method.input.name}Json)
+    }`
+		}
     
     ${capabilityIdLogic}
     
@@ -41,7 +83,18 @@ export function generateActionMethod(
 
     return {
       result: () => {
-        return capabilityResponse.result()
+        const result = capabilityResponse.result()
+        ${
+					hasWrappedOutput
+						? `
+        // Wrap the output if we have a wrapped type
+        return x_generatedCodeOnly_wrap_${wrappedOutputType.name}(result)`
+						: isReportResponse
+							? `
+        return new Report(result)`
+							: `
+        return result`
+				}
       }
     }
   }`
@@ -66,7 +119,7 @@ export function generateActionMethod(
       return this.${methodName}SugarHelper(runtime, fn, consensusAggregation, unwrapOptions)
     }
     // Otherwise, this is the basic call overload
-    const [runtime, input] = args as [${modePrefix}Runtime<unknown>, ${method.input.name} |  ${method.input.name}Json]
+    const [runtime, input] = args as [${modePrefix}Runtime<unknown>, ${inputTypes.join(' | ')}]
     return this.${methodName}CallHelper(runtime, input)
   }
   private ${methodName}CallHelper${callSigAndBody}

@@ -7,7 +7,8 @@ import {
 	type Payload,
 	PayloadSchema,
 } from '@cre/generated/capabilities/networking/http/v1alpha/trigger_pb'
-import type { Runtime } from '@cre/sdk/runtime'
+import { type Runtime } from '@cre/sdk'
+import { Report } from '@cre/sdk/report'
 import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 
 /**

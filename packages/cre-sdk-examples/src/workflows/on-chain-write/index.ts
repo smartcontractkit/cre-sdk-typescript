@@ -5,6 +5,7 @@ import {
 	encodeCallMsg,
 	getNetwork,
 	type HTTPSendRequester,
+	hexToBase64,
 	LAST_FINALIZED_BLOCK_NUMBER,
 	ok,
 	Runner,
@@ -151,12 +152,19 @@ const onCronTrigger = (runtime: Runtime<Config>) => {
 		args: [toHex('0x'), dryRunCallData],
 	})
 
+	const report = runtime
+		.report({
+			encodedPayload: hexToBase64(writeCallData),
+			encoderName: 'evm',
+			signingAlgo: 'ecdsa',
+			hashingAlgo: 'keccak256',
+		})
+		.result()
+
 	const resp = evmClient
 		.writeReport(runtime, {
 			receiver: evmConfig.calculatorConsumerAddress,
-			report: {
-				rawReport: writeCallData,
-			},
+			report: report,
 		})
 		.result()
 

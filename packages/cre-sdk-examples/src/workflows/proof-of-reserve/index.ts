@@ -204,9 +204,8 @@ const updateReserves = (
 	})
 
 	// Step 1: Generate report using consensus capability
-	const consensusCapability = new cre.capabilities.ConsensusCapability()
-	const reportResponse = consensusCapability
-		.report(runtime, {
+	const reportResponse = runtime
+		.report({
 			encodedPayload: hexToBase64(callData),
 			encoderName: 'evm',
 			signingAlgo: 'ecdsa',
@@ -214,22 +213,10 @@ const updateReserves = (
 		})
 		.result()
 
-	// Step 2: Write the generated report - convert to JSON format
-	const reportJson = {
-		configDigest: Buffer.from(reportResponse.configDigest).toString('base64'),
-		seqNr: reportResponse.seqNr.toString(),
-		reportContext: Buffer.from(reportResponse.reportContext).toString('base64'),
-		rawReport: Buffer.from(reportResponse.rawReport).toString('base64'),
-		sigs: reportResponse.sigs.map((sig) => ({
-			signature: Buffer.from(sig.signature).toString('base64'),
-			signerId: sig.signerId,
-		})),
-	}
-
 	const resp = evmClient
 		.writeReport(runtime, {
 			receiver: evmConfig.proxyAddress,
-			report: reportJson,
+			report: reportResponse,
 		})
 		.result()
 

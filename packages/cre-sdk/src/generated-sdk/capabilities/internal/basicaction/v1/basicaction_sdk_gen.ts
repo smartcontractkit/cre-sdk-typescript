@@ -6,7 +6,8 @@ import {
 	type Outputs,
 	OutputsSchema,
 } from '@cre/generated/capabilities/internal/basicaction/v1/basic_action_pb'
-import type { Runtime } from '@cre/sdk/runtime'
+import { type Runtime } from '@cre/sdk'
+import { Report } from '@cre/sdk/report'
 
 /**
  * BasicAction Capability
@@ -23,9 +24,16 @@ export class BasicActionCapability {
 	static readonly CAPABILITY_VERSION = '1.0.0'
 
 	performAction(runtime: Runtime<unknown>, input: Inputs | InputsJson): { result: () => Outputs } {
-		const payload = (input as unknown as { $typeName?: string }).$typeName
-			? (input as Inputs)
-			: fromJson(InputsSchema, input as InputsJson)
+		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
+		let payload: Inputs
+
+		if ((input as unknown as { $typeName?: string }).$typeName) {
+			// It's the original protobuf type
+			payload = input as Inputs
+		} else {
+			// It's regular JSON, convert using fromJson
+			payload = fromJson(InputsSchema, input as InputsJson)
+		}
 
 		const capabilityId = BasicActionCapability.CAPABILITY_ID
 
@@ -39,7 +47,9 @@ export class BasicActionCapability {
 
 		return {
 			result: () => {
-				return capabilityResponse.result()
+				const result = capabilityResponse.result()
+
+				return result
 			},
 		}
 	}

@@ -6,7 +6,8 @@ import {
 	type NodeOutputs,
 	NodeOutputsSchema,
 } from '@cre/generated/capabilities/internal/nodeaction/v1/node_action_pb'
-import type { NodeRuntime, Runtime } from '@cre/sdk/runtime'
+import { type NodeRuntime, type Runtime } from '@cre/sdk'
+import { Report } from '@cre/sdk/report'
 import type { ConsensusAggregation, PrimitiveTypes, UnwrapOptions } from '@cre/sdk/utils'
 
 export class PerformActioner {
@@ -62,9 +63,16 @@ export class BasicActionCapability {
 		runtime: NodeRuntime<unknown>,
 		input: NodeInputs | NodeInputsJson,
 	): { result: () => NodeOutputs } {
-		const payload = (input as unknown as { $typeName?: string }).$typeName
-			? (input as NodeInputs)
-			: fromJson(NodeInputsSchema, input as NodeInputsJson)
+		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
+		let payload: NodeInputs
+
+		if ((input as unknown as { $typeName?: string }).$typeName) {
+			// It's the original protobuf type
+			payload = input as NodeInputs
+		} else {
+			// It's regular JSON, convert using fromJson
+			payload = fromJson(NodeInputsSchema, input as NodeInputsJson)
+		}
 
 		const capabilityId = BasicActionCapability.CAPABILITY_ID
 
@@ -78,7 +86,9 @@ export class BasicActionCapability {
 
 		return {
 			result: () => {
-				return capabilityResponse.result()
+				const result = capabilityResponse.result()
+
+				return result
 			},
 		}
 	}
