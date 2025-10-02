@@ -20,7 +20,47 @@ Before first usage run the setup command. Setup will download the right Javy bin
 bunx cre-setup
 ```
 
-Then you are ready to use the CRE SDK to compile your workflows to WASM. Choose any workflow you want to compile and run the following command:
+## Using CRE CLI to simulate example workflows
+
+This repository is fully compatible with the [CRE CLI](https://github.com/smartcontractkit/cre-cli). You can use the CRE CLI to simulate the example workflows it provides.
+
+The setup is done in a way that treats `cre-sdk-examples` root directory as a CRE project root. When simulating a workflow, you pass the path to the workflow directory you want to simulate.
+
+**Examples**:
+
+[Hello World workflow](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/hello-world/index.ts):
+
+```zsh
+cre workflow simulate ./src/workflows/hello-world --target local-simulation
+```
+
+[Http Fetch workflow](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/http-fetch/index.ts):
+
+```zsh
+cre workflow simulate ./src/workflows/http-fetch --target local-simulation
+```
+
+[On Chain Read workflow](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/on-chain/index.ts):
+
+```zsh
+cre workflow simulate ./src/workflows/on-chain --target local-simulation
+```
+
+[On Chain Write workflow](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/on-chain-write/index.ts):
+
+```zsh
+cre workflow simulate ./src/workflows/on-chain-write --target local-simulation --broadcast
+```
+
+[Proof of Reserve workflow](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/proof-of-reserve/index.ts):
+
+```zsh
+cre workflow simulate ./src/workflows/proof-of-reserve --target local-simulation --broadcast --secrets ../../../secrets.yaml
+```
+
+## Testing workflow compilation only
+
+If you want use the CRE SDK to compile your workflows to WASM, choose any workflow you want to compile and run the following command:
 
 ```bash
 bunx cre-compile <input.ts> <output.wasm>

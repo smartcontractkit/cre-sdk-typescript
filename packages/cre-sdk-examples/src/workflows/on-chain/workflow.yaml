@@ -27,6 +27,9 @@ local-simulation:
   user-workflow:
     workflow-owner-address: "(optional) Multi-signature contract address"
     workflow-name: "on-chain"
+  workflow-artifacts:
+    workflow-path: "./index.ts"
+    config-path: "./config.json"
 
 # ==========================================================================
 production-testnet:
