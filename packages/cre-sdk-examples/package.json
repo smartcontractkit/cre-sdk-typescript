@@ -15,7 +15,9 @@
 	},
 	"dependencies": {
 		"@bufbuild/protobuf": "2.6.3",
-		"@chainlink/cre-sdk": "workspace:*"
+		"@chainlink/cre-sdk": "workspace:*",
+		"viem": "2.34.0",
+		"zod": "3.25.76"
 	},
 	"engines": {
 		"bun": ">=1.2.21"
