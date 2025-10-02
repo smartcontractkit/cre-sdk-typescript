@@ -143,15 +143,16 @@ export function generateReportWrapper(tpe: DescMessage): [string, Map<string, Se
 		.join(';\n    ')
 
 	// Generate the wrap function (only accepts non-JSON)
-	const wrapFunction = `export function x_generatedCodeOnly_wrap_${wrappedType.name}(input: ${tpe.name}): ${wrappedType.name} {
+	const wrapFunction = `export function x_generatedCodeOnly_wrap_${
+		wrappedType.name
+	}(input: ${tpe.name}): ${wrappedType.name} {
 		return {
 			${wrappedType.fields
 				.map((field) => {
 					if (field.message === wrappedReportDesc) {
 						return `${field.localName}: input.${field.localName} !== undefined ? new Report(input.${field.localName}) : undefined`
-					} else {
-						return `${field.localName}: input.${field.localName}`
 					}
+					return `${field.localName}: input.${field.localName}`
 				})
 				.join(',\n\t\t\t')},
 			$report: true
@@ -159,21 +160,27 @@ export function generateReportWrapper(tpe: DescMessage): [string, Map<string, Se
     }`
 
 	// Generate create function (takes JSON version)
-	const createFunction = `export function create${wrappedType.name}(input: ${wrappedType.name}Json): ${wrappedType.name} {
+	const createFunction = `export function create${wrappedType.name}(input: ${
+		wrappedType.name
+	}Json): ${wrappedType.name} {
 		return {
 			${wrappedType.fields
 				.map((field) => {
 					if (field.message === wrappedReportDesc) {
 						return `${field.localName}: input.${field.localName}`
-					} else if (field.fieldKind === 'message') {
+					}
+
+					if (field.fieldKind === 'message') {
 						// Handle other message fields - convert from JSON to regular type using fromJson
 						return `${field.localName}: input.${field.localName} !== undefined ? fromJson(${field.message.name}Schema, input.${field.localName}) : undefined`
-					} else if (field.fieldKind === 'scalar' && field.scalar === 12) {
+					}
+
+					if (field.fieldKind === 'scalar' && field.scalar === 12) {
 						// Handle bytes field conversion from string to Uint8Array
 						return `${field.localName}: new Uint8Array(Buffer.from(input.${field.localName}, 'base64'))`
-					} else {
-						return `${field.localName}: input.${field.localName}`
 					}
+
+					return `${field.localName}: input.${field.localName}`
 				})
 				.join(',\n\t\t\t')},
 			$report: true
@@ -181,7 +188,9 @@ export function generateReportWrapper(tpe: DescMessage): [string, Map<string, Se
     }`
 
 	// Generate unwrap function
-	const unwrapFunction = `export function x_generatedCodeOnly_unwrap_${wrappedType.name}(input: ${wrappedType.name}): ${tpe.name} {
+	const unwrapFunction = `export function x_generatedCodeOnly_unwrap_${
+		wrappedType.name
+	}(input: ${wrappedType.name}): ${tpe.name} {
         return create(${tpe.name}Schema, {
             ${tpe.fields
 							.map((field) => {
