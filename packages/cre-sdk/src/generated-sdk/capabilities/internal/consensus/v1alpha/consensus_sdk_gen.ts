@@ -12,6 +12,7 @@ import {
 import { type Value, ValueSchema } from '@cre/generated/values/v1/values_pb'
 import { type Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
+import { hexToBytes } from '@cre/sdk/utils/hex-utils'
 
 /**
  * Consensus Capability

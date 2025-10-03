@@ -11,6 +11,7 @@ import {
 	Runner,
 	type Runtime,
 	text,
+	TxStatus,
 } from '@chainlink/cre-sdk'
 import { type Address, decodeFunctionResult, encodeFunctionData, toHex, zeroAddress } from 'viem'
 import { z } from 'zod'
@@ -168,11 +169,13 @@ const onCronTrigger = (runtime: Runtime<Config>) => {
 		})
 		.result()
 
-	const txHash = resp.txHash
+	const txStatus = resp.txStatus
 
-	if (!txHash) {
-		throw new Error('Failed to write report')
+	if (txStatus !== TxStatus.SUCCESS) {
+		throw new Error(`Failed to write report: ${resp.errorMessage || txStatus}`)
 	}
+
+	const txHash = resp.txHash || new Uint8Array(32)
 
 	return {
 		OffchainValue: offchainBigInt,
