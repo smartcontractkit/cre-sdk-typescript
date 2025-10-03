@@ -57,16 +57,50 @@ jobs:
       - name: Run full checks
         run: bun full-checks
 
-      - name: Download and install cre-cli
+        - name: Download and install cre-cli (ubuntu-latest)
+        env:
+          CRE_CLI_TAG: v0.6.1-alpha.0
         run: |
-          # Download cre-cli from the specified release
-          curl -L -o cre-cli.tar.gz "https://github.com/smartcontractkit/cre-cli/releases/download/v0.6.1-alpha.0/cre-cli_0.6.1-alpha.0_linux_amd64.tar.gz"
+          set -euo pipefail
 
-          # Extract and install
-          tar -xzf cre-cli.tar.gz
-          sudo mv cre /usr/local/bin/
+          # Map runner arch to release naming
+          case "$(uname -m)" in
+            x86_64|amd64)  ARCH=amd64 ;;
+            aarch64|arm64) ARCH=arm64 ;;
+            *) echo "Unsupported arch: $(uname -m)"; exit 1 ;;
+          esac
 
-          # Verify installation
+          ASSET="cre_linux_${ARCH}.tar.gz"
+          BASE_URL="https://github.com/smartcontractkit/cre-cli/releases/download/${CRE_CLI_TAG}"
+
+          echo "Downloading ${ASSET} and checksums.txt from ${CRE_CLI_TAG}..."
+          curl -fL --retry 3 -o "${ASSET}"        "${BASE_URL}/${ASSET}"
+          curl -fL --retry 3 -o checksums.txt     "${BASE_URL}/checksums.txt"
+
+          echo "Verifying checksum..."
+          # checksums.txt contains lines like: "<sha256>  <filename>"
+          grep "  ${ASSET}$" checksums.txt > sha_line.txt
+          if [ ! -s sha_line.txt ]; then
+            echo "No checksum entry for ${ASSET}"; exit 1
+          fi
+          sha256sum -c sha_line.txt
+
+          echo "Extracting..."
+          tar -xzf "${ASSET}"
+
+          # Find the 'cre' binary (tarball is expected to contain it at top-level)
+          BIN="./cre"
+          if [ ! -f "$BIN" ]; then
+            BIN="$(tar -tzf "${ASSET}" | grep -E '/?cre$' | head -n1 || true)"
+            [ -z "$BIN" ] && { echo "Could not locate 'cre' in archive"; exit 1; }
+            tar -xzf "${ASSET}" "$BIN"
+          fi
+
+          echo "Installing to /usr/local/bin..."
+          sudo mv ${BIN:-./cre} /usr/local/bin/cre
+          sudo chmod +x /usr/local/bin/cre
+
+          echo "Installed version:"
           cre --version
 
       - name: Setup CRE SDK examples
