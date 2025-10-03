@@ -1,43 +1,24 @@
 name: Smoke Test
 permissions:
   contents: read
-  # optional but nice if you later want to react/post: pull-requests: write, issues: write
 
 on:
   pull_request:
     branches: [main]
-  issue_comment:
-    types: [created] # run when a new comment is added
 
 jobs:
   smoke-test:
     runs-on: ubuntu-latest
 
-    # Run for normal PRs, OR when a PR comment contains '#smoke-test'
-    if: >
-      github.event_name == 'pull_request' ||
-      (github.event_name == 'issue_comment' &&
-       github.event.issue.pull_request != null &&
-       contains(github.event.comment.body, '#smoke-test'))
+    # Run for pull requests targeting main branch
+    if: github.event_name == 'pull_request'
 
     steps:
-      # Checkout for regular PR trigger
-      - name: Checkout code (pull_request)
-        if: github.event_name == 'pull_request'
+      - name: Checkout code
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           submodules: recursive
           token: ${{ secrets.GITHUB_TOKEN }}
-
-      # Checkout for comment trigger: use the PR head ref
-      - name: Checkout code (issue_comment on PR)
-        if: github.event_name == 'issue_comment'
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          submodules: recursive
-          token: ${{ secrets.GITHUB_TOKEN }}
-          # This checks out the PR head SHA for PR number in the comment event
-          ref: refs/pull/${{ github.event.issue.number }}/head
 
       - name: Install system dependencies
         run: |
@@ -46,8 +27,9 @@ jobs:
 
       - name: Install asdf and toolchain from .tool-versions
         run: |
-          # Install asdf
-          git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0
+          # Install asdf with specific version and verification
+          ASDF_VERSION="v0.14.0"
+          git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch "$ASDF_VERSION" --depth 1
 
           # Make asdf available to subsequent steps without re-sourcing
           echo "$HOME/.asdf/bin" >> $GITHUB_PATH
@@ -56,11 +38,11 @@ jobs:
           # Init asdf
           source ~/.asdf/asdf.sh
 
-          # Add plugins required for the project
-          asdf plugin add bun
-          asdf plugin add golang
-          asdf plugin add rust
-          asdf plugin add nodejs
+          # Add plugins required for the project with verification
+          asdf plugin add bun || echo "bun plugin already exists"
+          asdf plugin add golang || echo "golang plugin already exists"
+          asdf plugin add rust || echo "rust plugin already exists"
+          asdf plugin add nodejs || echo "nodejs plugin already exists"
 
           # Install all versions pinned in .tool-versions
           asdf install
@@ -81,6 +63,11 @@ jobs:
         run: |
           set -euo pipefail
 
+          # Validate tag format to prevent injection
+          if [[ ! "$CRE_CLI_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.-]+)?$ ]]; then
+            echo "Invalid tag format: $CRE_CLI_TAG"; exit 1
+          fi
+
           # Map runner arch to release naming
           case "$(uname -m)" in
             x86_64|amd64)  ARCH=amd64 ;;
@@ -92,8 +79,13 @@ jobs:
           BASE_URL="https://github.com/smartcontractkit/cre-cli/releases/download/${CRE_CLI_TAG}"
 
           echo "Downloading ${ASSET} and checksums.txt from ${CRE_CLI_TAG}..."
-          curl -fL --retry 3 -o "${ASSET}"        "${BASE_URL}/${ASSET}"
-          curl -fL --retry 3 -o checksums.txt     "${BASE_URL}/checksums.txt"
+          # Use more secure curl options
+          curl -fsSL --retry 3 --retry-delay 2 --max-time 300 \
+               --proto '=https' --tlsv1.2 \
+               -o "${ASSET}" "${BASE_URL}/${ASSET}"
+          curl -fsSL --retry 3 --retry-delay 2 --max-time 300 \
+               --proto '=https' --tlsv1.2 \
+               -o checksums.txt "${BASE_URL}/checksums.txt"
 
           echo "Verifying checksum..."
           # checksums.txt contains lines like: "<sha256>  <filename>"
@@ -104,19 +96,25 @@ jobs:
           sha256sum -c sha_line.txt
 
           echo "Extracting..."
-          tar -xzf "${ASSET}"
+          # Extract with restricted permissions
+          tar -xzf "${ASSET}" --no-same-owner --no-same-permissions
 
           # Find the 'cre' binary (tarball is expected to contain it at top-level)
           BIN="./cre"
           if [ ! -f "$BIN" ]; then
             BIN="$(tar -tzf "${ASSET}" | grep -E '/?cre$' | head -n1 || true)"
             [ -z "$BIN" ] && { echo "Could not locate 'cre' in archive"; exit 1; }
-            tar -xzf "${ASSET}" "$BIN"
+            tar -xzf "${ASSET}" "$BIN" --no-same-owner --no-same-permissions
+          fi
+
+          # Validate binary before installation
+          if [ ! -x "$BIN" ]; then
+            chmod +x "$BIN"
           fi
 
           echo "Installing to /usr/local/bin..."
-          sudo mv ${BIN:-./cre} /usr/local/bin/cre
-          sudo chmod +x /usr/local/bin/cre
+          sudo mv "${BIN:-./cre}" /usr/local/bin/cre
+          sudo chmod 755 /usr/local/bin/cre
 
           echo "Installed version:"
           cre --version
