@@ -1,0 +1,102 @@
+name: Smoke Test
+permissions:
+  contents: read
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  full-checks:
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'issue_comment' && 
+      github.event.issue.pull_request &&
+      contains(github.event.comment.body, '#smoke-test')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # For PR comments, checkout the PR head ref
+          ref: ${{ github.event_name == 'issue_comment' && format('refs/pull/{0}/head', github.event.issue.number) || github.ref }}
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y make zsh curl libclang-dev git build-essential
+
+      - name: Install asdf and toolchain from .tool-versions
+        run: |
+          # Install asdf
+          git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0
+
+          # Make asdf available to subsequent steps without re-sourcing
+          echo "$HOME/.asdf/bin" >> $GITHUB_PATH
+          echo "$HOME/.asdf/shims" >> $GITHUB_PATH
+
+          # Init asdf
+          source ~/.asdf/asdf.sh
+
+          # Add plugins required for the project
+          asdf plugin add bun
+          asdf plugin add golang
+          asdf plugin add rust
+          asdf plugin add nodejs
+
+          # Install all versions pinned in .tool-versions
+          asdf install
+          asdf reshim
+
+          # Add Rust target for WASM (asdf-rust uses rustup under the hood)
+          rustup target add wasm32-wasip1
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Run full checks
+        run: bun full-checks
+
+      - name: Download and install cre-cli
+        run: |
+          # Download cre-cli from the specified release
+          curl -L -o cre-cli.tar.gz "https://github.com/smartcontractkit/cre-cli/releases/download/v0.6.1-alpha.0/cre-cli_0.6.1-alpha.0_linux_amd64.tar.gz"
+
+          # Extract and install
+          tar -xzf cre-cli.tar.gz
+          sudo mv cre /usr/local/bin/
+
+          # Verify installation
+          cre --version
+
+      - name: Setup CRE SDK examples
+        run: |
+          cd packages/cre-sdk-examples
+          bunx cre-setup
+
+      - name: Simulate Hello World workflow
+        run: |
+          cd packages/cre-sdk-examples
+          cre workflow simulate ./src/workflows/hello-world --target local-simulation
+
+      - name: Simulate Http Fetch workflow
+        run: |
+          cd packages/cre-sdk-examples
+          cre workflow simulate ./src/workflows/http-fetch --target local-simulation
+
+      - name: Simulate On Chain Read workflow
+        run: |
+          cd packages/cre-sdk-examples
+          cre workflow simulate ./src/workflows/on-chain --target local-simulation
+
+      - name: Simulate On Chain Write workflow
+        run: |
+          cd packages/cre-sdk-examples
+          cre workflow simulate ./src/workflows/on-chain-write --target local-simulation
+
+      - name: Simulate Proof of Reserve workflow
+        run: |
+          cd packages/cre-sdk-examples
+          cre workflow simulate ./src/workflows/proof-of-reserve --target local-simulation --secrets ../../../secrets.yaml

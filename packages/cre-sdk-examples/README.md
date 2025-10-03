@@ -49,13 +49,13 @@ cre workflow simulate ./src/workflows/on-chain --target local-simulation
 [On Chain Write workflow](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/on-chain-write/index.ts):
 
 ```zsh
-cre workflow simulate ./src/workflows/on-chain-write --target local-simulation --broadcast
+cre workflow simulate ./src/workflows/on-chain-write --target local-simulation
 ```
 
 [Proof of Reserve workflow](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/proof-of-reserve/index.ts):
 
 ```zsh
-cre workflow simulate ./src/workflows/proof-of-reserve --target local-simulation --broadcast --secrets ../../../secrets.yaml
+cre workflow simulate ./src/workflows/proof-of-reserve --target local-simulation --secrets ../../../secrets.yaml
 ```
 
 ## Testing workflow compilation only
