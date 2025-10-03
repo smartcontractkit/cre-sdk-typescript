@@ -75,7 +75,7 @@ jobs:
           cd cre-dl
 
           # Download the exact asset + checksums via GitHub CLI
-          ASSET="cre_linux_${ARCH}.tar.gz"
+          ASSET="cre_${CRE_CLI_TAG}_linux_${ARCH}.tar.gz"
           echo "Fetching ${ASSET} from ${CRE_CLI_TAG}…"
           gh release download "${CRE_CLI_TAG}" \
             --repo smartcontractkit/cre-cli \
