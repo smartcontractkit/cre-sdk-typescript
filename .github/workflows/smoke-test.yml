@@ -1,25 +1,43 @@
 name: Smoke Test
 permissions:
   contents: read
+  # optional but nice if you later want to react/post: pull-requests: write, issues: write
 
 on:
   pull_request:
     branches: [main]
+  issue_comment:
+    types: [created] # run when a new comment is added
 
 jobs:
-  full-checks:
+  smoke-test:
     runs-on: ubuntu-latest
-    # The job runs for all pull_requests to main
-    # Optionally, add filters using PR title/body if stricter matching desired
+
+    # Run for normal PRs, OR when a PR comment contains '#smoke-test'
+    if: >
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'issue_comment' &&
+       github.event.issue.pull_request != null &&
+       contains(github.event.comment.body, '#smoke-test'))
 
     steps:
-      - name: Checkout code
+      # Checkout for regular PR trigger
+      - name: Checkout code (pull_request)
+        if: github.event_name == 'pull_request'
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           submodules: recursive
           token: ${{ secrets.GITHUB_TOKEN }}
-          # For PR comments, checkout the PR head ref
-          # For PR, actions/checkout will automatically checkout the PR head
+
+      # Checkout for comment trigger: use the PR head ref
+      - name: Checkout code (issue_comment on PR)
+        if: github.event_name == 'issue_comment'
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # This checks out the PR head SHA for PR number in the comment event
+          ref: refs/pull/${{ github.event.issue.number }}/head
 
       - name: Install system dependencies
         run: |
@@ -57,7 +75,7 @@ jobs:
       - name: Run full checks
         run: bun full-checks
 
-        - name: Download and install cre-cli (ubuntu-latest)
+      - name: Download and install cre-cli (ubuntu-latest)
         env:
           CRE_CLI_TAG: v0.6.1-alpha.0
         run: |
