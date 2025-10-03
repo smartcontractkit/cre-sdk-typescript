@@ -3,16 +3,14 @@ permissions:
   contents: read
 
 on:
-  issue_comment:
-    types: [created]
+  pull_request:
+    branches: [main]
 
 jobs:
   full-checks:
     runs-on: ubuntu-latest
-    if: >
-      github.event_name == 'issue_comment' && 
-      github.event.issue.pull_request &&
-      contains(github.event.comment.body, '#smoke-test')
+    # The job runs for all pull_requests to main
+    # Optionally, add filters using PR title/body if stricter matching desired
 
     steps:
       - name: Checkout code
@@ -21,7 +19,7 @@ jobs:
           submodules: recursive
           token: ${{ secrets.GITHUB_TOKEN }}
           # For PR comments, checkout the PR head ref
-          ref: ${{ github.event_name == 'issue_comment' && format('refs/pull/{0}/head', github.event.issue.number) || github.ref }}
+          # For PR, actions/checkout will automatically checkout the PR head
 
       - name: Install system dependencies
         run: |
