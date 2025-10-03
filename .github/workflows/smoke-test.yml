@@ -57,63 +57,56 @@ jobs:
       - name: Run full checks
         run: bun full-checks
 
-      - name: Download and install cre-cli (ubuntu-latest)
+      - name: Download and install cre-cli (ubuntu-latest, robust)
         env:
           CRE_CLI_TAG: v0.6.1-alpha.0
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
 
-          # Validate tag format to prevent injection
-          if [[ ! "$CRE_CLI_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.-]+)?$ ]]; then
-            echo "Invalid tag format: $CRE_CLI_TAG"; exit 1
-          fi
-
-          # Map runner arch to release naming
+          # Resolve arch used by release assets
           case "$(uname -m)" in
             x86_64|amd64)  ARCH=amd64 ;;
             aarch64|arm64) ARCH=arm64 ;;
             *) echo "Unsupported arch: $(uname -m)"; exit 1 ;;
           esac
 
+          mkdir -p cre-dl
+          cd cre-dl
+
+          # Download the exact asset + checksums via GitHub CLI
           ASSET="cre_linux_${ARCH}.tar.gz"
-          BASE_URL="https://github.com/smartcontractkit/cre-cli/releases/download/${CRE_CLI_TAG}"
+          echo "Fetching ${ASSET} from ${CRE_CLI_TAG}…"
+          gh release download "${CRE_CLI_TAG}" \
+            --repo smartcontractkit/cre-cli \
+            --pattern "${ASSET}" --pattern "checksums.txt" --clobber
 
-          echo "Downloading ${ASSET} and checksums.txt from ${CRE_CLI_TAG}..."
-          # Use more secure curl options
-          curl -fsSL --retry 3 --retry-delay 2 --max-time 300 \
-               --proto '=https' --tlsv1.2 \
-               -o "${ASSET}" "${BASE_URL}/${ASSET}"
-          curl -fsSL --retry 3 --retry-delay 2 --max-time 300 \
-               --proto '=https' --tlsv1.2 \
-               -o checksums.txt "${BASE_URL}/checksums.txt"
+          # Sanity check: files exist
+          ls -l "${ASSET}" checksums.txt
 
-          echo "Verifying checksum..."
-          # checksums.txt contains lines like: "<sha256>  <filename>"
-          grep "  ${ASSET}$" checksums.txt > sha_line.txt
-          if [ ! -s sha_line.txt ]; then
-            echo "No checksum entry for ${ASSET}"; exit 1
-          fi
+          echo "Verifying SHA256…"
+          # Extract the checksum line robustly (allow tabs or spaces)
+          awk -v f="${ASSET}" '
+            $2==f || $NF==f {print $0; found=1}
+            END{ if(!found) exit 1 }
+          ' checksums.txt > sha_line.txt || {
+            echo "No checksum entry for ${ASSET} in checksums.txt"; cat checksums.txt; exit 1;
+          }
+
           sha256sum -c sha_line.txt
 
-          echo "Extracting..."
-          # Extract with restricted permissions
+          echo "Extracting archive…"
           tar -xzf "${ASSET}" --no-same-owner --no-same-permissions
 
-          # Find the 'cre' binary (tarball is expected to contain it at top-level)
-          BIN="./cre"
-          if [ ! -f "$BIN" ]; then
-            BIN="$(tar -tzf "${ASSET}" | grep -E '/?cre$' | head -n1 || true)"
-            [ -z "$BIN" ] && { echo "Could not locate 'cre' in archive"; exit 1; }
-            tar -xzf "${ASSET}" "$BIN" --no-same-owner --no-same-permissions
+          # Locate binary (top-level or inside a folder)
+          BIN_PATH="$(find . -maxdepth 2 -type f -name 'cre' -print -quit)"
+          if [ -z "${BIN_PATH}" ]; then
+            echo "Could not locate 'cre' binary after extraction"; exit 1
           fi
+          chmod +x "${BIN_PATH}"
 
-          # Validate binary before installation
-          if [ ! -x "$BIN" ]; then
-            chmod +x "$BIN"
-          fi
-
-          echo "Installing to /usr/local/bin..."
-          sudo mv "${BIN:-./cre}" /usr/local/bin/cre
+          echo "Installing to /usr/local/bin…"
+          sudo mv "${BIN_PATH}" /usr/local/bin/cre
           sudo chmod 755 /usr/local/bin/cre
 
           echo "Installed version:"
