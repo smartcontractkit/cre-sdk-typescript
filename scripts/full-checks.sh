@@ -19,19 +19,19 @@ run_in_package() {
 # cre-sdk-javy-plugin package
 run_in_package "cre-sdk-javy-plugin" "build"
 run_in_package "cre-sdk-javy-plugin" "typecheck"
-run_in_package "cre-sdk-javy-plugin" "lint"
+run_in_package "cre-sdk-javy-plugin" "check"
 
 # cre-sdk package
 run_in_package "cre-sdk" "compile:cre-setup"
 run_in_package "cre-sdk" "build"
 run_in_package "cre-sdk" "generate:sdk"
 run_in_package "cre-sdk" "typecheck"
-run_in_package "cre-sdk" "lint"
+run_in_package "cre-sdk" "check"
 run_in_package "cre-sdk" "test"
 run_in_package "cre-sdk" "test:standard"
 
 # cre-sdk-examples package
-run_in_package "cre-sdk-examples" "lint"
+run_in_package "cre-sdk-examples" "check"
 run_in_package "cre-sdk-examples" "typecheck"
 
 echo "✅ All checks completed successfully!"

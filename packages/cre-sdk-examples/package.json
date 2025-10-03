@@ -9,7 +9,7 @@
 	"scripts": {
 		"check": "biome check --write ${BIOME_PATHS:-.}",
 		"format": "biome format --write ${BIOME_PATHS:-.}",
-		"full-checks": "bun typecheck && bun lint",
+		"full-checks": "bun typecheck && bun check",
 		"lint": "biome lint --write",
 		"typecheck": "tsc"
 	},
