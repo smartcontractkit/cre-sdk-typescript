@@ -8,8 +8,8 @@ import {
 	capability,
 	method as methodOption,
 } from '@cre/generated/tools/generator/v1alpha/cre_metadata_pb'
-import { generateReportWrapper } from './generate-report-wrapper'
 import { generateActionMethod } from './generate-action'
+import { generateReportWrapper } from './generate-report-wrapper'
 import { generateActionSugarClass } from './generate-sugar'
 import { generateTriggerClass, generateTriggerMethod } from './generate-trigger'
 import { getImportPathForFile, lowerCaseFirstLetter } from './utils'

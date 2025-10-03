@@ -10,8 +10,8 @@ import {
 	ok,
 	Runner,
 	type Runtime,
-	text,
 	TxStatus,
+	text,
 } from '@chainlink/cre-sdk'
 import { type Address, decodeFunctionResult, encodeFunctionData, toHex, zeroAddress } from 'viem'
 import { z } from 'zod'
