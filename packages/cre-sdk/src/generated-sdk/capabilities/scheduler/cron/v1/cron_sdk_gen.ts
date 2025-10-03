@@ -11,6 +11,7 @@ import {
 } from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
 import { type Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
+import { hexToBytes } from '@cre/sdk/utils/hex-utils'
 import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 
 /**

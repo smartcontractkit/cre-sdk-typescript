@@ -63,6 +63,7 @@ import {
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { type Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
+import { hexToBytes } from '@cre/sdk/utils/hex-utils'
 import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 
 export type WriteCreReportRequest = {
@@ -93,7 +94,7 @@ export function createWriteCreReportRequest(
 	input: WriteCreReportRequestJson,
 ): WriteCreReportRequest {
 	return {
-		receiver: new Uint8Array(Buffer.from(input.receiver, 'base64')),
+		receiver: hexToBytes(input.receiver),
 		report: input.report,
 		gasConfig:
 			input.gasConfig !== undefined ? fromJson(GasConfigSchema, input.gasConfig) : undefined,

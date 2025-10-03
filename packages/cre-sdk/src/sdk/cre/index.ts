@@ -12,7 +12,7 @@ import { CronCapability } from '@cre/generated-sdk/capabilities/scheduler/cron/v
 import { prepareRuntime } from '@cre/sdk/utils/prepare-runtime'
 import { handler } from '@cre/sdk/workflow'
 
-export type { Log as EVMLog } from '@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb'
+export  { type Log as EVMLog, TxStatus } from '@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb'
 export type { Payload as HTTPPayload } from '@cre/generated/capabilities/networking/http/v1alpha/trigger_pb'
 export type { Payload as CronPayload } from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
 export type { NodeRuntime, Runtime } from '@cre/sdk/runtime'

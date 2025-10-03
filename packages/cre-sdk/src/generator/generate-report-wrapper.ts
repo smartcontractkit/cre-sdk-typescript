@@ -177,7 +177,7 @@ export function generateReportWrapper(tpe: DescMessage): [string, Map<string, Se
 
 					if (field.fieldKind === 'scalar' && field.scalar === 12) {
 						// Handle bytes field conversion from string to Uint8Array
-						return `${field.localName}: new Uint8Array(Buffer.from(input.${field.localName}, 'base64'))`
+						return `${field.localName}: hexToBytes(input.${field.localName})`
 					}
 
 					return `${field.localName}: input.${field.localName}`

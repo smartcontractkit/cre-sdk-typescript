@@ -8,7 +8,7 @@ import {
 	capability,
 	method as methodOption,
 } from '@cre/generated/tools/generator/v1alpha/cre_metadata_pb'
-import { generateReportWrapper } from './generate_report_wrapper'
+import { generateReportWrapper } from './generate-report-wrapper'
 import { generateActionMethod } from './generate-action'
 import { generateActionSugarClass } from './generate-sugar'
 import { generateTriggerClass, generateTriggerMethod } from './generate-trigger'
@@ -113,6 +113,7 @@ export function generateSdk(file: GenFile, outputDir: string) {
 			} else {
 				imports.add(`import { type Runtime } from "@cre/sdk"`)
 				imports.add(`import { Report } from "@cre/sdk/report"`)
+				imports.add(`import { hexToBytes } from "@cre/sdk/utils/hex-utils";`)
 			}
 		}
 
