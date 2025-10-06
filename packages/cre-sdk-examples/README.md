@@ -31,31 +31,31 @@ The setup is done in a way that treats `cre-sdk-examples` root directory as a CR
 [Hello World workflow](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/hello-world/index.ts):
 
 ```zsh
-cre workflow simulate ./src/workflows/hello-world --target local-simulation
+cre workflow simulate ./src/workflows/hello-world
 ```
 
 [Http Fetch workflow](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/http-fetch/index.ts):
 
 ```zsh
-cre workflow simulate ./src/workflows/http-fetch --target local-simulation
+cre workflow simulate ./src/workflows/http-fetch
 ```
 
 [On Chain Read workflow](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/on-chain/index.ts):
 
 ```zsh
-cre workflow simulate ./src/workflows/on-chain --target local-simulation
+cre workflow simulate ./src/workflows/on-chain
 ```
 
 [On Chain Write workflow](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/on-chain-write/index.ts):
 
 ```zsh
-cre workflow simulate ./src/workflows/on-chain-write --target local-simulation --broadcast
+cre workflow simulate ./src/workflows/on-chain-write
 ```
 
 [Proof of Reserve workflow](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/proof-of-reserve/index.ts):
 
 ```zsh
-cre workflow simulate ./src/workflows/proof-of-reserve --target local-simulation --broadcast --secrets ../../../secrets.yaml
+cre workflow simulate ./src/workflows/proof-of-reserve
 ```
 
 ## Testing workflow compilation only

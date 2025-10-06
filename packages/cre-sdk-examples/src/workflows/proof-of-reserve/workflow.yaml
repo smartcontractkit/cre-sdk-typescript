@@ -30,6 +30,7 @@ local-simulation:
   workflow-artifacts:
     workflow-path: "./index.ts"
     config-path: "./config.json"
+    secrets-path: "../../../secrets.yaml"
 
 # ==========================================================================
 production-testnet:
