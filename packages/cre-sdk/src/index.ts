@@ -1,4 +1,5 @@
 /// <reference types="./sdk/types/global" />
+/// <reference types="./sdk/types/restricted-apis" />
 
 export * from './sdk'
 export * from './sdk/runtime'

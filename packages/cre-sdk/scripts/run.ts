@@ -1,14 +1,14 @@
 #!/usr/bin/env bun
 
 const availableScripts = [
+	'build-types',
 	'compile-to-js',
 	'compile-to-wasm',
 	'compile-workflow', // TS -> JS -> WASM compilation in single script
 	'compile-all-standard-tests', // Do the above but for all standard tests
-
+	'fix-imports', // Fix @cre/* imports to relative paths
 	'generate-chain-selectors',
 	'generate-sdks',
-	'fix-imports', // Fix @cre/* imports to relative paths
 ]
 
 /**

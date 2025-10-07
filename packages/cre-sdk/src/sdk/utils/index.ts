@@ -1,6 +1,7 @@
 export * from './capabilities/blockchain/blockchain-helpers'
 export * from './capabilities/http/http-helpers'
 export * from './chain-selectors'
+export * from './decode-json'
 export * from './hex-utils'
 export * from './values/consensus_aggregators'
 export * from './values/serializer_types'
