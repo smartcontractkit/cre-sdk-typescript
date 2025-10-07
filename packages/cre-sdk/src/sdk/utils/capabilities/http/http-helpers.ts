@@ -10,6 +10,7 @@ import type {
 } from '@cre/generated-sdk/capabilities/networking/http/v1alpha/client_sdk_gen'
 import type { NodeRuntime } from '@cre/sdk'
 import type { Report } from '@cre/sdk/report'
+import { decodeJson } from '@cre/sdk/utils/decode-json'
 
 /**
  * HTTP Response Helper Functions
@@ -105,11 +106,9 @@ export function json(
 		return {
 			result: () => json(responseOrFn().result),
 		}
-	} else {
-		const decoder = new TextDecoder('utf-8')
-		const textBody = decoder.decode(responseOrFn.body)
-		return JSON.parse(textBody)
 	}
+
+	return decodeJson(responseOrFn.body)
 }
 
 /**

@@ -58,6 +58,12 @@ cre workflow simulate ./src/workflows/on-chain-write
 cre workflow simulate ./src/workflows/proof-of-reserve
 ```
 
+[Star Wars character example](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/star-wars/index.ts):
+
+```zsh
+cre workflow simulate ./src/workflows/star-wars
+```
+
 ## Testing workflow compilation only
 
 If you want use the CRE SDK to compile your workflows to WASM, choose any workflow you want to compile and run the following command:

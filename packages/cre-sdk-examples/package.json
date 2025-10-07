@@ -1,7 +1,7 @@
 {
 	"name": "@chainlink/cre-sdk-examples",
 	"private": true,
-	"version": "0.0.5-alpha",
+	"version": "0.0.6-alpha",
 	"type": "module",
 	"author": "Ernest Nowacki",
 	"license": "BUSL-1.1",
@@ -18,6 +18,9 @@
 		"@chainlink/cre-sdk": "workspace:*",
 		"viem": "2.34.0",
 		"zod": "3.25.76"
+	},
+	"devDependencies": {
+		"@types/bun": "1.2.21"
 	},
 	"engines": {
 		"bun": ">=1.2.21"

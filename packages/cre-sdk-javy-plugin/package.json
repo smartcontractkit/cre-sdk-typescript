@@ -1,6 +1,6 @@
 {
 	"name": "@chainlink/cre-sdk-javy-plugin",
-	"version": "0.0.4-alpha",
+	"version": "0.0.5-alpha",
 	"type": "module",
 	"bin": {
 		"cre-setup": "bin/setup.ts",
