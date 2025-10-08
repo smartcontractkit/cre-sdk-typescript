@@ -32,6 +32,15 @@ jobs:
           sudo chsh -s "$(which zsh)" $USER
         # Use bash or sh for this step, because zsh isn't set yet
         shell: bash {0}
+
+      # Install Rust + add wasm32-wasip1 target
+      - name: Setup Rust (stable) with wasm target
+        uses: actions-rust-lang/setup-rust-toolchain@1780873c7b576612439a134613cc4cc74ce5538c
+        with:
+          toolchain: stable
+          target: wasm32-wasip1
+          override: true
+
       - name: Setup Bun
         uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
         with:
