@@ -74,4 +74,34 @@ jobs:
         run: |
           cd packages/cre-sdk-examples
           cp .env.example .env
-          CRE_API_KEY=${{ secrets.CRE_CLI_API_KEY }} cre workflow simulate ./src/workflows/hello-world
+          CRE_API_KEY=${{ secrets.CRE_CLI_API_KEY }} cre workflow simulate ./src/workflows/hello-world > simulation_output.txt 2>&1
+          cat simulation_output.txt
+
+          # Validate expected outputs
+          echo "Validating simulation output..."
+
+          if ! grep -q "\[USER LOG\] Hello world! Workflow triggered." simulation_output.txt; then
+            echo "❌ ERROR: Expected '[USER LOG] Hello world! Workflow triggered.' not found"
+            exit 1
+          fi
+          echo "✓ Found: [USER LOG] Hello world! Workflow triggered."
+
+          if ! grep -q 'Workflow Simulation Result:' simulation_output.txt; then
+            echo "❌ ERROR: Expected 'Workflow Simulation Result:' not found"
+            exit 1
+          fi
+          echo "✓ Found: Workflow Simulation Result:"
+
+          if ! grep -q '"Hello world!"' simulation_output.txt; then
+            echo "❌ ERROR: Expected '\"Hello world!\"' not found"
+            exit 1
+          fi
+          echo "✓ Found: \"Hello world!\""
+
+          if ! grep -q "Execution finished signal received" simulation_output.txt; then
+            echo "❌ ERROR: Expected 'Execution finished signal received' not found"
+            exit 1
+          fi
+          echo "✓ Found: Execution finished signal received"
+
+          echo "✅ All validation checks passed!"
