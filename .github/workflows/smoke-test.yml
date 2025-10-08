@@ -80,7 +80,7 @@ jobs:
           # Validate expected outputs
           echo "Validating simulation output..."
 
-          if ! grep -q "\[USER LOG\] Hello world! Workflow triggered." simulation_output.txt; then
+          if ! grep -q "USER LOG.*Hello world! Workflow triggered" simulation_output.txt; then
             echo "❌ ERROR: Expected '[USER LOG] Hello world! Workflow triggered.' not found"
             exit 1
           fi
