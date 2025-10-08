@@ -73,4 +73,5 @@ jobs:
       - name: Simulate hello-world workflow
         run: |
           cd packages/cre-sdk-examples
+          cp .env.example .env
           cre workflow simulate ./src/workflows/hello-world
