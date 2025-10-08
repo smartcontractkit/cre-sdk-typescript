@@ -74,4 +74,4 @@ jobs:
         run: |
           cd packages/cre-sdk-examples
           cp .env.example .env
-          cre workflow simulate ./src/workflows/hello-world
+          CRE_API_KEY=${{ secrets.CRE_CLI_API_KEY }} cre workflow simulate ./src/workflows/hello-world
