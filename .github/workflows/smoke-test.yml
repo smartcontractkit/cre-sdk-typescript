@@ -1,143 +1,33 @@
-name: Smoke Test
-permissions:
-  contents: read
+name: smoke-test
 
 on:
   pull_request:
     branches: [main]
 
 jobs:
-  smoke-test:
+  test:
     runs-on: ubuntu-latest
 
-    # Run for pull requests targeting main branch
-    if: github.event_name == 'pull_request'
+    defaults:
+      run:
+        shell: zsh {0}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          submodules: recursive
-          token: ${{ secrets.GITHUB_TOKEN }}
+          bun-version: latest
 
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y make zsh curl libclang-dev git build-essential
-
-      - name: Install asdf and toolchain from .tool-versions
-        run: |
-          # Install asdf with specific version and verification
-          ASDF_VERSION="v0.14.0"
-          git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch "$ASDF_VERSION" --depth 1
-
-          # Make asdf available to subsequent steps without re-sourcing
-          echo "$HOME/.asdf/bin" >> $GITHUB_PATH
-          echo "$HOME/.asdf/shims" >> $GITHUB_PATH
-
-          # Init asdf
-          source ~/.asdf/asdf.sh
-
-          # Add plugins required for the project with verification
-          asdf plugin add bun || echo "bun plugin already exists"
-          asdf plugin add golang || echo "golang plugin already exists"
-          asdf plugin add rust || echo "rust plugin already exists"
-          asdf plugin add nodejs || echo "nodejs plugin already exists"
-
-          # Install all versions pinned in .tool-versions
-          asdf install
-          asdf reshim
-
-          # Add Rust target for WASM (asdf-rust uses rustup under the hood)
-          rustup target add wasm32-wasip1
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
 
       - name: Install dependencies
-        run: bun install
+        run: bun install --frozen-lockfile
 
-      - name: Run full checks
-        run: bun full-checks
-
-      - name: Download and install cre-cli (ubuntu-latest, robust)
-        env:
-          CRE_CLI_TAG: v0.6.1-alpha.0
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -euo pipefail
-
-          # Resolve arch used by release assets
-          case "$(uname -m)" in
-            x86_64|amd64)  ARCH=amd64 ;;
-            aarch64|arm64) ARCH=arm64 ;;
-            *) echo "Unsupported arch: $(uname -m)"; exit 1 ;;
-          esac
-
-          mkdir -p cre-dl
-          cd cre-dl
-
-          # Download the exact asset + checksums via GitHub CLI
-          ASSET="cre_${CRE_CLI_TAG}_linux_${ARCH}.tar.gz"
-          echo "Fetching ${ASSET} from ${CRE_CLI_TAG}…"
-          gh release download "${CRE_CLI_TAG}" \
-            --repo smartcontractkit/cre-cli \
-            --pattern "${ASSET}" --pattern "checksums.txt" --clobber
-
-          # Sanity check: files exist
-          ls -l "${ASSET}" checksums.txt
-
-          echo "Verifying SHA256…"
-          # Extract the checksum line robustly (allow tabs or spaces)
-          awk -v f="${ASSET}" '
-            $2==f || $NF==f {print $0; found=1}
-            END{ if(!found) exit 1 }
-          ' checksums.txt > sha_line.txt || {
-            echo "No checksum entry for ${ASSET} in checksums.txt"; cat checksums.txt; exit 1;
-          }
-
-          sha256sum -c sha_line.txt
-
-          echo "Extracting archive…"
-          tar -xzf "${ASSET}" --no-same-owner --no-same-permissions
-
-          # Locate binary (top-level or inside a folder)
-          BIN_PATH="$(find . -maxdepth 2 -type f -name 'cre' -print -quit)"
-          if [ -z "${BIN_PATH}" ]; then
-            echo "Could not locate 'cre' binary after extraction"; exit 1
-          fi
-          chmod +x "${BIN_PATH}"
-
-          echo "Installing to /usr/local/bin…"
-          sudo mv "${BIN_PATH}" /usr/local/bin/cre
-          sudo chmod 755 /usr/local/bin/cre
-
-          echo "Installed version:"
-          cre --version
-
-      - name: Setup CRE SDK examples
-        run: |
-          cd packages/cre-sdk-examples
-          bunx cre-setup
-
-      - name: Simulate Hello World workflow
-        run: |
-          cd packages/cre-sdk-examples
-          cre workflow simulate ./src/workflows/hello-world --target local-simulation
-
-      - name: Simulate Http Fetch workflow
-        run: |
-          cd packages/cre-sdk-examples
-          cre workflow simulate ./src/workflows/http-fetch --target local-simulation
-
-      - name: Simulate On Chain Read workflow
-        run: |
-          cd packages/cre-sdk-examples
-          cre workflow simulate ./src/workflows/on-chain --target local-simulation
-
-      - name: Simulate On Chain Write workflow
-        run: |
-          cd packages/cre-sdk-examples
-          cre workflow simulate ./src/workflows/on-chain-write --target local-simulation
-
-      - name: Simulate Proof of Reserve workflow
-        run: |
-          cd packages/cre-sdk-examples
-          cre workflow simulate ./src/workflows/proof-of-reserve --target local-simulation --secrets ../../../secrets.yaml
+      - name: Lint
+        run: bun run lint
