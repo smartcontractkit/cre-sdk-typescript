@@ -15,6 +15,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install zsh
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zsh
+
+          # Add it to /etc/shells if missing
+          if ! grep -q "^$(which zsh)$" /etc/shells; then
+            echo "$(which zsh)" | sudo tee -a /etc/shells
+          fi
+
+          # Change the default shell for the current user
+          sudo chsh -s "$(which zsh)" $USER
+        # Use bash or sh for this step, because zsh isn't set yet
+        shell: bash {0}
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
