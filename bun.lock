@@ -12,7 +12,7 @@
     },
     "packages/cre-sdk": {
       "name": "@chainlink/cre-sdk",
-      "version": "0.0.4-alpha",
+      "version": "0.0.5-alpha",
       "bin": {
         "cre-compile": "bin/cre-compile.ts",
       },
@@ -37,12 +37,15 @@
     },
     "packages/cre-sdk-examples": {
       "name": "@chainlink/cre-sdk-examples",
-      "version": "0.0.4-alpha",
+      "version": "0.0.5-alpha",
       "dependencies": {
         "@bufbuild/protobuf": "2.6.3",
         "@chainlink/cre-sdk": "workspace:*",
         "viem": "2.34.0",
         "zod": "3.25.76",
+      },
+      "devDependencies": {
+        "@types/bun": "1.2.21",
       },
     },
     "packages/cre-sdk-javy-plugin": {

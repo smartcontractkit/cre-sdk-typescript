@@ -1,5 +1,20 @@
-import { describe, expect, it } from 'bun:test'
-import type { Response } from '@cre/generated/capabilities/networking/http/v1alpha/client_pb'
+import { describe, expect, it, mock } from 'bun:test'
+import { create } from '@bufbuild/protobuf'
+import type {
+	RequestJson,
+	Response,
+} from '@cre/generated/capabilities/networking/http/v1alpha/client_pb'
+import {
+	AttributedSignatureSchema,
+	type ReportResponse,
+	ReportResponseSchema,
+} from '@cre/generated/sdk/v1alpha/sdk_pb'
+import {
+	ClientCapability,
+	SendRequester,
+} from '@cre/generated-sdk/capabilities/networking/http/v1alpha/client_sdk_gen'
+import type { NodeRuntime } from '@cre/index'
+import { Report } from '@cre/sdk'
 import { getHeader, json, ok, text } from './http-helpers'
 
 // Mock Response object for testing
@@ -103,5 +118,65 @@ describe('HTTP Helpers', () => {
 			expect(ok(createMockResponse(404, new Uint8Array()))).toBe(false)
 			expect(ok(createMockResponse(500, new Uint8Array()))).toBe(false)
 		})
+	})
+})
+
+describe('sendReport extension', () => {
+	const anyRequest: RequestJson = {
+		body: 'test',
+		headers: { a: 'b' },
+		method: 'GET',
+		url: 'https://example.com',
+	}
+
+	const anyResponse = createMockResponse(200, new Uint8Array(), { a: 'b' })
+
+	const anyReportResponse = create(ReportResponseSchema, {
+		configDigest: new Uint8Array([1, 2, 3]),
+		seqNr: 101n,
+		reportContext: new Uint8Array([4, 5, 6]),
+		rawReport: new Uint8Array([7, 8, 9]),
+		sigs: [
+			create(AttributedSignatureSchema, {
+				signature: new Uint8Array([10, 11, 12]),
+				signerId: 13,
+			}),
+			create(AttributedSignatureSchema, {
+				signature: new Uint8Array([16, 17, 18]),
+				signerId: 14,
+			}),
+		],
+	})
+	const anyReport = new Report(anyReportResponse)
+
+	//  safe for this test as we don't use the runtime itself
+	const anyRuntime = {} as NodeRuntime<unknown>
+
+	const produceReport = (reportResponse: ReportResponse) => {
+		expect(reportResponse).toEqual(anyReportResponse)
+		return anyRequest
+	}
+
+	class ClientCapabilityMock extends ClientCapability {
+		// biome-ignore lint/suspicious/noExplicitAny: Test mock needs to override complex overloaded method signatures. Using 'any' bypasses TypeScript's strict overload compatibility checks that would otherwise require redeclaring all overloaded signatures exactly.
+		sendRequest(...args: any[]): any {
+			expect(2).toEqual(args.length)
+			const [runtime, input] = args
+			expect(runtime).toBe(anyRuntime)
+			expect(input).toBe(anyRequest)
+			return { result: () => anyResponse }
+		}
+	}
+
+	it('ClientCapability should call the transform function and use the result', () => {
+		const clientCapability = new ClientCapabilityMock()
+		const response = clientCapability.sendReport(anyRuntime, anyReport, produceReport)
+		expect(response.result()).toBe(anyResponse)
+	})
+
+	it('SendRequester should call the transform function and use the result', () => {
+		const sendRequester = new SendRequester(anyRuntime, new ClientCapabilityMock())
+		const response = sendRequester.sendReport(anyReport, produceReport)
+		expect(response.result()).toBe(anyResponse)
 	})
 })

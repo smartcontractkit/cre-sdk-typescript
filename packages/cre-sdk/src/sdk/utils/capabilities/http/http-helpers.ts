@@ -1,4 +1,16 @@
-import type { Response } from '@cre/generated/capabilities/networking/http/v1alpha/client_pb'
+import type {
+	Request,
+	RequestJson,
+	Response,
+} from '@cre/generated/capabilities/networking/http/v1alpha/client_pb'
+import type { ReportResponse } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import type {
+	ClientCapability,
+	SendRequester,
+} from '@cre/generated-sdk/capabilities/networking/http/v1alpha/client_sdk_gen'
+import type { NodeRuntime } from '@cre/sdk'
+import type { Report } from '@cre/sdk/report'
+import { decodeJson } from '@cre/sdk/utils/decode-json'
 
 /**
  * HTTP Response Helper Functions
@@ -94,11 +106,9 @@ export function json(
 		return {
 			result: () => json(responseOrFn().result),
 		}
-	} else {
-		const decoder = new TextDecoder('utf-8')
-		const textBody = decoder.decode(responseOrFn.body)
-		return JSON.parse(textBody)
 	}
+
+	return decodeJson(responseOrFn.body)
 }
 
 /**
@@ -157,5 +167,110 @@ export function ok(
 		}
 	} else {
 		return responseOrFn.statusCode >= 200 && responseOrFn.statusCode < 300
+	}
+}
+
+// ============================================================================
+// SendReport Helper Methods for ClientCapability and SendRequester
+// ============================================================================
+
+/**
+ * SendReport functions the same as SendRequest, but takes a Report and a function
+ * to convert the inner ReportResponse to a Request.
+ * Note that caching is limited as reports may contain different sets of signatures
+ * on different nodes, leading to a cache miss.
+ *
+ * @param runtime - The runtime instance
+ * @param report - The Report to process
+ * @param fn - Function to convert ReportResponse to Request
+ * @returns Response result function
+ */
+function sendReport(
+	this: ClientCapability,
+	runtime: NodeRuntime<unknown>,
+	report: Report,
+	fn: (reportResponse: ReportResponse) => Request | RequestJson,
+): { result: () => Response } {
+	const rawReport = report.x_generatedCodeOnly_unwrap()
+	const request = fn(rawReport)
+	return this.sendRequest(runtime, request)
+}
+
+/**
+ * SendReport functions the same as SendRequest, but takes a Report and a function
+ * to convert the inner ReportResponse to a Request.
+ * Note that caching is limited as reports may contain different sets of signatures
+ * on different nodes, leading to a cache miss.
+ *
+ * @param report - The Report to process
+ * @param fn - Function to convert ReportResponse to Request
+ * @returns Response result function
+ */
+function sendRequesterSendReport(
+	this: SendRequester,
+	report: Report,
+	fn: (reportResponse: ReportResponse) => Request | RequestJson,
+): { result: () => Response } {
+	const rawReport = report.x_generatedCodeOnly_unwrap()
+	const request = fn(rawReport)
+	return this.sendRequest(request)
+}
+
+// ============================================================================
+// Prototype Extensions
+// ============================================================================
+
+// Import the actual classes for prototype extension
+import {
+	ClientCapability as ClientCapabilityClass,
+	SendRequester as SendRequesterClass,
+} from '@cre/generated-sdk/capabilities/networking/http/v1alpha/client_sdk_gen'
+
+// Extend ClientCapability prototype
+ClientCapabilityClass.prototype.sendReport = sendReport
+
+// Extend SendRequester prototype
+SendRequesterClass.prototype.sendReport = sendRequesterSendReport
+
+// ============================================================================
+// Type Declarations for Prototype Extensions
+// ============================================================================
+
+// Augment the module declarations to include the new methods
+declare module '@cre/generated-sdk/capabilities/networking/http/v1alpha/client_sdk_gen' {
+	interface ClientCapability {
+		/**
+		 * SendReport functions the same as SendRequest, but takes a Report and a function
+		 * to convert the inner ReportResponse to a Request.
+		 * Note that caching is limited as reports may contain different sets of signatures
+		 * on different nodes, leading to a cache miss.
+		 *
+		 * @param runtime - The runtime instance
+		 * @param report - The Report to process
+		 * @param fn - Function to convert ReportResponse to Request
+		 * @returns Response result function
+		 */
+		sendReport(
+			runtime: NodeRuntime<unknown>,
+			report: Report,
+			fn: (reportResponse: ReportResponse) => Request | RequestJson,
+		): { result: () => Response }
+	}
+
+	interface SendRequester {
+		/**
+		 * SendReport functions the same as SendRequest, but takes a Report and a function
+		 * to convert the inner ReportResponse to a Request.
+		 * Note that caching is limited as reports may contain different sets of signatures
+		 * on different nodes, leading to a cache miss.
+		 *
+		 * @param report - The Report to process
+		 * @param fn - Function to convert ReportResponse to Request
+		 * @returns Response result function
+		 */
+		sendReport(
+			report: Report,
+			fn: (reportResponse: ReportResponse) => Request | RequestJson,
+		): { result: () => Response }
 	}
 }

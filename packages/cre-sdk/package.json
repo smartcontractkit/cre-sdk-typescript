@@ -1,6 +1,6 @@
 {
 	"name": "@chainlink/cre-sdk",
-	"version": "0.0.5-alpha",
+	"version": "0.0.6-alpha",
 	"type": "module",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -8,6 +8,9 @@
 		".": {
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js"
+		},
+		"./restricted-apis": {
+			"types": "./dist/restricted-apis.d.ts"
 		}
 	},
 	"bin": {
@@ -22,7 +25,8 @@
 		"LICENSE.md"
 	],
 	"scripts": {
-		"build": "bun run clean && bun run compile:build && bun run fix-imports",
+		"build": "bun run clean && bun run compile:build && bun run build:types && bun run fix-imports",
+		"build:types": "bun run scripts/run.ts build-types",
 		"check": "biome check --write ${BIOME_PATHS:-.}",
 		"clean": "rm -rf dist",
 		"compile:all-standard-tests": "bun scripts/run.ts compile-all-standard-tests",
@@ -33,12 +37,12 @@
 		"compile:workflow": "bun scripts/run.ts compile-workflow",
 		"fix-imports": "bun scripts/run.ts fix-imports",
 		"format": "biome format --write ${BIOME_PATHS:-.}",
-		"full-checks": "bun generate:sdk && bun build && bun typecheck && bun lint && bun test && bun test:standard",
+		"full-checks": "bun generate:sdk && bun build && bun typecheck && bun check && bun test && bun test:standard",
 		"generate:chain-selectors": "bun scripts/run.ts generate-chain-selectors && BIOME_PATHS=\"src/generated\" bun check",
 		"generate:proto": "bunx @bufbuild/buf generate && BIOME_PATHS=\"src/generated\" bun check",
 		"generate:sdk": "bun generate:proto && bun generate:chain-selectors && bun scripts/run generate-sdks && BIOME_PATHS=\"src/generated src/generated-sdk\" bun check",
 		"lint": "biome lint --write",
-		"prepublishOnly": "bun typecheck && bun lint && bun test && bun test:standard",
+		"prepublishOnly": "bun typecheck && bun check && bun test && bun test:standard",
 		"test": "bun test",
 		"test:standard": "./scripts/run-standard-tests.sh",
 		"typecheck": "tsc"
