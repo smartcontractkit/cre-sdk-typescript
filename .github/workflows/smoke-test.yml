@@ -37,30 +37,30 @@ jobs:
         # Use bash or sh for this step, because zsh isn't set yet
         shell: bash {0}
 
-      # # Install Rust + add wasm32-wasip1 target
-      # - name: Setup Rust (stable) with wasm target
-      #   uses: actions-rust-lang/setup-rust-toolchain@1780873c7b576612439a134613cc4cc74ce5538c
-      #   with:
-      #     toolchain: stable
-      #     target: wasm32-wasip1
-      #     override: true
+      # Install Rust + add wasm32-wasip1 target
+      - name: Setup Rust (stable) with wasm target
+        uses: actions-rust-lang/setup-rust-toolchain@1780873c7b576612439a134613cc4cc74ce5538c
+        with:
+          toolchain: stable
+          target: wasm32-wasip1
+          override: true
 
-      # - name: Setup Bun
-      #   uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
-      #   with:
-      #     bun-version: latest
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        with:
+          bun-version: latest
 
-      # - name: Cache Bun dependencies
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: ~/.bun/install/cache
-      #     key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
 
-      # - name: Install dependencies
-      #   run: bun install --frozen-lockfile
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
 
-      # - name: Full checks
-      #   run: bun full-checks
+      - name: Full checks
+        run: bun full-checks
 
       - name: Install CRE CLI
         run: |
@@ -69,3 +69,8 @@ jobs:
 
       - name: Verify CRE CLI installation
         run: cre version
+
+      - name: Simulate hello-world workflow
+        run: |
+          cd packages/cre-sdk-examples
+          cre workflow simulate ./src/workflows/hello-world
