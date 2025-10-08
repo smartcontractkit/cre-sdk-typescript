@@ -12,6 +12,10 @@ jobs:
   full-checks:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        shell: zsh {0}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -19,38 +23,86 @@ jobs:
           submodules: recursive
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install system dependencies
+      - name: Install zsh
         run: |
           sudo apt-get update
-          sudo apt-get install -y make zsh curl libclang-dev git build-essential
+          sudo apt-get install -y zsh
 
-      - name: Install asdf and toolchain from .tool-versions
-        run: |
-          # Install asdf
-          git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0
+          # Add it to /etc/shells if missing
+          if ! grep -q "^$(which zsh)$" /etc/shells; then
+            echo "$(which zsh)" | sudo tee -a /etc/shells
+          fi
 
-          # Make asdf available to subsequent steps without re-sourcing
-          echo "$HOME/.asdf/bin" >> $GITHUB_PATH
-          echo "$HOME/.asdf/shims" >> $GITHUB_PATH
+          # Change the default shell for the current user
+          sudo chsh -s "$(which zsh)" $USER
+        # Use bash or sh for this step, because zsh isn't set yet
+        shell: bash {0}
 
-          # Init asdf
-          source ~/.asdf/asdf.sh
+      # Install Rust + add wasm32-wasip1 target
+      - name: Setup Rust (stable) with wasm target
+        uses: actions-rust-lang/setup-rust-toolchain@1780873c7b576612439a134613cc4cc74ce5538c
+        with:
+          toolchain: stable
+          target: wasm32-wasip1
+          override: true
 
-          # Add plugins required for the project
-          asdf plugin add bun
-          asdf plugin add golang
-          asdf plugin add rust
-          asdf plugin add nodejs
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        with:
+          bun-version: latest
 
-          # Install all versions pinned in .tool-versions
-          asdf install
-          asdf reshim
-
-          # Add Rust target for WASM (asdf-rust uses rustup under the hood)
-          rustup target add wasm32-wasip1
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
 
       - name: Install dependencies
-        run: bun install
+        run: bun install --frozen-lockfile
 
-      - name: Run full checks
+      - name: Full checks
         run: bun full-checks
+
+      - name: Install CRE CLI
+        run: |
+          chmod +x scripts/setup-cre-cli.sh
+          sudo scripts/setup-cre-cli.sh
+
+      - name: Verify CRE CLI installation
+        run: cre version
+
+      - name: Simulate hello-world workflow
+        run: |
+          cd packages/cre-sdk-examples
+          cp .env.example .env
+          CRE_API_KEY=${{ secrets.CRE_CLI_API_KEY }} cre workflow simulate ./src/workflows/hello-world > simulation_output.txt 2>&1
+          cat simulation_output.txt
+
+          # Validate expected outputs
+          echo "Validating simulation output..."
+
+          if ! grep -q "USER LOG.*Hello world! Workflow triggered" simulation_output.txt; then
+            echo "❌ ERROR: Expected '[USER LOG] Hello world! Workflow triggered.' not found"
+            exit 1
+          fi
+          echo "✓ Found: [USER LOG] Hello world! Workflow triggered."
+
+          if ! grep -q 'Workflow Simulation Result:' simulation_output.txt; then
+            echo "❌ ERROR: Expected 'Workflow Simulation Result:' not found"
+            exit 1
+          fi
+          echo "✓ Found: Workflow Simulation Result:"
+
+          if ! grep -q '"Hello world!"' simulation_output.txt; then
+            echo "❌ ERROR: Expected '\"Hello world!\"' not found"
+            exit 1
+          fi
+          echo "✓ Found: \"Hello world!\""
+
+          if ! grep -q "Execution finished signal received" simulation_output.txt; then
+            echo "❌ ERROR: Expected 'Execution finished signal received' not found"
+            exit 1
+          fi
+          echo "✓ Found: Execution finished signal received"
+
+          echo "✅ All validation checks passed!"
