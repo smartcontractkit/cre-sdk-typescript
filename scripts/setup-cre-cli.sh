@@ -5,7 +5,7 @@ set -e
 
 # Configuration
 VERSION="v0.6.2-alpha"
-PLATFORM="linux_arm64"
+PLATFORM="linux_amd64"
 FILENAME="cre_${PLATFORM}.tar.gz"
 BINARY_NAME="cre_${VERSION}_${PLATFORM}"
 DOWNLOAD_URL="https://github.com/smartcontractkit/cre-cli/releases/download/${VERSION}/${FILENAME}"
