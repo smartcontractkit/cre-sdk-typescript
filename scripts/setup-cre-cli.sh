@@ -4,7 +4,7 @@
 set -e
 
 # Configuration
-VERSION="v0.6.2-alpha"
+VERSION="v0.6.3-alpha"
 PLATFORM="linux_amd64"
 FILENAME="cre_${PLATFORM}.tar.gz"
 BINARY_NAME="cre_${VERSION}_${PLATFORM}"
