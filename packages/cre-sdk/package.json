@@ -11,6 +11,10 @@
 		},
 		"./restricted-apis": {
 			"types": "./dist/restricted-apis.d.ts"
+		},
+		"./pb": {
+			"types": "./dist/pb.d.ts",
+			"import": "./dist/pb.js"
 		}
 	},
 	"bin": {
