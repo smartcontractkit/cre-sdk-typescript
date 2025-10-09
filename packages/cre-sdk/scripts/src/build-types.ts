@@ -1,22 +1,33 @@
 import { glob } from 'fast-glob'
 import { copyFile, mkdir } from 'fs/promises'
-import { dirname, join, relative } from 'path'
+import { join } from 'path'
 
 const buildTypes = async () => {
-	console.log('🔧 Including restricted-apis type in built files...')
+	console.log('🔧 Copying type definition files to dist...')
 
 	// Define paths relative to the scripts directory
 	const packageRoot = join(import.meta.dir, '../..')
-	const sourceFile = join(packageRoot, 'src/sdk/types/restricted-apis.d.ts')
-	const destFile = join(packageRoot, 'dist/restricted-apis.d.ts')
+	const sourceDir = join(packageRoot, 'src/sdk/types')
+	const destDir = join(packageRoot, 'dist/sdk/types')
 
-	// Ensure the dist directory exists
-	await mkdir(dirname(destFile), { recursive: true })
+	// Ensure the destination directory exists
+	await mkdir(destDir, { recursive: true })
 
-	// Copy the file
-	await copyFile(sourceFile, destFile)
+	// Find all .d.ts files in the source directory
+	const typeFiles = await glob('*.d.ts', {
+		cwd: sourceDir,
+		absolute: false,
+	})
 
-	console.log('✅ Included restricted-apis type in the build.')
+	// Copy each file
+	for (const file of typeFiles) {
+		const sourceFile = join(sourceDir, file)
+		const destFile = join(destDir, file)
+		await copyFile(sourceFile, destFile)
+		console.log(`  ✓ Copied ${file}`)
+	}
+
+	console.log(`✅ Copied ${typeFiles.length} type definition file(s) to dist/sdk/types`)
 }
 
 export const main = buildTypes
