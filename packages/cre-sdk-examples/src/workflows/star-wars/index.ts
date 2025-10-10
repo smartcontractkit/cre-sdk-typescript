@@ -46,7 +46,7 @@ const fetchStarWarsCharacter = (
 	const input = decodeJson(payload.input)
 	const url = config.url.replace('{characterId}', input.characterId)
 
-	const response = sendRequester.sendRequest({ url }).result()
+	const response = sendRequester.sendRequest({ url, method: 'GET' }).result()
 
 	// Check if the response is successful using the helper function
 	if (!ok(response)) {
