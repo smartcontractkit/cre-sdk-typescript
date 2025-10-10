@@ -33,7 +33,7 @@ const configSchema = z.object({
 type Config = z.infer<typeof configSchema>
 
 const fetchMathResult = (sendRequester: HTTPSendRequester, config: Config) => {
-	const response = sendRequester.sendRequest({ url: config.apiUrl }).result()
+	const response = sendRequester.sendRequest({ url: config.apiUrl, method: 'GET' }).result()
 
 	// Check if the response is successful using the helper function
 	if (!ok(response)) {
