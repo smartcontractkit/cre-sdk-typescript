@@ -1,0 +1,29 @@
+{
+	"name": "@chainlink/cre-http-trigger",
+	"private": true,
+	"version": "0.0.8-alpha",
+	"type": "module",
+	"main": "src/index.ts",
+	"author": "Ernest Nowacki",
+	"license": "BUSL-1.1",
+	"description": "Utility app that allows for easy triggering of workflows via HTTP.",
+	"scripts": {
+		"start": "bun src/index.ts",
+		"check": "biome check --write ${BIOME_PATHS:-.}",
+		"format": "biome format --write ${BIOME_PATHS:-.}",
+		"full-checks": "bun typecheck && bun check",
+		"lint": "biome lint --write",
+		"typecheck": "tsc"
+	},
+	"dependencies": {
+		"uuid": "13.0.0",
+		"viem": "2.38.0",
+		"zod": "3.25.76"
+	},
+	"devDependencies": {
+		"@types/bun": "1.2.21"
+	},
+	"engines": {
+		"bun": ">=1.2.21"
+	}
+}
