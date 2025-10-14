@@ -1,0 +1,44 @@
+import { v4 as uuidv4 } from 'uuid'
+import { privateKeyToAccount } from 'viem/accounts'
+import { createJWT, type JSONRPCRequest } from './createJWT'
+import { getConfig } from './getConfig'
+import type { TriggerInput, WorkflowSelector } from './schemas'
+
+export async function triggerWorkflow(workflowSelector: WorkflowSelector, payload: TriggerInput) {
+	const config = getConfig()
+
+	// Create JSON-RPC request
+	const requestID = uuidv4()
+	const jsonrpcRequest: JSONRPCRequest = {
+		jsonrpc: '2.0',
+		id: requestID,
+		method: `workflows.execute`,
+		params: {
+			input: payload.input,
+			workflow: workflowSelector,
+		},
+	}
+
+	console.log('🚀 Triggering workflow...')
+	console.log('   Workflow:', workflowSelector)
+	console.log('   Input:', JSON.stringify(payload.input, null, 2))
+
+	// Create and sign JWT
+	const jwt = await createJWT(jsonrpcRequest, config.privateKey)
+	const account = privateKeyToAccount(config.privateKey)
+	console.log('   Signed by:', account.address)
+
+	// Send HTTP request
+	const response = await fetch(config.gatewayURL, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${jwt}`,
+		},
+		body: JSON.stringify(jsonrpcRequest),
+	})
+
+	const result = await response.json()
+
+	return result
+}

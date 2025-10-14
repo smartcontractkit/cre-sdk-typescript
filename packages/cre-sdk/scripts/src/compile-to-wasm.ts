@@ -51,8 +51,15 @@ export const main = async (inputFile?: string, outputFile?: string) => {
 	try {
 		await $`bun cre-compile-workflow ${resolvedInput} ${resolvedOutput}`
 	} catch {
-		// Use npm script which has the correct path setup
-		await $`bun --bun ../cre-sdk-javy-plugin/bin/compile-workflow.ts ${resolvedInput} ${resolvedOutput}`
+		// Fallback: locate compile-workflow.ts relative to this script file
+		// From: packages/cre-sdk/scripts/src/compile-to-wasm.ts
+		// To:   packages/cre-sdk-javy-plugin/bin/compile-workflow.ts
+		const scriptDir = import.meta.dir
+		const compilerPath = path.resolve(
+			scriptDir,
+			'../../../cre-sdk-javy-plugin/bin/compile-workflow.ts',
+		)
+		await $`bun --bun ${compilerPath} ${resolvedInput} ${resolvedOutput}`
 	}
 
 	console.info(`✅ Compiled: ${resolvedOutput}`)
