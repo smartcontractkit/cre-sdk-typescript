@@ -1,6 +1,6 @@
 {
 	"name": "@chainlink/cre-sdk",
-	"version": "0.0.8-alpha",
+	"version": "0.0.9-alpha",
 	"type": "module",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",

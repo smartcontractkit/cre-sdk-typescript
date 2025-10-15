@@ -1,4 +1,5 @@
 import type { CallMsgJson } from '@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb'
+import type { ReportRequestJson } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { hexToBase64 } from '@cre/sdk/utils/hex-utils'
 import type { Address, Hex } from 'viem'
 
@@ -56,4 +57,28 @@ export const encodeCallMsg = (payload: EncodeCallMsgPayload): CallMsgJson => ({
 	from: hexToBase64(payload.from),
 	to: hexToBase64(payload.to),
 	data: hexToBase64(payload.data),
+})
+
+/**
+ * Default values expected by the EVM capability for report encoding.
+ */
+export const EVM_DEFAULT_REPORT_ENCODER = {
+	encoderName: 'evm',
+	signingAlgo: 'ecdsa',
+	hashingAlgo: 'keccak256',
+}
+
+/**
+ * Prepares a report request for the EVM capability to pass to `.report()` function.
+ *
+ * @param hexEncodedPayload - The hex encoded payload to be signed.
+ * @param reportEncoder - The report encoder to be used. Defaults to EVM_DEFAULT_REPORT_ENCODER.
+ * @returns The prepared report request.
+ */
+export const prepareReportRequest = (
+	hexEncodedPayload: Hex,
+	reportEncoder: Exclude<ReportRequestJson, 'encodedPayload'> = EVM_DEFAULT_REPORT_ENCODER,
+): ReportRequestJson => ({
+	encodedPayload: hexToBase64(hexEncodedPayload),
+	...reportEncoder,
 })
