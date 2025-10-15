@@ -11,6 +11,7 @@ import {
 	hexToBase64,
 	LAST_FINALIZED_BLOCK_NUMBER,
 	median,
+	prepareReportRequest,
 	Runner,
 	type Runtime,
 	TxStatus,
@@ -205,14 +206,7 @@ const updateReserves = (
 	})
 
 	// Step 1: Generate report using consensus capability
-	const reportResponse = runtime
-		.report({
-			encodedPayload: hexToBase64(callData),
-			encoderName: 'evm',
-			signingAlgo: 'ecdsa',
-			hashingAlgo: 'keccak256',
-		})
-		.result()
+	const reportResponse = runtime.report(prepareReportRequest(callData)).result()
 
 	const resp = evmClient
 		.writeReport(runtime, {
