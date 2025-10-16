@@ -3,7 +3,7 @@ import { triggerInputSchema, workflowSelectorSchema } from './schemas'
 import { triggerWorkflow } from './trigger-workflow'
 
 const server = serve({
-	port: 3000,
+	port: 2000,
 	routes: {
 		// Health check endpoint
 		'/health': new Response('OK'),

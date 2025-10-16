@@ -1,8 +1,8 @@
 import { v4 as uuidv4 } from 'uuid'
 import { privateKeyToAccount } from 'viem/accounts'
 import stringify from 'json-stable-stringify'
-import { createJWT, type JSONRPCRequest } from './createJWT'
-import { getConfig } from './getConfig'
+import { createJWT, type JSONRPCRequest } from './create-jwt'
+import { getConfig } from './get-config'
 import type { TriggerInput, WorkflowSelector } from './schemas'
 
 export async function triggerWorkflow(workflowSelector: WorkflowSelector, payload: TriggerInput) {
@@ -38,6 +38,8 @@ export async function triggerWorkflow(workflowSelector: WorkflowSelector, payloa
 		},
 		body: stringify(jsonrpcRequest),
 	})
+
+	console.log('   Response:', response)
 
 	const result = await response.json()
 
