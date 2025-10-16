@@ -41,9 +41,9 @@ export const createJWT = async (request: JSONRPCRequest, privateKey: Hex): Promi
 		jti: uuidv4(),
 	}
 
-	// Encode header and payload
-	const encodedHeader = base64URLEncode(JSON.stringify(header))
-	const encodedPayload = base64URLEncode(JSON.stringify(payload))
+	// Encode header and payload to base64url
+	const encodedHeader = base64URLEncode(Buffer.from(JSON.stringify(header), 'utf8').toString('base64'))
+	const encodedPayload = base64URLEncode(Buffer.from(JSON.stringify(payload), 'utf8').toString('base64'))
 	const rawMessage = `${encodedHeader}.${encodedPayload}`
 
 	// Sign the message - viem's signMessage handles the Ethereum Signed Message prefix and hashing
@@ -61,13 +61,14 @@ export const createJWT = async (request: JSONRPCRequest, privateKey: Hex): Promi
 	}
 
 	// Combine r, s, and adjusted v into a single buffer
+	// Ensure r and s are exactly 32 bytes each by padding with leading zeros if needed
+	const rBuffer = Buffer.from(r.slice(2).padStart(64, '0'), 'hex') // 32 bytes = 64 hex chars
+	const sBuffer = Buffer.from(s.slice(2).padStart(64, '0'), 'hex') // 32 bytes = 64 hex chars
 	const signatureBytes = Buffer.concat([
-		Buffer.from(r.slice(2), 'hex'), // Remove 0x prefix from r
-		Buffer.from(s.slice(2), 'hex'), // Remove 0x prefix from s
+		rBuffer,
+		sBuffer,
 		Buffer.from([Number(recoveryId)]),
 	])
-
-	const encodedSignature = base64URLEncode(signatureBytes.toString('binary'))
-
+	const encodedSignature = base64URLEncode(signatureBytes.toString('base64'))
 	return `${rawMessage}.${encodedSignature}`
 }
