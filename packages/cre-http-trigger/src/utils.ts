@@ -9,7 +9,4 @@ export const sha256 = (data: any): string => {
 
 // Helper function to convert base64 string to base64url by replacing URL-unsafe characters
 export const base64URLEncode = (str: string): string =>
-	str
-		.replace(/\+/g, '-')
-		.replace(/\//g, '_')
-		.replace(/=/g, '')
+	str.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
