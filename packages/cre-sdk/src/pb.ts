@@ -4,3 +4,4 @@ export * as HTTP_TRIGGER_PB from '@cre/generated/capabilities/networking/http/v1
 export * as CRON_TRIGGER_PB from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
 export * as SDK_PB from '@cre/generated/sdk/v1alpha/sdk_pb'
 export * as VALUES_PB from '@cre/generated/values/v1/values_pb'
+export * as BUFBUILD_TYPES from '@cre/sdk/types/bufbuild-types'

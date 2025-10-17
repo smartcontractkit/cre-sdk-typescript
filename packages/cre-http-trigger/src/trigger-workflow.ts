@@ -1,6 +1,6 @@
+import stringify from 'json-stable-stringify'
 import { v4 as uuidv4 } from 'uuid'
 import { privateKeyToAccount } from 'viem/accounts'
-import stringify from 'json-stable-stringify'
 import { createJWT, type JSONRPCRequest } from './create-jwt'
 import { getConfig } from './get-config'
 import type { TriggerInput, WorkflowSelector } from './schemas'
