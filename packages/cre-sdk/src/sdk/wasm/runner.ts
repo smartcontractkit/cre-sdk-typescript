@@ -29,7 +29,12 @@ export class Runner<TConfig> {
 
 	private static getRequest(): ExecuteRequest {
 		const argsString = hostBindings.getWasiArgs()
-		const args = JSON.parse(argsString)
+		let args
+		try {
+			args = JSON.parse(argsString)
+		} catch (e) {
+			throw new Error('Invalid request: could not parse arguments')
+		}
 
 		// SDK expects exactly 2 args:
 		// 1st is the script name
