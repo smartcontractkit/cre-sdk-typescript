@@ -32,7 +32,18 @@ export const configHandler = async <TConfig, TIntermediateConfig = TConfig>(
 ): Promise<TConfig> => {
 	const config = request.config
 	const parser = configParser || defaultJsonParser
-	const intermediateConfig = parser(config)
+
+	let intermediateConfig: TIntermediateConfig
+	try {
+		intermediateConfig = parser(config)
+	} catch (error) {
+		if (error instanceof Error) {
+			throw new Error(`Failed to parse configuration: ${error.message}`)
+		} else {
+			throw new Error(`Failed to parse configuration: unknown error`)
+		}
+	}
+
 	return configSchema
 		? standardValidate(configSchema, intermediateConfig)
 		: (intermediateConfig as unknown as TConfig)
