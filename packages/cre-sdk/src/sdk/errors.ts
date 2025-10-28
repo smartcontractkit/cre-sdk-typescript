@@ -15,9 +15,9 @@ export class NodeModeError extends Error {
 
 export class SecretsError extends Error {
 	constructor(
-		public sceretRequest: SecretRequest,
+		public secretRequest: SecretRequest,
 		public error: String,
 	) {
-		super(`error fetching ${sceretRequest}: ${error}`)
+		super(`error fetching ${secretRequest}: ${error}`)
 	}
 }
