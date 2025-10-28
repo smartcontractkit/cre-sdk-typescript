@@ -1,6 +1,5 @@
 import { afterEach, describe, expect, mock, test } from 'bun:test'
-import { create, type Message } from '@bufbuild/protobuf'
-import type { GenMessage } from '@bufbuild/protobuf/codegenv2'
+import { create } from '@bufbuild/protobuf'
 import { type Any, anyPack, anyUnpack } from '@bufbuild/protobuf/wkt'
 import {
 	InputSchema,
@@ -89,8 +88,7 @@ afterEach(() => {
 
 describe('test runtime', () => {
 	describe('test call capability', () => {
-		// TODO:
-		test.skip('runs async - proper async implementation in progress', () => {
+		test('allows awaiting multiple capability results in different order than calls', () => {
 			const anyResult1 = 'ok1'
 			const anyResult2 = 'ok2'
 			var expectedCall = 1
@@ -103,21 +101,19 @@ describe('test runtime', () => {
 				call: mock((request: CapabilityRequest) => {
 					switch (request.callbackId) {
 						case 1:
-							return expectCapabilityCall(
-								request,
-								input1,
-								InputsSchema,
-								BasicActionCapability.CAPABILITY_ID,
-								expectedCall++,
-							)
+							expect(expectedCall).toEqual(1)
+							expectedCall++
+							expect(request.id).toEqual(BasicActionCapability.CAPABILITY_ID)
+							expect(request.method).toEqual('PerformAction')
+							expect(anyUnpack(request.payload as Any, InputsSchema)).toEqual(input1)
+							return true
 						case 2:
-							return expectCapabilityCall(
-								request,
-								input2,
-								InputSchema,
-								BasicCapability.CAPABILITY_ID,
-								expectedCall++,
-							)
+							expect(expectedCall).toEqual(2)
+							expectedCall++
+							expect(request.id).toEqual(BasicCapability.CAPABILITY_ID)
+							expect(request.method).toEqual('Action')
+							expect(anyUnpack(request.payload as Any, InputSchema)).toEqual(input2)
+							return true
 						default:
 							throw new Error(`Unexpected call with callbackId: ${request.callbackId}`)
 					}
@@ -530,19 +526,3 @@ describe('test run in node mode', () => {
 		expect(callbackIds[0]).not.toEqual(callbackIds[1])
 	})
 })
-
-function expectCapabilityCall<T extends Message>(
-	request: CapabilityRequest,
-	expectedPayload: T,
-	desc: GenMessage<T>,
-	expectedCapabilityId: string,
-	expectedCallbackId: number,
-) {
-	expect(request.id).toEqual(expectedCapabilityId)
-	expect(request.method).toEqual('PerformAction')
-	expect(request.callbackId).toEqual(expectedCallbackId)
-	expect(request.payload).toBeDefined()
-	const payload = anyUnpack(request.payload as Any, desc)
-	expect(payload).toEqual(expectedPayload)
-	return true
-}
