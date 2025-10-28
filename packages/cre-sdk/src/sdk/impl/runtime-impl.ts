@@ -169,7 +169,7 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 
 	runInNodeMode<TArgs extends unknown[], TOutput>(
 		fn: (nodeRuntime: NodeRuntime<C>, ...args: TArgs) => TOutput,
-		consesusAggretation: ConsensusAggregation<TOutput, true>,
+		consensusAggretation: ConsensusAggregation<TOutput, true>,
 		unwrapOptions?: TOutput extends PrimitiveTypes ? never : UnwrapOptions<TOutput>,
 	): (...args: TArgs) => { result: () => TOutput } {
 		return (...args: TArgs): { result: () => TOutput } => {
@@ -182,12 +182,12 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 			)
 
 			const consensusInput = create(SimpleConsensusInputsSchema, {
-				descriptors: consesusAggretation.descriptor,
+				descriptors: consensusAggretation.descriptor,
 			})
-			if (consesusAggretation.defaultValue) {
+			if (consensusAggretation.defaultValue) {
 				// This cast is safe, since ConsensusAggregation can only have true its second argument if T extends CreSerializable<TOutput>
 				consensusInput.default = Value.from(
-					consesusAggretation.defaultValue as CreSerializable<TOutput>,
+					consensusAggretation.defaultValue as CreSerializable<TOutput>,
 				).proto()
 			}
 
@@ -276,7 +276,7 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 					case 'error':
 						throw new SecretsError(secretRequest, response.value.error)
 					default:
-						throw new SecretsError(secretRequest, 'cannot unmashal returned value from host')
+						throw new SecretsError(secretRequest, 'cannot unmarshal returned value from host')
 				}
 			},
 		}

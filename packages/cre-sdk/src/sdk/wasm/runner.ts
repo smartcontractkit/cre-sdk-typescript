@@ -65,6 +65,8 @@ export class Runner<TConfig> {
 				case 'trigger':
 					result = this.handleExecutionPhase(this.request, workflow, runtime)
 					break
+				default:
+					throw new Error('Unknown request type')
 			}
 		} catch (e) {
 			const err = e instanceof Error ? e.message : String(e)
