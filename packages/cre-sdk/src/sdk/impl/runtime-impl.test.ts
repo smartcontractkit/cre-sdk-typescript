@@ -462,6 +462,73 @@ describe('test run in node mode', () => {
 		}, consensusMedianAggregation())()
 		expect(() => result.result()).toThrow(new DonModeError())
 	})
+
+	test('multiple runInNodeMode calls have unique callback IDs', () => {
+		const callbackIds: number[] = []
+		const helpers = createRuntimeHelpersMock({
+			switchModes: mock((_: Mode) => {}),
+			call: mock((request: CapabilityRequest) => {
+				callbackIds.push(request.callbackId)
+				return true
+			}),
+			await: mock((request: AwaitCapabilitiesRequest) => {
+				const id = request.ids[0]
+				return create(AwaitCapabilitiesResponseSchema, {
+					responses: {
+						[id]: create(CapabilityResponseSchema, {
+							response: {
+								case: 'payload',
+								value: anyPack(NodeOutputsSchema, create(NodeOutputsSchema, { outputThing: 42 })),
+							},
+						}),
+					},
+				})
+			}),
+		})
+
+		ConsensusCapability.prototype.simple = mock(
+			(_: Runtime<unknown>, __: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
+				return {
+					result: () => Value.from(create(NodeOutputsSchema, { outputThing: 42 })).proto(),
+				}
+			},
+		)
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+
+		// First runInNodeMode call with capability inside
+		const call1 = runtime.runInNodeMode(
+			(nodeRuntime: NodeRuntime<unknown>) => {
+				const capability = new NodeActionCapability()
+				return capability
+					.performAction(nodeRuntime, create(NodeInputsSchema, { inputThing: true }))
+					.result()
+			},
+			ConsensusAggregationByFields<NodeOutputs>({ outputThing: median }),
+		)
+
+		call1().result()
+
+		// Second runInNodeMode call with capability inside
+		const call2 = runtime.runInNodeMode(
+			(nodeRuntime: NodeRuntime<unknown>) => {
+				const capability = new NodeActionCapability()
+				return capability
+					.performAction(nodeRuntime, create(NodeInputsSchema, { inputThing: false }))
+					.result()
+			},
+			ConsensusAggregationByFields<NodeOutputs>({ outputThing: median }),
+		)
+
+		call2().result()
+
+		// Verify that we have two distinct callback IDs
+		expect(callbackIds.length).toEqual(2)
+		expect(callbackIds[0]).toEqual(-1) // First node mode call
+		expect(callbackIds[1]).toEqual(-2) // Second node mode call
+		// Ensure they are different (no reuse/collision)
+		expect(callbackIds[0]).not.toEqual(callbackIds[1])
+	})
 })
 
 function expectCapabilityCall<T extends Message>(
