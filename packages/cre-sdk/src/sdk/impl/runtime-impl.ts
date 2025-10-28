@@ -118,8 +118,17 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 
 				const response = capabilityResponse.response
 				switch (response.case) {
-					case 'payload':
-						return anyUnpack(response.value as Any, outputSchema) as O
+					case 'payload': {
+						try {
+							return anyUnpack(response.value as Any, outputSchema) as O
+						} catch {
+							throw new CapabilityError(`Error cannot unwrap payload`, {
+								capabilityId,
+								method,
+								callbackId,
+							})
+						}
+					}
 					case 'error':
 						throw new CapabilityError(`Error ${response.value}`, {
 							capabilityId,
