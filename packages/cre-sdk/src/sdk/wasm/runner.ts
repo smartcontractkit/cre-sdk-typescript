@@ -89,6 +89,13 @@ export class Runner<TConfig> {
 		}
 
 		const triggerMsg = req.request.value
+
+		// We're about to cast bigint to number, so we need to check if it's safe
+		const id = BigInt(triggerMsg.id)
+		if (id > BigInt(Number.MAX_SAFE_INTEGER)) {
+			throw new Error(`Trigger ID ${id} exceeds safe integer range`)
+		}
+
 		const index = Number(triggerMsg.id)
 		if (Number.isFinite(index) && index >= 0 && index < workflow.length) {
 			const entry = workflow[index]
