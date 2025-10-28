@@ -13,10 +13,21 @@ export const hexToBytes = (hexStr: string): Uint8Array => {
 	if (!hexStr.startsWith('0x')) {
 		throw new Error(`Invalid hex string: ${hexStr}`)
 	}
+
+	// Validate hexadecimal characters
+	if (!/^0x[0-9a-fA-F]*$/.test(hexStr)) {
+		throw new Error(`Invalid hex string: ${hexStr}`)
+	}
+
+	// Validate even length
+	if ((hexStr.length - 2) % 2 !== 0) {
+		throw new Error(`Hex string must have an even number of characters: ${hexStr}`)
+	}
+
 	const hex = hexStr.slice(2)
 	const bytes = new Uint8Array(hex.length / 2)
 	for (let i = 0; i < hex.length; i += 2) {
-		bytes[i / 2] = Number.parseInt(hex.substr(i, 2), 16)
+		bytes[i / 2] = Number.parseInt(hex.slice(i, i + 2), 16)
 	}
 	return bytes
 }
