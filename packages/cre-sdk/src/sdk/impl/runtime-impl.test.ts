@@ -1,6 +1,5 @@
 import { afterEach, describe, expect, mock, test } from 'bun:test'
-import { create, type Message } from '@bufbuild/protobuf'
-import type { GenMessage } from '@bufbuild/protobuf/codegenv2'
+import { create } from '@bufbuild/protobuf'
 import { type Any, anyPack, anyUnpack } from '@bufbuild/protobuf/wkt'
 import {
 	InputSchema,
@@ -21,11 +20,15 @@ import {
 	AggregationType,
 	type AwaitCapabilitiesRequest,
 	AwaitCapabilitiesResponseSchema,
+	AwaitSecretsResponseSchema,
 	type CapabilityRequest,
 	CapabilityResponseSchema,
 	ConsensusDescriptorSchema,
 	FieldsMapSchema,
 	Mode,
+	SecretRequestSchema,
+	SecretResponseSchema,
+	SecretResponsesSchema,
 	type SimpleConsensusInputs,
 	type SimpleConsensusInputsJson,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
@@ -42,7 +45,7 @@ import {
 	Value,
 } from '@cre/sdk/utils'
 import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
-import { DonModeError, NodeModeError } from '../errors'
+import { DonModeError, NodeModeError, SecretsError } from '../errors'
 import { type RuntimeHelpers, RuntimeImpl } from './runtime-impl'
 
 // Helper function to create a RuntimeHelpers mock with error-throwing defaults
@@ -89,8 +92,7 @@ afterEach(() => {
 
 describe('test runtime', () => {
 	describe('test call capability', () => {
-		// TODO:
-		test.skip('runs async - proper async implementation in progress', () => {
+		test('allows awaiting multiple capability results in different order than calls', () => {
 			const anyResult1 = 'ok1'
 			const anyResult2 = 'ok2'
 			var expectedCall = 1
@@ -103,21 +105,19 @@ describe('test runtime', () => {
 				call: mock((request: CapabilityRequest) => {
 					switch (request.callbackId) {
 						case 1:
-							return expectCapabilityCall(
-								request,
-								input1,
-								InputsSchema,
-								BasicActionCapability.CAPABILITY_ID,
-								expectedCall++,
-							)
+							expect(expectedCall).toEqual(1)
+							expectedCall++
+							expect(request.id).toEqual(BasicActionCapability.CAPABILITY_ID)
+							expect(request.method).toEqual('PerformAction')
+							expect(anyUnpack(request.payload as Any, InputsSchema)).toEqual(input1)
+							return true
 						case 2:
-							return expectCapabilityCall(
-								request,
-								input2,
-								InputSchema,
-								BasicCapability.CAPABILITY_ID,
-								expectedCall++,
-							)
+							expect(expectedCall).toEqual(2)
+							expectedCall++
+							expect(request.id).toEqual(BasicCapability.CAPABILITY_ID)
+							expect(request.method).toEqual('Action')
+							expect(anyUnpack(request.payload as Any, InputSchema)).toEqual(input2)
+							return true
 						default:
 							throw new Error(`Unexpected call with callbackId: ${request.callbackId}`)
 					}
@@ -282,6 +282,315 @@ describe('test now conversts to date', () => {
 		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
 		const now = runtime.now()
 		expect(now).toEqual(new Date(1716153600000 / 1000000))
+	})
+})
+
+describe('test getSecret', () => {
+	test('successfully gets secret with SecretRequest (proto message)', () => {
+		const secretRequest = create(SecretRequestSchema, {
+			id: 'my-secret',
+			namespace: 'test-ns',
+		})
+
+		const helpers = createRuntimeHelpersMock({
+			getSecrets: mock((request) => {
+				expect(request.callbackId).toEqual(1)
+				expect(request.requests.length).toEqual(1)
+				return true
+			}),
+			awaitSecrets: mock((request) => {
+				expect(request.ids.length).toEqual(1)
+				expect(request.ids[0]).toEqual(1)
+				return create(AwaitSecretsResponseSchema, {
+					responses: {
+						1: create(SecretResponsesSchema, {
+							responses: [
+								create(SecretResponseSchema, {
+									response: {
+										case: 'secret',
+										value: {
+											id: 'my-secret',
+											namespace: 'test-ns',
+											owner: 'test-owner',
+											value: 'secret-value-123',
+										},
+									},
+								}),
+							],
+						}),
+					},
+				})
+			}),
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		const result = runtime.getSecret(secretRequest).result()
+		expect(result.id).toEqual('my-secret')
+		expect(result.namespace).toEqual('test-ns')
+		expect(result.value).toEqual('secret-value-123')
+	})
+
+	test('successfully gets secret with SecretRequestJson (plain JSON)', () => {
+		const secretRequestJson = { id: 'another-secret', namespace: 'another-ns' }
+
+		const helpers = createRuntimeHelpersMock({
+			getSecrets: mock((request) => {
+				expect(request.callbackId).toEqual(1)
+				expect(request.requests.length).toEqual(1)
+				return true
+			}),
+			awaitSecrets: mock((request) => {
+				expect(request.ids.length).toEqual(1)
+				expect(request.ids[0]).toEqual(1)
+				return create(AwaitSecretsResponseSchema, {
+					responses: {
+						1: create(SecretResponsesSchema, {
+							responses: [
+								create(SecretResponseSchema, {
+									response: {
+										case: 'secret',
+										value: {
+											id: 'another-secret',
+											namespace: 'another-ns',
+											owner: 'another-owner',
+											value: 'value-456',
+										},
+									},
+								}),
+							],
+						}),
+					},
+				})
+			}),
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		const result = runtime.getSecret(secretRequestJson).result()
+		expect(result.id).toEqual('another-secret')
+		expect(result.namespace).toEqual('another-ns')
+		expect(result.value).toEqual('value-456')
+	})
+
+	test('getSecrets returns false', () => {
+		const secretRequest = create(SecretRequestSchema, {
+			id: 'test-secret',
+			namespace: 'test-ns',
+		})
+
+		const helpers = createRuntimeHelpersMock({
+			getSecrets: mock(() => false),
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		expect(() => runtime.getSecret(secretRequest).result()).toThrow(
+			new SecretsError(secretRequest, 'host is not making the secrets request'),
+		)
+	})
+
+	test('awaitSecrets returns no response for callback ID', () => {
+		const secretRequest = create(SecretRequestSchema, {
+			id: 'test-secret',
+			namespace: 'test-ns',
+		})
+
+		const helpers = createRuntimeHelpersMock({
+			getSecrets: mock(() => true),
+			awaitSecrets: mock(() => {
+				return create(AwaitSecretsResponseSchema, {
+					responses: {},
+				})
+			}),
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		expect(() => runtime.getSecret(secretRequest).result()).toThrow(
+			new SecretsError(secretRequest, 'no response'),
+		)
+	})
+
+	test('awaitSecrets returns invalid number of responses', () => {
+		const secretRequest = create(SecretRequestSchema, {
+			id: 'test-secret',
+			namespace: 'test-ns',
+		})
+
+		const helpers = createRuntimeHelpersMock({
+			getSecrets: mock(() => true),
+			awaitSecrets: mock(() => {
+				return create(AwaitSecretsResponseSchema, {
+					responses: {
+						1: create(SecretResponsesSchema, {
+							responses: [],
+						}),
+					},
+				})
+			}),
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		expect(() => runtime.getSecret(secretRequest).result()).toThrow(
+			new SecretsError(secretRequest, 'invalid value returned from host'),
+		)
+	})
+
+	test('awaitSecrets returns too many responses', () => {
+		const secretRequest = create(SecretRequestSchema, {
+			id: 'test-secret',
+			namespace: 'test-ns',
+		})
+		const secretValue = {
+			id: 'secret1',
+			namespace: 'test-ns',
+			owner: 'test-owner',
+			value: 'value1',
+		}
+
+		const helpers = createRuntimeHelpersMock({
+			getSecrets: mock(() => true),
+			awaitSecrets: mock(() => {
+				return create(AwaitSecretsResponseSchema, {
+					responses: {
+						1: create(SecretResponsesSchema, {
+							responses: [
+								create(SecretResponseSchema, {
+									response: { case: 'secret', value: secretValue },
+								}),
+								create(SecretResponseSchema, {
+									response: { case: 'secret', value: secretValue },
+								}),
+							],
+						}),
+					},
+				})
+			}),
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		expect(() => runtime.getSecret(secretRequest).result()).toThrow(
+			new SecretsError(secretRequest, 'invalid value returned from host'),
+		)
+	})
+
+	test('awaitSecrets returns error response', () => {
+		const secretRequest = create(SecretRequestSchema, {
+			id: 'test-secret',
+			namespace: 'test-ns',
+		})
+		const errorMessage = 'secret not found'
+
+		const helpers = createRuntimeHelpersMock({
+			getSecrets: mock(() => true),
+			awaitSecrets: mock(() => {
+				return create(AwaitSecretsResponseSchema, {
+					responses: {
+						1: create(SecretResponsesSchema, {
+							responses: [
+								create(SecretResponseSchema, {
+									response: { case: 'error', value: { error: errorMessage } },
+								}),
+							],
+						}),
+					},
+				})
+			}),
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		expect(() => runtime.getSecret(secretRequest).result()).toThrow(
+			new SecretsError(secretRequest, errorMessage),
+		)
+	})
+
+	test('awaitSecrets returns unknown response case', () => {
+		const secretRequest = create(SecretRequestSchema, {
+			id: 'test-secret',
+			namespace: 'test-ns',
+		})
+
+		const helpers = createRuntimeHelpersMock({
+			getSecrets: mock(() => true),
+			awaitSecrets: mock(() => {
+				return create(AwaitSecretsResponseSchema, {
+					responses: {
+						1: create(SecretResponsesSchema, {
+							responses: [
+								create(SecretResponseSchema, {
+									response: { case: undefined },
+								}),
+							],
+						}),
+					},
+				})
+			}),
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		expect(() => runtime.getSecret(secretRequest).result()).toThrow(
+			new SecretsError(secretRequest, 'cannot unmarshal returned value from host'),
+		)
+	})
+
+	test('getSecret increments callback ID correctly', () => {
+		const callbackIds: number[] = []
+		const secretValue = {
+			id: 'secret',
+			namespace: 'test-ns',
+			owner: 'test-owner',
+			value: 'value',
+		}
+
+		const helpers = createRuntimeHelpersMock({
+			getSecrets: mock((request) => {
+				callbackIds.push(request.callbackId)
+				return true
+			}),
+			awaitSecrets: mock((request) => {
+				const id = request.ids[0]
+				return create(AwaitSecretsResponseSchema, {
+					responses: {
+						[id]: create(SecretResponsesSchema, {
+							responses: [
+								create(SecretResponseSchema, {
+									response: { case: 'secret', value: secretValue },
+								}),
+							],
+						}),
+					},
+				})
+			}),
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+
+		runtime.getSecret({ id: 'secret1', namespace: 'ns1' }).result()
+		runtime.getSecret({ id: 'secret2', namespace: 'ns2' }).result()
+		runtime.getSecret({ id: 'secret3', namespace: 'ns3' }).result()
+
+		expect(callbackIds).toEqual([1, 2, 3])
+	})
+
+	test('getSecret in node mode throws DonModeError', () => {
+		const helpers = createRuntimeHelpersMock()
+
+		ConsensusCapability.prototype.simple = mock(() => {
+			return { result: () => Value.from(0).proto() }
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		let capturedError: Error | undefined
+
+		runtime.runInNodeMode((_nodeRuntime: NodeRuntime<unknown>) => {
+			// Try to call getSecret from within node mode (should fail)
+			try {
+				runtime.getSecret({ id: 'test', namespace: 'test-ns' }).result()
+			} catch (e) {
+				capturedError = e as Error
+			}
+			return 0
+		}, consensusMedianAggregation())()
+
+		expect(capturedError).toBeDefined()
+		expect(capturedError).toBeInstanceOf(DonModeError)
 	})
 })
 
@@ -462,20 +771,71 @@ describe('test run in node mode', () => {
 		}, consensusMedianAggregation())()
 		expect(() => result.result()).toThrow(new DonModeError())
 	})
-})
 
-function expectCapabilityCall<T extends Message>(
-	request: CapabilityRequest,
-	expectedPayload: T,
-	desc: GenMessage<T>,
-	expectedCapabilityId: string,
-	expectedCallbackId: number,
-) {
-	expect(request.id).toEqual(expectedCapabilityId)
-	expect(request.method).toEqual('PerformAction')
-	expect(request.callbackId).toEqual(expectedCallbackId)
-	expect(request.payload).toBeDefined()
-	const payload = anyUnpack(request.payload as Any, desc)
-	expect(payload).toEqual(expectedPayload)
-	return true
-}
+	test('multiple runInNodeMode calls have unique callback IDs', () => {
+		const callbackIds: number[] = []
+		const helpers = createRuntimeHelpersMock({
+			switchModes: mock((_: Mode) => {}),
+			call: mock((request: CapabilityRequest) => {
+				callbackIds.push(request.callbackId)
+				return true
+			}),
+			await: mock((request: AwaitCapabilitiesRequest) => {
+				const id = request.ids[0]
+				return create(AwaitCapabilitiesResponseSchema, {
+					responses: {
+						[id]: create(CapabilityResponseSchema, {
+							response: {
+								case: 'payload',
+								value: anyPack(NodeOutputsSchema, create(NodeOutputsSchema, { outputThing: 42 })),
+							},
+						}),
+					},
+				})
+			}),
+		})
+
+		ConsensusCapability.prototype.simple = mock(
+			(_: Runtime<unknown>, __: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
+				return {
+					result: () => Value.from(create(NodeOutputsSchema, { outputThing: 42 })).proto(),
+				}
+			},
+		)
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+
+		// First runInNodeMode call with capability inside
+		const call1 = runtime.runInNodeMode(
+			(nodeRuntime: NodeRuntime<unknown>) => {
+				const capability = new NodeActionCapability()
+				return capability
+					.performAction(nodeRuntime, create(NodeInputsSchema, { inputThing: true }))
+					.result()
+			},
+			ConsensusAggregationByFields<NodeOutputs>({ outputThing: median }),
+		)
+
+		call1().result()
+
+		// Second runInNodeMode call with capability inside
+		const call2 = runtime.runInNodeMode(
+			(nodeRuntime: NodeRuntime<unknown>) => {
+				const capability = new NodeActionCapability()
+				return capability
+					.performAction(nodeRuntime, create(NodeInputsSchema, { inputThing: false }))
+					.result()
+			},
+			ConsensusAggregationByFields<NodeOutputs>({ outputThing: median }),
+		)
+
+		call2().result()
+
+		// Verify that we have two distinct callback IDs
+		expect(callbackIds.length).toEqual(2)
+		expect(callbackIds[0]).toEqual(-1) // First node mode call
+		expect(callbackIds[1]).toEqual(-2) // Second node mode call
+		// Ensure they are different (no reuse/collision)
+		expect(callbackIds[0]).not.toEqual(callbackIds[1])
+	})
+})

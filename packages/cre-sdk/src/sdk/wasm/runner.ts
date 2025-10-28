@@ -29,7 +29,12 @@ export class Runner<TConfig> {
 
 	private static getRequest(): ExecuteRequest {
 		const argsString = hostBindings.getWasiArgs()
-		const args = JSON.parse(argsString)
+		let args
+		try {
+			args = JSON.parse(argsString)
+		} catch (e) {
+			throw new Error('Invalid request: could not parse arguments')
+		}
 
 		// SDK expects exactly 2 args:
 		// 1st is the script name
@@ -65,6 +70,8 @@ export class Runner<TConfig> {
 				case 'trigger':
 					result = this.handleExecutionPhase(this.request, workflow, runtime)
 					break
+				default:
+					throw new Error('Unknown request type')
 			}
 		} catch (e) {
 			const err = e instanceof Error ? e.message : String(e)
@@ -87,6 +94,13 @@ export class Runner<TConfig> {
 		}
 
 		const triggerMsg = req.request.value
+
+		// We're about to cast bigint to number, so we need to check if it's safe
+		const id = BigInt(triggerMsg.id)
+		if (id > BigInt(Number.MAX_SAFE_INTEGER)) {
+			throw new Error(`Trigger ID ${id} exceeds safe integer range`)
+		}
+
 		const index = Number(triggerMsg.id)
 		if (Number.isFinite(index) && index >= 0 && index < workflow.length) {
 			const entry = workflow[index]
