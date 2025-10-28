@@ -238,13 +238,13 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 		}
 
 		const secretRequest = (request as unknown as { $typeName?: string }).$typeName
-			? create(SecretRequestSchema, request)
-			: (request as SecretRequest)
+			? (request as SecretRequest)
+			: create(SecretRequestSchema, request)
 		const id = this.nextCallId
 		this.nextCallId++
 		const secretsReq = create(GetSecretsRequestSchema, {
 			callbackId: id,
-			requests: [request],
+			requests: [secretRequest],
 		})
 		if (!this.helpers.getSecrets(secretsReq, this.maxResponseSize)) {
 			return {
