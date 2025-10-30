@@ -1,6 +1,6 @@
 {
 	"name": "@chainlink/cre-sdk",
-	"version": "0.0.9-alpha",
+	"version": "0.0.10-alpha",
 	"type": "module",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -10,7 +10,8 @@
 			"import": "./dist/index.js"
 		},
 		"./restricted-apis": {
-			"types": "./dist/sdk/types/restricted-apis.d.ts"
+			"types": "./dist/sdk/types/restricted-apis.d.ts",
+			"import": "./dist/sdk/types/restricted-apis.js"
 		},
 		"./pb": {
 			"types": "./dist/pb.d.ts",

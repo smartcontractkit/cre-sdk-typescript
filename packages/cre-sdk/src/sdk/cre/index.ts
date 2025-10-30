@@ -19,14 +19,21 @@ export {
 } from '@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb'
 export type { Payload as HTTPPayload } from '@cre/generated/capabilities/networking/http/v1alpha/trigger_pb'
 export type { Payload as CronPayload } from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
+
 // EVM Capability
-export { ClientCapability as EVMClient } from '@cre/generated-sdk/capabilities/blockchain/evm/v1alpha/client_sdk_gen'
+export {
+	ClientCapability as EVMClient,
+	type WriteCreReportRequest,
+	type WriteCreReportRequestJson,
+} from '@cre/generated-sdk/capabilities/blockchain/evm/v1alpha/client_sdk_gen'
+
 // HTTP Capability
 export {
 	ClientCapability as HTTPClient,
 	type SendRequester as HTTPSendRequester,
 } from '@cre/generated-sdk/capabilities/networking/http/v1alpha/client_sdk_gen'
 export { HTTPCapability } from '@cre/generated-sdk/capabilities/networking/http/v1alpha/http_sdk_gen'
+
 // CRON Capability
 export { CronCapability } from '@cre/generated-sdk/capabilities/scheduler/cron/v1/cron_sdk_gen'
 
