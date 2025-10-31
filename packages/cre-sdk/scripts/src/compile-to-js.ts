@@ -36,7 +36,7 @@ export const main = async (tsFilePath?: string, outputFilePath?: string) => {
 	await Bun.build({
 		entrypoints: [resolvedInput],
 		outdir: path.dirname(resolvedOutput),
-		target: 'node',
+		target: 'browser',
 		format: 'esm',
 		naming: path.basename(resolvedOutput),
 	})
