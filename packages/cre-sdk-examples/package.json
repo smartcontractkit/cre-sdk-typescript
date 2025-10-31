@@ -1,28 +1,28 @@
 {
-  "name": "@chainlink/cre-sdk-examples",
-  "private": true,
-  "version": "1.0.0-beta.0",
-  "type": "module",
-  "author": "Ernest Nowacki",
-  "license": "BUSL-1.1",
-  "description": "Demo app with example workflows utilizing CRE TypeScript SDK. It presents usage of CRE SDK and allows SDK developers to test workflows.",
-  "scripts": {
-    "check": "biome check --write ${BIOME_PATHS:-.}",
-    "format": "biome format --write ${BIOME_PATHS:-.}",
-    "full-checks": "bun typecheck && bun check",
-    "lint": "biome lint --write",
-    "typecheck": "tsc"
-  },
-  "dependencies": {
-    "@bufbuild/protobuf": "2.6.3",
-    "@chainlink/cre-sdk": "workspace:*",
-    "viem": "2.34.0",
-    "zod": "3.25.76"
-  },
-  "devDependencies": {
-    "@types/bun": "1.2.21"
-  },
-  "engines": {
-    "bun": ">=1.2.21"
-  }
+	"name": "@chainlink/cre-sdk-examples",
+	"private": true,
+	"version": "1.0.0-beta.0",
+	"type": "module",
+	"author": "Ernest Nowacki",
+	"license": "BUSL-1.1",
+	"description": "Demo app with example workflows utilizing CRE TypeScript SDK. It presents usage of CRE SDK and allows SDK developers to test workflows.",
+	"scripts": {
+		"check": "biome check --write ${BIOME_PATHS:-.}",
+		"format": "biome format --write ${BIOME_PATHS:-.}",
+		"full-checks": "bun typecheck && bun check",
+		"lint": "biome lint --write",
+		"typecheck": "tsc"
+	},
+	"dependencies": {
+		"@bufbuild/protobuf": "2.6.3",
+		"@chainlink/cre-sdk": "workspace:*",
+		"viem": "2.34.0",
+		"zod": "3.25.76"
+	},
+	"devDependencies": {
+		"@types/bun": "1.2.21"
+	},
+	"engines": {
+		"bun": ">=1.2.21"
+	}
 }
