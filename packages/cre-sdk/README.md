@@ -18,12 +18,16 @@ The Chainlink Runtime Environment (CRE) SDK for TypeScript enables developers to
 - [Configuration & Type Safety](#configuration--type-safety)
 - [Consensus & Aggregation](#consensus--aggregation)
 - [Utility Functions](#utility-functions)
+  - [HTTP Response Helpers](#http-response-helpers)
+  - [Blockchain Helpers](#blockchain-helpers)
   - [Hex Utilities](#hex-utilities)
   - [Chain Selectors](#chain-selectors)
 - [Example Workflows](#example-workflows)
-  - [1. Simple Scheduled Task](#1-simple-scheduled-task)
+  - [1. Simple Cron-scheduled task](#1-simple-cron-scheduled-task)
   - [2. API Data Aggregation](#2-api-data-aggregation)
   - [3. On-Chain Data Integration](#3-on-chain-data-integration)
+  - [4. Proof of Reserve](#4-proof-of-reserve)
+  - [5. Star Wars API](#5-star-wars-api)
 - [API Reference](#api-reference)
   - [Core Functions](#core-functions)
   - [Capabilities](#capabilities)
@@ -124,13 +128,22 @@ import {
   consensusMedianAggregation,
   type HTTPSendRequester,
   type Runtime,
+  ok,
+  text,
 } from "@chainlink/cre-sdk";
 
 type Config = { apiUrl: string };
 
 const fetchData = (sendRequester: HTTPSendRequester, config: Config) => {
-  const response = sendRequester.sendRequest({ url: config.apiUrl }).result();
-  return Number.parseFloat(Buffer.from(response.body).toString("utf-8").trim());
+  const response = sendRequester
+    .sendRequest({ url: config.apiUrl, method: "GET" })
+    .result();
+
+  if (!ok(response)) {
+    throw new Error(`HTTP request failed with status: ${response.statusCode}`);
+  }
+
+  return Number.parseFloat(text(response));
 };
 
 const onCronTrigger = (runtime: Runtime<Config>) => {
@@ -153,15 +166,21 @@ Read from and write to EVM-compatible blockchains:
 import {
   bytesToHex,
   cre,
+  encodeCallMsg,
   getNetwork,
-  hexToBase64,
+  LAST_FINALIZED_BLOCK_NUMBER,
   type Runtime,
 } from "@chainlink/cre-sdk";
-import { decodeFunctionResult, encodeFunctionData, zeroAddress } from "viem";
+import {
+  type Address,
+  decodeFunctionResult,
+  encodeFunctionData,
+  zeroAddress,
+} from "viem";
 
 type Config = { evm: { chainSelectorName: string; contractAddress: string } };
 
-const onCronTrigger = async (runtime: Runtime<Config>) => {
+const onCronTrigger = (runtime: Runtime<Config>) => {
   const { chainSelectorName, contractAddress } = runtime.config.evm;
   const network = getNetwork({
     chainFamily: "evm",
@@ -174,6 +193,7 @@ const onCronTrigger = async (runtime: Runtime<Config>) => {
     network.chainSelector.selector
   );
 
+  // Read from blockchain
   const callData = encodeFunctionData({
     abi: CONTRACT_ABI,
     functionName: "getValue",
@@ -181,12 +201,12 @@ const onCronTrigger = async (runtime: Runtime<Config>) => {
 
   const contractCall = evmClient
     .callContract(runtime, {
-      call: {
-        from: hexToBase64(zeroAddress),
-        to: hexToBase64(contractAddress),
-        data: hexToBase64(callData),
-      },
-      blockNumber: { absVal: Buffer.from([3]).toString("base64"), sign: "-1" },
+      call: encodeCallMsg({
+        from: zeroAddress,
+        to: contractAddress as Address,
+        data: callData,
+      }),
+      blockNumber: LAST_FINALIZED_BLOCK_NUMBER,
     })
     .result();
 
@@ -196,19 +216,8 @@ const onCronTrigger = async (runtime: Runtime<Config>) => {
     data: bytesToHex(contractCall.data),
   });
 
-  // Write example
-  const writeData = encodeFunctionData({
-    abi: CONTRACT_ABI,
-    functionName: "setValue",
-    args: [onchainValue],
-  });
-  const tx = evmClient
-    .writeReport(runtime, {
-      receiver: contractAddress,
-      report: { rawReport: writeData },
-    })
-    .result();
-  return { onchainValue, txHash: tx.txHash?.toString() };
+  runtime.log(`Successfully read onchain value: ${onchainValue}`);
+  return onchainValue;
 };
 ```
 
@@ -264,23 +273,87 @@ const aggregatedValue = await runtime.runInNodeMode(
 
 ## Utility Functions
 
+### HTTP Response Helpers
+
+Work with HTTP responses using convenient helper functions:
+
+```typescript
+import { ok, text, json, getHeader } from "@chainlink/cre-sdk";
+
+const response = sendRequester
+  .sendRequest({ url: "https://api.example.com" })
+  .result();
+
+// Check if response is successful (200-299 status)
+if (!ok(response)) {
+  throw new Error(`Request failed with status: ${response.statusCode}`);
+}
+
+// Get response as trimmed text
+const responseText = text(response);
+
+// Parse JSON response
+const data = json(response);
+
+// Get specific header
+const contentType = getHeader(response, "content-type");
+```
+
+### Blockchain Helpers
+
+Helper functions for EVM blockchain interactions:
+
+```typescript
+import {
+  encodeCallMsg,
+  prepareReportRequest,
+  LAST_FINALIZED_BLOCK_NUMBER,
+  LATEST_BLOCK_NUMBER,
+} from "@chainlink/cre-sdk";
+import { encodeFunctionData } from "viem";
+
+// Encode call message for contract reads
+const callMsg = encodeCallMsg({
+  from: zeroAddress,
+  to: contractAddress,
+  data: callData,
+});
+
+// Use block number constants
+const response = evmClient
+  .callContract(runtime, {
+    call: callMsg,
+    blockNumber: LAST_FINALIZED_BLOCK_NUMBER, // or LATEST_BLOCK_NUMBER
+  })
+  .result();
+
+// Prepare report for contract writes
+const writeData = encodeFunctionData({
+  abi: CONTRACT_ABI,
+  functionName: "setValue",
+  args: [value],
+});
+
+const report = runtime.report(prepareReportRequest(writeData)).result();
+```
+
 ### Hex Utilities
 
-CRE capabilities (like EVM client) expect data in base64 format for serialization. You may need to convert a hex string to base64 format for CRE protocol communication.
-
-Or you may need to convert binary data back to hex format for blockchain operations. This can be Useful for decoding responses from CRE capabilities and transforming data for libraries like viem (which expect hex format)
+Convert between hex and base64 formats for CRE protocol communication:
 
 ```typescript
 import { hexToBase64, bytesToHex } from "@chainlink/cre-sdk";
 
-// Example: "0x1234567890abcdef" → "EjRWeJCrze8="
+// Hex to Base64: "0x1234567890abcdef" → "EjRWeJCrze8="
 const base64Data = hexToBase64("0x1234567890abcdef");
 
-// Example: Uint8Array([18, 52, 86...]) → "0x1234567890abcdef"
+// Bytes to Hex: Uint8Array([18, 52, 86...]) → "0x1234567890abcdef"
 const hexData = bytesToHex(buffer);
 ```
 
 ### Chain Selectors
+
+Access blockchain network metadata:
 
 ```typescript
 import { getAllNetworks, getNetwork } from "@chainlink/cre-sdk";
@@ -297,7 +370,7 @@ const ethereumSepolia = getNetwork({
 
 ### 1. Simple Cron-scheduled task
 
-See the [hello-world](https://github.com/smartcontractkit/cre-sdk-typescript/tree/main/packages/cre-sdk-examples/src/hello-world) example for a simple example that runs a cron-based operation on CRE at intervals you define in the `config.js` file.
+See the [hello-world](https://github.com/smartcontractkit/cre-sdk-typescript/tree/main/packages/cre-sdk-examples/src/hello-world) example that runs a cron-based operation on CRE at intervals you define in the `config.json` file.
 
 ### 2. API Data Aggregation
 
@@ -306,6 +379,14 @@ See the [http-fetch example](https://github.com/smartcontractkit/cre-sdk-typescr
 ### 3. On-Chain Data Integration
 
 See the [on-chain example](https://github.com/smartcontractkit/cre-sdk-typescript/tree/main/packages/cre-sdk-examples/src/workflows/on-chain) for reading from smart contracts, and the [on-chain-write example](https://github.com/smartcontractkit/cre-sdk-typescript/tree/main/packages/cre-sdk-examples/src/workflows/on-chain-write) for writing to smart contracts.
+
+### 4. Proof of Reserve
+
+See the [proof-of-reserve example](https://github.com/smartcontractkit/cre-sdk-typescript/tree/main/packages/cre-sdk-examples/src/workflows/proof-of-reserve) for a complete implementation demonstrating reserve validation using on-chain data verification and off-chain API integration.
+
+### 5. Star Wars API
+
+See the [star-wars example](https://github.com/smartcontractkit/cre-sdk-typescript/tree/main/packages/cre-sdk-examples/src/workflows/star-wars) for an easy-to-follow example, known for being the default code used in [Chainlink Functions' Playground](https://functions.chain.link/playground).
 
 ## API Reference
 
@@ -323,9 +404,33 @@ See the [on-chain example](https://github.com/smartcontractkit/cre-sdk-typescrip
 
 ### Utilities
 
+**HTTP Helpers:**
+
+- `ok(response)`: Check if HTTP status is successful (200-299)
+- `text(response)`: Get response body as trimmed text
+- `json(response)`: Parse response body as JSON
+- `getHeader(response, name)`: Get specific header value
+
+**Blockchain Helpers:**
+
+- `encodeCallMsg({ from, to, data })`: Encode call message for EVM reads
+- `prepareReportRequest(hexPayload)`: Prepare report for EVM writes
+- `LAST_FINALIZED_BLOCK_NUMBER`: Constant for finalized block reads
+- `LATEST_BLOCK_NUMBER`: Constant for latest block reads
+
+**Data Conversion:**
+
+- `hexToBase64(hex)`: Convert hex string to base64
+- `bytesToHex(bytes)`: Convert bytes to hex string
+
+**Consensus:**
+
 - `consensusMedianAggregation()`: Median consensus aggregator
-- `hexToBase64()`, `bytesToHex()`: Data format conversions
-- `getAllNetworks()`, `getNetwork(...)`: Chain selector metadata
+
+**Chain Selectors:**
+
+- `getAllNetworks()`: Get all supported networks
+- `getNetwork(options)`: Get specific network metadata
 
 ## Building from Source
 

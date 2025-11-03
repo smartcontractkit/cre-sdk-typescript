@@ -12,19 +12,24 @@ bun add @chainlink/cre-sdk-javy-plugin
 
 ## Quick Start
 
+**Note:** Most users will use the main `@chainlink/cre-sdk` package which includes compilation tools.
+
 ```bash
+# Install the main SDK (includes this package)
+bun add @chainlink/cre-sdk
+
 # One-time setup: download Javy binary and compile plugin
 bunx cre-setup
 
 # Compile your workflow to WebAssembly
-bunx cre-compile-workflow src/workflow.js dist/workflow.wasm
+bunx cre-compile src/workflow.ts dist/workflow.wasm
 ```
 
 ## Usage
 
 ### Standalone Usage
 
-If using outside the CRE SDK monorepo:
+If using this package directly (without the main SDK):
 
 1. **Install the package**
 
@@ -48,10 +53,11 @@ If using outside the CRE SDK monorepo:
 ### Example
 
 ```bash
-# Compile a workflow
-bunx cre-compile-workflow src/hello-world.js dist/hello-world.wasm
+# With main SDK (typical usage)
+bunx cre-compile src/hello-world.ts dist/hello-world.wasm
 
-# The compiled WASM can now be deployed to CRE
+# Standalone (using this package directly)
+bunx cre-compile-workflow src/hello-world.js dist/hello-world.wasm
 ```
 
 ## Javy Setup & Troubleshooting
@@ -171,7 +177,10 @@ bin/
 cd src/javy_chainlink_sdk
 cargo test
 
-# Test compilation with example workflow
+# Test compilation with example workflow (requires @chainlink/cre-sdk installed)
+bunx cre-compile examples/hello-world.ts test-output.wasm
+
+# Or with standalone binary
 bunx cre-compile-workflow examples/hello-world.js test-output.wasm
 ```
 
@@ -179,8 +188,8 @@ bunx cre-compile-workflow examples/hello-world.js test-output.wasm
 
 1. Make changes to the Rust plugin in `src/javy_chainlink_sdk/`
 2. Build and test: `bun run build`
-3. Test compilation: `bunx cre-compile-workflow <test-file> <output>`
-4. Verify WASM output: `wasm-tools print <output>`
+3. Test compilation: `bunx cre-compile <test-file> <output>` or `bunx cre-compile-workflow <test-file> <output>`
+4. Verify WASM output via simulating with [CRE CLI](https://github.com/smartcontractkit/cre-cli).
 
 ## License
 

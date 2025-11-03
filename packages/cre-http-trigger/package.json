@@ -1,7 +1,7 @@
 {
 	"name": "@chainlink/cre-http-trigger",
 	"private": true,
-	"version": "1.0.0-beta.0",
+	"version": "1.0.0",
 	"type": "module",
 	"main": "src/index.ts",
 	"author": "Ernest Nowacki",
