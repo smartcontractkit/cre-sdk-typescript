@@ -101,8 +101,8 @@ cd cre-sdk-typescript
 # Install dependencies
 bun install
 
-# Build everything
-bun build
+# Build packages and perform full health checks
+bun full-checks
 ```
 
 ### Available Scripts
@@ -114,6 +114,7 @@ bun check                 # Format and lint code using biome
 bun format                # Format code using biome
 bun lint                  # Lint code using biome
 bun typecheck             # Type check all packages
+bun full-checks           # Build packages and perform full health checks
 
 # Package-specific builds (run from packages/cre-sdk/)
 bun generate:proto        # Generate types from protobuf
