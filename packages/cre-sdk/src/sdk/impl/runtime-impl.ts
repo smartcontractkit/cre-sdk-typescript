@@ -194,6 +194,10 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 }
 
 /**
+ * It is used when a BFT guarantee cannot be provided automatically (e.g. calling a standard API).
+ * You tell each node to perform a task on its own.
+ * Each node returns its own individual answer, and you are responsible for telling the SDK how to combine them into a single, trusted result by providing an aggregation algorithm.
+ *
  * Useful in situation where you already expect non-determinism (e.g., inherently variable HTTP responses).
  * Switching from Node Mode back to DON mode requires workflow authors to handle consensus themselves.
  */
@@ -207,8 +211,8 @@ export class NodeRuntimeImpl<C> extends BaseRuntimeImpl<C> implements NodeRuntim
 }
 
 /**
- * DON mode runtime - the primary runtime with full capabilities.
- * Provides secrets access, reporting, and can delegate to node mode.
+ * It is used for operations that are guaranteed to be Byzantine Fault Tolerant (BFT).
+ * You ask the network to execute something, and CRE handles the underlying complexity to ensure you get back one final, secure, and trustworthy result.
  */
 export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 	private nextNodeCallId: number = -1
