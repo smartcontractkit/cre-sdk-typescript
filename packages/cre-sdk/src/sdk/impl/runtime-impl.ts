@@ -194,8 +194,8 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 }
 
 /**
- * Node mode runtime - used when executing node-specific logic.
- * Limited capabilities: no secrets, no consensus, read-only operations.
+ * Useful in situation where you already expect non-determinism (e.g., inherently variable HTTP responses).
+ * Switching from Node Mode back to DON mode requires workflow authors to handle consensus themselves.
  */
 export class NodeRuntimeImpl<C> extends BaseRuntimeImpl<C> implements NodeRuntime<C> {
 	_isNodeRuntime: true = true
