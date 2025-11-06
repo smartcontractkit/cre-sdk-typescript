@@ -34,15 +34,13 @@ export interface BaseRuntime<C> {
 
 /**
  * Runtime for Node mode execution.
- * Limited to read-only operations - no secrets or consensus.
  */
 export interface NodeRuntime<C> extends BaseRuntime<C> {
 	readonly _isNodeRuntime: true
 }
 
 /**
- * Full runtime for DON mode execution.
- * Includes secrets access, reporting, and node mode delegation.
+ * Runtime for DON mode execution.
  */
 export interface Runtime<C> extends BaseRuntime<C>, SecretsProvider {
 	/**

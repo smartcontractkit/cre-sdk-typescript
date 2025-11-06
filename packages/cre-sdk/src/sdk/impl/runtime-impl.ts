@@ -325,10 +325,6 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 		}
 	}
 
-	/**
-	 * Retrieves a secret from the secrets backend.
-	 * Only available in DON mode.
-	 */
 	getSecret(request: SecretRequest | SecretRequestJson): {
 		result: () => Secret
 	} {
@@ -395,7 +391,6 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 
 	/**
 	 * Generates a report via consensus mechanism.
-	 * Used for oracle reporting workflows.
 	 */
 	report(input: ReportRequest | ReportRequestJson): { result: () => Report } {
 		const consensus = new ConsensusCapability()
