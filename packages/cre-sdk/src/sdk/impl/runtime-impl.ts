@@ -1,4 +1,5 @@
 import { create, type Message } from '@bufbuild/protobuf'
+import type { GenMessage } from '@bufbuild/protobuf/codegenv2'
 import { type Any, anyPack, anyUnpack } from '@bufbuild/protobuf/wkt'
 import {
 	type AwaitCapabilitiesRequest,
@@ -38,8 +39,20 @@ import {
 import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
 import { DonModeError, NodeModeError, SecretsError } from '../errors'
 
+/**
+ * Base implementation shared by DON and Node runtimes.
+ *
+ * Call ID Management:
+ * - DON mode: IDs increment (1, 2, 3...)
+ * - Node mode: IDs decrement (-1, -2, -3...)
+ * This prevents collisions when both modes are active.
+ */
 export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
-	// modeError must only be set from within NodeRuntimeImpl
+	/**
+	 * When set, prevents operations that aren't allowed in current mode.
+	 * - Set in DON mode when code tries to use NodeRuntime
+	 * - Set in Node mode when code tries to use Runtime
+	 */
 	public modeError?: Error
 
 	constructor(
@@ -50,6 +63,10 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 		private mode: Mode,
 	) {}
 
+	/**
+	 * Calls a capability and returns a lazy result.
+	 * The actual call happens immediately, but result retrieval is deferred.
+	 */
 	callCapability<I extends Message, O extends Message>({
 		capabilityId,
 		method,
@@ -57,6 +74,7 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 		inputSchema,
 		outputSchema,
 	}: CallCapabilityParams<I, O>): { result: () => O } {
+		// Enforce mode restrictions
 		if (this.modeError) {
 			return {
 				result: () => {
@@ -65,29 +83,18 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 			}
 		}
 
-		// nextCallId tracks the unique id for a request to the WASM host.
-		// to avoid collisions of the ID in different modes, it is
-		// incremented in DON mode and decremented in Node mode.
-		// eg. - first call don mode: nextCallId = 1
-		//     - second call: nextCallId = 2
-		//     - first call node mode: nextCallId = -1
-		//     - second call node mode: nextCallId = -2
-		//     - etc...
+		// Allocate unique callback ID for this request
+		const callbackId = this.allocateCallbackId()
 
+		// Send request to WASM host
 		const anyPayload = anyPack(inputSchema, payload)
-		const callbackId = this.nextCallId
-		if (this.mode === Mode.DON) {
-			this.nextCallId++
-		} else {
-			this.nextCallId--
-		}
-
 		const req = create(CapabilityRequestSchema, {
 			id: capabilityId,
 			method,
 			payload: anyPayload,
 			callbackId,
 		})
+
 		if (!this.helpers.call(req)) {
 			return {
 				result: () => {
@@ -100,49 +107,75 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 			}
 		}
 
+		// Return lazy result - await and unwrap when .result() is called
 		return {
-			result: () => {
-				const awaitRequest = create(AwaitCapabilitiesRequestSchema, {
-					ids: [callbackId],
-				})
-				const awaitResponse = this.helpers.await(awaitRequest, this.maxResponseSize)
-				const capabilityResponse = awaitResponse.responses[callbackId]
+			result: () =>
+				this.awaitAndUnwrapCapabilityResponse(callbackId, capabilityId, method, outputSchema),
+		}
+	}
 
-				if (!capabilityResponse) {
-					throw new CapabilityError(`No response found for callback ID ${callbackId}`, {
+	/**
+	 * Allocates a unique callback ID for a capability request.
+	 * DON mode increments, Node mode decrements (prevents collisions).
+	 */
+	private allocateCallbackId(): number {
+		const callbackId = this.nextCallId
+		if (this.mode === Mode.DON) {
+			this.nextCallId++
+		} else {
+			this.nextCallId--
+		}
+		return callbackId
+	}
+
+	/**
+	 * Awaits capability response and unwraps the result or throws error.
+	 */
+	private awaitAndUnwrapCapabilityResponse<O extends Message>(
+		callbackId: number,
+		capabilityId: string,
+		method: string,
+		outputSchema: GenMessage<O>,
+	): O {
+		const awaitRequest = create(AwaitCapabilitiesRequestSchema, {
+			ids: [callbackId],
+		})
+		const awaitResponse = this.helpers.await(awaitRequest, this.maxResponseSize)
+		const capabilityResponse = awaitResponse.responses[callbackId]
+
+		if (!capabilityResponse) {
+			throw new CapabilityError(`No response found for callback ID ${callbackId}`, {
+				capabilityId,
+				method,
+				callbackId,
+			})
+		}
+
+		const response = capabilityResponse.response
+		switch (response.case) {
+			case 'payload': {
+				try {
+					return anyUnpack(response.value as Any, outputSchema) as O
+				} catch {
+					throw new CapabilityError(`Error cannot unwrap payload`, {
 						capabilityId,
 						method,
 						callbackId,
 					})
 				}
-
-				const response = capabilityResponse.response
-				switch (response.case) {
-					case 'payload': {
-						try {
-							return anyUnpack(response.value as Any, outputSchema) as O
-						} catch {
-							throw new CapabilityError(`Error cannot unwrap payload`, {
-								capabilityId,
-								method,
-								callbackId,
-							})
-						}
-					}
-					case 'error':
-						throw new CapabilityError(`Error ${response.value}`, {
-							capabilityId,
-							method,
-							callbackId,
-						})
-					default:
-						throw new CapabilityError(`Error cannot unwrap ${response.case}`, {
-							capabilityId,
-							method,
-							callbackId,
-						})
-				}
-			},
+			}
+			case 'error':
+				throw new CapabilityError(`Error ${response.value}`, {
+					capabilityId,
+					method,
+					callbackId,
+				})
+			default:
+				throw new CapabilityError(`Error cannot unwrap ${response.case}`, {
+					capabilityId,
+					method,
+					callbackId,
+				})
 		}
 	}
 
@@ -160,14 +193,23 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 	}
 }
 
+/**
+ * Node mode runtime - used when executing node-specific logic.
+ * Limited capabilities: no secrets, no consensus, read-only operations.
+ */
 export class NodeRuntimeImpl<C> extends BaseRuntimeImpl<C> implements NodeRuntime<C> {
 	_isNodeRuntime: true = true
+
 	constructor(config: C, nextCallId: number, helpers: RuntimeHelpers, maxResponseSize: bigint) {
 		helpers.switchModes(Mode.NODE)
 		super(config, nextCallId, helpers, maxResponseSize, Mode.NODE)
 	}
 }
 
+/**
+ * DON mode runtime - the primary runtime with full capabilities.
+ * Provides secrets access, reporting, and can delegate to node mode.
+ */
 export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 	private nextNodeCallId: number = -1
 
@@ -176,12 +218,24 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 		super(config, nextCallId, helpers, maxResponseSize, Mode.DON)
 	}
 
+	/**
+	 * Executes a function in Node mode on each node, then aggregates via consensus.
+	 *
+	 * Flow:
+	 * 1. Switches to Node mode, preventing DON operations
+	 * 2. Executes fn() on each node independently
+	 * 3. Captures result or error as "observation"
+	 * 4. Switches back to DON mode
+	 * 5. Runs consensus to aggregate observations
+	 * 6. Returns aggregated result
+	 */
 	runInNodeMode<TArgs extends unknown[], TOutput>(
 		fn: (nodeRuntime: NodeRuntime<C>, ...args: TArgs) => TOutput,
-		consensusAggretation: ConsensusAggregation<TOutput, true>,
+		consensusAggregation: ConsensusAggregation<TOutput, true>,
 		unwrapOptions?: TOutput extends PrimitiveTypes ? never : UnwrapOptions<TOutput>,
 	): (...args: TArgs) => { result: () => TOutput } {
 		return (...args: TArgs): { result: () => TOutput } => {
+			// Step 1: Create node runtime and prevent DON operations
 			this.modeError = new DonModeError()
 			const nodeRuntime = new NodeRuntimeImpl(
 				this.config,
@@ -190,54 +244,91 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 				this.maxResponseSize,
 			)
 
-			const consensusInput = create(SimpleConsensusInputsSchema, {
-				descriptors: consensusAggretation.descriptor,
-			})
-			if (consensusAggretation.defaultValue) {
-				// This cast is safe, since ConsensusAggregation can only have true its second argument if T extends CreSerializable<TOutput>
-				consensusInput.default = Value.from(
-					consensusAggretation.defaultValue as CreSerializable<TOutput>,
-				).proto()
-			}
+			// Step 2: Prepare consensus input with config
+			const consensusInput = this.prepareConsensusInput(consensusAggregation)
 
+			// Step 3: Execute node function and capture result/error
 			try {
 				const observation = fn(nodeRuntime, ...args)
-				// This cast is safe, since ConsensusAggregation can only have true its second argument if T extends CreSerializable<TOutput>
-				consensusInput.observation = {
-					case: 'value',
-					value: Value.from(observation as CreSerializable<TOutput>).proto(),
-				}
+				this.captureObservation(consensusInput, observation)
 			} catch (e: unknown) {
-				consensusInput.observation = {
-					case: 'error',
-					value: (e instanceof Error && e.message) || String(e),
-				}
+				this.captureError(consensusInput, e)
 			} finally {
-				// Always restore DON mode before invoking consensus
-				this.modeError = undefined
-				this.nextNodeCallId = nodeRuntime.nextCallId
-				nodeRuntime.modeError = new NodeModeError()
-				this.helpers.switchModes(Mode.DON)
+				// Step 4: Always restore DON mode
+				this.restoreDonMode(nodeRuntime)
 			}
 
-			const consensus = new ConsensusCapability()
-			const call = consensus.simple(this, consensusInput)
-			return {
-				result: () => {
-					const result = call.result()
-					const wrappedValue = Value.wrap(result)
-
-					return unwrapOptions
-						? wrappedValue.unwrapToType(unwrapOptions)
-						: (wrappedValue.unwrap() as TOutput)
-				},
-			}
+			// Step 5: Run consensus and return lazy result
+			return this.runConsensusAndWrap(consensusInput, unwrapOptions)
 		}
 	}
 
+	private prepareConsensusInput<TOutput>(
+		consensusAggregation: ConsensusAggregation<TOutput, true>,
+	) {
+		const consensusInput = create(SimpleConsensusInputsSchema, {
+			descriptors: consensusAggregation.descriptor,
+		})
+
+		if (consensusAggregation.defaultValue) {
+			// Safe cast: ConsensusAggregation<T, true> implies T extends CreSerializable
+			consensusInput.default = Value.from(
+				consensusAggregation.defaultValue as CreSerializable<TOutput>,
+			).proto()
+		}
+
+		return consensusInput
+	}
+
+	private captureObservation<TOutput>(consensusInput: any, observation: TOutput) {
+		// Safe cast: ConsensusAggregation<T, true> implies T extends CreSerializable
+		consensusInput.observation = {
+			case: 'value',
+			value: Value.from(observation as CreSerializable<TOutput>).proto(),
+		}
+	}
+
+	private captureError(consensusInput: any, e: unknown) {
+		consensusInput.observation = {
+			case: 'error',
+			value: (e instanceof Error && e.message) || String(e),
+		}
+	}
+
+	private restoreDonMode(nodeRuntime: NodeRuntimeImpl<C>) {
+		this.modeError = undefined
+		this.nextNodeCallId = nodeRuntime.nextCallId
+		nodeRuntime.modeError = new NodeModeError()
+		this.helpers.switchModes(Mode.DON)
+	}
+
+	private runConsensusAndWrap<TOutput>(
+		consensusInput: any,
+		unwrapOptions?: TOutput extends PrimitiveTypes ? never : UnwrapOptions<TOutput>,
+	): { result: () => TOutput } {
+		const consensus = new ConsensusCapability()
+		const call = consensus.simple(this, consensusInput)
+
+		return {
+			result: () => {
+				const result = call.result()
+				const wrappedValue = Value.wrap(result)
+
+				return unwrapOptions
+					? wrappedValue.unwrapToType(unwrapOptions)
+					: (wrappedValue.unwrap() as TOutput)
+			},
+		}
+	}
+
+	/**
+	 * Retrieves a secret from the secrets backend.
+	 * Only available in DON mode.
+	 */
 	getSecret(request: SecretRequest | SecretRequestJson): {
 		result: () => Secret
 	} {
+		// Enforce mode restrictions
 		if (this.modeError) {
 			return {
 				result: () => {
@@ -246,15 +337,19 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 			}
 		}
 
+		// Normalize request (accept both protobuf and JSON formats)
 		const secretRequest = (request as unknown as { $typeName?: string }).$typeName
 			? (request as SecretRequest)
 			: create(SecretRequestSchema, request)
+
+		// Allocate callback ID and send request
 		const id = this.nextCallId
 		this.nextCallId++
 		const secretsReq = create(GetSecretsRequestSchema, {
 			callbackId: id,
 			requests: [secretRequest],
 		})
+
 		if (!this.helpers.getSecrets(secretsReq, this.maxResponseSize)) {
 			return {
 				result: () => {
@@ -263,55 +358,73 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 			}
 		}
 
+		// Return lazy result
 		return {
-			result: () => {
-				const awaitRequest = create(AwaitSecretsRequestSchema, { ids: [id] })
-				const awaitResponse = this.helpers.awaitSecrets(awaitRequest, this.maxResponseSize)
-				const secretsResponse = awaitResponse.responses[id]
-
-				if (!secretsResponse) {
-					throw new SecretsError(secretRequest, 'no response')
-				}
-
-				const responses = secretsResponse.responses
-				if (responses.length !== 1) {
-					throw new SecretsError(secretRequest, 'invalid value returned from host')
-				}
-
-				const response = responses[0].response
-				switch (response.case) {
-					case 'secret':
-						return response.value
-					case 'error':
-						throw new SecretsError(secretRequest, response.value.error)
-					default:
-						throw new SecretsError(secretRequest, 'cannot unmarshal returned value from host')
-				}
-			},
+			result: () => this.awaitAndUnwrapSecret(id, secretRequest),
 		}
 	}
 
+	private awaitAndUnwrapSecret(id: number, secretRequest: SecretRequest): Secret {
+		const awaitRequest = create(AwaitSecretsRequestSchema, { ids: [id] })
+		const awaitResponse = this.helpers.awaitSecrets(awaitRequest, this.maxResponseSize)
+		const secretsResponse = awaitResponse.responses[id]
+
+		if (!secretsResponse) {
+			throw new SecretsError(secretRequest, 'no response')
+		}
+
+		const responses = secretsResponse.responses
+		if (responses.length !== 1) {
+			throw new SecretsError(secretRequest, 'invalid value returned from host')
+		}
+
+		const response = responses[0].response
+		switch (response.case) {
+			case 'secret':
+				return response.value
+			case 'error':
+				throw new SecretsError(secretRequest, response.value.error)
+			default:
+				throw new SecretsError(secretRequest, 'cannot unmarshal returned value from host')
+		}
+	}
+
+	/**
+	 * Generates a report via consensus mechanism.
+	 * Used for oracle reporting workflows.
+	 */
 	report(input: ReportRequest | ReportRequestJson): { result: () => Report } {
 		const consensus = new ConsensusCapability()
 		const call = consensus.report(this, input)
 		return {
-			result: () => {
-				return call.result()
-			},
+			result: () => call.result(),
 		}
 	}
 }
 
+/**
+ * Interface to the WASM host environment.
+ * Provides low-level access to capabilities, secrets, and utilities.
+ */
 export interface RuntimeHelpers {
+	/** Initiates a capability call. Returns false if capability not found. */
 	call(request: CapabilityRequest): boolean
+
+	/** Awaits capability responses. Blocks until responses are ready. */
 	await(request: AwaitCapabilitiesRequest, maxResponseSize: bigint): AwaitCapabilitiesResponse
 
+	/** Requests secrets from host. Returns false if host rejects request. */
 	getSecrets(request: GetSecretsRequest, maxResponseSize: bigint): boolean
+
+	/** Awaits secret responses. Blocks until secrets are ready. */
 	awaitSecrets(request: AwaitSecretsRequest, maxResponseSize: bigint): AwaitSecretsResponse
 
+	/** Switches execution mode (DON vs Node). Affects available operations. */
 	switchModes(mode: Mode): void
 
+	/** Returns current time in nanoseconds. */
 	now(): number
 
+	/** Logs a message to the host environment. */
 	log(message: string): void
 }
