@@ -12,6 +12,12 @@ import { generateActionMethod } from './generate-action'
 import { generateReportWrapper } from './generate-report-wrapper'
 import { generateActionSugarClass } from './generate-sugar'
 import { generateTriggerClass, generateTriggerMethod } from './generate-trigger'
+import {
+	generateCapabilityIdLogic,
+	generateConstructorParams,
+	generateLabelSupport,
+	processLabels,
+} from './label-utils'
 import { getImportPathForFile, lowerCaseFirstLetter } from './utils'
 
 const getCapabilityServiceOptions = (service: DescService): CapabilityMetadata | false => {
@@ -119,9 +125,8 @@ export function generateSdk(file: GenFile, outputDir: string) {
 
 		const capabilityClassName = `${service.name}Capability`
 
-		// Check if this capability supports chainSelector via labels
-		const chainSelectorLabel = capOption.labels?.ChainSelector as any
-		const hasChainSelector = chainSelectorLabel?.kind?.case === 'uint64Label'
+		// Process all labels from capability metadata
+		const labels = processLabels(capOption)
 
 		// Skip legacy methods
 		const serviceMethods = service.methods.filter((method) => {
@@ -197,51 +202,26 @@ export function generateSdk(file: GenFile, outputDir: string) {
 						methodName,
 						capabilityClassName,
 						service.name,
-						hasChainSelector,
+						labels,
 					)
 				}
 
 				// Generate action method
-				return generateActionMethod(
-					method,
-					methodName,
-					capabilityClassName,
-					hasChainSelector,
-					modePrefix,
-				)
+				return generateActionMethod(method, methodName, capabilityClassName, labels, modePrefix)
 			})
 			.join('\n')
 
 		// Generate trigger classes
 		const triggerClasses = serviceMethods
 			.filter((method) => method.methodKind === 'server_streaming')
-			.map((method) => generateTriggerClass(method, service.name))
+			.map((method) => generateTriggerClass(method, service.name, labels))
 			.join('\n')
 
 		const [capabilityName, capabilityVersion] = capOption.capabilityId.split('@')
 
-		// Extract chainSelector support
-		let chainSelectorSupport = ''
-		const constructorParams: string[] = []
-
-		if (hasChainSelector && capOption.labels) {
-			const chainSelectorLabel = capOption.labels.ChainSelector as any
-			if (
-				chainSelectorLabel?.kind?.case === 'uint64Label' &&
-				chainSelectorLabel?.kind?.value?.defaults
-			) {
-				const defaults = chainSelectorLabel.kind.value.defaults
-				chainSelectorSupport = `
-  /** Available chain selectors */
-  static readonly SUPPORTED_CHAINS = {
-${Object.entries(defaults)
-	.map(([key, value]) => `    "${key}": ${value}n`)
-	.join(',\n')}
-  } as const`
-
-				constructorParams.push('private readonly chainSelector?: bigint')
-			}
-		}
+		// Generate label support (constants and constructor params)
+		const labelSupport = generateLabelSupport(labels)
+		const constructorParams = generateConstructorParams(labels)
 
 		const constructorCode =
 			constructorParams.length > 0
@@ -272,7 +252,7 @@ export class ${capabilityClassName} {
 
   static readonly CAPABILITY_NAME = "${capabilityName}";
   static readonly CAPABILITY_VERSION = "${capabilityVersion}";
-${chainSelectorSupport}
+${labelSupport}
 ${constructorCode}
 ${methods}
 }
