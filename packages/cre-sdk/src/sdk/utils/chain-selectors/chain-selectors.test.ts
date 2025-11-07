@@ -10,7 +10,6 @@ describe('generated chain selectors - testnets', () => {
 	it('includes sepolia by bigint selector in testnet map', () => {
 		const selector = 16015286601757825753n
 		const network = testnetBySelector.get(selector)
-		console.log('network', network)
 		expect(network?.chainSelector.selector).toBe(selector)
 		expect(network?.chainSelector.name).toBe('ethereum-testnet-sepolia')
 	})
@@ -18,7 +17,6 @@ describe('generated chain selectors - testnets', () => {
 	it('includes sepolia by name in testnet map', () => {
 		const name = 'ethereum-testnet-sepolia'
 		const network = testnetByName.get(name)
-		console.log('network', network)
 		expect(network?.chainSelector.name).toBe(name)
 		expect(network?.chainSelector.selector).toBe(16015286601757825753n)
 	})

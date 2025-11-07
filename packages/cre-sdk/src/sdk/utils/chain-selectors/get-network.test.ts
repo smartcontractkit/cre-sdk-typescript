@@ -1,4 +1,4 @@
-import { describe, expect, it, mock } from 'bun:test'
+import { afterAll, describe, expect, it, mock } from 'bun:test'
 
 // Mock the generated networks module with deterministic fixtures
 const mockModulePath = '@cre/generated/networks'
@@ -98,6 +98,11 @@ mock.module(mockModulePath, () => ({
 }))
 
 const { getNetwork } = await import('./get-network')
+
+// Clean up the mock after all tests to prevent interference with other test files
+afterAll(() => {
+	mock.restore()
+})
 
 describe('getNetwork', () => {
 	it('returns undefined when neither chainSelector nor chainSelectorName provided', () => {
