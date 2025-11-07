@@ -23,8 +23,8 @@ run_in_package "cre-sdk-javy-plugin" "check"
 
 # cre-sdk package
 run_in_package "cre-sdk" "compile:cre-setup"
-run_in_package "cre-sdk" "build"
 run_in_package "cre-sdk" "generate:sdk"
+run_in_package "cre-sdk" "build"
 run_in_package "cre-sdk" "typecheck"
 run_in_package "cre-sdk" "check"
 run_in_package "cre-sdk" "test"
