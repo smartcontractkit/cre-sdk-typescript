@@ -126,8 +126,8 @@ export class ClientCapability {
 	static readonly CAPABILITY_NAME = 'evm'
 	static readonly CAPABILITY_VERSION = '1.0.0'
 
-	/** Available chain selectors */
-	static readonly SUPPORTED_CHAINS = {
+	/** Available ChainSelector values */
+	static readonly SUPPORTED_CHAIN_SELECTORS = {
 		'avalanche-mainnet': 6433500567565415381n,
 		'avalanche-testnet-fuji': 14767482510784806043n,
 		'binance_smart_chain-mainnet-opbnb-1': 465944652040885897n,
@@ -143,7 +143,7 @@ export class ClientCapability {
 		'polygon-testnet-amoy': 16281711391670634445n,
 	} as const
 
-	constructor(private readonly chainSelector?: bigint) {}
+	constructor(private readonly ChainSelector: bigint) {}
 
 	callContract(
 		runtime: Runtime<unknown>,
@@ -160,10 +160,8 @@ export class ClientCapability {
 			payload = fromJson(CallContractRequestSchema, input as CallContractRequestJson)
 		}
 
-		// Include chainSelector in capability ID for routing when specified
-		const capabilityId = this.chainSelector
-			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
-			: ClientCapability.CAPABILITY_ID
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 
 		const capabilityResponse = runtime.callCapability<CallContractRequest, CallContractReply>({
 			capabilityId,
@@ -197,10 +195,8 @@ export class ClientCapability {
 			payload = fromJson(FilterLogsRequestSchema, input as FilterLogsRequestJson)
 		}
 
-		// Include chainSelector in capability ID for routing when specified
-		const capabilityId = this.chainSelector
-			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
-			: ClientCapability.CAPABILITY_ID
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 
 		const capabilityResponse = runtime.callCapability<FilterLogsRequest, FilterLogsReply>({
 			capabilityId,
@@ -234,10 +230,8 @@ export class ClientCapability {
 			payload = fromJson(BalanceAtRequestSchema, input as BalanceAtRequestJson)
 		}
 
-		// Include chainSelector in capability ID for routing when specified
-		const capabilityId = this.chainSelector
-			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
-			: ClientCapability.CAPABILITY_ID
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 
 		const capabilityResponse = runtime.callCapability<BalanceAtRequest, BalanceAtReply>({
 			capabilityId,
@@ -271,10 +265,8 @@ export class ClientCapability {
 			payload = fromJson(EstimateGasRequestSchema, input as EstimateGasRequestJson)
 		}
 
-		// Include chainSelector in capability ID for routing when specified
-		const capabilityId = this.chainSelector
-			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
-			: ClientCapability.CAPABILITY_ID
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 
 		const capabilityResponse = runtime.callCapability<EstimateGasRequest, EstimateGasReply>({
 			capabilityId,
@@ -311,10 +303,8 @@ export class ClientCapability {
 			)
 		}
 
-		// Include chainSelector in capability ID for routing when specified
-		const capabilityId = this.chainSelector
-			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
-			: ClientCapability.CAPABILITY_ID
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 
 		const capabilityResponse = runtime.callCapability<
 			GetTransactionByHashRequest,
@@ -354,10 +344,8 @@ export class ClientCapability {
 			)
 		}
 
-		// Include chainSelector in capability ID for routing when specified
-		const capabilityId = this.chainSelector
-			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
-			: ClientCapability.CAPABILITY_ID
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 
 		const capabilityResponse = runtime.callCapability<
 			GetTransactionReceiptRequest,
@@ -394,10 +382,8 @@ export class ClientCapability {
 			payload = fromJson(HeaderByNumberRequestSchema, input as HeaderByNumberRequestJson)
 		}
 
-		// Include chainSelector in capability ID for routing when specified
-		const capabilityId = this.chainSelector
-			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
-			: ClientCapability.CAPABILITY_ID
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 
 		const capabilityResponse = runtime.callCapability<HeaderByNumberRequest, HeaderByNumberReply>({
 			capabilityId,
@@ -431,10 +417,8 @@ export class ClientCapability {
 			payload = fromJson(RegisterLogTrackingRequestSchema, input as RegisterLogTrackingRequestJson)
 		}
 
-		// Include chainSelector in capability ID for routing when specified
-		const capabilityId = this.chainSelector
-			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
-			: ClientCapability.CAPABILITY_ID
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 
 		const capabilityResponse = runtime.callCapability<RegisterLogTrackingRequest, Empty>({
 			capabilityId,
@@ -471,10 +455,8 @@ export class ClientCapability {
 			)
 		}
 
-		// Include chainSelector in capability ID for routing when specified
-		const capabilityId = this.chainSelector
-			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
-			: ClientCapability.CAPABILITY_ID
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 
 		const capabilityResponse = runtime.callCapability<UnregisterLogTrackingRequest, Empty>({
 			capabilityId,
@@ -494,11 +476,9 @@ export class ClientCapability {
 	}
 
 	logTrigger(config: FilterLogTriggerRequestJson): ClientLogTrigger {
-		// Include chainSelector in capability ID for routing when specified
-		const capabilityId = this.chainSelector
-			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
-			: ClientCapability.CAPABILITY_ID
-		return new ClientLogTrigger(config, capabilityId, 'LogTrigger')
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+		return new ClientLogTrigger(config, capabilityId, 'LogTrigger', this.ChainSelector)
 	}
 
 	writeReport(
@@ -519,10 +499,8 @@ export class ClientCapability {
 			)
 		}
 
-		// Include chainSelector in capability ID for routing when specified
-		const capabilityId = this.chainSelector
-			? `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.chainSelector}@${ClientCapability.CAPABILITY_VERSION}`
-			: ClientCapability.CAPABILITY_ID
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
 
 		const capabilityResponse = runtime.callCapability<WriteReportRequest, WriteReportReply>({
 			capabilityId,
@@ -551,6 +529,7 @@ class ClientLogTrigger implements Trigger<Log, Log> {
 		config: FilterLogTriggerRequest | FilterLogTriggerRequestJson,
 		private readonly _capabilityId: string,
 		private readonly _method: string,
+		private readonly ChainSelector: bigint,
 	) {
 		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
 		this.config = (config as any).$typeName

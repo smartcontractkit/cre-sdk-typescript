@@ -1,4 +1,5 @@
 import type { DescMethod } from '@bufbuild/protobuf'
+import { generateCapabilityIdLogic, type ProcessedLabel } from './label-utils'
 import { wrapType } from './utils'
 
 /**
@@ -7,24 +8,17 @@ import { wrapType } from './utils'
  * @param method - The method descriptor
  * @param methodName - The camelCase method name
  * @param capabilityClassName - The class name of the capability object
- * @param hasChainSelector - Whether this capability supports chainSelector routing
+ * @param labels - Array of processed labels for this capability
  * @returns The generated action method code
  */
 export function generateActionMethod(
 	method: DescMethod,
 	methodName: string,
 	capabilityClassName: string,
-	hasChainSelector: boolean = false,
+	labels: ProcessedLabel[],
 	modePrefix: string,
 ): string {
-	const capabilityIdLogic = hasChainSelector
-		? `
-    // Include chainSelector in capability ID for routing when specified
-    const capabilityId = this.chainSelector
-      ? \`\${${capabilityClassName}.CAPABILITY_NAME}:ChainSelector:\${this.chainSelector}@\${${capabilityClassName}.CAPABILITY_VERSION}\`
-      : ${capabilityClassName}.CAPABILITY_ID;`
-		: `
-    const capabilityId = ${capabilityClassName}.CAPABILITY_ID;`
+	const capabilityIdLogic = generateCapabilityIdLogic(labels, capabilityClassName)
 
 	// Check if we have wrapped types
 	const wrappedInputType = wrapType(method.input)
