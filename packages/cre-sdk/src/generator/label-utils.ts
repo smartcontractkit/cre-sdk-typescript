@@ -21,7 +21,7 @@ export function processLabels(capOption: CapabilityMetadata): ProcessedLabel[] {
 
 	const labels: ProcessedLabel[] = []
 
-	// Sort labels alphabetically for consistency (like Go does)
+	// Sort labels alphabetically for consistency
 	const sortedLabelNames = Object.keys(capOption.labels).sort()
 
 	for (const labelName of sortedLabelNames) {
