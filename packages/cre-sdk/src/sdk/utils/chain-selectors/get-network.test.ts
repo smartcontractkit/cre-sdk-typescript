@@ -97,7 +97,7 @@ mock.module(mockModulePath, () => ({
 	testnetBySelectorByFamily,
 }))
 
-const { getNetwork } = await import('./get-network')
+const { getNetwork } = await import('./getNetwork')
 
 describe('getNetwork', () => {
 	it('returns undefined when neither chainSelector nor chainSelectorName provided', () => {
