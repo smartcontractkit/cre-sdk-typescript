@@ -22,9 +22,10 @@ run_in_package "cre-sdk-javy-plugin" "typecheck"
 run_in_package "cre-sdk-javy-plugin" "check"
 
 # cre-sdk package
+run_in_package "cre-sdk" "clean" # Ensure clean build first
 run_in_package "cre-sdk" "compile:cre-setup"
+run_in_package "cre-sdk" "generate:sdk" # Generate first to ensure types and sources are available
 run_in_package "cre-sdk" "build"
-run_in_package "cre-sdk" "generate:sdk"
 run_in_package "cre-sdk" "typecheck"
 run_in_package "cre-sdk" "check"
 run_in_package "cre-sdk" "test"
