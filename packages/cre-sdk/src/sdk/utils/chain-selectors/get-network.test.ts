@@ -109,8 +109,8 @@ describe('getNetwork', () => {
 	})
 
 	afterAll(() => {
-		// Restore the original module implementation
-		mock.module(mockModulePath, () => originalNetworks)
+		// Restore all mocks to prevent pollution of other test files
+		mock.restore()
 	})
 
 	it('returns undefined when neither chainSelector nor chainSelectorName provided', () => {
