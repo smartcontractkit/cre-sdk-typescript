@@ -1,4 +1,7 @@
-import { describe, expect, it, mock } from 'bun:test'
+import { afterAll, beforeAll, describe, expect, it, mock } from 'bun:test'
+// Import original module to restore it later
+import * as originalNetworks from '@cre/generated/networks'
+import type { NetworkInfo } from './types'
 
 // Mock the generated networks module with deterministic fixtures
 const mockModulePath = '@cre/generated/networks'
@@ -85,21 +88,31 @@ const testnetByNameByFamily = {
 	tron: new Map(),
 } as const
 
-// Install module mock before importing the SUT
-mock.module(mockModulePath, () => ({
-	mainnetByName,
-	mainnetByNameByFamily,
-	mainnetBySelector,
-	mainnetBySelectorByFamily,
-	testnetByName,
-	testnetByNameByFamily,
-	testnetBySelector,
-	testnetBySelectorByFamily,
-}))
-
-const { getNetwork } = await import('./getNetwork')
-
 describe('getNetwork', () => {
+	let getNetwork: (options: any) => NetworkInfo | undefined
+
+	beforeAll(async () => {
+		// Install module mock before importing the SUT
+		mock.module(mockModulePath, () => ({
+			mainnetByName,
+			mainnetByNameByFamily,
+			mainnetBySelector,
+			mainnetBySelectorByFamily,
+			testnetByName,
+			testnetByNameByFamily,
+			testnetBySelector,
+			testnetBySelectorByFamily,
+		}))
+
+		const module = await import('./get-network')
+		getNetwork = module.getNetwork
+	})
+
+	afterAll(() => {
+		// Restore the original module implementation
+		mock.module(mockModulePath, () => originalNetworks)
+	})
+
 	it('returns undefined when neither chainSelector nor chainSelectorName provided', () => {
 		expect(getNetwork({})).toBeUndefined()
 	})

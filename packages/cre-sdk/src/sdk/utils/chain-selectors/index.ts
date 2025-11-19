@@ -1,3 +1,3 @@
 export * from './get-all-networks'
-export * from './getNetwork'
+export * from './get-network'
 export * from './types'
