@@ -1,7 +1,8 @@
-import { afterAll, describe, expect, it, mock } from 'bun:test'
+import { describe, expect, it } from 'bun:test'
+import { NetworkLookup } from './network-lookup'
 
 // Mock the generated networks module with deterministic fixtures
-const mockModulePath = '@cre/generated/networks'
+// We are not using mock.module anymore, but constructing the lookup class directly
 
 const evmMain = {
 	chainId: '1',
@@ -85,8 +86,7 @@ const testnetByNameByFamily = {
 	tron: new Map(),
 } as const
 
-// Install module mock before importing the SUT
-mock.module(mockModulePath, () => ({
+const lookup = new NetworkLookup({
 	mainnetByName,
 	mainnetByNameByFamily,
 	mainnetBySelector,
@@ -95,14 +95,9 @@ mock.module(mockModulePath, () => ({
 	testnetByNameByFamily,
 	testnetBySelector,
 	testnetBySelectorByFamily,
-}))
-
-const { getNetwork } = await import('./get-network')
-
-// Clean up the mock after all tests to prevent interference with other test files
-afterAll(() => {
-	mock.restore()
 })
+
+const getNetwork = (opts: any) => lookup.find(opts)
 
 describe('getNetwork', () => {
 	it('returns undefined when neither chainSelector nor chainSelectorName provided', () => {
