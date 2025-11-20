@@ -5,6 +5,7 @@ import {
 	encodeCallMsg,
 	getNetwork,
 	type HTTPSendRequester,
+	isChainSelectorSupported,
 	LAST_FINALIZED_BLOCK_NUMBER,
 	ok,
 	Runner,
@@ -56,6 +57,12 @@ const onCronTrigger = (runtime: Runtime<Config>) => {
 
 	// Get the first EVM configuration from the list
 	const evmConfig = runtime.config.evms[0]
+
+	// Make sure we try to run on supported chain
+	if (!isChainSelectorSupported(evmConfig.chainSelectorName)) {
+		throw new Error(`Chain selector name: ${evmConfig.chainSelectorName} is not supported.`)
+	}
+
 	const network = getNetwork({
 		chainFamily: 'evm',
 		chainSelectorName: evmConfig.chainSelectorName,

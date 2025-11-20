@@ -1,5 +1,6 @@
 import type { CallMsgJson } from '@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb'
 import type { ReportRequestJson } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import { EVMClient } from '@cre/sdk/cre'
 import { hexToBase64 } from '@cre/sdk/utils/hex-utils'
 import type { Address, Hex } from 'viem'
 
@@ -82,3 +83,6 @@ export const prepareReportRequest = (
 	encodedPayload: hexToBase64(hexEncodedPayload),
 	...reportEncoder,
 })
+
+export const isChainSelectorSupported = (chainSelectorName: string) =>
+	Object.keys(EVMClient.SUPPORTED_CHAIN_SELECTORS).includes(chainSelectorName)
