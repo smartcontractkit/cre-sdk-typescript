@@ -1,5 +1,5 @@
 import { create, fromJson } from '@bufbuild/protobuf'
-import { type Any, AnySchema, anyPack, type Empty, EmptySchema } from '@bufbuild/protobuf/wkt'
+import { type Any, AnySchema, anyPack } from '@bufbuild/protobuf/wkt'
 import {
 	type BalanceAtReply,
 	BalanceAtReplySchema,
@@ -44,12 +44,6 @@ import {
 	HeaderByNumberRequestSchema,
 	type Log,
 	LogSchema,
-	type RegisterLogTrackingRequest,
-	type RegisterLogTrackingRequestJson,
-	RegisterLogTrackingRequestSchema,
-	type UnregisterLogTrackingRequest,
-	type UnregisterLogTrackingRequestJson,
-	UnregisterLogTrackingRequestSchema,
 	type WriteReportReply,
 	WriteReportReplySchema,
 	type WriteReportRequest,
@@ -134,13 +128,17 @@ export class ClientCapability {
 		'binance_smart_chain-testnet-opbnb-1': 13274425992935471758n,
 		'ethereum-mainnet': 5009297550715157269n,
 		'ethereum-mainnet-arbitrum-1': 4949039107694359620n,
+		'ethereum-mainnet-base-1': 15971525489660198786n,
 		'ethereum-mainnet-optimism-1': 3734403246176062136n,
+		'ethereum-mainnet-zksync-1': 1562403441176082196n,
 		'ethereum-testnet-sepolia': 16015286601757825753n,
 		'ethereum-testnet-sepolia-arbitrum-1': 3478487238524512106n,
 		'ethereum-testnet-sepolia-base-1': 10344971235874465080n,
 		'ethereum-testnet-sepolia-optimism-1': 5224473277236331295n,
+		'ethereum-testnet-sepolia-zksync-1': 6898391096552792247n,
 		'polygon-mainnet': 4051577828743386545n,
 		'polygon-testnet-amoy': 16281711391670634445n,
+		'private-testnet-andesite': 6915682381028791124n,
 	} as const
 
 	constructor(private readonly ChainSelector: bigint) {}
@@ -391,79 +389,6 @@ export class ClientCapability {
 			payload,
 			inputSchema: HeaderByNumberRequestSchema,
 			outputSchema: HeaderByNumberReplySchema,
-		})
-
-		return {
-			result: () => {
-				const result = capabilityResponse.result()
-
-				return result
-			},
-		}
-	}
-
-	registerLogTracking(
-		runtime: Runtime<unknown>,
-		input: RegisterLogTrackingRequest | RegisterLogTrackingRequestJson,
-	): { result: () => Empty } {
-		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
-		let payload: RegisterLogTrackingRequest
-
-		if ((input as unknown as { $typeName?: string }).$typeName) {
-			// It's the original protobuf type
-			payload = input as RegisterLogTrackingRequest
-		} else {
-			// It's regular JSON, convert using fromJson
-			payload = fromJson(RegisterLogTrackingRequestSchema, input as RegisterLogTrackingRequestJson)
-		}
-
-		// Include all labels in capability ID for routing when specified
-		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
-
-		const capabilityResponse = runtime.callCapability<RegisterLogTrackingRequest, Empty>({
-			capabilityId,
-			method: 'RegisterLogTracking',
-			payload,
-			inputSchema: RegisterLogTrackingRequestSchema,
-			outputSchema: EmptySchema,
-		})
-
-		return {
-			result: () => {
-				const result = capabilityResponse.result()
-
-				return result
-			},
-		}
-	}
-
-	unregisterLogTracking(
-		runtime: Runtime<unknown>,
-		input: UnregisterLogTrackingRequest | UnregisterLogTrackingRequestJson,
-	): { result: () => Empty } {
-		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
-		let payload: UnregisterLogTrackingRequest
-
-		if ((input as unknown as { $typeName?: string }).$typeName) {
-			// It's the original protobuf type
-			payload = input as UnregisterLogTrackingRequest
-		} else {
-			// It's regular JSON, convert using fromJson
-			payload = fromJson(
-				UnregisterLogTrackingRequestSchema,
-				input as UnregisterLogTrackingRequestJson,
-			)
-		}
-
-		// Include all labels in capability ID for routing when specified
-		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
-
-		const capabilityResponse = runtime.callCapability<UnregisterLogTrackingRequest, Empty>({
-			capabilityId,
-			method: 'UnregisterLogTracking',
-			payload,
-			inputSchema: UnregisterLogTrackingRequestSchema,
-			outputSchema: EmptySchema,
 		})
 
 		return {
