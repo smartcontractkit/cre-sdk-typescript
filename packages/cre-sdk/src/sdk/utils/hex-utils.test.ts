@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { bytesToHex, hexToBase64, hexToBytes } from './hex-utils'
+import { bigintToBytes, bytesToHex, hexToBase64, hexToBytes } from './hex-utils'
 
 describe('hexToBytes', () => {
 	describe('happy paths', () => {
@@ -223,5 +223,30 @@ describe('hexToBase64', () => {
 			const base64FromBytes = Buffer.from(bytes).toString('base64')
 			expect(base64FromHex).toBe(base64FromBytes)
 		})
+	})
+})
+
+describe('bigintToBytes', () => {
+	it('returns empty array for zero', () => {
+		expect(bigintToBytes(0n)).toEqual(new Uint8Array())
+	})
+
+	it('converts small numbers', () => {
+		expect(bigintToBytes(123n)).toEqual(new Uint8Array([123]))
+	})
+
+	it('converts numbers requiring padding', () => {
+		// 15 = 0xf (single hex char needs padding to 0x0f)
+		expect(bigintToBytes(15n)).toEqual(new Uint8Array([15]))
+	})
+
+	it('converts realistic block numbers', () => {
+		// 9768438 = 0x950df6
+		expect(bigintToBytes(9768438n)).toEqual(new Uint8Array([0x95, 0x0d, 0xf6]))
+	})
+
+	it('handles large block numbers', () => {
+		// 21000000 = 0x1406f40
+		expect(bigintToBytes(21000000n)).toEqual(new Uint8Array([0x01, 0x40, 0x6f, 0x40]))
 	})
 })

@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'bun:test'
 import { EVMClient } from '@cre/sdk/cre'
 import {
+	blockNumber,
 	type EncodeCallMsgPayload,
 	EVM_DEFAULT_REPORT_ENCODER,
 	encodeCallMsg,
@@ -11,6 +12,61 @@ import {
 } from './blockchain-helpers'
 
 describe('blockchain-helpers', () => {
+	describe('blockNumber', () => {
+		test('should correct encode number', () => {
+			const result = blockNumber(123)
+			// 123 in hex is 7b. base64 of 7b is ew==
+			expect(result).toEqual({
+				absVal: Buffer.from([123]).toString('base64'),
+			})
+		})
+
+		test('should correct encode string', () => {
+			const result = blockNumber('123')
+			expect(result).toEqual({
+				absVal: Buffer.from([123]).toString('base64'),
+			})
+		})
+
+		test('should correct encode bigint', () => {
+			const result = blockNumber(123n)
+			expect(result).toEqual({
+				absVal: Buffer.from([123]).toString('base64'),
+			})
+		})
+
+		test('should correct encode zero', () => {
+			const result = blockNumber(0)
+			expect(result).toEqual({}) // Empty absVal is omitted by toJson
+		})
+
+		test('should handle negative numbers by taking absolute value', () => {
+			const result = blockNumber(-123)
+			expect(result).toEqual({
+				absVal: Buffer.from([123]).toString('base64'),
+			})
+		})
+
+		test('should handle realistic large block numbers', () => {
+			// Block number 9768438
+			// Hex: 950DF6
+			// Bytes: [149, 13, 246]
+			const num = 9768438
+			const result = blockNumber(num)
+			expect(result).toEqual({
+				absVal: Buffer.from([0x95, 0x0d, 0xf6]).toString('base64'),
+			})
+
+			// Verify with string input
+			const resultStr = blockNumber('9768438')
+			expect(resultStr).toEqual(result)
+
+			// Verify with bigint input
+			const resultBigInt = blockNumber(9768438n)
+			expect(resultBigInt).toEqual(result)
+		})
+	})
+
 	describe('LAST_FINALIZED_BLOCK_NUMBER', () => {
 		test('should have correct structure for finalized block', () => {
 			expect(LAST_FINALIZED_BLOCK_NUMBER).toEqual({

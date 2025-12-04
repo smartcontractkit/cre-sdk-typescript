@@ -1,7 +1,9 @@
+import { create, toJson } from '@bufbuild/protobuf'
 import type { CallMsgJson } from '@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb'
 import type { ReportRequestJson } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import { BigIntSchema } from '@cre/generated/values/v1/values_pb'
 import { EVMClient } from '@cre/sdk/cre'
-import { hexToBase64 } from '@cre/sdk/utils/hex-utils'
+import { bigintToBytes, hexToBase64 } from '@cre/sdk/utils/hex-utils'
 import type { Address, Hex } from 'viem'
 
 /**
@@ -11,6 +13,7 @@ import type { Address, Hex } from 'viem'
  * That blockNumber can be:
  *  - the latest mined block (`LATEST_BLOCK_NUMBER`) (default)
  * 	- the last finalized block (`LAST_FINALIZED_BLOCK_NUMBER`)
+ *  - a specific block number (use `blockNumber(n)`)
  *
  * Using this constant will indicate that the call should be executed at the last finalized block.
  */
@@ -32,6 +35,26 @@ export const LAST_FINALIZED_BLOCK_NUMBER = {
 export const LATEST_BLOCK_NUMBER = {
 	absVal: Buffer.from([2]).toString('base64'), // 2 for the latest block
 	sign: '-1',
+}
+
+/**
+ * EVM Capability Helper.
+ *
+ * Creates a block number object for EVM capability requests using the protobuf BigInt schema.
+ * This allows passing a concrete block number (number, bigint, or string) to `callContract`.
+ *
+ * @param n - The block number.
+ * @returns The JSON representation of the protobuf BigInt message.
+ */
+export const blockNumber = (n: number | bigint | string) => {
+	const val = BigInt(n)
+	const abs = val < 0n ? -val : val
+
+	const msg = create(BigIntSchema, {
+		absVal: bigintToBytes(abs),
+	})
+
+	return toJson(BigIntSchema, msg)
 }
 
 export interface EncodeCallMsgPayload {

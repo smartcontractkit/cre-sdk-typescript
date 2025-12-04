@@ -50,3 +50,15 @@ export const hexToBase64 = (hex: string): string => {
 	const cleanHex = hex.startsWith('0x') ? hex.slice(2) : hex
 	return Buffer.from(cleanHex, 'hex').toString('base64')
 }
+
+/**
+ * Convert a bigint to a Uint8Array (big-endian byte order).
+ * Returns empty array for 0n.
+ */
+export const bigintToBytes = (n: bigint): Uint8Array => {
+	if (n === 0n) {
+		return new Uint8Array()
+	}
+	const hex = n.toString(16)
+	return Buffer.from(hex.padStart(hex.length + (hex.length % 2), '0'), 'hex')
+}
