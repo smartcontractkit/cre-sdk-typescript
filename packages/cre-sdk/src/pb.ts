@@ -1,4 +1,5 @@
 export * as EVM_PB from '@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb'
+export * as CONFIDENTIAL_HTTP_CLIENT_PB from '@cre/generated/capabilities/networking/confidentialhttp/v1alpha/client_pb'
 export * as HTTP_CLIENT_PB from '@cre/generated/capabilities/networking/http/v1alpha/client_pb'
 export * as HTTP_TRIGGER_PB from '@cre/generated/capabilities/networking/http/v1alpha/trigger_pb'
 export * as CRON_TRIGGER_PB from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
