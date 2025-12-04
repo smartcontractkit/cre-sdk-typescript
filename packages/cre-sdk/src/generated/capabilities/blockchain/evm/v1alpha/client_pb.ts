@@ -5,8 +5,6 @@
 import type { Message } from '@bufbuild/protobuf'
 import type { GenEnum, GenFile, GenMessage, GenService } from '@bufbuild/protobuf/codegenv2'
 import { enumDesc, fileDesc, messageDesc, serviceDesc } from '@bufbuild/protobuf/codegenv2'
-import type { EmptySchema } from '@bufbuild/protobuf/wkt'
-import { file_google_protobuf_empty } from '@bufbuild/protobuf/wkt'
 import type { ReportResponse, ReportResponseJson } from '../../../../sdk/v1alpha/sdk_pb'
 import { file_sdk_v1alpha_sdk } from '../../../../sdk/v1alpha/sdk_pb'
 import { file_tools_generator_v1alpha_cre_metadata } from '../../../../tools/generator/v1alpha/cre_metadata_pb'
@@ -19,13 +17,8 @@ import { file_values_v1_values } from '../../../../values/v1/values_pb'
 export const file_capabilities_blockchain_evm_v1alpha_client: GenFile =
 	/*@__PURE__*/
 	fileDesc(
-		'CjBjYXBhYmlsaXRpZXMvYmxvY2tjaGFpbi9ldm0vdjFhbHBoYS9jbGllbnQucHJvdG8SI2NhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhIh0KC1RvcGljVmFsdWVzEg4KBnZhbHVlcxgBIAMoDCK4AQoXRmlsdGVyTG9nVHJpZ2dlclJlcXVlc3QSEQoJYWRkcmVzc2VzGAEgAygMEkAKBnRvcGljcxgCIAMoCzIwLmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLlRvcGljVmFsdWVzEkgKCmNvbmZpZGVuY2UYAyABKA4yNC5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5Db25maWRlbmNlTGV2ZWwiegoTQ2FsbENvbnRyYWN0UmVxdWVzdBI6CgRjYWxsGAEgASgLMiwuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuQ2FsbE1zZxInCgxibG9ja19udW1iZXIYAiABKAsyES52YWx1ZXMudjEuQmlnSW50IiEKEUNhbGxDb250cmFjdFJlcGx5EgwKBGRhdGEYASABKAwiWwoRRmlsdGVyTG9nc1JlcXVlc3QSRgoMZmlsdGVyX3F1ZXJ5GAEgASgLMjAuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuRmlsdGVyUXVlcnkiSQoPRmlsdGVyTG9nc1JlcGx5EjYKBGxvZ3MYASADKAsyKC5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5Mb2cixwEKA0xvZxIPCgdhZGRyZXNzGAEgASgMEg4KBnRvcGljcxgCIAMoDBIPCgd0eF9oYXNoGAMgASgMEhIKCmJsb2NrX2hhc2gYBCABKAwSDAoEZGF0YRgFIAEoDBIRCglldmVudF9zaWcYBiABKAwSJwoMYmxvY2tfbnVtYmVyGAcgASgLMhEudmFsdWVzLnYxLkJpZ0ludBIQCgh0eF9pbmRleBgIIAEoDRINCgVpbmRleBgJIAEoDRIPCgdyZW1vdmVkGAogASgIIjEKB0NhbGxNc2cSDAoEZnJvbRgBIAEoDBIKCgJ0bxgCIAEoDBIMCgRkYXRhGAMgASgMIr0BCgtGaWx0ZXJRdWVyeRISCgpibG9ja19oYXNoGAEgASgMEiUKCmZyb21fYmxvY2sYAiABKAsyES52YWx1ZXMudjEuQmlnSW50EiMKCHRvX2Jsb2NrGAMgASgLMhEudmFsdWVzLnYxLkJpZ0ludBIRCglhZGRyZXNzZXMYBCADKAwSOwoGdG9waWNzGAUgAygLMisuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuVG9waWNzIhcKBlRvcGljcxINCgV0b3BpYxgBIAMoDCJMChBCYWxhbmNlQXRSZXF1ZXN0Eg8KB2FjY291bnQYASABKAwSJwoMYmxvY2tfbnVtYmVyGAIgASgLMhEudmFsdWVzLnYxLkJpZ0ludCI0Cg5CYWxhbmNlQXRSZXBseRIiCgdiYWxhbmNlGAEgASgLMhEudmFsdWVzLnYxLkJpZ0ludCJPChJFc3RpbWF0ZUdhc1JlcXVlc3QSOQoDbXNnGAEgASgLMiwuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuQ2FsbE1zZyIjChBFc3RpbWF0ZUdhc1JlcGx5Eg8KA2dhcxgBIAEoBEICMAAiKwobR2V0VHJhbnNhY3Rpb25CeUhhc2hSZXF1ZXN0EgwKBGhhc2gYASABKAwiYgoZR2V0VHJhbnNhY3Rpb25CeUhhc2hSZXBseRJFCgt0cmFuc2FjdGlvbhgBIAEoCzIwLmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLlRyYW5zYWN0aW9uIqEBCgtUcmFuc2FjdGlvbhIRCgVub25jZRgBIAEoBEICMAASDwoDZ2FzGAIgASgEQgIwABIKCgJ0bxgDIAEoDBIMCgRkYXRhGAQgASgMEgwKBGhhc2gYBSABKAwSIAoFdmFsdWUYBiABKAsyES52YWx1ZXMudjEuQmlnSW50EiQKCWdhc19wcmljZRgHIAEoCzIRLnZhbHVlcy52MS5CaWdJbnQiLAocR2V0VHJhbnNhY3Rpb25SZWNlaXB0UmVxdWVzdBIMCgRoYXNoGAEgASgMIlsKGkdldFRyYW5zYWN0aW9uUmVjZWlwdFJlcGx5Ej0KB3JlY2VpcHQYASABKAsyLC5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5SZWNlaXB0IpkCCgdSZWNlaXB0EhIKBnN0YXR1cxgBIAEoBEICMAASFAoIZ2FzX3VzZWQYAiABKARCAjAAEhQKCHR4X2luZGV4GAMgASgEQgIwABISCgpibG9ja19oYXNoGAQgASgMEjYKBGxvZ3MYBiADKAsyKC5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5Mb2cSDwoHdHhfaGFzaBgHIAEoDBIuChNlZmZlY3RpdmVfZ2FzX3ByaWNlGAggASgLMhEudmFsdWVzLnYxLkJpZ0ludBInCgxibG9ja19udW1iZXIYCSABKAsyES52YWx1ZXMudjEuQmlnSW50EhgKEGNvbnRyYWN0X2FkZHJlc3MYCiABKAwiQAoVSGVhZGVyQnlOdW1iZXJSZXF1ZXN0EicKDGJsb2NrX251bWJlchgBIAEoCzIRLnZhbHVlcy52MS5CaWdJbnQiUgoTSGVhZGVyQnlOdW1iZXJSZXBseRI7CgZoZWFkZXIYASABKAsyKy5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5IZWFkZXIiawoGSGVhZGVyEhUKCXRpbWVzdGFtcBgBIAEoBEICMAASJwoMYmxvY2tfbnVtYmVyGAIgASgLMhEudmFsdWVzLnYxLkJpZ0ludBIMCgRoYXNoGAMgASgMEhMKC3BhcmVudF9oYXNoGAQgASgMIlsKGlJlZ2lzdGVyTG9nVHJhY2tpbmdSZXF1ZXN0Ej0KBmZpbHRlchgBIAEoCzItLmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkxQRmlsdGVyIsIBCghMUEZpbHRlchIZCg1tYXhfbG9nc19rZXB0GAEgASgEQgIwABIaCg5yZXRlbnRpb25fdGltZRgCIAEoA0ICMAASGgoObG9nc19wZXJfYmxvY2sYAyABKARCAjAAEgwKBG5hbWUYBCABKAkSEQoJYWRkcmVzc2VzGAUgAygMEhIKCmV2ZW50X3NpZ3MYBiADKAwSDgoGdG9waWMyGAcgAygMEg4KBnRvcGljMxgIIAMoDBIOCgZ0b3BpYzQYCSADKAwiMwocVW5yZWdpc3RlckxvZ1RyYWNraW5nUmVxdWVzdBITCgtmaWx0ZXJfbmFtZRgBIAEoCSKrAQoSV3JpdGVSZXBvcnRSZXF1ZXN0EhAKCHJlY2VpdmVyGAEgASgMEisKBnJlcG9ydBgCIAEoCzIbLnNkay52MWFscGhhLlJlcG9ydFJlc3BvbnNlEkcKCmdhc19jb25maWcYAyABKAsyLi5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5HYXNDb25maWdIAIgBAUINCgtfZ2FzX2NvbmZpZyIiCglHYXNDb25maWcSFQoJZ2FzX2xpbWl0GAEgASgEQgIwACKHAwoQV3JpdGVSZXBvcnRSZXBseRJACgl0eF9zdGF0dXMYASABKA4yLS5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5UeFN0YXR1cxJ1CiJyZWNlaXZlcl9jb250cmFjdF9leGVjdXRpb25fc3RhdHVzGAIgASgOMkQuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuUmVjZWl2ZXJDb250cmFjdEV4ZWN1dGlvblN0YXR1c0gAiAEBEhQKB3R4X2hhc2gYAyABKAxIAYgBARIvCg90cmFuc2FjdGlvbl9mZWUYBCABKAsyES52YWx1ZXMudjEuQmlnSW50SAKIAQESGgoNZXJyb3JfbWVzc2FnZRgFIAEoCUgDiAEBQiUKI19yZWNlaXZlcl9jb250cmFjdF9leGVjdXRpb25fc3RhdHVzQgoKCF90eF9oYXNoQhIKEF90cmFuc2FjdGlvbl9mZWVCEAoOX2Vycm9yX21lc3NhZ2UqaQoPQ29uZmlkZW5jZUxldmVsEhkKFUNPTkZJREVOQ0VfTEVWRUxfU0FGRRAAEhsKF0NPTkZJREVOQ0VfTEVWRUxfTEFURVNUEAESHgoaQ09ORklERU5DRV9MRVZFTF9GSU5BTElaRUQQAiqCAQofUmVjZWl2ZXJDb250cmFjdEV4ZWN1dGlvblN0YXR1cxIuCipSRUNFSVZFUl9DT05UUkFDVF9FWEVDVVRJT05fU1RBVFVTX1NVQ0NFU1MQABIvCitSRUNFSVZFUl9DT05UUkFDVF9FWEVDVVRJT05fU1RBVFVTX1JFVkVSVEVEEAEqTgoIVHhTdGF0dXMSEwoPVFhfU1RBVFVTX0ZBVEFMEAASFgoSVFhfU1RBVFVTX1JFVkVSVEVEEAESFQoRVFhfU1RBVFVTX1NVQ0NFU1MQAjLXDwoGQ2xpZW50EoABCgxDYWxsQ29udHJhY3QSOC5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5DYWxsQ29udHJhY3RSZXF1ZXN0GjYuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuQ2FsbENvbnRyYWN0UmVwbHkSegoKRmlsdGVyTG9ncxI2LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkZpbHRlckxvZ3NSZXF1ZXN0GjQuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuRmlsdGVyTG9nc1JlcGx5EncKCUJhbGFuY2VBdBI1LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkJhbGFuY2VBdFJlcXVlc3QaMy5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5CYWxhbmNlQXRSZXBseRJ9CgtFc3RpbWF0ZUdhcxI3LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkVzdGltYXRlR2FzUmVxdWVzdBo1LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkVzdGltYXRlR2FzUmVwbHkSmAEKFEdldFRyYW5zYWN0aW9uQnlIYXNoEkAuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuR2V0VHJhbnNhY3Rpb25CeUhhc2hSZXF1ZXN0Gj4uY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuR2V0VHJhbnNhY3Rpb25CeUhhc2hSZXBseRKbAQoVR2V0VHJhbnNhY3Rpb25SZWNlaXB0EkEuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuR2V0VHJhbnNhY3Rpb25SZWNlaXB0UmVxdWVzdBo/LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkdldFRyYW5zYWN0aW9uUmVjZWlwdFJlcGx5EoYBCg5IZWFkZXJCeU51bWJlchI6LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkhlYWRlckJ5TnVtYmVyUmVxdWVzdBo4LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkhlYWRlckJ5TnVtYmVyUmVwbHkSbgoTUmVnaXN0ZXJMb2dUcmFja2luZxI/LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLlJlZ2lzdGVyTG9nVHJhY2tpbmdSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EnIKFVVucmVnaXN0ZXJMb2dUcmFja2luZxJBLmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLlVucmVnaXN0ZXJMb2dUcmFja2luZ1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSdgoKTG9nVHJpZ2dlchI8LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkZpbHRlckxvZ1RyaWdnZXJSZXF1ZXN0GiguY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuTG9nMAESfQoLV3JpdGVSZXBvcnQSNy5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5Xcml0ZVJlcG9ydFJlcXVlc3QaNS5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5Xcml0ZVJlcG9ydFJlcGx5GrgEgrUYswQIARIJZXZtQDEuMC4wGqMECg1DaGFpblNlbGVjdG9yEpEEEo4ECh0KEWF2YWxhbmNoZS1tYWlubmV0ENXnisDh1ZikWQojChZhdmFsYW5jaGUtdGVzdG5ldC1mdWppEJv5/JCi46j4zAEKLwojYmluYW5jZV9zbWFydF9jaGFpbi1tYWlubmV0LW9wYm5iLTEQia2P75PG17sGCjAKI2JpbmFuY2Vfc21hcnRfY2hhaW4tdGVzdG5ldC1vcGJuYi0xEI71hZHBg4+cuAEKHAoQZXRoZXJldW0tbWFpbm5ldBCV9vHkz7KmwkUKJwobZXRoZXJldW0tbWFpbm5ldC1hcmJpdHJ1bS0xEMTojc2Om6HXRAonChtldGhlcmV1bS1tYWlubmV0LW9wdGltaXNtLTEQuJWPw/f+0OkzCiUKGGV0aGVyZXVtLXRlc3RuZXQtc2Vwb2xpYRDZteTO/MnuoN4BCi8KI2V0aGVyZXVtLXRlc3RuZXQtc2Vwb2xpYS1hcmJpdHJ1bS0xEOrO7v/qtoSjMAosCh9ldGhlcmV1bS10ZXN0bmV0LXNlcG9saWEtYmFzZS0xELjKue/2kK7IjwEKLwojZXRoZXJldW0tdGVzdG5ldC1zZXBvbGlhLW9wdGltaXNtLTEQn4bFob7Yw8BIChsKD3BvbHlnb24tbWFpbm5ldBCxq+TwmpKGnTgKIQoUcG9seWdvbi10ZXN0bmV0LWFtb3kQzY/W3/HHkPrhAULlAQonY29tLmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhQgtDbGllbnRQcm90b1ABogIDQ0JFqgIjQ2FwYWJpbGl0aWVzLkJsb2NrY2hhaW4uRXZtLlYxYWxwaGHKAiNDYXBhYmlsaXRpZXNcQmxvY2tjaGFpblxFdm1cVjFhbHBoYeICL0NhcGFiaWxpdGllc1xCbG9ja2NoYWluXEV2bVxWMWFscGhhXEdQQk1ldGFkYXRh6gImQ2FwYWJpbGl0aWVzOjpCbG9ja2NoYWluOjpFdm06OlYxYWxwaGFiBnByb3RvMw',
-		[
-			file_google_protobuf_empty,
-			file_sdk_v1alpha_sdk,
-			file_tools_generator_v1alpha_cre_metadata,
-			file_values_v1_values,
-		],
+		'CjBjYXBhYmlsaXRpZXMvYmxvY2tjaGFpbi9ldm0vdjFhbHBoYS9jbGllbnQucHJvdG8SI2NhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhIh0KC1RvcGljVmFsdWVzEg4KBnZhbHVlcxgBIAMoDCK4AQoXRmlsdGVyTG9nVHJpZ2dlclJlcXVlc3QSEQoJYWRkcmVzc2VzGAEgAygMEkAKBnRvcGljcxgCIAMoCzIwLmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLlRvcGljVmFsdWVzEkgKCmNvbmZpZGVuY2UYAyABKA4yNC5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5Db25maWRlbmNlTGV2ZWwiegoTQ2FsbENvbnRyYWN0UmVxdWVzdBI6CgRjYWxsGAEgASgLMiwuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuQ2FsbE1zZxInCgxibG9ja19udW1iZXIYAiABKAsyES52YWx1ZXMudjEuQmlnSW50IiEKEUNhbGxDb250cmFjdFJlcGx5EgwKBGRhdGEYASABKAwiWwoRRmlsdGVyTG9nc1JlcXVlc3QSRgoMZmlsdGVyX3F1ZXJ5GAEgASgLMjAuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuRmlsdGVyUXVlcnkiSQoPRmlsdGVyTG9nc1JlcGx5EjYKBGxvZ3MYASADKAsyKC5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5Mb2cixwEKA0xvZxIPCgdhZGRyZXNzGAEgASgMEg4KBnRvcGljcxgCIAMoDBIPCgd0eF9oYXNoGAMgASgMEhIKCmJsb2NrX2hhc2gYBCABKAwSDAoEZGF0YRgFIAEoDBIRCglldmVudF9zaWcYBiABKAwSJwoMYmxvY2tfbnVtYmVyGAcgASgLMhEudmFsdWVzLnYxLkJpZ0ludBIQCgh0eF9pbmRleBgIIAEoDRINCgVpbmRleBgJIAEoDRIPCgdyZW1vdmVkGAogASgIIjEKB0NhbGxNc2cSDAoEZnJvbRgBIAEoDBIKCgJ0bxgCIAEoDBIMCgRkYXRhGAMgASgMIr0BCgtGaWx0ZXJRdWVyeRISCgpibG9ja19oYXNoGAEgASgMEiUKCmZyb21fYmxvY2sYAiABKAsyES52YWx1ZXMudjEuQmlnSW50EiMKCHRvX2Jsb2NrGAMgASgLMhEudmFsdWVzLnYxLkJpZ0ludBIRCglhZGRyZXNzZXMYBCADKAwSOwoGdG9waWNzGAUgAygLMisuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuVG9waWNzIhcKBlRvcGljcxINCgV0b3BpYxgBIAMoDCJMChBCYWxhbmNlQXRSZXF1ZXN0Eg8KB2FjY291bnQYASABKAwSJwoMYmxvY2tfbnVtYmVyGAIgASgLMhEudmFsdWVzLnYxLkJpZ0ludCI0Cg5CYWxhbmNlQXRSZXBseRIiCgdiYWxhbmNlGAEgASgLMhEudmFsdWVzLnYxLkJpZ0ludCJPChJFc3RpbWF0ZUdhc1JlcXVlc3QSOQoDbXNnGAEgASgLMiwuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuQ2FsbE1zZyIjChBFc3RpbWF0ZUdhc1JlcGx5Eg8KA2dhcxgBIAEoBEICMAAiKwobR2V0VHJhbnNhY3Rpb25CeUhhc2hSZXF1ZXN0EgwKBGhhc2gYASABKAwiYgoZR2V0VHJhbnNhY3Rpb25CeUhhc2hSZXBseRJFCgt0cmFuc2FjdGlvbhgBIAEoCzIwLmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLlRyYW5zYWN0aW9uIqEBCgtUcmFuc2FjdGlvbhIRCgVub25jZRgBIAEoBEICMAASDwoDZ2FzGAIgASgEQgIwABIKCgJ0bxgDIAEoDBIMCgRkYXRhGAQgASgMEgwKBGhhc2gYBSABKAwSIAoFdmFsdWUYBiABKAsyES52YWx1ZXMudjEuQmlnSW50EiQKCWdhc19wcmljZRgHIAEoCzIRLnZhbHVlcy52MS5CaWdJbnQiLAocR2V0VHJhbnNhY3Rpb25SZWNlaXB0UmVxdWVzdBIMCgRoYXNoGAEgASgMIlsKGkdldFRyYW5zYWN0aW9uUmVjZWlwdFJlcGx5Ej0KB3JlY2VpcHQYASABKAsyLC5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5SZWNlaXB0IpkCCgdSZWNlaXB0EhIKBnN0YXR1cxgBIAEoBEICMAASFAoIZ2FzX3VzZWQYAiABKARCAjAAEhQKCHR4X2luZGV4GAMgASgEQgIwABISCgpibG9ja19oYXNoGAQgASgMEjYKBGxvZ3MYBiADKAsyKC5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5Mb2cSDwoHdHhfaGFzaBgHIAEoDBIuChNlZmZlY3RpdmVfZ2FzX3ByaWNlGAggASgLMhEudmFsdWVzLnYxLkJpZ0ludBInCgxibG9ja19udW1iZXIYCSABKAsyES52YWx1ZXMudjEuQmlnSW50EhgKEGNvbnRyYWN0X2FkZHJlc3MYCiABKAwiQAoVSGVhZGVyQnlOdW1iZXJSZXF1ZXN0EicKDGJsb2NrX251bWJlchgBIAEoCzIRLnZhbHVlcy52MS5CaWdJbnQiUgoTSGVhZGVyQnlOdW1iZXJSZXBseRI7CgZoZWFkZXIYASABKAsyKy5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5IZWFkZXIiawoGSGVhZGVyEhUKCXRpbWVzdGFtcBgBIAEoBEICMAASJwoMYmxvY2tfbnVtYmVyGAIgASgLMhEudmFsdWVzLnYxLkJpZ0ludBIMCgRoYXNoGAMgASgMEhMKC3BhcmVudF9oYXNoGAQgASgMIqsBChJXcml0ZVJlcG9ydFJlcXVlc3QSEAoIcmVjZWl2ZXIYASABKAwSKwoGcmVwb3J0GAIgASgLMhsuc2RrLnYxYWxwaGEuUmVwb3J0UmVzcG9uc2USRwoKZ2FzX2NvbmZpZxgDIAEoCzIuLmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkdhc0NvbmZpZ0gAiAEBQg0KC19nYXNfY29uZmlnIiIKCUdhc0NvbmZpZxIVCglnYXNfbGltaXQYASABKARCAjAAIocDChBXcml0ZVJlcG9ydFJlcGx5EkAKCXR4X3N0YXR1cxgBIAEoDjItLmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLlR4U3RhdHVzEnUKInJlY2VpdmVyX2NvbnRyYWN0X2V4ZWN1dGlvbl9zdGF0dXMYAiABKA4yRC5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5SZWNlaXZlckNvbnRyYWN0RXhlY3V0aW9uU3RhdHVzSACIAQESFAoHdHhfaGFzaBgDIAEoDEgBiAEBEi8KD3RyYW5zYWN0aW9uX2ZlZRgEIAEoCzIRLnZhbHVlcy52MS5CaWdJbnRIAogBARIaCg1lcnJvcl9tZXNzYWdlGAUgASgJSAOIAQFCJQojX3JlY2VpdmVyX2NvbnRyYWN0X2V4ZWN1dGlvbl9zdGF0dXNCCgoIX3R4X2hhc2hCEgoQX3RyYW5zYWN0aW9uX2ZlZUIQCg5fZXJyb3JfbWVzc2FnZSppCg9Db25maWRlbmNlTGV2ZWwSGQoVQ09ORklERU5DRV9MRVZFTF9TQUZFEAASGwoXQ09ORklERU5DRV9MRVZFTF9MQVRFU1QQARIeChpDT05GSURFTkNFX0xFVkVMX0ZJTkFMSVpFRBACKoIBCh9SZWNlaXZlckNvbnRyYWN0RXhlY3V0aW9uU3RhdHVzEi4KKlJFQ0VJVkVSX0NPTlRSQUNUX0VYRUNVVElPTl9TVEFUVVNfU1VDQ0VTUxAAEi8KK1JFQ0VJVkVSX0NPTlRSQUNUX0VYRUNVVElPTl9TVEFUVVNfUkVWRVJURUQQASpOCghUeFN0YXR1cxITCg9UWF9TVEFUVVNfRkFUQUwQABIWChJUWF9TVEFUVVNfUkVWRVJURUQQARIVChFUWF9TVEFUVVNfU1VDQ0VTUxACMpUPCgZDbGllbnQSgAEKDENhbGxDb250cmFjdBI4LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkNhbGxDb250cmFjdFJlcXVlc3QaNi5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5DYWxsQ29udHJhY3RSZXBseRJ6CgpGaWx0ZXJMb2dzEjYuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuRmlsdGVyTG9nc1JlcXVlc3QaNC5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5GaWx0ZXJMb2dzUmVwbHkSdwoJQmFsYW5jZUF0EjUuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuQmFsYW5jZUF0UmVxdWVzdBozLmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLkJhbGFuY2VBdFJlcGx5En0KC0VzdGltYXRlR2FzEjcuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuRXN0aW1hdGVHYXNSZXF1ZXN0GjUuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuRXN0aW1hdGVHYXNSZXBseRKYAQoUR2V0VHJhbnNhY3Rpb25CeUhhc2gSQC5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5HZXRUcmFuc2FjdGlvbkJ5SGFzaFJlcXVlc3QaPi5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5HZXRUcmFuc2FjdGlvbkJ5SGFzaFJlcGx5EpsBChVHZXRUcmFuc2FjdGlvblJlY2VpcHQSQS5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5HZXRUcmFuc2FjdGlvblJlY2VpcHRSZXF1ZXN0Gj8uY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuR2V0VHJhbnNhY3Rpb25SZWNlaXB0UmVwbHkShgEKDkhlYWRlckJ5TnVtYmVyEjouY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuSGVhZGVyQnlOdW1iZXJSZXF1ZXN0GjguY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuSGVhZGVyQnlOdW1iZXJSZXBseRJ2CgpMb2dUcmlnZ2VyEjwuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGEuRmlsdGVyTG9nVHJpZ2dlclJlcXVlc3QaKC5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5ldm0udjFhbHBoYS5Mb2cwARJ9CgtXcml0ZVJlcG9ydBI3LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLldyaXRlUmVwb3J0UmVxdWVzdBo1LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLmV2bS52MWFscGhhLldyaXRlUmVwb3J0UmVwbHka2gWCtRjVBQgBEglldm1AMS4wLjAaxQUKDUNoYWluU2VsZWN0b3ISswUSsAUKHQoRYXZhbGFuY2hlLW1haW5uZXQQ1eeKwOHVmKRZCiMKFmF2YWxhbmNoZS10ZXN0bmV0LWZ1amkQm/n8kKLjqPjMAQovCiNiaW5hbmNlX3NtYXJ0X2NoYWluLW1haW5uZXQtb3BibmItMRCJrY/vk8bXuwYKMAojYmluYW5jZV9zbWFydF9jaGFpbi10ZXN0bmV0LW9wYm5iLTEQjvWFkcGDj5y4AQocChBldGhlcmV1bS1tYWlubmV0EJX28eTPsqbCRQonChtldGhlcmV1bS1tYWlubmV0LWFyYml0cnVtLTEQxOiNzY6boddECiQKF2V0aGVyZXVtLW1haW5uZXQtYmFzZS0xEIL/q6L+uZDT3QEKJwobZXRoZXJldW0tbWFpbm5ldC1vcHRpbWlzbS0xELiVj8P3/tDpMwolChlldGhlcmV1bS1tYWlubmV0LXprc3luYy0xEJTul9nttLHXFQolChhldGhlcmV1bS10ZXN0bmV0LXNlcG9saWEQ2bXkzvzJ7qDeAQovCiNldGhlcmV1bS10ZXN0bmV0LXNlcG9saWEtYXJiaXRydW0tMRDqzu7/6raEozAKLAofZXRoZXJldW0tdGVzdG5ldC1zZXBvbGlhLWJhc2UtMRC4yrnv9pCuyI8BCi8KI2V0aGVyZXVtLXRlc3RuZXQtc2Vwb2xpYS1vcHRpbWlzbS0xEJ+GxaG+2MPASAotCiFldGhlcmV1bS10ZXN0bmV0LXNlcG9saWEtemtzeW5jLTEQt8H8/fLEgN5fChsKD3BvbHlnb24tbWFpbm5ldBCxq+TwmpKGnTgKIQoUcG9seWdvbi10ZXN0bmV0LWFtb3kQzY/W3/HHkPrhAQokChhwcml2YXRlLXRlc3RuZXQtYW5kZXNpdGUQ1KaYpcGP3PxfQuUBCidjb20uY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uZXZtLnYxYWxwaGFCC0NsaWVudFByb3RvUAGiAgNDQkWqAiNDYXBhYmlsaXRpZXMuQmxvY2tjaGFpbi5Fdm0uVjFhbHBoYcoCI0NhcGFiaWxpdGllc1xCbG9ja2NoYWluXEV2bVxWMWFscGhh4gIvQ2FwYWJpbGl0aWVzXEJsb2NrY2hhaW5cRXZtXFYxYWxwaGFcR1BCTWV0YWRhdGHqAiZDYXBhYmlsaXRpZXM6OkJsb2NrY2hhaW46OkV2bTo6VjFhbHBoYWIGcHJvdG8z',
+		[file_sdk_v1alpha_sdk, file_tools_generator_v1alpha_cre_metadata, file_values_v1_values],
 	)
 
 /**
@@ -1299,210 +1292,6 @@ export const HeaderSchema: GenMessage<Header, { jsonType: HeaderJson }> =
 	messageDesc(file_capabilities_blockchain_evm_v1alpha_client, 22)
 
 /**
- * @generated from message capabilities.blockchain.evm.v1alpha.RegisterLogTrackingRequest
- */
-export type RegisterLogTrackingRequest =
-	Message<'capabilities.blockchain.evm.v1alpha.RegisterLogTrackingRequest'> & {
-		/**
-		 * @generated from field: capabilities.blockchain.evm.v1alpha.LPFilter filter = 1;
-		 */
-		filter?: LPFilter
-	}
-
-/**
- * @generated from message capabilities.blockchain.evm.v1alpha.RegisterLogTrackingRequest
- */
-export type RegisterLogTrackingRequestJson = {
-	/**
-	 * @generated from field: capabilities.blockchain.evm.v1alpha.LPFilter filter = 1;
-	 */
-	filter?: LPFilterJson
-}
-
-/**
- * Describes the message capabilities.blockchain.evm.v1alpha.RegisterLogTrackingRequest.
- * Use `create(RegisterLogTrackingRequestSchema)` to create a new message.
- */
-export const RegisterLogTrackingRequestSchema: GenMessage<
-	RegisterLogTrackingRequest,
-	{ jsonType: RegisterLogTrackingRequestJson }
-> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_evm_v1alpha_client, 23)
-
-/**
- * @generated from message capabilities.blockchain.evm.v1alpha.LPFilter
- */
-export type LPFilter = Message<'capabilities.blockchain.evm.v1alpha.LPFilter'> & {
-	/**
-	 * maximum number of logs to retain ( 0 = unlimited )
-	 *
-	 * @generated from field: uint64 max_logs_kept = 1 [jstype = JS_NORMAL];
-	 */
-	maxLogsKept: bigint
-
-	/**
-	 * maximum amount of time to retain logs in seconds
-	 *
-	 * @generated from field: int64 retention_time = 2 [jstype = JS_NORMAL];
-	 */
-	retentionTime: bigint
-
-	/**
-	 * rate limit ( maximum # of logs per block, 0 = unlimited )
-	 *
-	 * @generated from field: uint64 logs_per_block = 3 [jstype = JS_NORMAL];
-	 */
-	logsPerBlock: bigint
-
-	/**
-	 * filter name, has to persist for removing filter
-	 *
-	 * @generated from field: string name = 4;
-	 */
-	name: string
-
-	/**
-	 * list of addresses to include in evm address [20]byte fix-sized array format
-	 *
-	 * @generated from field: repeated bytes addresses = 5;
-	 */
-	addresses: Uint8Array[]
-
-	/**
-	 * list of possible signatures (aka topic1), in [32]byte fix-sized array format
-	 *
-	 * @generated from field: repeated bytes event_sigs = 6;
-	 */
-	eventSigs: Uint8Array[]
-
-	/**
-	 * list of possible values for topic2, in [32]byte fix-sized array format
-	 *
-	 * @generated from field: repeated bytes topic2 = 7;
-	 */
-	topic2: Uint8Array[]
-
-	/**
-	 * list of possible values for topic3, in [32]byte fix-sized array format
-	 *
-	 * @generated from field: repeated bytes topic3 = 8;
-	 */
-	topic3: Uint8Array[]
-
-	/**
-	 * list of possible values for topic4, in [32]byte fix-sized array format
-	 *
-	 * @generated from field: repeated bytes topic4 = 9;
-	 */
-	topic4: Uint8Array[]
-}
-
-/**
- * @generated from message capabilities.blockchain.evm.v1alpha.LPFilter
- */
-export type LPFilterJson = {
-	/**
-	 * maximum number of logs to retain ( 0 = unlimited )
-	 *
-	 * @generated from field: uint64 max_logs_kept = 1 [jstype = JS_NORMAL];
-	 */
-	maxLogsKept?: string
-
-	/**
-	 * maximum amount of time to retain logs in seconds
-	 *
-	 * @generated from field: int64 retention_time = 2 [jstype = JS_NORMAL];
-	 */
-	retentionTime?: string
-
-	/**
-	 * rate limit ( maximum # of logs per block, 0 = unlimited )
-	 *
-	 * @generated from field: uint64 logs_per_block = 3 [jstype = JS_NORMAL];
-	 */
-	logsPerBlock?: string
-
-	/**
-	 * filter name, has to persist for removing filter
-	 *
-	 * @generated from field: string name = 4;
-	 */
-	name?: string
-
-	/**
-	 * list of addresses to include in evm address [20]byte fix-sized array format
-	 *
-	 * @generated from field: repeated bytes addresses = 5;
-	 */
-	addresses?: string[]
-
-	/**
-	 * list of possible signatures (aka topic1), in [32]byte fix-sized array format
-	 *
-	 * @generated from field: repeated bytes event_sigs = 6;
-	 */
-	eventSigs?: string[]
-
-	/**
-	 * list of possible values for topic2, in [32]byte fix-sized array format
-	 *
-	 * @generated from field: repeated bytes topic2 = 7;
-	 */
-	topic2?: string[]
-
-	/**
-	 * list of possible values for topic3, in [32]byte fix-sized array format
-	 *
-	 * @generated from field: repeated bytes topic3 = 8;
-	 */
-	topic3?: string[]
-
-	/**
-	 * list of possible values for topic4, in [32]byte fix-sized array format
-	 *
-	 * @generated from field: repeated bytes topic4 = 9;
-	 */
-	topic4?: string[]
-}
-
-/**
- * Describes the message capabilities.blockchain.evm.v1alpha.LPFilter.
- * Use `create(LPFilterSchema)` to create a new message.
- */
-export const LPFilterSchema: GenMessage<LPFilter, { jsonType: LPFilterJson }> =
-	/*@__PURE__*/
-	messageDesc(file_capabilities_blockchain_evm_v1alpha_client, 24)
-
-/**
- * @generated from message capabilities.blockchain.evm.v1alpha.UnregisterLogTrackingRequest
- */
-export type UnregisterLogTrackingRequest =
-	Message<'capabilities.blockchain.evm.v1alpha.UnregisterLogTrackingRequest'> & {
-		/**
-		 * @generated from field: string filter_name = 1;
-		 */
-		filterName: string
-	}
-
-/**
- * @generated from message capabilities.blockchain.evm.v1alpha.UnregisterLogTrackingRequest
- */
-export type UnregisterLogTrackingRequestJson = {
-	/**
-	 * @generated from field: string filter_name = 1;
-	 */
-	filterName?: string
-}
-
-/**
- * Describes the message capabilities.blockchain.evm.v1alpha.UnregisterLogTrackingRequest.
- * Use `create(UnregisterLogTrackingRequestSchema)` to create a new message.
- */
-export const UnregisterLogTrackingRequestSchema: GenMessage<
-	UnregisterLogTrackingRequest,
-	{ jsonType: UnregisterLogTrackingRequestJson }
-> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_evm_v1alpha_client, 25)
-
-/**
  * @generated from message capabilities.blockchain.evm.v1alpha.WriteReportRequest
  */
 export type WriteReportRequest =
@@ -1550,7 +1339,7 @@ export type WriteReportRequestJson = {
 export const WriteReportRequestSchema: GenMessage<
 	WriteReportRequest,
 	{ jsonType: WriteReportRequestJson }
-> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_evm_v1alpha_client, 26)
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_evm_v1alpha_client, 23)
 
 /**
  * @generated from message capabilities.blockchain.evm.v1alpha.GasConfig
@@ -1578,7 +1367,7 @@ export type GasConfigJson = {
  */
 export const GasConfigSchema: GenMessage<GasConfig, { jsonType: GasConfigJson }> =
 	/*@__PURE__*/
-	messageDesc(file_capabilities_blockchain_evm_v1alpha_client, 27)
+	messageDesc(file_capabilities_blockchain_evm_v1alpha_client, 24)
 
 /**
  * @generated from message capabilities.blockchain.evm.v1alpha.WriteReportReply
@@ -1647,7 +1436,7 @@ export type WriteReportReplyJson = {
 export const WriteReportReplySchema: GenMessage<
 	WriteReportReply,
 	{ jsonType: WriteReportReplyJson }
-> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_evm_v1alpha_client, 28)
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_evm_v1alpha_client, 25)
 
 /**
  * @generated from enum capabilities.blockchain.evm.v1alpha.ConfidenceLevel
@@ -1805,22 +1594,6 @@ export const Client: GenService<{
 		methodKind: 'unary'
 		input: typeof HeaderByNumberRequestSchema
 		output: typeof HeaderByNumberReplySchema
-	}
-	/**
-	 * @generated from rpc capabilities.blockchain.evm.v1alpha.Client.RegisterLogTracking
-	 */
-	registerLogTracking: {
-		methodKind: 'unary'
-		input: typeof RegisterLogTrackingRequestSchema
-		output: typeof EmptySchema
-	}
-	/**
-	 * @generated from rpc capabilities.blockchain.evm.v1alpha.Client.UnregisterLogTracking
-	 */
-	unregisterLogTracking: {
-		methodKind: 'unary'
-		input: typeof UnregisterLogTrackingRequestSchema
-		output: typeof EmptySchema
 	}
 	/**
 	 * @generated from rpc capabilities.blockchain.evm.v1alpha.Client.LogTrigger

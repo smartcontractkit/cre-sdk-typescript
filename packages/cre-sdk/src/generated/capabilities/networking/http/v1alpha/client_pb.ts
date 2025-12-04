@@ -5,6 +5,8 @@
 import type { Message } from '@bufbuild/protobuf'
 import type { GenFile, GenMessage, GenService } from '@bufbuild/protobuf/codegenv2'
 import { fileDesc, messageDesc, serviceDesc } from '@bufbuild/protobuf/codegenv2'
+import type { Duration, DurationJson } from '@bufbuild/protobuf/wkt'
+import { file_google_protobuf_duration } from '@bufbuild/protobuf/wkt'
 import { file_tools_generator_v1alpha_cre_metadata } from '../../../../tools/generator/v1alpha/cre_metadata_pb'
 
 /**
@@ -13,8 +15,8 @@ import { file_tools_generator_v1alpha_cre_metadata } from '../../../../tools/gen
 export const file_capabilities_networking_http_v1alpha_client: GenFile =
 	/*@__PURE__*/
 	fileDesc(
-		'CjFjYXBhYmlsaXRpZXMvbmV0d29ya2luZy9odHRwL3YxYWxwaGEvY2xpZW50LnByb3RvEiRjYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGEiPAoNQ2FjaGVTZXR0aW5ncxIXCg9yZWFkX2Zyb21fY2FjaGUYASABKAgSEgoKbWF4X2FnZV9tcxgCIAEoBSKSAgoHUmVxdWVzdBILCgN1cmwYASABKAkSDgoGbWV0aG9kGAIgASgJEksKB2hlYWRlcnMYAyADKAsyOi5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGEuUmVxdWVzdC5IZWFkZXJzRW50cnkSDAoEYm9keRgEIAEoDBISCgp0aW1lb3V0X21zGAUgASgFEksKDmNhY2hlX3NldHRpbmdzGAYgASgLMjMuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuaHR0cC52MWFscGhhLkNhY2hlU2V0dGluZ3MaLgoMSGVhZGVyc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEiqwEKCFJlc3BvbnNlEhMKC3N0YXR1c19jb2RlGAEgASgNEkwKB2hlYWRlcnMYAiADKAsyOy5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGEuUmVzcG9uc2UuSGVhZGVyc0VudHJ5EgwKBGJvZHkYAyABKAwaLgoMSGVhZGVyc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEymAEKBkNsaWVudBJsCgtTZW5kUmVxdWVzdBItLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmh0dHAudjFhbHBoYS5SZXF1ZXN0Gi4uY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuaHR0cC52MWFscGhhLlJlc3BvbnNlGiCCtRgcCAISGGh0dHAtYWN0aW9uc0AxLjAuMC1hbHBoYULqAQooY29tLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmh0dHAudjFhbHBoYUILQ2xpZW50UHJvdG9QAaICA0NOSKoCJENhcGFiaWxpdGllcy5OZXR3b3JraW5nLkh0dHAuVjFhbHBoYcoCJENhcGFiaWxpdGllc1xOZXR3b3JraW5nXEh0dHBcVjFhbHBoYeICMENhcGFiaWxpdGllc1xOZXR3b3JraW5nXEh0dHBcVjFhbHBoYVxHUEJNZXRhZGF0YeoCJ0NhcGFiaWxpdGllczo6TmV0d29ya2luZzo6SHR0cDo6VjFhbHBoYWIGcHJvdG8z',
-		[file_tools_generator_v1alpha_cre_metadata],
+		'CjFjYXBhYmlsaXRpZXMvbmV0d29ya2luZy9odHRwL3YxYWxwaGEvY2xpZW50LnByb3RvEiRjYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGEiSgoNQ2FjaGVTZXR0aW5ncxINCgVzdG9yZRgBIAEoCBIqCgdtYXhfYWdlGAIgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uIqoCCgdSZXF1ZXN0EgsKA3VybBgBIAEoCRIOCgZtZXRob2QYAiABKAkSSwoHaGVhZGVycxgDIAMoCzI6LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmh0dHAudjFhbHBoYS5SZXF1ZXN0LkhlYWRlcnNFbnRyeRIMCgRib2R5GAQgASgMEioKB3RpbWVvdXQYBSABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24SSwoOY2FjaGVfc2V0dGluZ3MYBiABKAsyMy5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGEuQ2FjaGVTZXR0aW5ncxouCgxIZWFkZXJzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASKrAQoIUmVzcG9uc2USEwoLc3RhdHVzX2NvZGUYASABKA0STAoHaGVhZGVycxgCIAMoCzI7LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmh0dHAudjFhbHBoYS5SZXNwb25zZS5IZWFkZXJzRW50cnkSDAoEYm9keRgDIAEoDBouCgxIZWFkZXJzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ATKYAQoGQ2xpZW50EmwKC1NlbmRSZXF1ZXN0Ei0uY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuaHR0cC52MWFscGhhLlJlcXVlc3QaLi5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGEuUmVzcG9uc2UaIIK1GBwIAhIYaHR0cC1hY3Rpb25zQDEuMC4wLWFscGhhQuoBCihjb20uY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuaHR0cC52MWFscGhhQgtDbGllbnRQcm90b1ABogIDQ05IqgIkQ2FwYWJpbGl0aWVzLk5ldHdvcmtpbmcuSHR0cC5WMWFscGhhygIkQ2FwYWJpbGl0aWVzXE5ldHdvcmtpbmdcSHR0cFxWMWFscGhh4gIwQ2FwYWJpbGl0aWVzXE5ldHdvcmtpbmdcSHR0cFxWMWFscGhhXEdQQk1ldGFkYXRh6gInQ2FwYWJpbGl0aWVzOjpOZXR3b3JraW5nOjpIdHRwOjpWMWFscGhhYgZwcm90bzM',
+		[file_google_protobuf_duration, file_tools_generator_v1alpha_cre_metadata],
 	)
 
 /**
@@ -24,18 +26,18 @@ export const file_capabilities_networking_http_v1alpha_client: GenFile =
  */
 export type CacheSettings = Message<'capabilities.networking.http.v1alpha.CacheSettings'> & {
 	/**
-	 * If true, attempt to read a cached response for the request.
+	 * If true, cache the response.
 	 *
-	 * @generated from field: bool read_from_cache = 1;
+	 * @generated from field: bool store = 1;
 	 */
-	readFromCache: boolean
+	store: boolean
 
 	/**
-	 * Maximum age of a cached response in milliseconds.
+	 * Maximum age of a cached response. If zero, do not attempt to read from cache
 	 *
-	 * @generated from field: int32 max_age_ms = 2;
+	 * @generated from field: google.protobuf.Duration max_age = 2;
 	 */
-	maxAgeMs: number
+	maxAge?: Duration
 }
 
 /**
@@ -45,18 +47,18 @@ export type CacheSettings = Message<'capabilities.networking.http.v1alpha.CacheS
  */
 export type CacheSettingsJson = {
 	/**
-	 * If true, attempt to read a cached response for the request.
+	 * If true, cache the response.
 	 *
-	 * @generated from field: bool read_from_cache = 1;
+	 * @generated from field: bool store = 1;
 	 */
-	readFromCache?: boolean
+	store?: boolean
 
 	/**
-	 * Maximum age of a cached response in milliseconds.
+	 * Maximum age of a cached response. If zero, do not attempt to read from cache
 	 *
-	 * @generated from field: int32 max_age_ms = 2;
+	 * @generated from field: google.protobuf.Duration max_age = 2;
 	 */
-	maxAgeMs?: number
+	maxAge?: DurationJson
 }
 
 /**
@@ -92,9 +94,11 @@ export type Request = Message<'capabilities.networking.http.v1alpha.Request'> & 
 	body: Uint8Array
 
 	/**
-	 * @generated from field: int32 timeout_ms = 5;
+	 * Request timeout duration
+	 *
+	 * @generated from field: google.protobuf.Duration timeout = 5;
 	 */
-	timeoutMs: number
+	timeout?: Duration
 
 	/**
 	 * @generated from field: capabilities.networking.http.v1alpha.CacheSettings cache_settings = 6;
@@ -127,9 +131,11 @@ export type RequestJson = {
 	body?: string
 
 	/**
-	 * @generated from field: int32 timeout_ms = 5;
+	 * Request timeout duration
+	 *
+	 * @generated from field: google.protobuf.Duration timeout = 5;
 	 */
-	timeoutMs?: number
+	timeout?: DurationJson
 
 	/**
 	 * @generated from field: capabilities.networking.http.v1alpha.CacheSettings cache_settings = 6;
