@@ -4,6 +4,7 @@ import { file_capabilities_internal_basicaction_v1_basic_action } from '@cre/gen
 import { file_capabilities_internal_basictrigger_v1_basic_trigger } from '@cre/generated/capabilities/internal/basictrigger/v1/basic_trigger_pb'
 import { file_capabilities_internal_consensus_v1alpha_consensus } from '@cre/generated/capabilities/internal/consensus/v1alpha/consensus_pb'
 import { file_capabilities_internal_nodeaction_v1_node_action } from '@cre/generated/capabilities/internal/nodeaction/v1/node_action_pb'
+import { file_capabilities_networking_confidentialhttp_v1alpha_client } from '@cre/generated/capabilities/networking/confidentialhttp/v1alpha/client_pb'
 import { file_capabilities_networking_http_v1alpha_client } from '@cre/generated/capabilities/networking/http/v1alpha/client_pb'
 import { file_capabilities_networking_http_v1alpha_trigger } from '@cre/generated/capabilities/networking/http/v1alpha/trigger_pb'
 import { file_capabilities_scheduler_cron_v1_trigger } from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
@@ -33,4 +34,6 @@ export const main = () => {
 	generateSdk(file_capabilities_networking_http_v1alpha_trigger, './src/generated-sdk')
 
 	generateSdk(file_capabilities_scheduler_cron_v1_trigger, './src/generated-sdk')
+
+	generateSdk(file_capabilities_networking_confidentialhttp_v1alpha_client, './src/generated-sdk')
 }

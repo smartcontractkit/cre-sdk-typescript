@@ -3,6 +3,7 @@
  */
 
 import { ClientCapability as EVMClient } from '@cre/generated-sdk/capabilities/blockchain/evm/v1alpha/client_sdk_gen'
+import { ClientCapability as ConfidentialHTTPClient } from '@cre/generated-sdk/capabilities/networking/confidentialhttp/v1alpha/client_sdk_gen'
 import { ClientCapability as HTTPClient } from '@cre/generated-sdk/capabilities/networking/http/v1alpha/client_sdk_gen'
 import { HTTPCapability } from '@cre/generated-sdk/capabilities/networking/http/v1alpha/http_sdk_gen'
 import { CronCapability } from '@cre/generated-sdk/capabilities/scheduler/cron/v1/cron_sdk_gen'
@@ -26,7 +27,11 @@ export {
 	type WriteCreReportRequest,
 	type WriteCreReportRequestJson,
 } from '@cre/generated-sdk/capabilities/blockchain/evm/v1alpha/client_sdk_gen'
-
+// Confidential HTTP Capability
+export {
+	ClientCapability as ConfidentialHTTPClient,
+	type SendRequestser as ConfidentialHTTPSendRequester,
+} from '@cre/generated-sdk/capabilities/networking/confidentialhttp/v1alpha/client_sdk_gen'
 // HTTP Capability
 export {
 	ClientCapability as HTTPClient,
@@ -47,6 +52,7 @@ export const cre = {
 	capabilities: {
 		CronCapability,
 		HTTPCapability,
+		ConfidentialHTTPClient,
 		HTTPClient,
 		EVMClient,
 	},
