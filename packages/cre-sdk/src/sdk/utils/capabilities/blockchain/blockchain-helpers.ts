@@ -1,18 +1,13 @@
 import { create, toJson } from '@bufbuild/protobuf'
 import type { CallMsgJson } from '@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb'
 import type { ReportRequestJson } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import { BigIntSchema } from '@cre/generated/values/v1/values_pb'
+import { BigIntSchema, type BigInt as ProtoBigInt } from '@cre/generated/values/v1/values_pb'
 import { EVMClient } from '@cre/sdk/cre'
 import { bigintToBytes, bytesToBigint, hexToBase64 } from '@cre/sdk/utils/hex-utils'
 import type { Address, Hex } from 'viem'
 
-/**
- * Protobuf BigInt structure returned by SDK methods (e.g., headerByNumber).
- */
-export interface ProtoBigInt {
-	absVal: Uint8Array
-	sign: bigint
-}
+// Re-export the protobuf BigInt type for external use
+export type { ProtoBigInt }
 
 /**
  * Converts a native JS bigint to a protobuf BigInt JSON representation.
