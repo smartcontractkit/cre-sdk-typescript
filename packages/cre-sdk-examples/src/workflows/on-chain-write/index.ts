@@ -5,7 +5,6 @@ import {
 	encodeCallMsg,
 	getNetwork,
 	type HTTPSendRequester,
-	hexToBase64,
 	LAST_FINALIZED_BLOCK_NUMBER,
 	ok,
 	prepareReportRequest,
@@ -130,7 +129,6 @@ const onCronTrigger = (runtime: Runtime<Config>) => {
 				to: evmConfig.calculatorConsumerAddress as Address,
 				data: dryRunCallData,
 			}),
-			// blockNumber: blockNumber(123456),
 			blockNumber: LAST_FINALIZED_BLOCK_NUMBER,
 		})
 		.result()
