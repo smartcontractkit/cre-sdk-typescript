@@ -62,3 +62,22 @@ export const bigintToBytes = (n: bigint): Uint8Array => {
 	const hex = n.toString(16)
 	return Buffer.from(hex.padStart(hex.length + (hex.length % 2), '0'), 'hex')
 }
+
+/**
+ * Convert a Uint8Array (big-endian byte order) to a native bigint.
+ * Returns 0n for empty array.
+ *
+ * This is the inverse of `bigintToBytes` and is useful for converting
+ * protobuf BigInt's `absVal` field back to a native JS bigint.
+ *
+ * @example
+ * // Convert protobuf BigInt from headerByNumber response
+ * const latestBlockNum = bytesToBigint(latestHeader.header.blockNumber!.absVal)
+ */
+export const bytesToBigint = (bytes: Uint8Array): bigint => {
+	let result = 0n
+	for (const byte of bytes) {
+		result = (result << 8n) + BigInt(byte)
+	}
+	return result
+}

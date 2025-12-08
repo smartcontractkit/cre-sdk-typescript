@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { bigintToBytes, bytesToHex, hexToBase64, hexToBytes } from './hex-utils'
+import { bigintToBytes, bytesToBigint, bytesToHex, hexToBase64, hexToBytes } from './hex-utils'
 
 describe('hexToBytes', () => {
 	describe('happy paths', () => {
@@ -248,5 +248,32 @@ describe('bigintToBytes', () => {
 	it('handles large block numbers', () => {
 		// 21000000 = 0x1406f40
 		expect(bigintToBytes(21000000n)).toEqual(new Uint8Array([0x01, 0x40, 0x6f, 0x40]))
+	})
+})
+
+describe('bytesToBigint', () => {
+	it('returns 0n for empty array', () => {
+		expect(bytesToBigint(new Uint8Array())).toBe(0n)
+	})
+
+	it('converts small numbers', () => {
+		expect(bytesToBigint(new Uint8Array([123]))).toBe(123n)
+	})
+
+	it('converts realistic block numbers', () => {
+		// 9768438 = 0x950df6
+		expect(bytesToBigint(new Uint8Array([0x95, 0x0d, 0xf6]))).toBe(9768438n)
+	})
+
+	it('handles large block numbers', () => {
+		// 21000000 = 0x1406f40
+		expect(bytesToBigint(new Uint8Array([0x01, 0x40, 0x6f, 0x40]))).toBe(21000000n)
+	})
+
+	it('roundtrips with bigintToBytes', () => {
+		const values = [0n, 1n, 123n, 9768438n, 21000000n, 2n ** 64n]
+		for (const val of values) {
+			expect(bytesToBigint(bigintToBytes(val))).toBe(val)
+		}
 	})
 })
