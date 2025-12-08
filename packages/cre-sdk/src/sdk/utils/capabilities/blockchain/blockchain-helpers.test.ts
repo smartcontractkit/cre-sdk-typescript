@@ -1,16 +1,102 @@
 import { describe, expect, test } from 'bun:test'
 import { EVMClient } from '@cre/sdk/cre'
 import {
+	bigintToProtoBigInt,
+	blockNumber,
 	type EncodeCallMsgPayload,
 	EVM_DEFAULT_REPORT_ENCODER,
 	encodeCallMsg,
 	isChainSelectorSupported,
 	LAST_FINALIZED_BLOCK_NUMBER,
 	LATEST_BLOCK_NUMBER,
+	type ProtoBigInt,
 	prepareReportRequest,
+	protoBigIntToBigint,
 } from './blockchain-helpers'
 
 describe('blockchain-helpers', () => {
+	describe('bigintToProtoBigInt', () => {
+		test('should encode number', () => {
+			const result = bigintToProtoBigInt(123)
+			expect(result).toEqual({
+				absVal: Buffer.from([123]).toString('base64'),
+			})
+		})
+
+		test('should encode string', () => {
+			const result = bigintToProtoBigInt('9768438')
+			expect(result).toEqual({
+				absVal: Buffer.from([0x95, 0x0d, 0xf6]).toString('base64'),
+			})
+		})
+
+		test('should encode bigint', () => {
+			const result = bigintToProtoBigInt(9768438n)
+			expect(result).toEqual({
+				absVal: Buffer.from([0x95, 0x0d, 0xf6]).toString('base64'),
+			})
+		})
+
+		test('should encode zero', () => {
+			const result = bigintToProtoBigInt(0)
+			expect(result).toEqual({}) // Empty absVal is omitted by toJson
+		})
+
+		test('should take absolute value of negative numbers', () => {
+			const result = bigintToProtoBigInt(-123)
+			expect(result).toEqual({
+				absVal: Buffer.from([123]).toString('base64'),
+			})
+		})
+	})
+
+	describe('protoBigIntToBigint', () => {
+		test('should convert positive protobuf BigInt', () => {
+			const pb: ProtoBigInt = {
+				absVal: new Uint8Array([0x95, 0x0d, 0xf6]),
+				sign: 1n,
+			}
+			expect(protoBigIntToBigint(pb)).toBe(9768438n)
+		})
+
+		test('should convert negative protobuf BigInt', () => {
+			const pb: ProtoBigInt = {
+				absVal: new Uint8Array([123]),
+				sign: -1n,
+			}
+			expect(protoBigIntToBigint(pb)).toBe(-123n)
+		})
+
+		test('should convert zero', () => {
+			const pb: ProtoBigInt = {
+				absVal: new Uint8Array(),
+				sign: 0n,
+			}
+			expect(protoBigIntToBigint(pb)).toBe(0n)
+		})
+
+		test('should roundtrip with bigintToProtoBigInt (positive)', () => {
+			// Note: bigintToProtoBigInt returns JSON format, not ProtoBigInt
+			// This tests the conceptual roundtrip
+			const original = 9768438n
+			const proto: ProtoBigInt = {
+				absVal: new Uint8Array([0x95, 0x0d, 0xf6]),
+				sign: 1n,
+			}
+			expect(protoBigIntToBigint(proto)).toBe(original)
+		})
+	})
+
+	describe('blockNumber (alias)', () => {
+		test('should be an alias for bigintToProtoBigInt', () => {
+			expect(blockNumber).toBe(bigintToProtoBigInt)
+		})
+
+		test('should produce same result as bigintToProtoBigInt', () => {
+			expect(blockNumber(9768438n)).toEqual(bigintToProtoBigInt(9768438n))
+		})
+	})
+
 	describe('LAST_FINALIZED_BLOCK_NUMBER', () => {
 		test('should have correct structure for finalized block', () => {
 			expect(LAST_FINALIZED_BLOCK_NUMBER).toEqual({

@@ -5,7 +5,6 @@ import {
 	encodeCallMsg,
 	getNetwork,
 	type HTTPSendRequester,
-	hexToBase64,
 	LAST_FINALIZED_BLOCK_NUMBER,
 	ok,
 	prepareReportRequest,
