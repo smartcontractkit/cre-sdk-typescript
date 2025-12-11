@@ -90,18 +90,18 @@ export function text(
  * @returns The parsed JSON
  * @throws Error if the body is not valid JSON
  */
-export function json(response: Response): unknown
+export function json(response: Response | ResponseTemplate): unknown
 /**
  * Parses the response body as JSON
  * @param responseFn - Function that returns an object with result function that returns Response
  * @returns Object with result function that returns the parsed JSON
  * @throws Error if the body is not valid JSON
  */
-export function json(responseFn: () => { result: Response }): {
+export function json(responseFn: () => { result: Response | ResponseTemplate }): {
 	result: () => unknown
 }
 export function json(
-	responseOrFn: Response | (() => { result: Response }),
+	responseOrFn: Response | ResponseTemplate | (() => { result: Response | ResponseTemplate }),
 ): unknown | { result: () => unknown } {
 	if (typeof responseOrFn === 'function') {
 		return {
