@@ -124,7 +124,10 @@ pub unsafe extern "C" fn initialize_runtime() {
                             )
                         };
                         if n < 0 {
-                            return Err(Error::new_into_js("Error", "await_capabilities failed"));
+                            let error_len = (-n) as usize;
+                            let error_msg = String::from_utf8_lossy(&buf[..error_len.min(max_len as usize)]).into_owned();
+                            let error_msg_static: &'static str = Box::leak(error_msg.into_boxed_str());
+                            return Err(Error::new_into_js("Error", error_msg_static));
                         }
 
                         let out = &buf[..n as usize];
