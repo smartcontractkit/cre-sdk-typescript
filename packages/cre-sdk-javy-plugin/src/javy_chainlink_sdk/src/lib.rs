@@ -30,7 +30,7 @@ unsafe extern "C" {
 
     // Mode switching and versioning
     fn switch_modes(mode: i32);
-    fn version_v2();
+    fn version_v2_typescript();
 
     // Random seed generation
     fn random_seed(mode: i32) -> i64;
@@ -235,7 +235,7 @@ pub unsafe extern "C" fn initialize_runtime() {
                 .set(
                     "versionV2",
                     Func::from(|| {
-                        unsafe { version_v2() };
+                        unsafe { version_v2_typescript() };
                     }),
                 )
                 .unwrap();
