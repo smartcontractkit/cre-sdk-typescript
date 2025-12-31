@@ -6,5 +6,4 @@
 # ...GitHub will search for them in that order and use the first one it finds."
 # Please put the CODEOWNERS file in .github
 
-* @smartcontractkit/keystone
-* @smartcontractkit/frontend-team
+* @smartcontractkit/keystone @smartcontractkit/frontend-team
