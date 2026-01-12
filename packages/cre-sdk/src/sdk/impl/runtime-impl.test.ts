@@ -40,7 +40,10 @@ import { BasicActionCapability as NodeActionCapability } from '@cre/generated-sd
 import type { NodeRuntime, Runtime } from '@cre/sdk/cre'
 import {
 	ConsensusAggregationByFields,
+	ConsensusFieldAggregation,
 	consensusMedianAggregation,
+	identical,
+	ignore,
 	median,
 	Value,
 } from '@cre/sdk/utils'
@@ -837,5 +840,117 @@ describe('test run in node mode', () => {
 		expect(callbackIds[1]).toEqual(-2) // Second node mode call
 		// Ensure they are different (no reuse/collision)
 		expect(callbackIds[0]).not.toEqual(callbackIds[1])
+	})
+
+	test('clears ignored fields from default and response values', () => {
+		type NestedStruct = {
+			nestedIncluded: string
+			nestedIgnored: string
+		}
+
+		type TestStruct = {
+			includedField: string
+			ignoredField: string
+			nested: NestedStruct
+		}
+
+		const defaultVal: TestStruct = {
+			includedField: 'default_included',
+			ignoredField: 'default_ignored',
+			nested: {
+				nestedIncluded: 'default_nested_included',
+				nestedIgnored: 'default_nested_ignored',
+			},
+		}
+
+		const responseVal: TestStruct = {
+			includedField: 'response_included',
+			ignoredField: 'response_ignored',
+			nested: {
+				nestedIncluded: 'response_nested_included',
+				nestedIgnored: 'response_nested_ignored',
+			},
+		}
+
+		const helpers = createRuntimeHelpersMock({
+			switchModes: mock((_: Mode) => {}),
+		})
+
+		ConsensusCapability.prototype.simple = mock(
+			(_: Runtime<unknown>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
+				const inputsProto = inputs as SimpleConsensusInputs
+				if (inputsProto.observation.case === 'value') {
+					const unwrapped = Value.wrap(inputsProto.observation.value as ProtoValue).unwrap() as TestStruct
+					expect(unwrapped.includedField).toEqual('response_included')
+					expect(unwrapped.ignoredField).toBeUndefined()
+					expect(unwrapped.nested.nestedIncluded).toEqual('response_nested_included')
+					expect(unwrapped.nested.nestedIgnored).toBeUndefined()
+					return {
+						result: () => inputsProto.observation.value as ProtoValue,
+					}
+				}
+				if (inputsProto.default) {
+					const unwrapped = Value.wrap(inputsProto.default as ProtoValue).unwrap() as TestStruct
+					expect(unwrapped.includedField).toEqual('default_included')
+					expect(unwrapped.ignoredField).toBeUndefined()
+					expect(unwrapped.nested.nestedIncluded).toEqual('default_nested_included')
+					expect(unwrapped.nested.nestedIgnored).toBeUndefined()
+					return {
+						result: () => inputsProto.default as ProtoValue,
+					}
+				}
+				if (inputsProto.observation.case === 'error') {
+					return {
+						result: () => {
+							throw new Error(inputsProto.observation.value as string)
+						},
+					}
+				}
+				return {
+					result: () => {
+						throw new Error('unexpected case')
+					},
+				}
+			},
+		)
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+
+		const nestedAggregation = ConsensusAggregationByFields<NestedStruct>({
+			nestedIncluded: identical,
+			nestedIgnored: ignore,
+		})
+
+		const result = runtime.runInNodeMode(
+			(_nodeRuntime: NodeRuntime<unknown>) => {
+				return responseVal
+			},
+			ConsensusAggregationByFields<TestStruct>({
+				includedField: identical,
+				ignoredField: ignore,
+				nested: () => new ConsensusFieldAggregation<NestedStruct, true>(nestedAggregation.descriptor),
+			}).withDefault(defaultVal),
+		)().result()
+
+		expect(result.includedField).toEqual('response_included')
+		expect(result.ignoredField).toBeUndefined()
+		expect(result.nested.nestedIncluded).toEqual('response_nested_included')
+		expect(result.nested.nestedIgnored).toBeUndefined()
+
+		const result2 = runtime.runInNodeMode(
+			(_nodeRuntime: NodeRuntime<unknown>) => {
+				throw new Error('error')
+			},
+			ConsensusAggregationByFields<TestStruct>({
+				includedField: identical,
+				ignoredField: ignore,
+				nested: () => new ConsensusFieldAggregation<NestedStruct, true>(nestedAggregation.descriptor),
+			}).withDefault(defaultVal),
+		)().result()
+
+		expect(result2.includedField).toEqual('default_included')
+		expect(result2.ignoredField).toBeUndefined()
+		expect(result2.nested.nestedIncluded).toEqual('default_nested_included')
+		expect(result2.nested.nestedIgnored).toBeUndefined()
 	})
 })

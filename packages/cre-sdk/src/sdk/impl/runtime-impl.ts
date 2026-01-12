@@ -10,6 +10,7 @@ import {
 	type AwaitSecretsResponse,
 	type CapabilityRequest,
 	CapabilityRequestSchema,
+	type ConsensusDescriptor,
 	type GetSecretsRequest,
 	GetSecretsRequestSchema,
 	Mode,
@@ -19,6 +20,7 @@ import {
 	SecretRequestSchema,
 	SimpleConsensusInputsSchema,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import type { Value as ProtoValue } from '@cre/generated/values/v1/values_pb'
 import { ConsensusCapability } from '@cre/generated-sdk/capabilities/internal/consensus/v1alpha/consensus_sdk_gen'
 import type {
 	BaseRuntime,
@@ -254,7 +256,7 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 			// Step 3: Execute node function and capture result/error
 			try {
 				const observation = fn(nodeRuntime, ...args)
-				this.captureObservation(consensusInput, observation)
+				this.captureObservation(consensusInput, observation, consensusAggregation.descriptor)
 			} catch (e: unknown) {
 				this.captureError(consensusInput, e)
 			} finally {
@@ -276,19 +278,21 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 
 		if (consensusAggregation.defaultValue) {
 			// Safe cast: ConsensusAggregation<T, true> implies T extends CreSerializable
-			consensusInput.default = Value.from(
-				consensusAggregation.defaultValue as CreSerializable<TOutput>,
-			).proto()
+			const defaultValue = Value.from(consensusAggregation.defaultValue as CreSerializable<TOutput>).proto()
+			clearIgnoredFields(defaultValue, consensusAggregation.descriptor)
+			consensusInput.default = defaultValue
 		}
 
 		return consensusInput
 	}
 
-	private captureObservation<TOutput>(consensusInput: any, observation: TOutput) {
+	private captureObservation<TOutput>(consensusInput: any, observation: TOutput, descriptor: ConsensusDescriptor) {
 		// Safe cast: ConsensusAggregation<T, true> implies T extends CreSerializable
+		const observationValue = Value.from(observation as CreSerializable<TOutput>).proto()
+		clearIgnoredFields(observationValue, descriptor)
 		consensusInput.observation = {
 			case: 'value',
-			value: Value.from(observation as CreSerializable<TOutput>).proto(),
+			value: observationValue,
 		}
 	}
 
@@ -426,4 +430,35 @@ export interface RuntimeHelpers {
 
 	/** Logs a message to the host environment. */
 	log(message: string): void
+}
+
+function clearIgnoredFields(value: ProtoValue, descriptor: ConsensusDescriptor): void {
+	if (!descriptor || !value) {
+		return
+	}
+
+	const fieldsMap = descriptor.descriptor?.case === 'fieldsMap' ? descriptor.descriptor.value : undefined
+	if (!fieldsMap) {
+		return
+	}
+
+	if (value.value?.case === 'mapValue') {
+		const mapValue = value.value.value
+		if (!mapValue || !mapValue.fields) {
+			return
+		}
+
+		for (const [key, val] of Object.entries(mapValue.fields)) {
+			const nestedDescriptor = fieldsMap.fields[key]
+			if (!nestedDescriptor) {
+				delete mapValue.fields[key]
+				continue
+			}
+
+			const nestedFieldsMap = nestedDescriptor.descriptor?.case === 'fieldsMap' ? nestedDescriptor.descriptor.value : undefined
+			if (nestedFieldsMap && val.value?.case === 'mapValue') {
+				clearIgnoredFields(val, nestedDescriptor)
+			}
+		}
+	}
 }
