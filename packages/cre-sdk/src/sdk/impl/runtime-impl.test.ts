@@ -880,7 +880,9 @@ describe('test run in node mode', () => {
 			(_: Runtime<unknown>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
 				const inputsProto = inputs as SimpleConsensusInputs
 				if (inputsProto.observation.case === 'value') {
-					const unwrapped = Value.wrap(inputsProto.observation.value as ProtoValue).unwrap() as TestStruct
+					const unwrapped = Value.wrap(
+						inputsProto.observation.value as ProtoValue,
+					).unwrap() as TestStruct
 					expect(unwrapped.includedField).toEqual('response_included')
 					expect(unwrapped.ignoredField).toBeUndefined()
 					expect(unwrapped.nested.nestedIncluded).toEqual('response_nested_included')
@@ -921,32 +923,38 @@ describe('test run in node mode', () => {
 			nestedIgnored: ignore,
 		})
 
-		const result = runtime.runInNodeMode(
-			(_nodeRuntime: NodeRuntime<unknown>) => {
-				return responseVal
-			},
-			ConsensusAggregationByFields<TestStruct>({
-				includedField: identical,
-				ignoredField: ignore,
-				nested: () => new ConsensusFieldAggregation<NestedStruct, true>(nestedAggregation.descriptor),
-			}).withDefault(defaultVal),
-		)().result()
+		const result = runtime
+			.runInNodeMode(
+				(_nodeRuntime: NodeRuntime<unknown>) => {
+					return responseVal
+				},
+				ConsensusAggregationByFields<TestStruct>({
+					includedField: identical,
+					ignoredField: ignore,
+					nested: () =>
+						new ConsensusFieldAggregation<NestedStruct, true>(nestedAggregation.descriptor),
+				}).withDefault(defaultVal),
+			)()
+			.result()
 
 		expect(result.includedField).toEqual('response_included')
 		expect(result.ignoredField).toBeUndefined()
 		expect(result.nested.nestedIncluded).toEqual('response_nested_included')
 		expect(result.nested.nestedIgnored).toBeUndefined()
 
-		const result2 = runtime.runInNodeMode(
-			(_nodeRuntime: NodeRuntime<unknown>) => {
-				throw new Error('error')
-			},
-			ConsensusAggregationByFields<TestStruct>({
-				includedField: identical,
-				ignoredField: ignore,
-				nested: () => new ConsensusFieldAggregation<NestedStruct, true>(nestedAggregation.descriptor),
-			}).withDefault(defaultVal),
-		)().result()
+		const result2 = runtime
+			.runInNodeMode(
+				(_nodeRuntime: NodeRuntime<unknown>) => {
+					throw new Error('error')
+				},
+				ConsensusAggregationByFields<TestStruct>({
+					includedField: identical,
+					ignoredField: ignore,
+					nested: () =>
+						new ConsensusFieldAggregation<NestedStruct, true>(nestedAggregation.descriptor),
+				}).withDefault(defaultVal),
+			)()
+			.result()
 
 		expect(result2.includedField).toEqual('default_included')
 		expect(result2.ignoredField).toBeUndefined()

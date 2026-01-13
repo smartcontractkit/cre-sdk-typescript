@@ -278,7 +278,9 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 
 		if (consensusAggregation.defaultValue) {
 			// Safe cast: ConsensusAggregation<T, true> implies T extends CreSerializable
-			const defaultValue = Value.from(consensusAggregation.defaultValue as CreSerializable<TOutput>).proto()
+			const defaultValue = Value.from(
+				consensusAggregation.defaultValue as CreSerializable<TOutput>,
+			).proto()
 			clearIgnoredFields(defaultValue, consensusAggregation.descriptor)
 			consensusInput.default = defaultValue
 		}
@@ -286,7 +288,11 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 		return consensusInput
 	}
 
-	private captureObservation<TOutput>(consensusInput: any, observation: TOutput, descriptor: ConsensusDescriptor) {
+	private captureObservation<TOutput>(
+		consensusInput: any,
+		observation: TOutput,
+		descriptor: ConsensusDescriptor,
+	) {
 		// Safe cast: ConsensusAggregation<T, true> implies T extends CreSerializable
 		const observationValue = Value.from(observation as CreSerializable<TOutput>).proto()
 		clearIgnoredFields(observationValue, descriptor)
@@ -437,7 +443,8 @@ function clearIgnoredFields(value: ProtoValue, descriptor: ConsensusDescriptor):
 		return
 	}
 
-	const fieldsMap = descriptor.descriptor?.case === 'fieldsMap' ? descriptor.descriptor.value : undefined
+	const fieldsMap =
+		descriptor.descriptor?.case === 'fieldsMap' ? descriptor.descriptor.value : undefined
 	if (!fieldsMap) {
 		return
 	}
@@ -455,7 +462,10 @@ function clearIgnoredFields(value: ProtoValue, descriptor: ConsensusDescriptor):
 				continue
 			}
 
-			const nestedFieldsMap = nestedDescriptor.descriptor?.case === 'fieldsMap' ? nestedDescriptor.descriptor.value : undefined
+			const nestedFieldsMap =
+				nestedDescriptor.descriptor?.case === 'fieldsMap'
+					? nestedDescriptor.descriptor.value
+					: undefined
 			if (nestedFieldsMap && val.value?.case === 'mapValue') {
 				clearIgnoredFields(val, nestedDescriptor)
 			}

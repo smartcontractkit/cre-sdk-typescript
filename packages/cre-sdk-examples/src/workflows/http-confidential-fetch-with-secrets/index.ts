@@ -85,5 +85,3 @@ export async function main() {
 
 	await runner.run(initWorkflow)
 }
-
-main()

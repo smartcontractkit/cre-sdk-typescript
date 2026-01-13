@@ -1,8 +1,11 @@
 import { cre, Runner, type Runtime } from '@chainlink/cre-sdk'
+import { z } from 'zod'
 
-type Config = {
-	schedule: string
-}
+const configSchema = z.object({
+	schedule: z.string(),
+})
+
+type Config = z.infer<typeof configSchema>
 
 const onCronTrigger = (runtime: Runtime<Config>): string => {
 	runtime.log('Hello world! Workflow triggered.')
@@ -16,8 +19,6 @@ const initWorkflow = (config: Config) => {
 }
 
 export async function main() {
-	const runner = await Runner.newRunner<Config>()
+	const runner = await Runner.newRunner<Config>({ configSchema })
 	await runner.run(initWorkflow)
 }
-
-main()
