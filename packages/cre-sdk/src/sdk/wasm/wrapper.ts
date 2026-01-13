@@ -1,13 +1,13 @@
 import * as ts from 'typescript'
 
 /**
- * Wraps workflow code with automatic error handling.
+ * Wraps workflow code with automatic error boundary.
  * This function:
- * 1. Detects if `sendErrorResponse` import exists from `@chainlink/cre-sdk`
- * 2. Detects if `main()` function is exported
- * 3. Detects if there's already a top-level `main()` call with `.catch()` handler
- * 4. Adds `sendErrorResponse` to imports if missing
- * 5. Appends `main().catch(sendErrorResponse)` only if no error handling exists
+ * 1. Detects if `sendErrorResponse` import from `@chainlink/cre-sdk` exists in the workflow code.
+ * 2. Detects if `main()` function is exported.
+ * 3. Detects if there's already a top-level `main()` call with `.catch()` handler.
+ * 4. Adds `sendErrorResponse` to imports if missing.
+ * 5. Appends `main().catch(sendErrorResponse)` only if no error handling exists.
  *
  * @param sourceCode - The TypeScript source code to wrap
  * @param filePath - The file path (used for source file creation)
@@ -33,7 +33,6 @@ export function wrapWorkflowCode(sourceCode: string, filePath: string): string {
 
 	// Helper to check if a call expression is wrapped with .catch()
 	const isWrappedWithCatch = (node: ts.Node): boolean => {
-		// Check for patterns like: main().catch(...)
 		if (ts.isCallExpression(node)) {
 			const expr = node.expression
 			if (ts.isPropertyAccessExpression(expr) && expr.name.text === 'catch') {

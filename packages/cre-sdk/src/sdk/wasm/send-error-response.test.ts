@@ -96,11 +96,6 @@ describe('prepareErrorResponse', () => {
 
 describe('sendErrorResponse', () => {
 	test('calls prepareErrorResponse and sends the result via hostBindings', () => {
-		// This test verifies that sendErrorResponse uses prepareErrorResponse correctly
-		// The actual sending via hostBindings is tested in integration tests
-		// where hostBindings is properly set up
-
-		// Verify that prepareErrorResponse produces the expected payload
 		const errorMessage = 'Test error message'
 		const expectedPayload = prepareErrorResponse(new Error(errorMessage))
 		expect(expectedPayload).not.toBeNull()
@@ -109,8 +104,5 @@ describe('sendErrorResponse', () => {
 		const result = fromBinary(ExecutionResultSchema, expectedPayload!)
 		expect(result.result.case).toBe('error')
 		expect(result.result.value).toBe(errorMessage)
-
-		// sendErrorResponse should produce the same payload when called
-		// (actual sending requires hostBindings to be set up, which is tested in integration)
 	})
 })
