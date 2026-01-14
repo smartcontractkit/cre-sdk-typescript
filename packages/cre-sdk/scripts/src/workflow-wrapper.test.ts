@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import { wrapWorkflowCode } from './wrapper'
+import { wrapWorkflowCode } from './workflow-wrapper'
 
 describe('wrapWorkflowCode', () => {
 	describe('import handling', () => {

@@ -2,7 +2,7 @@ import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
 import { mkdir } from 'node:fs/promises'
 import path from 'node:path'
 import { $ } from 'bun'
-import { wrapWorkflowCode } from '../../src/sdk/wasm/wrapper'
+import { wrapWorkflowCode } from './workflow-wrapper'
 
 export const main = async (tsFilePath?: string, outputFilePath?: string) => {
 	const cliArgs = process.argv.slice(3)
