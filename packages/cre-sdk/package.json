@@ -67,7 +67,7 @@
     "chain-selectors": "https://github.com/smartcontractkit/chain-selectors.git#8b963095ae797a3024c8e55822cced7bf618176f",
     "fast-glob": "3.3.3",
     "ts-proto": "2.7.5",
-    "typescript": "5.9.2",
+    "typescript": "5.9.3",
     "yaml": "2.8.1"
   },
   "publishConfig": {
