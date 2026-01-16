@@ -1,7 +1,9 @@
 import {
+	ConfidentialHTTPClient,
 	type ConfidentialHTTPSendRequester,
+	CronCapability,
 	consensusMedianAggregation,
-	cre,
+	handler,
 	ok,
 	Runner,
 	type Runtime,
@@ -44,7 +46,7 @@ const fetchMathResult = (sendRequester: ConfidentialHTTPSendRequester, config: C
 const onCronTrigger = (runtime: Runtime<Config>) => {
 	runtime.log('Confidential HTTP workflow triggered.')
 
-	const confHTTPClient = new cre.capabilities.ConfidentialHTTPClient()
+	const confHTTPClient = new ConfidentialHTTPClient()
 	const result = confHTTPClient
 		.sendRequests(
 			runtime,
@@ -61,9 +63,9 @@ const onCronTrigger = (runtime: Runtime<Config>) => {
 }
 
 const initWorkflow = (config: Config) => {
-	const cron = new cre.capabilities.CronCapability()
+	const cron = new CronCapability()
 
-	return [cre.handler(cron.trigger({ schedule: config.schedule }), onCronTrigger)]
+	return [handler(cron.trigger({ schedule: config.schedule }), onCronTrigger)]
 }
 
 export async function main() {

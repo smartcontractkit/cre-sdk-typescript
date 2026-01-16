@@ -1,6 +1,8 @@
 import {
+	CronCapability,
 	consensusMedianAggregation,
-	cre,
+	HTTPClient,
+	handler,
 	type NodeRuntime,
 	Runner,
 	type Runtime,
@@ -19,14 +21,14 @@ type MyResult = {
 }
 
 const initWorkflow = (config: Config) => {
-	const cron = new cre.capabilities.CronCapability()
-	return [cre.handler(cron.trigger({ schedule: config.schedule }), onCronTrigger)]
+	const cron = new CronCapability()
+	return [handler(cron.trigger({ schedule: config.schedule }), onCronTrigger)]
 }
 
 // fetchMathResult is the function passed to the runInNodeMode helper.
 // It contains the logic for making the request and parsing the response.
 const fetchMathResult = (nodeRuntime: NodeRuntime<Config>): bigint => {
-	const httpClient = new cre.capabilities.HTTPClient()
+	const httpClient = new HTTPClient()
 	const req = {
 		url: nodeRuntime.config.apiUrl,
 		method: 'GET',
