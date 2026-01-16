@@ -1,9 +1,9 @@
 import {
 	consensusIdenticalAggregation,
-	cre,
-	decodeJson,
-	type HTTPPayload,
+	HTTPCapability,
+	HTTPClient,
 	type HTTPSendRequester,
+	handler,
 	json,
 	ok,
 	Runner,
@@ -57,7 +57,7 @@ const fetchStarWarsCharacter = (
 }
 
 const onHTTPTrigger = async (runtime: Runtime<Config>) => {
-	const httpCapability = new cre.capabilities.HTTPClient()
+	const httpCapability = new HTTPClient()
 	const characterId = runtime.getSecret({ id: 'CHARACTER_ID' }).result().value
 
 	const result: StarWarsCharacter = httpCapability
@@ -72,9 +72,9 @@ const onHTTPTrigger = async (runtime: Runtime<Config>) => {
 }
 
 const initWorkflow = () => {
-	const httpTrigger = new cre.capabilities.HTTPCapability()
+	const httpTrigger = new HTTPCapability()
 
-	return [cre.handler(httpTrigger.trigger({}), onHTTPTrigger)]
+	return [handler(httpTrigger.trigger({}), onHTTPTrigger)]
 }
 
 export async function main() {

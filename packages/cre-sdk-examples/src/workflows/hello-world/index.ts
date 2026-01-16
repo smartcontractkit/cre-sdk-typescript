@@ -1,4 +1,4 @@
-import { cre, Runner, type Runtime } from '@chainlink/cre-sdk'
+import { CronCapability, handler, Runner, type Runtime } from '@chainlink/cre-sdk'
 import { z } from 'zod'
 
 const configSchema = z.object({
@@ -13,9 +13,9 @@ const onCronTrigger = (runtime: Runtime<Config>): string => {
 }
 
 const initWorkflow = (config: Config) => {
-	const cron = new cre.capabilities.CronCapability()
+	const cron = new CronCapability()
 
-	return [cre.handler(cron.trigger({ schedule: config.schedule }), onCronTrigger)]
+	return [handler(cron.trigger({ schedule: config.schedule }), onCronTrigger)]
 }
 
 export async function main() {

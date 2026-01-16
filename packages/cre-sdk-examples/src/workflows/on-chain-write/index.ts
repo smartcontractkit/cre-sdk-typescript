@@ -1,10 +1,13 @@
 import {
 	bytesToHex,
+	CronCapability,
 	consensusMedianAggregation,
-	cre,
+	EVMClient,
 	encodeCallMsg,
 	getNetwork,
+	HTTPClient,
 	type HTTPSendRequester,
+	handler,
 	LAST_FINALIZED_BLOCK_NUMBER,
 	ok,
 	prepareReportRequest,
@@ -46,8 +49,7 @@ const fetchMathResult = (sendRequester: HTTPSendRequester, config: Config) => {
 }
 
 const onCronTrigger = (runtime: Runtime<Config>) => {
-	const httpCapability = new cre.capabilities.HTTPClient()
-	const offchainValue = httpCapability
+	const offchainValue = new HTTPClient()
 		.sendRequest(
 			runtime,
 			fetchMathResult,
@@ -70,7 +72,7 @@ const onCronTrigger = (runtime: Runtime<Config>) => {
 	}
 
 	// Step 2: Read onchain data using the EVM client with chainSelector
-	const evmClient = new cre.capabilities.EVMClient(network.chainSelector.selector)
+	const evmClient = new EVMClient(network.chainSelector.selector)
 
 	// Encode the contract call data for the 'get' function
 	const callData = encodeFunctionData({
@@ -179,9 +181,9 @@ const onCronTrigger = (runtime: Runtime<Config>) => {
 }
 
 const initWorkflow = (config: Config) => {
-	const cron = new cre.capabilities.CronCapability()
+	const cron = new CronCapability()
 
-	return [cre.handler(cron.trigger({ schedule: config.schedule }), onCronTrigger)]
+	return [handler(cron.trigger({ schedule: config.schedule }), onCronTrigger)]
 }
 
 export async function main() {

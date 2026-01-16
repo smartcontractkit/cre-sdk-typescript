@@ -1,7 +1,9 @@
 import {
+	CronCapability,
 	consensusMedianAggregation,
-	cre,
+	HTTPClient,
 	type HTTPSendRequester,
+	handler,
 	ok,
 	Runner,
 	type Runtime,
@@ -30,7 +32,7 @@ const fetchMathResult = (sendRequester: HTTPSendRequester, config: Config) => {
 }
 
 const onCronTrigger = (runtime: Runtime<Config>) => {
-	const httpCapability = new cre.capabilities.HTTPClient()
+	const httpCapability = new HTTPClient()
 	return httpCapability
 		.sendRequest(
 			runtime,
@@ -41,8 +43,8 @@ const onCronTrigger = (runtime: Runtime<Config>) => {
 }
 
 const initWorkflow = (config: Config) => {
-	const cron = new cre.capabilities.CronCapability()
-	return [cre.handler(cron.trigger({ schedule: config.schedule }), onCronTrigger)]
+	const cron = new CronCapability()
+	return [handler(cron.trigger({ schedule: config.schedule }), onCronTrigger)]
 }
 
 export async function main() {

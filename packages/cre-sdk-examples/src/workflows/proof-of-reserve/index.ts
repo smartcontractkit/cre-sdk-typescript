@@ -1,13 +1,17 @@
 import {
 	bytesToHex,
 	ConsensusAggregationByFields,
+	CronCapability,
 	type CronPayload,
-	cre,
+	EVMClient,
 	type EVMLog,
 	encodeCallMsg,
 	getNetwork,
+	HTTPCapability,
+	HTTPClient,
 	type HTTPPayload,
 	type HTTPSendRequester,
+	handler,
 	hexToBase64,
 	LAST_FINALIZED_BLOCK_NUMBER,
 	median,
@@ -90,7 +94,7 @@ const fetchNativeTokenBalance = (
 		throw new Error(`Network not found for chain selector name: ${evmConfig.chainSelectorName}`)
 	}
 
-	const evmClient = new cre.capabilities.EVMClient(network.chainSelector.selector)
+	const evmClient = new EVMClient(network.chainSelector.selector)
 
 	// Encode the contract call data for getNativeBalances
 	const callData = encodeFunctionData({
@@ -139,7 +143,7 @@ const getTotalSupply = (runtime: Runtime<Config>): bigint => {
 			throw new Error(`Network not found for chain selector name: ${evmConfig.chainSelectorName}`)
 		}
 
-		const evmClient = new cre.capabilities.EVMClient(network.chainSelector.selector)
+		const evmClient = new EVMClient(network.chainSelector.selector)
 
 		// Encode the contract call data for totalSupply
 		const callData = encodeFunctionData({
@@ -187,7 +191,7 @@ const updateReserves = (
 		throw new Error(`Network not found for chain selector name: ${evmConfig.chainSelectorName}`)
 	}
 
-	const evmClient = new cre.capabilities.EVMClient(network.chainSelector.selector)
+	const evmClient = new EVMClient(network.chainSelector.selector)
 
 	runtime.log(
 		`Updating reserves totalSupply ${totalSupply.toString()} totalReserveScaled ${totalReserveScaled.toString()}`,
@@ -231,7 +235,7 @@ const updateReserves = (
 const doPOR = (runtime: Runtime<Config>): string => {
 	runtime.log(`fetching por url ${runtime.config.url}`)
 
-	const httpCapability = new cre.capabilities.HTTPClient()
+	const httpCapability = new HTTPClient()
 	const reserveInfo = httpCapability
 		.sendRequest(
 			runtime,
@@ -286,7 +290,7 @@ const getLastMessage = (
 		throw new Error(`Network not found for chain selector name: ${evmConfig.chainSelectorName}`)
 	}
 
-	const evmClient = new cre.capabilities.EVMClient(network.chainSelector.selector)
+	const evmClient = new EVMClient(network.chainSelector.selector)
 
 	// Encode the contract call data for getLastMessage
 	const callData = encodeFunctionData({
@@ -370,8 +374,8 @@ const onHTTPTrigger = (runtime: Runtime<Config>, payload: HTTPPayload): string =
 }
 
 const initWorkflow = (config: Config) => {
-	const cronTrigger = new cre.capabilities.CronCapability()
-	const httpTrigger = new cre.capabilities.HTTPCapability()
+	const cronTrigger = new CronCapability()
+	const httpTrigger = new HTTPCapability()
 	const network = getNetwork({
 		chainFamily: 'evm',
 		chainSelectorName: config.evms[0].chainSelectorName,
@@ -384,22 +388,22 @@ const initWorkflow = (config: Config) => {
 		)
 	}
 
-	const evmClient = new cre.capabilities.EVMClient(network.chainSelector.selector)
+	const evmClient = new EVMClient(network.chainSelector.selector)
 
 	return [
-		cre.handler(
+		handler(
 			cronTrigger.trigger({
 				schedule: config.schedule,
 			}),
 			onCronTrigger,
 		),
-		cre.handler(
+		handler(
 			evmClient.logTrigger({
 				addresses: [config.evms[0].messageEmitterAddress],
 			}),
 			onLogTrigger,
 		),
-		cre.handler(httpTrigger.trigger({}), onHTTPTrigger),
+		handler(httpTrigger.trigger({}), onHTTPTrigger),
 	]
 }
 
