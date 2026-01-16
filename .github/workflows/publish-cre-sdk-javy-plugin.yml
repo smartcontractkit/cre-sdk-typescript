@@ -46,6 +46,15 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Setup Node.js for npm publish
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Update npm
+        run: npm install -g npm@latest
+
       - name: Get package version
         working-directory: packages/cre-sdk-javy-plugin
         run: |
@@ -60,9 +69,9 @@ jobs:
           echo "Publishing @chainlink/cre-sdk-javy-plugin..."
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
             echo "DRY RUN: Would publish @chainlink/cre-sdk-javy-plugin"
-            bun publish --dry-run --access public --verbose
+            npm publish --dry-run --access public --verbose
           else
-            bun publish --access public --verbose
+            npm publish --access public --verbose
           fi
 
       - name: Create release summary
