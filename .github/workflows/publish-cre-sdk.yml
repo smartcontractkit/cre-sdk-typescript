@@ -79,15 +79,8 @@ jobs:
           echo "Setting up CRE environment with javy plugin..."
           bun --bun ../cre-sdk-javy-plugin/bin/setup.ts
 
-      - name: Verify npm authentication
-        env:
-          NPM_CONFIG_TOKEN: ${{ secrets.NPM_CRE_SDK_TYPESCRIPT }}
-        run: bun pm whoami
-
       - name: Publish cre-sdk package
         working-directory: packages/cre-sdk
-        env:
-          NPM_CONFIG_TOKEN: ${{ secrets.NPM_CRE_SDK_TYPESCRIPT }}
         run: |
           echo "Publishing @chainlink/cre-sdk..."
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then

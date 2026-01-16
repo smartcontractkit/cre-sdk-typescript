@@ -54,15 +54,8 @@ jobs:
           echo "JAVY_PLUGIN_VERSION=$CURRENT_VERSION" >> $GITHUB_ENV
           echo "Using javy plugin version from package.json: $CURRENT_VERSION"
 
-      - name: Verify npm authentication
-        env:
-          NPM_CONFIG_TOKEN: ${{ secrets. NPM_CRE_SDK_TYPESCRIPT }}
-        run: bun pm whoami
-
       - name: Publish CRE SDK Javy plugin package
         working-directory: packages/cre-sdk-javy-plugin
-        env:
-          NPM_CONFIG_TOKEN: ${{ secrets. NPM_CRE_SDK_TYPESCRIPT }}
         run: |
           echo "Publishing @chainlink/cre-sdk-javy-plugin..."
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
