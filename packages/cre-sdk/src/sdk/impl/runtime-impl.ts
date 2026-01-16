@@ -88,6 +88,8 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 		// Allocate unique callback ID for this request
 		const callbackId = this.allocateCallbackId()
 
+		this.log(`Calling capability ${capabilityId} with callback ID ${callbackId}`)
+
 		// Send request to WASM host
 		const anyPayload = anyPack(inputSchema, payload)
 		const req = create(CapabilityRequestSchema, {

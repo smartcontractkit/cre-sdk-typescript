@@ -7,8 +7,10 @@ use javy_plugin_api::{
 use javy_plugin_api::javy::quickjs::{
     ArrayBuffer, Ctx, Error, FromJs, TypedArray, Value,
 };
+use javy_plugin_api::javy::Runtime;
 use std::env;
 use std::collections::HashMap;
+use std::sync::atomic::{AtomicU32, Ordering};
 use base64::Engine;
 use rand::{Rng, SeedableRng};
 use rand_chacha::ChaCha8Rng;
@@ -40,6 +42,31 @@ unsafe extern "C" {
 }
 
 import_namespace!("javy_chainlink_sdk");
+
+// Global counter for tracking job queue size
+static JOB_QUEUE_COUNT: AtomicU32 = AtomicU32::new(0);
+// Global reference to runtime for monitoring (stored as raw pointer since Runtime doesn't implement Clone)
+static mut RUNTIME_PTR: *const Runtime = std::ptr::null();
+
+/// Helper function to track when a job is queued
+fn track_job_queued() {
+    let new_count = JOB_QUEUE_COUNT.fetch_add(1, Ordering::Relaxed) + 1;
+    let message = format!("inserting a task, {} tasks in the queue", new_count);
+    let bytes = message.as_bytes();
+    unsafe { log(bytes.as_ptr(), bytes.len() as i32) };
+}
+
+/// Helper function to track when a job is removed from queue
+fn track_job_removed() {
+    let current_count = JOB_QUEUE_COUNT.load(Ordering::Relaxed);
+    if current_count > 0 {
+        let new_count = JOB_QUEUE_COUNT.fetch_sub(1, Ordering::Relaxed) - 1;
+        let message = format!("removing a task, {} tasks in the queue", new_count);
+        let bytes = message.as_bytes();
+        unsafe { log(bytes.as_ptr(), bytes.len() as i32) };
+    }
+}
+
 
 /// Accepts Uint8Array, ArrayBuffer, or Base64 string → bytes
 struct ArgBytes(Vec<u8>);
@@ -86,11 +113,192 @@ pub unsafe extern "C" fn initialize_runtime() {
         .promise(true);
 
     javy_plugin_api::initialize_runtime(config, |runtime| {
+        // Store runtime pointer for later access
+        unsafe {
+            RUNTIME_PTR = &runtime as *const Runtime;
+        }
+        
         runtime.context().with(|ctx| {
             static mut CURRENT_MODE: i32 = 0;
             static mut RANDOM_GENERATORS: Option<HashMap<i32, ChaCha8Rng>> = None;
             unsafe { RANDOM_GENERATORS = Some(HashMap::new()); }
             
+            // Comprehensive Promise and async/await tracking
+            // This wraps all Promise operations and tracks when jobs are queued and executed
+            let promise_code = r#"
+                (function() {
+                    const OriginalPromise = Promise;
+                    
+                    // Helper to wrap callbacks so we can track when they execute (job removal)
+                    // When a promise callback executes, that means a job is being removed from the queue
+                    function wrapCallback(callback) {
+                        if (!callback || typeof callback !== 'function') {
+                            return callback;
+                        }
+                        return function(...args) {
+                            // This callback is about to execute - a job is being removed from queue
+                            if (typeof __trackJobRemoved === 'function') {
+                                __trackJobRemoved();
+                            }
+                            try {
+                                // Execute the callback
+                                const result = callback.apply(this, args);
+                                // If the callback returns a promise (e.g., from async function or another promise),
+                                // track that a new job is queued
+                                if (result && typeof result.then === 'function') {
+                                    if (typeof __trackJobQueued === 'function') {
+                                        __trackJobQueued();
+                                    }
+                                }
+                                return result;
+                            } catch (error) {
+                                // If callback throws, the error might create a rejected promise
+                                // which queues a job
+                                if (typeof __trackJobQueued === 'function') {
+                                    __trackJobQueued();
+                                }
+                                throw error;
+                            }
+                        };
+                    }
+                    
+                    // Wrap Promise constructor - don't track here, only track when .then() is called
+                    const PromiseWrapper = function(executor) {
+                        return new OriginalPromise(executor);
+                    };
+                    
+                    // Copy static methods - these create promises but don't necessarily queue jobs
+                    // Jobs are only queued when .then()/.catch()/.finally() are called
+                    PromiseWrapper.resolve = function(value) {
+                        return OriginalPromise.resolve(value);
+                    };
+                    PromiseWrapper.reject = function(reason) {
+                        return OriginalPromise.reject(reason);
+                    };
+                    PromiseWrapper.all = function(iterable) {
+                        return OriginalPromise.all(iterable);
+                    };
+                    PromiseWrapper.allSettled = function(iterable) {
+                        return OriginalPromise.allSettled(iterable);
+                    };
+                    PromiseWrapper.race = function(iterable) {
+                        return OriginalPromise.race(iterable);
+                    };
+                    PromiseWrapper.any = function(iterable) {
+                        return OriginalPromise.any(iterable);
+                    };
+                    
+                    // Wrap Promise.prototype methods to track job queuing AND wrap callbacks
+                    // This is critical - when .then(), .catch(), .finally() are called,
+                    // a new promise/job is queued. When the callback executes, a job is removed.
+                    const originalThen = OriginalPromise.prototype.then;
+                    const originalCatch = OriginalPromise.prototype.catch;
+                    const originalFinally = OriginalPromise.prototype.finally;
+                    
+                    OriginalPromise.prototype.then = function(onFulfilled, onRejected) {
+                        // Track that a new promise/job is being queued
+                        if (typeof __trackJobQueued === 'function') {
+                            __trackJobQueued();
+                        }
+                        // Wrap callbacks so we track when they execute (job removal)
+                        // This handles both regular promises and async/await (since await uses .then() internally)
+                        return originalThen.call(
+                            this,
+                            wrapCallback(onFulfilled),
+                            wrapCallback(onRejected)
+                        );
+                    };
+                    
+                    OriginalPromise.prototype.catch = function(onRejected) {
+                        // Track that a new promise/job is being queued
+                        if (typeof __trackJobQueued === 'function') {
+                            __trackJobQueued();
+                        }
+                        // Wrap callback so we track when it executes (job removal)
+                        return originalCatch.call(this, wrapCallback(onRejected));
+                    };
+                    
+                    OriginalPromise.prototype.finally = function(onFinally) {
+                        // Track that a new promise/job is being queued
+                        if (typeof __trackJobQueued === 'function') {
+                            __trackJobQueued();
+                        }
+                        // Wrap callback so we track when it executes (job removal)
+                        return originalFinally.call(this, wrapCallback(onFinally));
+                    };
+                    
+                    // Replace global Promise - this ensures all Promise operations are tracked
+                    globalThis.Promise = PromiseWrapper;
+                    
+                    // Note: async/await is handled automatically because:
+                    // 1. async functions return promises (caught by PromiseWrapper)
+                    // 2. await uses .then() internally (caught by our .then() wrapper)
+                    // 3. Promise callbacks are wrapped to track execution (job removal)
+                })();
+            "#;
+            
+            // Inject Promise tracking code
+            ctx.eval::<Value, _>(promise_code.as_bytes()).unwrap();
+            
+            // Add __trackJobQueued function that can be called from JavaScript
+            ctx.globals()
+                .set(
+                    "__trackJobQueued",
+                    Func::from(|| {
+                        track_job_queued();
+                    }),
+                )
+                .unwrap();
+            
+            // Add __trackJobRemoved function
+            ctx.globals()
+                .set(
+                    "__trackJobRemoved",
+                    Func::from(|| {
+                        track_job_removed();
+                    }),
+                )
+                .unwrap();
+            
+            // Add __processEventLoopJob function to process jobs and track removal
+            // This allows us to track when jobs are about to run
+            ctx.globals()
+                .set(
+                    "__processEventLoopJob",
+                    Func::from(|| -> Result<bool, Error> {
+                        unsafe {
+                            if RUNTIME_PTR.is_null() {
+                                return Ok(false);
+                            }
+                            let runtime = &*RUNTIME_PTR;
+                            
+                            if !runtime.has_pending_jobs() {
+                                return Ok(false);
+                            }
+                            
+                            // Track that we're about to remove a job (before processing)
+                            track_job_removed();
+                            
+                            // Process pending jobs (this will execute one or more jobs)
+                            if let Err(_) = runtime.resolve_pending_jobs() {
+                                return Ok(false);
+                            }
+                            
+                            // Check if more jobs were queued during processing
+                            // (new promises might have been created)
+                            while runtime.has_pending_jobs() {
+                                track_job_queued();
+                                // Process the newly queued jobs
+                                if let Err(_) = runtime.resolve_pending_jobs() {
+                                    break;
+                                }
+                            }
+                            
+                            Ok(true)
+                        }
+                    }),
+                )
+                .unwrap();
 
             // callCapability(data: Uint8Array | ArrayBuffer | Base64 string) -> i64
             ctx.globals()
