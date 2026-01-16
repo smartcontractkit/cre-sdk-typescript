@@ -62,6 +62,15 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Setup Node.js for npm publish
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Update npm
+        run: npm install -g npm@latest
+
       - name: Get package version
         working-directory: packages/cre-sdk
         run: |
@@ -79,22 +88,15 @@ jobs:
           echo "Setting up CRE environment with javy plugin..."
           bun --bun ../cre-sdk-javy-plugin/bin/setup.ts
 
-      - name: Verify npm authentication
-        env:
-          NPM_CONFIG_TOKEN: ${{ secrets.NPM_CRE_SDK_TYPESCRIPT }}
-        run: bun pm whoami
-
       - name: Publish cre-sdk package
         working-directory: packages/cre-sdk
-        env:
-          NPM_CONFIG_TOKEN: ${{ secrets.NPM_CRE_SDK_TYPESCRIPT }}
         run: |
           echo "Publishing @chainlink/cre-sdk..."
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
             echo "DRY RUN: Would publish @chainlink/cre-sdk"
-            bun publish --dry-run --access public --verbose
+            npm publish --dry-run --access public --verbose
           else
-            bun publish --access public --verbose
+            npm publish --access public --verbose
           fi
 
       - name: Create release summary
