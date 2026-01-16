@@ -57,4 +57,3 @@ export async function main() {
 	const runner = await Runner.newRunner<Config>({ configSchema })
 	await runner.run(initWorkflow)
 }
-main()

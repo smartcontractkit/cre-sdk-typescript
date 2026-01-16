@@ -13,7 +13,8 @@ async function standardValidate<TIntermediateConfig, TConfig>(
 	 * @see https://github.com/standard-schema/standard-schema?tab=readme-ov-file#how-do-i-accept-standard-schemas-in-my-library
 	 */
 	if (result.issues) {
-		throw new Error(JSON.stringify(result.issues, null, 2))
+		const errorDetails = JSON.stringify(result.issues, null, 2)
+		throw new Error(`Config validation failed. Expectations were not matched:\n\n${errorDetails}`)
 	}
 
 	return result.value
