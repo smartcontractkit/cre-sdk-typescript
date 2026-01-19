@@ -176,13 +176,39 @@ const onCronTrigger = async (
 			abi: IERC20,
 			functionName: "totalSupply",
 		})
-		.then((result) => result + 1n);
+		.then((result) => {
+			runtime.log(`Viem result1`);
+			return result + 1n;
+		});
+
+	const viemResultPromise2 = publicClient
+		.readContract({
+			address: CONTRACT_ADDRESS,
+			abi: IERC20,
+			functionName: "totalSupply",
+		})
+		.then((result) => {
+			runtime.log(`Viem result2`);
+			return result + 2n;
+		});
 
 	const capabilityResult = getTotalSupply(runtime);
 
-	const viemResult = await viemResultPromise.then((result) => result - 1n);
+	const viemResults = await Promise.allSettled([
+		viemResultPromise.then((result) => result - 1n),
+		viemResultPromise2.then((result) => result - 2n),
+	]);
 
-	return `Viem result: ${viemResult}, Capability result: ${capabilityResult}`;
+	const viemResult1 =
+		viemResults[0].status === "fulfilled"
+			? viemResults[0].value
+			: `Error: ${viemResults[0].reason}`;
+	const viemResult2 =
+		viemResults[1].status === "fulfilled"
+			? viemResults[1].value
+			: `Error: ${viemResults[1].reason}`;
+
+	return `Viem result 1: ${viemResult1}, Viem result 2: ${viemResult2}, Capability result: ${capabilityResult}`;
 };
 
 const initWorkflow = (config: Config) => {
