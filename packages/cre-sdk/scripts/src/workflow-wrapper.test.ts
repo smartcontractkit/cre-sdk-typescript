@@ -128,9 +128,23 @@ export async function main() {
 main()`
 			const result = wrapWorkflowCode(input, 'test.ts')
 
-			// Should have two main() calls - original and wrapper
-			expect(result).toContain('main()')
-			expect(result).toContain('main().catch(sendErrorResponse)')
+			// Should replace the original main() call
+			expect(result.match(/main\(\)\.catch\(sendErrorResponse\)/g)?.length).toBe(1)
+			expect(result.match(/(^|\n)\s*main\(\)\s*;?\s*$/g)?.length ?? 0).toBe(0)
+		})
+
+		test('replaces await main() with await main().catch()', () => {
+			const input = `import { Runner } from '@chainlink/cre-sdk'
+
+export async function main() {
+  const runner = await Runner.newRunner()
+}
+
+await main()`
+			const result = wrapWorkflowCode(input, 'test.ts')
+
+			expect(result).toContain('await main().catch(sendErrorResponse)')
+			expect(result.match(/main\(\)\.catch\(sendErrorResponse\)/g)?.length).toBe(1)
 		})
 	})
 

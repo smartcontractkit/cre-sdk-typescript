@@ -7,7 +7,8 @@ import * as ts from 'typescript'
  * 2. Detects if `main()` function is exported.
  * 3. Detects if there's already a top-level `main()` call with `.catch()` handler.
  * 4. Adds `sendErrorResponse` to imports if missing.
- * 5. Appends `main().catch(sendErrorResponse)` only if no error handling exists.
+ * 5. Replaces top-level `main()` or `await main()` with `main().catch(sendErrorResponse)`.
+ * 6. Appends `main().catch(sendErrorResponse)` only if no error handling exists and no call exists.
  *
  * @param sourceCode - The TypeScript source code to wrap
  * @param filePath - The file path (used for source file creation)
@@ -17,10 +18,9 @@ export function wrapWorkflowCode(sourceCode: string, filePath: string): string {
 	const sourceFile = ts.createSourceFile(filePath, sourceCode, ts.ScriptTarget.Latest, true)
 
 	// Analysis state
-	let hasSendErrorResponseImport = false
-	let creSdkImportDeclaration: ts.ImportDeclaration | null = null
 	let hasMainExport = false
 	let hasExistingErrorHandling = false
+	const mainCallStatements: { start: number; end: number; useAwait: boolean }[] = []
 
 	// Helper to check if a node is a main() call expression
 	const isMainCall = (node: ts.Node): boolean => {
@@ -43,24 +43,18 @@ export function wrapWorkflowCode(sourceCode: string, filePath: string): string {
 		return false
 	}
 
+	const getMainCallFromExpression = (expr: ts.Expression): { useAwait: boolean } | null => {
+		if (isMainCall(expr)) {
+			return { useAwait: false }
+		}
+		if (ts.isAwaitExpression(expr) && isMainCall(expr.expression)) {
+			return { useAwait: true }
+		}
+		return null
+	}
+
 	// First pass: analyze AST
 	for (const statement of sourceFile.statements) {
-		// Check for @chainlink/cre-sdk import
-		if (ts.isImportDeclaration(statement)) {
-			const moduleSpecifier = statement.moduleSpecifier
-			if (ts.isStringLiteral(moduleSpecifier) && moduleSpecifier.text === '@chainlink/cre-sdk') {
-				creSdkImportDeclaration = statement
-				if (
-					statement.importClause?.namedBindings &&
-					ts.isNamedImports(statement.importClause.namedBindings)
-				) {
-					hasSendErrorResponseImport = statement.importClause.namedBindings.elements.some(
-						(element) => element.name.text === 'sendErrorResponse',
-					)
-				}
-			}
-		}
-
 		// Check for main() export
 		if (ts.isFunctionDeclaration(statement) && statement.name?.text === 'main') {
 			if (statement.modifiers?.some((mod) => mod.kind === ts.SyntaxKind.ExportKeyword)) {
@@ -71,16 +65,17 @@ export function wrapWorkflowCode(sourceCode: string, filePath: string): string {
 		// Check for top-level main() call with error handling
 		if (ts.isExpressionStatement(statement)) {
 			const expr = statement.expression
+			const exprToCheck = ts.isAwaitExpression(expr) ? expr.expression : expr
 
 			// Check for main().catch(...)
-			if (isWrappedWithCatch(expr)) {
+			if (isWrappedWithCatch(exprToCheck)) {
 				hasExistingErrorHandling = true
 			}
 
 			// Also check for: main().then(...).catch(...) or other chained patterns
-			if (ts.isCallExpression(expr)) {
+			if (ts.isCallExpression(exprToCheck)) {
 				// Walk the chain to find if there's a .catch anywhere
-				let current: ts.Expression = expr
+				let current: ts.Expression = exprToCheck
 				while (ts.isCallExpression(current)) {
 					const propAccess = current.expression
 					if (ts.isPropertyAccessExpression(propAccess)) {
@@ -105,13 +100,53 @@ export function wrapWorkflowCode(sourceCode: string, filePath: string): string {
 					}
 				}
 			}
+
+			if (!hasExistingErrorHandling) {
+				const mainCall = getMainCallFromExpression(expr)
+				if (mainCall) {
+					mainCallStatements.push({
+						start: statement.getStart(sourceFile),
+						end: statement.end,
+						useAwait: mainCall.useAwait,
+					})
+				}
+			}
 		}
 	}
 
 	// Build the transformed code
 	let result = sourceCode
 
+	if (!hasExistingErrorHandling && mainCallStatements.length > 0) {
+		for (const statement of [...mainCallStatements].sort((a, b) => b.start - a.start)) {
+			const replacement = `${statement.useAwait ? 'await ' : ''}main().catch(sendErrorResponse)`
+			result = result.slice(0, statement.start) + replacement + result.slice(statement.end)
+		}
+	}
+
 	// If we need to add sendErrorResponse import
+	const nextSourceFile = ts.createSourceFile(filePath, result, ts.ScriptTarget.Latest, true)
+	let hasSendErrorResponseImport = false
+	let creSdkImportDeclaration: ts.ImportDeclaration | null = null
+
+	for (const statement of nextSourceFile.statements) {
+		// Check for @chainlink/cre-sdk import
+		if (ts.isImportDeclaration(statement)) {
+			const moduleSpecifier = statement.moduleSpecifier
+			if (ts.isStringLiteral(moduleSpecifier) && moduleSpecifier.text === '@chainlink/cre-sdk') {
+				creSdkImportDeclaration = statement
+				if (
+					statement.importClause?.namedBindings &&
+					ts.isNamedImports(statement.importClause.namedBindings)
+				) {
+					hasSendErrorResponseImport = statement.importClause.namedBindings.elements.some(
+						(element) => element.name.text === 'sendErrorResponse',
+					)
+				}
+			}
+		}
+	}
+
 	if (!hasSendErrorResponseImport) {
 		if (creSdkImportDeclaration) {
 			// Add to existing import
@@ -131,7 +166,7 @@ export function wrapWorkflowCode(sourceCode: string, filePath: string): string {
 
 			// Find the last import declaration to insert after it
 			let lastImportEnd = 0
-			for (const statement of sourceFile.statements) {
+			for (const statement of nextSourceFile.statements) {
 				if (ts.isImportDeclaration(statement)) {
 					lastImportEnd = statement.end
 				}
@@ -154,7 +189,7 @@ export function wrapWorkflowCode(sourceCode: string, filePath: string): string {
 	}
 
 	// Append main().catch(sendErrorResponse) if no error handling exists
-	if (!hasExistingErrorHandling) {
+	if (!hasExistingErrorHandling && mainCallStatements.length === 0) {
 		const trimmedResult = result.trimEnd()
 		result = trimmedResult + '\n\nmain().catch(sendErrorResponse)\n'
 	}
