@@ -1,11 +1,14 @@
 import {
 	bytesToHex,
+	ConsensusAggregationByFields,
 	type CronPayload,
-	consensusMedianAggregation,
 	cre,
 	encodeCallMsg,
 	getNetwork,
+	identical,
+	ignore,
 	LAST_FINALIZED_BLOCK_NUMBER,
+	median,
 	ok,
 	Runner,
 	type Runtime,
@@ -46,6 +49,7 @@ const CONTRACT_ADDRESS =
 const createHttpTransport = (
 	runtime: Runtime<Config>,
 	url: string,
+	clientId: number,
 ): Transport => {
 	let requestId = 0;
 	return custom({
@@ -76,6 +80,7 @@ const createHttpTransport = (
 						body: bodyBase64,
 						headers: {
 							"Content-Type": "application/json",
+							"CRE-Ignore": `client-${clientId}`,
 						},
 					} as {
 						url: string;
@@ -95,22 +100,26 @@ const createHttpTransport = (
 					text(response),
 				);
 
-				// Convert hex string result to BigInt for median aggregation
-				// viem will handle the conversion when it processes the result
 				const resultHex = responseBody.result as string;
-				return BigInt(resultHex);
+				return {
+					id: clientId,
+					supply: BigInt(resultHex),
+				};
 			};
 
 			const result = httpClient
 				.sendRequest(
 					runtime,
 					fetcher,
-					consensusMedianAggregation(),
+					ConsensusAggregationByFields<{ id: number; supply: bigint }>({
+						id: identical,
+						supply: median,
+					}),
 				)(runtime.config)
 				.result();
 
-			// Convert BigInt back to hex string, padded to 32 bytes (64 hex chars) for uint256
-			const hex = result.toString(16);
+			const supply = result.supply;
+			const hex = supply.toString(16);
 			const paddedHex = hex.padStart(64, "0");
 			return `0x${paddedHex}`;
 		},
@@ -120,10 +129,11 @@ const createHttpTransport = (
 const createPublicClientWithCRE = (
 	runtime: Runtime<Config>,
 	rpcUrl: string,
+	clientId: number,
 ): ViemPublicClient => {
 	return createPublicClient({
 		chain: sepolia,
-		transport: createHttpTransport(runtime, rpcUrl),
+		transport: createHttpTransport(runtime, rpcUrl, clientId),
 	});
 };
 
@@ -168,9 +178,10 @@ const onCronTrigger = async (
 	const rpcUrl =
 		"https://por.bcy-p.metalhosts.com/cre-alpha/MvqtrdftrbxcP3ZgGBJb3bK5/ethereum/sepolia";
 
-	const publicClient = createPublicClientWithCRE(runtime, rpcUrl);
+	const publicClient1 = createPublicClientWithCRE(runtime, rpcUrl, 1);
+	const publicClient2 = createPublicClientWithCRE(runtime, rpcUrl, 2);
 
-	const viemResultPromise = publicClient
+	const viemResultPromise = publicClient1
 		.readContract({
 			address: CONTRACT_ADDRESS,
 			abi: IERC20,
@@ -181,7 +192,7 @@ const onCronTrigger = async (
 			return result + 1n;
 		});
 
-	const viemResultPromise2 = publicClient
+	const viemResultPromise2 = publicClient2
 		.readContract({
 			address: CONTRACT_ADDRESS,
 			abi: IERC20,
