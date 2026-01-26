@@ -1,0 +1,8 @@
+{
+	"evms": [
+		{
+			"messageEmitterAddress": "0x1d598672486ecB50685Da5497390571Ac4E93FDc",
+			"chainSelectorName": "ethereum-testnet-sepolia"
+		}
+	]
+}
