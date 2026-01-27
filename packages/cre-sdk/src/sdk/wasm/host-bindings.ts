@@ -1,6 +1,56 @@
 import { Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { z } from 'zod'
 
+const numberColumnSchema = z.array(z.number())
+const bigintColumnSchema = z.array(z.string().transform((val) => BigInt(val)))
+const ProofOfSqlResultSchema = z.discriminatedUnion('verificationStatus', [
+	z.object({
+		verificationStatus: z.literal('Success'),
+		result: z.record(
+			z.string(),
+			z.discriminatedUnion('type', [
+				z.object({ type: z.literal('Boolean'), column: z.array(z.boolean()) }),
+				z.object({ type: z.literal('TinyInt'), column: numberColumnSchema }),
+				z.object({ type: z.literal('SmallInt'), column: numberColumnSchema }),
+				z.object({ type: z.literal('Int'), column: numberColumnSchema }),
+				z.object({ type: z.literal('BigInt'), column: bigintColumnSchema }),
+				z.object({ type: z.literal('Varchar'), column: z.array(z.string()) }),
+				z.object({
+					type: z.literal('Decimal75'),
+					precision: z.number(),
+					scale: z.number(),
+					column: bigintColumnSchema,
+				}),
+				z.object({
+					type: z.literal('TimestampTZ'),
+					timeUnit: z.union([
+						z.literal('Second'),
+						z.literal('Millisecond'),
+						z.literal('Microsecond'),
+						z.literal('Nanosecond'),
+					]),
+					offset: z.number(),
+					column: bigintColumnSchema,
+				}),
+				z.object({
+					type: z.literal('VarBinary'),
+					column: z.array(
+						z.array(
+							z
+								.number()
+								.min(0)
+								.max(255)
+								.transform((byteArray) => new Uint8Array(byteArray)),
+						),
+					),
+				}),
+				z.object({ type: z.literal('Scalar'), column: bigintColumnSchema }),
+			]),
+		),
+	}),
+	z.object({ verificationStatus: z.literal('Failure'), error: z.string() }),
+])
+
 // Zod schema for validating global host functions
 const globalHostBindingsSchema = z.object({
 	switchModes: z.function().args(z.nativeEnum(Mode)).returns(z.void()),
@@ -28,6 +78,10 @@ const globalHostBindingsSchema = z.object({
 		.returns(z.union([z.instanceof(Uint8Array), z.custom<Uint8Array<ArrayBufferLike>>()])),
 	getWasiArgs: z.function().args().returns(z.string()),
 	now: z.function().args().returns(z.number()),
+	proofOfSqlVerify: z
+		.function()
+		.args(z.string(), z.array(z.string()))
+		.returns(z.string().transform((val) => ProofOfSqlResultSchema.parse(JSON.parse(val)))),
 })
 
 type GlobalHostBindingsMap = z.infer<typeof globalHostBindingsSchema>

@@ -104,6 +104,9 @@ const proxyHostBindings = {
 	now: () => {
 		throw new Error('now called unexpectedly in test')
 	},
+	proofOfSqlVerify: () => {
+		throw new Error('proofOfSqlVerify called unexpectedly in test')
+	},
 }
 
 Object.assign(globalThis, proxyHostBindings)
