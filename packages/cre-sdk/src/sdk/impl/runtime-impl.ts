@@ -431,7 +431,7 @@ export interface RuntimeHelpers {
 	/** Switches execution mode (DON vs Node). Affects available operations. */
 	switchModes(mode: Mode): void
 
-	/** Returns current time in nanoseconds. */
+	/** Returns current time in milliseconds since Unix epoch. */
 	now(): number
 
 	/** Logs a message to the host environment. */
