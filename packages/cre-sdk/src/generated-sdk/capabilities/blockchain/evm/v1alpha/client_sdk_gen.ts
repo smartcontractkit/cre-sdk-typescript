@@ -144,7 +144,6 @@ export class ClientCapability {
 		'hyperliquid-testnet': 4286062357653186312n,
 		'ink-testnet-sepolia': 9763904284804119144n,
 		'jovay-testnet': 945045181441419236n,
-		'pharos-testnet': 4012524741200567430n,
 		'plasma-testnet': 3967220077692964309n,
 		'polygon-mainnet': 4051577828743386545n,
 		'polygon-testnet-amoy': 16281711391670634445n,
