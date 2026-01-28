@@ -186,8 +186,8 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 	}
 
 	now(): Date {
-		// ns to ms
-		return new Date(this.helpers.now() / 1000000)
+		// date is already in milliseconds
+		return new Date(this.helpers.now())
 	}
 
 	log(message: string): void {
