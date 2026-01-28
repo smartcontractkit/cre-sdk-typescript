@@ -132,6 +132,7 @@ export class ClientCapability {
 		'ethereum-mainnet-arbitrum-1': 4949039107694359620n,
 		'ethereum-mainnet-base-1': 15971525489660198786n,
 		'ethereum-mainnet-optimism-1': 3734403246176062136n,
+		'ethereum-mainnet-zksync-1': 1562403441176082196n,
 		'ethereum-testnet-sepolia': 16015286601757825753n,
 		'ethereum-testnet-sepolia-arbitrum-1': 3478487238524512106n,
 		'ethereum-testnet-sepolia-base-1': 10344971235874465080n,
