@@ -1,7 +1,7 @@
 {
 	"name": "@chainlink/cre-sdk-examples",
 	"private": true,
-	"version": "1.0.3",
+	"version": "1.0.7",
 	"type": "module",
 	"author": "Ernest Nowacki",
 	"license": "BUSL-1.1",
@@ -15,7 +15,7 @@
 	},
 	"dependencies": {
 		"@bufbuild/protobuf": "2.6.3",
-		"@chainlink/cre-sdk": "workspace:*",
+		"@chainlink/cre-sdk": "1.0.7",
 		"viem": "2.34.0",
 		"zod": "3.25.76"
 	},
