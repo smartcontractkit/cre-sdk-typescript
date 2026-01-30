@@ -126,8 +126,8 @@ export class ClientCapability {
 		'arc-testnet': 3034092155422581607n,
 		'avalanche-mainnet': 6433500567565415381n,
 		'avalanche-testnet-fuji': 14767482510784806043n,
-		'binance_smart_chain-mainnet-opbnb-1': 465944652040885897n,
-		'binance_smart_chain-testnet-opbnb-1': 13274425992935471758n,
+		'binance_smart_chain-mainnet': 11344663589394136015n,
+		'binance_smart_chain-testnet': 13264668187771770619n,
 		'ethereum-mainnet': 5009297550715157269n,
 		'ethereum-mainnet-arbitrum-1': 4949039107694359620n,
 		'ethereum-mainnet-base-1': 15971525489660198786n,
@@ -140,7 +140,6 @@ export class ClientCapability {
 		'ethereum-testnet-sepolia-optimism-1': 5224473277236331295n,
 		'ethereum-testnet-sepolia-worldchain-1': 5299555114858065850n,
 		'ethereum-testnet-sepolia-zksync-1': 6898391096552792247n,
-		'etherlink-testnet': 1910019406958449359n,
 		'hyperliquid-testnet': 4286062357653186312n,
 		'ink-testnet-sepolia': 9763904284804119144n,
 		'jovay-testnet': 945045181441419236n,
@@ -148,7 +147,6 @@ export class ClientCapability {
 		'polygon-mainnet': 4051577828743386545n,
 		'polygon-testnet-amoy': 16281711391670634445n,
 		'private-testnet-andesite': 6915682381028791124n,
-		'tempo-testnet': 3963528237232804922n,
 	} as const
 
 	constructor(private readonly ChainSelector: bigint) {}
