@@ -93,10 +93,10 @@ jobs:
           echo "### CLI Commands" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
           echo "# Setup CRE environment" >> $GITHUB_STEP_SUMMARY
-          echo "bunx cre-setup" >> $GITHUB_STEP_SUMMARY
+          echo "bun x cre-setup" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "# Compile workflow" >> $GITHUB_STEP_SUMMARY
-          echo "bunx cre-compile-workflow" >> $GITHUB_STEP_SUMMARY
+          echo "bun x cre-compile-workflow" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
 
   verify-cre-sdk-javy-plugin:
@@ -125,7 +125,7 @@ jobs:
           bun add @chainlink/cre-sdk-javy-plugin
 
           echo "Checking cre-setup command via bunx..."
-          if bunx cre-setup --help >/dev/null 2>&1; then
+          if bun x cre-setup --help >/dev/null 2>&1; then
             echo "✅ cre-setup command is available via bunx"
           else
             echo "❌ cre-setup command not found via bunx"
@@ -133,7 +133,7 @@ jobs:
           fi
 
           echo "Checking cre-compile-workflow command via bunx..."
-          if bunx cre-compile-workflow --help >/dev/null 2>&1; then
+          if bun x cre-compile-workflow --help >/dev/null 2>&1; then
             echo "✅ cre-compile-workflow command is available via bunx"
           else
             echo "❌ cre-compile-workflow command not found via bunx"

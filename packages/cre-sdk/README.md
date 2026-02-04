@@ -60,7 +60,7 @@ Then run `cre init`, name your project and choose TypeScript as the language to 
 
 This TypeScript CRE SDK also includes some reference examples - [cre-sdk-examples](https://github.com/smartcontractkit/cre-sdk-typescript/tree/main/packages/cre-sdk-examples). These can be copied and pasted into your project as needed.
 
-⚠️ Note however that these are refence TypeScript workflows and may require some additional steps (having the CRE CLI installed, running `bunx cre-setup` from inside a workflow example directory, etc) to get them to work within this repo.
+⚠️ Note however that these are refence TypeScript workflows and may require some additional steps (having the CRE CLI installed, running `bun x cre-setup` from inside a workflow example directory, etc) to get them to work within this repo.
 
 **We recommend you setup your project using the CRE CLI and then copy and paste these examples into your project**
 
@@ -149,11 +149,9 @@ const fetchData = (sendRequester: HTTPSendRequester, config: Config) => {
 const onCronTrigger = (runtime: Runtime<Config>) => {
   const httpCapability = new cre.capabilities.HTTPClient();
   return httpCapability
-    .sendRequest(
-      runtime,
-      fetchData,
-      consensusMedianAggregation()
-    )(runtime.config)
+    .sendRequest(runtime, fetchData, consensusMedianAggregation())(
+      runtime.config,
+    )
     .result();
 };
 ```
@@ -190,7 +188,7 @@ const onCronTrigger = (runtime: Runtime<Config>) => {
   if (!network) throw new Error("Network not found");
 
   const evmClient = new cre.capabilities.EVMClient(
-    network.chainSelector.selector
+    network.chainSelector.selector,
   );
 
   // Read from blockchain
@@ -239,7 +237,7 @@ const configSchema = z.object({
     z.object({
       chainSelectorName: z.string(),
       contractAddress: z.string(),
-    })
+    }),
   ),
 });
 
@@ -267,7 +265,7 @@ const fetchDataFunction = async (nodeRuntime: NodeRuntime<Config>) => 42;
 // Execute function across multiple nodes and aggregate results
 const aggregatedValue = await runtime.runInNodeMode(
   fetchDataFunction,
-  consensusMedianAggregation()
+  consensusMedianAggregation(),
 )();
 ```
 

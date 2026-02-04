@@ -17,7 +17,7 @@ bun install
 Before first usage run the setup command. Setup will download the right Javy binary based on your operating system and will compile a version with the Chainlink CRE Javy Plugin included:
 
 ```bash
-bunx cre-setup
+bun x cre-setup
 ```
 
 ## Using CRE CLI to simulate example workflows
@@ -69,7 +69,7 @@ cre workflow simulate ./src/workflows/star-wars
 If you want use the CRE SDK to compile your workflows to WASM, choose any workflow you want to compile and run the following command:
 
 ```bash
-bunx cre-compile <input.ts> <output.wasm>
+bun x cre-compile <input.ts> <output.wasm>
 ```
 
 Example:

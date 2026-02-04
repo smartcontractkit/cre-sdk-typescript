@@ -119,7 +119,7 @@ jobs:
           echo "### CLI Commands" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
           echo "# Compile workflow" >> $GITHUB_STEP_SUMMARY
-          echo "bunx cre-compile" >> $GITHUB_STEP_SUMMARY
+          echo "bun x cre-compile" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
 
   verify-cre-sdk:
@@ -148,7 +148,7 @@ jobs:
           bun add @chainlink/cre-sdk
 
           echo "Checking cre-compile command via bunx..."
-          if bunx cre-compile --help >/dev/null 2>&1; then
+          if bun x cre-compile --help >/dev/null 2>&1; then
             echo "✅ cre-compile command is available via bunx"
           else
             echo "❌ cre-compile command not found via bunx"
