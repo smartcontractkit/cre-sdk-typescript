@@ -1,4 +1,4 @@
-import type { ResponseTemplate } from '@cre/generated/capabilities/networking/confidentialhttp/v1alpha/client_pb'
+import type { HTTPResponse as ConfidentialHTTPResponse } from '@cre/generated/capabilities/networking/confidentialhttp/v1alpha/client_pb'
 import type {
 	Request,
 	RequestJson,
@@ -62,17 +62,17 @@ import { decodeJson } from '@cre/sdk/utils/decode-json'
  * @param response - The Response object
  * @returns The body as a trimmed string
  */
-export function text(response: Response | ResponseTemplate): string
+export function text(response: Response | ConfidentialHTTPResponse): string
 /**
  * Returns the response body as a UTF-8 string, automatically trimmed
  * @param responseFn - Function that returns an object with result function that returns Response
  * @returns Object with result function that returns the body as a trimmed string
  */
-export function text(responseFn: () => { result: Response | ResponseTemplate }): {
+export function text(responseFn: () => { result: Response | ConfidentialHTTPResponse }): {
 	result: () => string
 }
 export function text(
-	responseOrFn: Response | ResponseTemplate | (() => { result: Response | ResponseTemplate }),
+	responseOrFn: Response | ConfidentialHTTPResponse | (() => { result: Response | ConfidentialHTTPResponse }),
 ): string | { result: () => string } {
 	if (typeof responseOrFn === 'function') {
 		return {
@@ -90,18 +90,18 @@ export function text(
  * @returns The parsed JSON
  * @throws Error if the body is not valid JSON
  */
-export function json(response: Response | ResponseTemplate): unknown
+export function json(response: Response | ConfidentialHTTPResponse): unknown
 /**
  * Parses the response body as JSON
  * @param responseFn - Function that returns an object with result function that returns Response
  * @returns Object with result function that returns the parsed JSON
  * @throws Error if the body is not valid JSON
  */
-export function json(responseFn: () => { result: Response | ResponseTemplate }): {
+export function json(responseFn: () => { result: Response | ConfidentialHTTPResponse }): {
 	result: () => unknown
 }
 export function json(
-	responseOrFn: Response | ResponseTemplate | (() => { result: Response | ResponseTemplate }),
+	responseOrFn: Response | ConfidentialHTTPResponse | (() => { result: Response | ConfidentialHTTPResponse }),
 ): unknown | { result: () => unknown } {
 	if (typeof responseOrFn === 'function') {
 		return {
@@ -150,17 +150,17 @@ export function getHeader(
  * @param response - The Response object
  * @returns True if the status code is in the 200-299 range
  */
-export function ok(response: Response | ResponseTemplate): boolean
+export function ok(response: Response | ConfidentialHTTPResponse): boolean
 /**
  * Checks if the response status indicates success (200-299)
  * @param responseFn - Function that returns an object with result function that returns Response
  * @returns Object with result function that returns true if the status code is in the 200-299 range
  */
-export function ok(responseFn: () => { result: Response | ResponseTemplate }): {
+export function ok(responseFn: () => { result: Response | ConfidentialHTTPResponse }): {
 	result: () => boolean
 }
 export function ok(
-	responseOrFn: Response | ResponseTemplate | (() => { result: Response | ResponseTemplate }),
+	responseOrFn: Response | ConfidentialHTTPResponse | (() => { result: Response | ConfidentialHTTPResponse }),
 ): boolean | { result: () => boolean } {
 	if (typeof responseOrFn === 'function') {
 		return {
