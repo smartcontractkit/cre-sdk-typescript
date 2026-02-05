@@ -1,29 +1,29 @@
 {
-  "name": "@chainlink/cre-test-server",
-  "private": true,
-  "version": "1.0.4",
-  "type": "module",
-  "main": "src/index.ts",
-  "license": "BUSL-1.1",
-  "description": "Test server for testing CRE workflows  - exposes set of endpoints to test HTTP capability.",
-  "scripts": {
-    "start": "bun src/index.ts",
-    "dev": "bun --watch src/index.ts",
-    "check": "biome check --write ${BIOME_PATHS:-.}",
-    "format": "biome format --write ${BIOME_PATHS:-.}",
-    "full-checks": "bun typecheck && bun check",
-    "lint": "biome lint --write",
-    "typecheck": "tsc"
-  },
-  "dependencies": {
-    "hono": "4.11.6"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "2.3.13",
-    "@types/bun": "1.2.21",
-    "typescript": "5.9.3"
-  },
-  "engines": {
-    "bun": ">=1.2.21"
-  }
+	"name": "@chainlink/cre-test-server",
+	"private": true,
+	"version": "1.0.4",
+	"type": "module",
+	"main": "src/index.ts",
+	"license": "BUSL-1.1",
+	"description": "Test server for testing CRE workflows  - exposes set of endpoints to test HTTP capability.",
+	"scripts": {
+		"start": "bun src/index.ts",
+		"dev": "bun --watch src/index.ts",
+		"check": "biome check --write ${BIOME_PATHS:-.}",
+		"format": "biome format --write ${BIOME_PATHS:-.}",
+		"full-checks": "bun typecheck && bun check",
+		"lint": "biome lint --write",
+		"typecheck": "tsc"
+	},
+	"dependencies": {
+		"hono": "4.11.6"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.3.13",
+		"@types/bun": "1.2.21",
+		"typescript": "5.9.3"
+	},
+	"engines": {
+		"bun": ">=1.2.21"
+	}
 }
