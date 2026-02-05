@@ -8,6 +8,7 @@ import {
 	ok,
 	Runner,
 	type Runtime,
+	safeJsonStringify,
 } from '@chainlink/cre-sdk'
 import { z } from 'zod'
 
@@ -69,10 +70,14 @@ const sessionWorkflow = (nodeRuntime: NodeRuntime<Config>): Data => {
 	nodeRuntime.log('Login successful')
 
 	// ── Step 2: Extract cookies from the response ────────────────────────
+	nodeRuntime.log(`Set Cookie Header received: ${loginResp.headers['Set-Cookie']}`)
+
 	const setCookie = getHeader(loginResp, 'set-cookie')
 	if (!setCookie) {
 		throw new Error('No Set-Cookie header in login response')
 	}
+
+	nodeRuntime.log(`Set Cookie Header received (from getHeader helper parsing): ${setCookie}`)
 
 	const cookieHeader = parseCookieHeader(setCookie)
 	nodeRuntime.log(`Forwarding cookies: ${cookieHeader}`)

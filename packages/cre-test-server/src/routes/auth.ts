@@ -9,9 +9,10 @@ import { getCookie, setCookie } from "hono/cookie";
  *   2. GET  /profile — requires ALL cookies to be present
  *   3. GET  /data    — another protected endpoint requiring ALL cookies
  *
- * The server sets two cookies on login:
+ * The server sets three cookies on login:
  *   - session_id  : identifies the session
  *   - csrf_token  : a secondary token that must accompany every request
+ *   - xyz_tracker : a third cookie to exercise multi-header forwarding
  *
  * If any cookie is missing on a protected route the server returns 401.
  * This models the real-world scenario where CRE workflows must forward
@@ -25,6 +26,7 @@ import { getCookie, setCookie } from "hono/cookie";
 
 const SESSION_ID = "test-session-abc123";
 const CSRF_TOKEN = "csrf-xyz789";
+const XYZ_TRACKER = "xyz-track-42";
 
 const auth = new Hono();
 
@@ -44,6 +46,10 @@ auth.post("/login", async (c) => {
 			path: "/",
 			sameSite: "Lax",
 		});
+		setCookie(c, "xyz_tracker", XYZ_TRACKER, {
+			path: "/",
+			sameSite: "Lax",
+		});
 
 		console.log("[auth /login] Login successful — cookies set");
 		return c.json({ message: "Login successful" });
@@ -53,14 +59,16 @@ auth.post("/login", async (c) => {
 	return c.json({ error: "Invalid credentials" }, 401);
 });
 
-// ── Middleware: require both cookies ─────────────────────────────────────────
+// ── Middleware: require all three cookies ────────────────────────────────────
 function requireSession(c: Context) {
 	const sessionId = getCookie(c, "session_id");
 	const csrfToken = getCookie(c, "csrf_token");
+	const xyzTracker = getCookie(c, "xyz_tracker");
 
 	const missing: string[] = [];
 	if (!sessionId) missing.push("session_id");
 	if (!csrfToken) missing.push("csrf_token");
+	if (!xyzTracker) missing.push("xyz_tracker");
 
 	if (missing.length > 0) {
 		const receivedCookies = (c.req.raw.headers.get("cookie") ?? "")
@@ -74,7 +82,11 @@ function requireSession(c: Context) {
 		return c.json({ error: "Unauthorized", missing_cookies: missing }, 401);
 	}
 
-	if (sessionId !== SESSION_ID || csrfToken !== CSRF_TOKEN) {
+	if (
+		sessionId !== SESSION_ID ||
+		csrfToken !== CSRF_TOKEN ||
+		xyzTracker !== XYZ_TRACKER
+	) {
 		console.log("[auth] Rejected — invalid cookie values");
 		return c.json({ error: "Invalid session" }, 401);
 	}
@@ -114,6 +126,7 @@ auth.get("/data", (c) => {
 auth.post("/logout", (c) => {
 	setCookie(c, "session_id", "", { path: "/", maxAge: 0 });
 	setCookie(c, "csrf_token", "", { path: "/", maxAge: 0 });
+	setCookie(c, "xyz_tracker", "", { path: "/", maxAge: 0 });
 
 	console.log("[auth /logout] Session cleared");
 	return c.json({ message: "Logged out" });
