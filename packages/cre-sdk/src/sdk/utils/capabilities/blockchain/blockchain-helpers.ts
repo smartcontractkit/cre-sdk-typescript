@@ -1,9 +1,12 @@
-import { create, toJson } from '@bufbuild/protobuf'
-import type { CallMsgJson } from '@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb'
-import type { ReportRequestJson } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import { BigIntSchema, type BigInt as GeneratedBigInt } from '@cre/generated/values/v1/values_pb'
+import { type MessageInitShape } from '@bufbuild/protobuf'
+import type { CallMsgSchema } from '@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb'
+import type { ReportRequestSchema } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import {
+	type BigIntSchema,
+	type BigInt as GeneratedBigInt,
+} from '@cre/generated/values/v1/values_pb'
 import { EVMClient } from '@cre/sdk/cre'
-import { bigintToBytes, bytesToBigint, hexToBase64 } from '@cre/sdk/utils/hex-utils'
+import { bigintToBytes, bytesToBigint, hexToBytes } from '@cre/sdk/utils/hex-utils'
 import type { Address, Hex } from 'viem'
 
 /**
@@ -13,7 +16,7 @@ import type { Address, Hex } from 'viem'
 export type ProtoBigInt = Pick<GeneratedBigInt, 'absVal' | 'sign'>
 
 /**
- * Converts a native JS bigint to a protobuf BigInt JSON representation.
+ * Converts a native JS bigint to a protobuf BigInt initializer.
  * Use this when passing bigint values to SDK methods.
  *
  * @example
@@ -23,17 +26,17 @@ export type ProtoBigInt = Pick<GeneratedBigInt, 'absVal' | 'sign'>
  * }).result()
  *
  * @param n - The native bigint, number, or string value.
- * @returns The protobuf BigInt JSON representation.
+ * @returns The protobuf BigInt initializer with native types.
  */
-export const bigintToProtoBigInt = (n: number | bigint | string) => {
+export const bigintToProtoBigInt = (
+	n: number | bigint | string,
+): MessageInitShape<typeof BigIntSchema> => {
 	const val = BigInt(n)
 	const abs = val < 0n ? -val : val
 
-	const msg = create(BigIntSchema, {
+	return {
 		absVal: bigintToBytes(abs),
-	})
-
-	return toJson(BigIntSchema, msg)
+	}
 }
 
 /**
@@ -73,9 +76,9 @@ export const blockNumber = bigintToProtoBigInt
  *
  * Using this constant will indicate that the call should be executed at the last finalized block.
  */
-export const LAST_FINALIZED_BLOCK_NUMBER = {
-	absVal: Buffer.from([3]).toString('base64'), // 3 for finalized block
-	sign: '-1',
+export const LAST_FINALIZED_BLOCK_NUMBER: MessageInitShape<typeof BigIntSchema> = {
+	absVal: new Uint8Array([3]), // 3 for finalized block
+	sign: -1n,
 }
 
 /**
@@ -88,9 +91,9 @@ export const LAST_FINALIZED_BLOCK_NUMBER = {
  *
  * Using this constant will indicate that the call should be executed at the latest mined block.
  */
-export const LATEST_BLOCK_NUMBER = {
-	absVal: Buffer.from([2]).toString('base64'), // 2 for the latest block
-	sign: '-1',
+export const LATEST_BLOCK_NUMBER: MessageInitShape<typeof BigIntSchema> = {
+	absVal: new Uint8Array([2]), // 2 for the latest block
+	sign: -1n,
 }
 
 export interface EncodeCallMsgPayload {
@@ -100,7 +103,7 @@ export interface EncodeCallMsgPayload {
 }
 
 /**
- * Encodes a call message payload into a `CallMsgJson` protobuf structure, expected by the EVM capability.
+ * Encodes a call message payload into a CallMsg initializer, expected by the EVM capability.
  *
  * When creating a `CallContractRequest` 3 parameters are required:
  *
@@ -111,12 +114,14 @@ export interface EncodeCallMsgPayload {
  * This helper wraps that data and packs into format acceptable by the EVM capability.
  *
  * @param payload - The call message payload to encode.
- * @returns The encoded call message payload.
+ * @returns The encoded call message payload with native types.
  */
-export const encodeCallMsg = (payload: EncodeCallMsgPayload): CallMsgJson => ({
-	from: hexToBase64(payload.from),
-	to: hexToBase64(payload.to),
-	data: hexToBase64(payload.data),
+export const encodeCallMsg = (
+	payload: EncodeCallMsgPayload,
+): MessageInitShape<typeof CallMsgSchema> => ({
+	from: hexToBytes(payload.from),
+	to: hexToBytes(payload.to),
+	data: hexToBytes(payload.data),
 })
 
 /**
@@ -137,9 +142,12 @@ export const EVM_DEFAULT_REPORT_ENCODER = {
  */
 export const prepareReportRequest = (
 	hexEncodedPayload: Hex,
-	reportEncoder: Exclude<ReportRequestJson, 'encodedPayload'> = EVM_DEFAULT_REPORT_ENCODER,
-): ReportRequestJson => ({
-	encodedPayload: hexToBase64(hexEncodedPayload),
+	reportEncoder: Exclude<
+		MessageInitShape<typeof ReportRequestSchema>,
+		'encodedPayload'
+	> = EVM_DEFAULT_REPORT_ENCODER,
+): MessageInitShape<typeof ReportRequestSchema> => ({
+	encodedPayload: hexToBytes(hexEncodedPayload),
 	...reportEncoder,
 })
 

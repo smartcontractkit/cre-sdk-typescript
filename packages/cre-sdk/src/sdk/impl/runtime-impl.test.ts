@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, mock, test } from 'bun:test'
-import { create } from '@bufbuild/protobuf'
+import { create, type MessageInitShape } from '@bufbuild/protobuf'
 import { type Any, anyPack, anyUnpack } from '@bufbuild/protobuf/wkt'
 import {
 	InputSchema,
@@ -30,7 +30,7 @@ import {
 	SecretResponseSchema,
 	SecretResponsesSchema,
 	type SimpleConsensusInputs,
-	type SimpleConsensusInputsJson,
+	SimpleConsensusInputsSchema,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import type { Value as ProtoValue } from '@cre/generated/values/v1/values_pb'
 import { BasicCapability } from '@cre/generated-sdk/capabilities/internal/actionandtrigger/v1/basic_sdk_gen'
@@ -609,7 +609,10 @@ describe('test run in node mode', () => {
 		})
 
 		ConsensusCapability.prototype.simple = mock(
-			(_: Runtime<unknown>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
+			(
+				_: Runtime<unknown>,
+				inputs: SimpleConsensusInputs | MessageInitShape<typeof SimpleConsensusInputsSchema>,
+			) => {
 				expect(modes).toEqual([Mode.DON, Mode.NODE, Mode.DON])
 				expect(inputs.default).toBeUndefined()
 				const consensusDescriptor = create(ConsensusDescriptorSchema, {
@@ -684,7 +687,10 @@ describe('test run in node mode', () => {
 		})
 
 		ConsensusCapability.prototype.simple = mock(
-			(_: Runtime<unknown>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
+			(
+				_: Runtime<unknown>,
+				inputs: SimpleConsensusInputs | MessageInitShape<typeof SimpleConsensusInputsSchema>,
+			) => {
 				expect(inputs.default).toBeUndefined()
 				expect(inputs.descriptors).toEqual(
 					create(ConsensusDescriptorSchema, {
@@ -720,7 +726,10 @@ describe('test run in node mode', () => {
 		})
 
 		ConsensusCapability.prototype.simple = mock(
-			(_: Runtime<unknown>, __: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
+			(
+				_: Runtime<unknown>,
+				__: SimpleConsensusInputs | MessageInitShape<typeof SimpleConsensusInputsSchema>,
+			) => {
 				return { result: () => Value.from(0).proto() }
 			},
 		)
@@ -747,7 +756,10 @@ describe('test run in node mode', () => {
 		})
 
 		ConsensusCapability.prototype.simple = mock(
-			(_: Runtime<unknown>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
+			(
+				_: Runtime<unknown>,
+				inputs: SimpleConsensusInputs | MessageInitShape<typeof SimpleConsensusInputsSchema>,
+			) => {
 				expect(inputs.default).toBeUndefined()
 				expect(inputs.descriptors).toEqual(
 					create(ConsensusDescriptorSchema, {
@@ -799,7 +811,10 @@ describe('test run in node mode', () => {
 		})
 
 		ConsensusCapability.prototype.simple = mock(
-			(_: Runtime<unknown>, __: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
+			(
+				_: Runtime<unknown>,
+				__: SimpleConsensusInputs | MessageInitShape<typeof SimpleConsensusInputsSchema>,
+			) => {
 				return {
 					result: () => Value.from(create(NodeOutputsSchema, { outputThing: 42 })).proto(),
 				}
@@ -877,7 +892,10 @@ describe('test run in node mode', () => {
 		})
 
 		ConsensusCapability.prototype.simple = mock(
-			(_: Runtime<unknown>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
+			(
+				_: Runtime<unknown>,
+				inputs: SimpleConsensusInputs | MessageInitShape<typeof SimpleConsensusInputsSchema>,
+			) => {
 				const inputsProto = inputs as SimpleConsensusInputs
 				if (inputsProto.observation.case === 'value') {
 					const unwrapped = Value.wrap(

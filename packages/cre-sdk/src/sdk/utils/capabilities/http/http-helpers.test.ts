@@ -1,7 +1,7 @@
 import { describe, expect, it, mock } from 'bun:test'
-import { create } from '@bufbuild/protobuf'
+import { create, type MessageInitShape } from '@bufbuild/protobuf'
 import type {
-	RequestJson,
+	RequestSchema,
 	Response,
 } from '@cre/generated/capabilities/networking/http/v1alpha/client_pb'
 import {
@@ -122,8 +122,8 @@ describe('HTTP Helpers', () => {
 })
 
 describe('sendReport extension', () => {
-	const anyRequest: RequestJson = {
-		body: 'test',
+	const anyRequest: MessageInitShape<typeof RequestSchema> = {
+		body: new TextEncoder().encode('test'),
 		headers: { a: 'b' },
 		method: 'GET',
 		url: 'https://example.com',

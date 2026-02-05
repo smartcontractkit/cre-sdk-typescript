@@ -1,4 +1,4 @@
-import { fromJson } from '@bufbuild/protobuf'
+import { create, fromJson, type MessageInitShape } from '@bufbuild/protobuf'
 import {
 	type EnclaveActionInput,
 	type EnclaveActionInputJson,
@@ -15,7 +15,7 @@ export class SendRequestser {
 		private readonly runtime: NodeRuntime<unknown>,
 		private readonly client: ClientCapability,
 	) {}
-	sendRequests(input: EnclaveActionInput | EnclaveActionInputJson): {
+	sendRequests(input: EnclaveActionInput | MessageInitShape<typeof EnclaveActionInputSchema>): {
 		result: () => HTTPEnclaveResponseData
 	} {
 		return this.client.sendRequests(this.runtime, input)
@@ -38,7 +38,7 @@ export class ClientCapability {
 
 	sendRequests(
 		runtime: NodeRuntime<unknown>,
-		input: EnclaveActionInput | EnclaveActionInputJson,
+		input: EnclaveActionInput | MessageInitShape<typeof EnclaveActionInputSchema>,
 	): { result: () => HTTPEnclaveResponseData }
 	sendRequests<TArgs extends unknown[], TOutput>(
 		runtime: Runtime<unknown>,
@@ -60,13 +60,13 @@ export class ClientCapability {
 		// Otherwise, this is the basic call overload
 		const [runtime, input] = args as [
 			NodeRuntime<unknown>,
-			EnclaveActionInput | EnclaveActionInputJson,
+			EnclaveActionInput | MessageInitShape<typeof EnclaveActionInputSchema>,
 		]
 		return this.sendRequestsCallHelper(runtime, input)
 	}
 	private sendRequestsCallHelper(
 		runtime: NodeRuntime<unknown>,
-		input: EnclaveActionInput | EnclaveActionInputJson,
+		input: EnclaveActionInput | MessageInitShape<typeof EnclaveActionInputSchema>,
 	): { result: () => HTTPEnclaveResponseData } {
 		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
 		let payload: EnclaveActionInput
@@ -75,8 +75,11 @@ export class ClientCapability {
 			// It's the original protobuf type
 			payload = input as EnclaveActionInput
 		} else {
-			// It's regular JSON, convert using fromJson
-			payload = fromJson(EnclaveActionInputSchema, input as EnclaveActionInputJson)
+			// It's a plain object initializer, convert using create
+			payload = create(
+				EnclaveActionInputSchema,
+				input as MessageInitShape<typeof EnclaveActionInputSchema>,
+			)
 		}
 
 		const capabilityId = ClientCapability.CAPABILITY_ID

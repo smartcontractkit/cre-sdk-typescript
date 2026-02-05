@@ -19,33 +19,35 @@ describe('blockchain-helpers', () => {
 		test('should encode number', () => {
 			const result = bigintToProtoBigInt(123)
 			expect(result).toEqual({
-				absVal: Buffer.from([123]).toString('base64'),
+				absVal: new Uint8Array([123]),
 			})
 		})
 
 		test('should encode string', () => {
 			const result = bigintToProtoBigInt('9768438')
 			expect(result).toEqual({
-				absVal: Buffer.from([0x95, 0x0d, 0xf6]).toString('base64'),
+				absVal: new Uint8Array([0x95, 0x0d, 0xf6]),
 			})
 		})
 
 		test('should encode bigint', () => {
 			const result = bigintToProtoBigInt(9768438n)
 			expect(result).toEqual({
-				absVal: Buffer.from([0x95, 0x0d, 0xf6]).toString('base64'),
+				absVal: new Uint8Array([0x95, 0x0d, 0xf6]),
 			})
 		})
 
 		test('should encode zero', () => {
 			const result = bigintToProtoBigInt(0)
-			expect(result).toEqual({}) // Empty absVal is omitted by toJson
+			expect(result).toEqual({
+				absVal: new Uint8Array(),
+			})
 		})
 
 		test('should take absolute value of negative numbers', () => {
 			const result = bigintToProtoBigInt(-123)
 			expect(result).toEqual({
-				absVal: Buffer.from([123]).toString('base64'),
+				absVal: new Uint8Array([123]),
 			})
 		})
 	})
@@ -76,7 +78,7 @@ describe('blockchain-helpers', () => {
 		})
 
 		test('should roundtrip with bigintToProtoBigInt (positive)', () => {
-			// Note: bigintToProtoBigInt returns JSON format, not ProtoBigInt
+			// Note: bigintToProtoBigInt returns native types
 			// This tests the conceptual roundtrip
 			const original = 9768438n
 			const proto: ProtoBigInt = {
@@ -100,26 +102,26 @@ describe('blockchain-helpers', () => {
 	describe('LAST_FINALIZED_BLOCK_NUMBER', () => {
 		test('should have correct structure for finalized block', () => {
 			expect(LAST_FINALIZED_BLOCK_NUMBER).toEqual({
-				absVal: Buffer.from([3]).toString('base64'),
-				sign: '-1',
+				absVal: new Uint8Array([3]),
+				sign: -1n,
 			})
 		})
 
-		test('should encode value 3 as base64', () => {
-			expect(LAST_FINALIZED_BLOCK_NUMBER.absVal).toBe('Aw==')
+		test('should encode value 3 as Uint8Array', () => {
+			expect(LAST_FINALIZED_BLOCK_NUMBER.absVal).toEqual(new Uint8Array([3]))
 		})
 	})
 
 	describe('LATEST_BLOCK_NUMBER', () => {
 		test('should have correct structure for latest block', () => {
 			expect(LATEST_BLOCK_NUMBER).toEqual({
-				absVal: Buffer.from([2]).toString('base64'),
-				sign: '-1',
+				absVal: new Uint8Array([2]),
+				sign: -1n,
 			})
 		})
 
-		test('should encode value 2 as base64', () => {
-			expect(LATEST_BLOCK_NUMBER.absVal).toBe('Ag==')
+		test('should encode value 2 as Uint8Array', () => {
+			expect(LATEST_BLOCK_NUMBER.absVal).toEqual(new Uint8Array([2]))
 		})
 	})
 
@@ -136,9 +138,9 @@ describe('blockchain-helpers', () => {
 			expect(result).toHaveProperty('from')
 			expect(result).toHaveProperty('to')
 			expect(result).toHaveProperty('data')
-			expect(typeof result.from).toBe('string')
-			expect(typeof result.to).toBe('string')
-			expect(typeof result.data).toBe('string')
+			expect(result.from).toBeInstanceOf(Uint8Array)
+			expect(result.to).toBeInstanceOf(Uint8Array)
+			expect(result.data).toBeInstanceOf(Uint8Array)
 		})
 
 		test('should encode zero address', () => {
@@ -152,7 +154,7 @@ describe('blockchain-helpers', () => {
 
 			expect(result.from).toBeTruthy()
 			expect(result.to).toBeTruthy()
-			expect(result.data).toBeDefined() // Empty hex should encode to empty string
+			expect(result.data).toBeDefined()
 		})
 
 		test('should encode function selector data', () => {
@@ -225,12 +227,12 @@ describe('blockchain-helpers', () => {
 			expect(result.encodedPayload).toBeTruthy()
 		})
 
-		test('should encode payload as base64', () => {
+		test('should encode payload as Uint8Array', () => {
 			const hexPayload = '0x00' as const
 
 			const result = prepareReportRequest(hexPayload)
 
-			expect(typeof result.encodedPayload).toBe('string')
+			expect(result.encodedPayload).toBeInstanceOf(Uint8Array)
 			expect(result.encodedPayload).toBeDefined()
 			if (result.encodedPayload) {
 				expect(result.encodedPayload.length).toBeGreaterThan(0)

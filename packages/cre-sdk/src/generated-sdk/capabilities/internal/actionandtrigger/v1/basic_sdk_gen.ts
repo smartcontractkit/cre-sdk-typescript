@@ -1,4 +1,4 @@
-import { create, fromJson } from '@bufbuild/protobuf'
+import { create, fromJson, type MessageInitShape } from '@bufbuild/protobuf'
 import { type Any, AnySchema, anyPack } from '@bufbuild/protobuf/wkt'
 import {
 	type Config,
@@ -31,7 +31,10 @@ export class BasicCapability {
 	static readonly CAPABILITY_NAME = 'basic-test-action-trigger'
 	static readonly CAPABILITY_VERSION = '1.0.0'
 
-	action(runtime: Runtime<unknown>, input: Input | InputJson): { result: () => Output } {
+	action(
+		runtime: Runtime<unknown>,
+		input: Input | MessageInitShape<typeof InputSchema>,
+	): { result: () => Output } {
 		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
 		let payload: Input
 
@@ -39,8 +42,8 @@ export class BasicCapability {
 			// It's the original protobuf type
 			payload = input as Input
 		} else {
-			// It's regular JSON, convert using fromJson
-			payload = fromJson(InputSchema, input as InputJson)
+			// It's a plain object initializer, convert using create
+			payload = create(InputSchema, input as MessageInitShape<typeof InputSchema>)
 		}
 
 		const capabilityId = BasicCapability.CAPABILITY_ID
