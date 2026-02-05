@@ -276,7 +276,7 @@ describe('test runtime', () => {
 	})
 })
 
-describe('test now conversts to date', () => {
+describe('test now converts to date', () => {
 	test('now converts to date', () => {
 		const helpers = createRuntimeHelpersMock({
 			now: mock(() => 1716153600000),
@@ -284,7 +284,7 @@ describe('test now conversts to date', () => {
 
 		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
 		const now = runtime.now()
-		expect(now).toEqual(new Date(1716153600000 / 1000000))
+		expect(now).toEqual(new Date(1716153600000))
 	})
 })
 

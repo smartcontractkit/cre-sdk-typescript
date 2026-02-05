@@ -186,8 +186,8 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 	}
 
 	now(): Date {
-		// ns to ms
-		return new Date(this.helpers.now() / 1000000)
+		// date is already in milliseconds
+		return new Date(this.helpers.now())
 	}
 
 	log(message: string): void {
@@ -431,7 +431,7 @@ export interface RuntimeHelpers {
 	/** Switches execution mode (DON vs Node). Affects available operations. */
 	switchModes(mode: Mode): void
 
-	/** Returns current time in nanoseconds. */
+	/** Returns current time in milliseconds since Unix epoch. */
 	now(): number
 
 	/** Logs a message to the host environment. */
