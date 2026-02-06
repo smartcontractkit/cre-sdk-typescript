@@ -1,85 +1,84 @@
 import {
-  ConfidentialHTTPClient,
-  type ConfidentialHTTPSendRequester,
-  CronCapability,
-  consensusIdenticalAggregation,
-  handler,
-  json,
-  ok,
-  Runner,
-  type Runtime,
-  safeJsonStringify,
-} from "@chainlink/cre-sdk";
-import { z } from "zod";
+	ConfidentialHTTPClient,
+	type ConfidentialHTTPSendRequester,
+	CronCapability,
+	consensusIdenticalAggregation,
+	handler,
+	json,
+	ok,
+	Runner,
+	type Runtime,
+	safeJsonStringify,
+} from '@chainlink/cre-sdk'
+import { z } from 'zod'
 
 const configSchema = z.object({
-  schedule: z.string(),
-  owner: z.string(),
-  url: z.string(),
-});
+	schedule: z.string(),
+	owner: z.string(),
+	url: z.string(),
+})
 
-type Config = z.infer<typeof configSchema>;
+type Config = z.infer<typeof configSchema>
 
 type ResponseValues = {
-  result: {
-    headers: {
-      "secret-header": string;
-    };
-  };
-};
+	result: {
+		headers: {
+			'secret-header': string
+		}
+	}
+}
 
-const fetchResult = (
-  sendRequester: ConfidentialHTTPSendRequester,
-  config: Config,
-) => {
-  const response = sendRequester
-    .sendRequest({
-      request: {
-        url: config.url,
-        method: "GET",
-        multiHeaders: { "secret-header": { values: ["{{.SECRET_HEADER}}"] } },
-      },
-      vaultDonSecrets: [
-        {
-          key: "SECRET_HEADER",
-          owner: config.owner,
-        },
-      ],
-    })
-    .result();
+const fetchResult = (sendRequester: ConfidentialHTTPSendRequester, config: Config) => {
+	const response = sendRequester
+		.sendRequest({
+			request: {
+				url: config.url,
+				method: 'GET',
+				multiHeaders: { 'secret-header': { values: ['{{.SECRET_HEADER}}'] } },
+			},
+			vaultDonSecrets: [
+				{
+					key: 'SECRET_HEADER',
+					owner: config.owner,
+				},
+			],
+		})
+		.result()
 
-  if (!ok(response)) {
-    throw new Error(`HTTP request failed with status: ${response.statusCode}`);
-  }
+	if (!ok(response)) {
+		throw new Error(`HTTP request failed with status: ${response.statusCode}`)
+	}
 
-  return json(response) as ResponseValues;
-};
+	return json(response) as ResponseValues
+}
 
 const onCronTrigger = (runtime: Runtime<Config>) => {
-  runtime.log("Confidential HTTP workflow triggered.");
+	runtime.log('Confidential HTTP workflow triggered.')
 
-  const confHTTPClient = new ConfidentialHTTPClient();
-  const result = confHTTPClient
-    .sendRequest(runtime, fetchResult, consensusIdenticalAggregation())(
-      runtime.config,
-    )
-    .result();
+	const confHTTPClient = new ConfidentialHTTPClient()
+	const result = confHTTPClient
+		.sendRequest(
+			runtime,
+			fetchResult,
+			consensusIdenticalAggregation(),
+		)(runtime.config)
+		.result()
 
-  runtime.log(`Successfully fetched result: ${safeJsonStringify(result)}`);
+	runtime.log(`Successfully fetched result: ${safeJsonStringify(result)}`)
 
-  return {
-    result,
-  };
-};
+	return {
+		result,
+	}
+}
 
 const initWorkflow = (config: Config) => {
-  const cron = new CronCapability();
+	const cron = new CronCapability()
 
-  return [handler(cron.trigger({ schedule: config.schedule }), onCronTrigger)];
-};
+	return [handler(cron.trigger({ schedule: config.schedule }), onCronTrigger)]
+}
 
 export async function main() {
-  const runner = await Runner.newRunner<Config>({ configSchema });
+	const runner = await Runner.newRunner<Config>({ configSchema })
 
-  await runner.run(initWorkflow);
+	await runner.run(initWorkflow)
 }
