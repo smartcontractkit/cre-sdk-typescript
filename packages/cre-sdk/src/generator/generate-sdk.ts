@@ -99,11 +99,9 @@ export function generateSdk(file: GenFile, outputDir: string) {
 
 		// Build import statements
 		const imports = new Set<string>()
-		if (hasTriggers) {
-			imports.add('import { fromJson, create } from "@bufbuild/protobuf"')
-		} else {
-			imports.add('import { fromJson } from "@bufbuild/protobuf"')
-		}
+		// Always import create + MessageInitShape (for action methods accepting plain objects)
+		// and fromJson (for triggers and wrapped types). Biome will remove unused imports.
+		imports.add('import { create, fromJson, type MessageInitShape } from "@bufbuild/protobuf"')
 
 		// Add trigger imports if needed
 		if (hasTriggers) {

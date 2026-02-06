@@ -1,4 +1,4 @@
-import { create, type Message } from '@bufbuild/protobuf'
+import { create, type Message, type MessageInitShape } from '@bufbuild/protobuf'
 import type { GenMessage } from '@bufbuild/protobuf/codegenv2'
 import { type Any, anyPack, anyUnpack } from '@bufbuild/protobuf/wkt'
 import {
@@ -14,6 +14,7 @@ import {
 	type GetSecretsRequest,
 	GetSecretsRequestSchema,
 	Mode,
+	ReportRequestSchema,
 	type Secret,
 	type SecretRequest,
 	type SecretRequestJson,
@@ -27,7 +28,6 @@ import type {
 	CallCapabilityParams,
 	NodeRuntime,
 	ReportRequest,
-	ReportRequestJson,
 	Runtime,
 } from '@cre/sdk'
 import type { Report } from '@cre/sdk/report'
@@ -402,7 +402,9 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 	/**
 	 * Generates a report via consensus mechanism.
 	 */
-	report(input: ReportRequest | ReportRequestJson): { result: () => Report } {
+	report(input: ReportRequest | MessageInitShape<typeof ReportRequestSchema>): {
+		result: () => Report
+	} {
 		const consensus = new ConsensusCapability()
 		const call = consensus.report(this, input)
 		return {

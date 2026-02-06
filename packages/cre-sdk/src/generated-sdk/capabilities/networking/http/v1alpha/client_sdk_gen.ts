@@ -1,4 +1,4 @@
-import { fromJson } from '@bufbuild/protobuf'
+import { create, fromJson, type MessageInitShape } from '@bufbuild/protobuf'
 import {
 	type Request,
 	type RequestJson,
@@ -15,7 +15,7 @@ export class SendRequester {
 		private readonly runtime: NodeRuntime<unknown>,
 		private readonly client: ClientCapability,
 	) {}
-	sendRequest(input: Request | RequestJson): { result: () => Response } {
+	sendRequest(input: Request | MessageInitShape<typeof RequestSchema>): { result: () => Response } {
 		return this.client.sendRequest(this.runtime, input)
 	}
 }
@@ -36,7 +36,7 @@ export class ClientCapability {
 
 	sendRequest(
 		runtime: NodeRuntime<unknown>,
-		input: Request | RequestJson,
+		input: Request | MessageInitShape<typeof RequestSchema>,
 	): { result: () => Response }
 	sendRequest<TArgs extends unknown[], TOutput>(
 		runtime: Runtime<unknown>,
@@ -56,12 +56,15 @@ export class ClientCapability {
 			return this.sendRequestSugarHelper(runtime, fn, consensusAggregation, unwrapOptions)
 		}
 		// Otherwise, this is the basic call overload
-		const [runtime, input] = args as [NodeRuntime<unknown>, Request | RequestJson]
+		const [runtime, input] = args as [
+			NodeRuntime<unknown>,
+			Request | MessageInitShape<typeof RequestSchema>,
+		]
 		return this.sendRequestCallHelper(runtime, input)
 	}
 	private sendRequestCallHelper(
 		runtime: NodeRuntime<unknown>,
-		input: Request | RequestJson,
+		input: Request | MessageInitShape<typeof RequestSchema>,
 	): { result: () => Response } {
 		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
 		let payload: Request
@@ -70,8 +73,8 @@ export class ClientCapability {
 			// It's the original protobuf type
 			payload = input as Request
 		} else {
-			// It's regular JSON, convert using fromJson
-			payload = fromJson(RequestSchema, input as RequestJson)
+			// It's a plain object initializer, convert using create
+			payload = create(RequestSchema, input as MessageInitShape<typeof RequestSchema>)
 		}
 
 		const capabilityId = ClientCapability.CAPABILITY_ID
