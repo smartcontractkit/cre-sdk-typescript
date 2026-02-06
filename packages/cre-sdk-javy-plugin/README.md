@@ -19,10 +19,10 @@ bun add @chainlink/cre-sdk-javy-plugin
 bun add @chainlink/cre-sdk
 
 # One-time setup: download Javy binary and compile plugin
-bunx cre-setup
+bun x cre-setup
 
 # Compile your workflow to WebAssembly
-bunx cre-compile src/workflow.ts dist/workflow.wasm
+bun x cre-compile src/workflow.ts dist/workflow.wasm
 ```
 
 ## Usage
@@ -40,24 +40,24 @@ If using this package directly (without the main SDK):
 2. **Setup (one-time)**
 
    ```bash
-   bunx cre-setup
+   bun x cre-setup
    ```
 
    This downloads the appropriate Javy binary for your OS and compiles the CRE plugin.
 
 3. **Compile workflows**
    ```bash
-   bunx cre-compile-workflow <input.js> <output.wasm>
+   bun x cre-compile-workflow <input.js> <output.wasm>
    ```
 
 ### Example
 
 ```bash
 # With main SDK (typical usage)
-bunx cre-compile src/hello-world.ts dist/hello-world.wasm
+bun x cre-compile src/hello-world.ts dist/hello-world.wasm
 
 # Standalone (using this package directly)
-bunx cre-compile-workflow src/hello-world.js dist/hello-world.wasm
+bun x cre-compile-workflow src/hello-world.js dist/hello-world.wasm
 ```
 
 ## Javy Setup & Troubleshooting
@@ -178,17 +178,17 @@ cd src/javy_chainlink_sdk
 cargo test
 
 # Test compilation with example workflow (requires @chainlink/cre-sdk installed)
-bunx cre-compile examples/hello-world.ts test-output.wasm
+bun x cre-compile examples/hello-world.ts test-output.wasm
 
 # Or with standalone binary
-bunx cre-compile-workflow examples/hello-world.js test-output.wasm
+bun x cre-compile-workflow examples/hello-world.js test-output.wasm
 ```
 
 ### Contributing
 
 1. Make changes to the Rust plugin in `src/javy_chainlink_sdk/`
 2. Build and test: `bun run build`
-3. Test compilation: `bunx cre-compile <test-file> <output>` or `bunx cre-compile-workflow <test-file> <output>`
+3. Test compilation: `bun x cre-compile <test-file> <output>` or `bun x cre-compile-workflow <test-file> <output>`
 4. Verify WASM output via simulating with [CRE CLI](https://github.com/smartcontractkit/cre-cli).
 
 ## License
