@@ -1,17 +1,17 @@
-import type { ResponseTemplate } from '@cre/generated/capabilities/networking/confidentialhttp/v1alpha/client_pb'
+import type { ResponseTemplate } from "@cre/generated/capabilities/networking/confidentialhttp/v1alpha/client_pb";
 import type {
-	Request,
-	RequestJson,
-	Response,
-} from '@cre/generated/capabilities/networking/http/v1alpha/client_pb'
-import type { ReportResponse } from '@cre/generated/sdk/v1alpha/sdk_pb'
+  Request,
+  RequestJson,
+  Response,
+} from "@cre/generated/capabilities/networking/http/v1alpha/client_pb";
+import type { ReportResponse } from "@cre/generated/sdk/v1alpha/sdk_pb";
 import type {
-	ClientCapability,
-	SendRequester,
-} from '@cre/generated-sdk/capabilities/networking/http/v1alpha/client_sdk_gen'
-import type { NodeRuntime } from '@cre/sdk'
-import type { Report } from '@cre/sdk/report'
-import { decodeJson } from '@cre/sdk/utils/decode-json'
+  ClientCapability,
+  SendRequester,
+} from "@cre/generated-sdk/capabilities/networking/http/v1alpha/client_sdk_gen";
+import type { NodeRuntime } from "@cre/sdk";
+import type { Report } from "@cre/sdk/report";
+import { decodeJson } from "@cre/sdk/utils/decode-json";
 
 /**
  * HTTP Response Helper Functions
@@ -62,26 +62,31 @@ import { decodeJson } from '@cre/sdk/utils/decode-json'
  * @param response - The Response object
  * @returns The body as a trimmed string
  */
-export function text(response: Response | ResponseTemplate): string
+export function text(response: Response | ResponseTemplate): string;
 /**
  * Returns the response body as a UTF-8 string, automatically trimmed
  * @param responseFn - Function that returns an object with result function that returns Response
  * @returns Object with result function that returns the body as a trimmed string
  */
-export function text(responseFn: () => { result: Response | ResponseTemplate }): {
-	result: () => string
-}
 export function text(
-	responseOrFn: Response | ResponseTemplate | (() => { result: Response | ResponseTemplate }),
+  responseFn: () => { result: Response | ResponseTemplate },
+): {
+  result: () => string;
+};
+export function text(
+  responseOrFn:
+    | Response
+    | ResponseTemplate
+    | (() => { result: Response | ResponseTemplate }),
 ): string | { result: () => string } {
-	if (typeof responseOrFn === 'function') {
-		return {
-			result: () => text(responseOrFn().result),
-		}
-	} else {
-		const decoder = new TextDecoder('utf-8')
-		return decoder.decode(responseOrFn.body).trim()
-	}
+  if (typeof responseOrFn === "function") {
+    return {
+      result: () => text(responseOrFn().result),
+    };
+  } else {
+    const decoder = new TextDecoder("utf-8");
+    return decoder.decode(responseOrFn.body).trim();
+  }
 }
 
 /**
@@ -90,26 +95,31 @@ export function text(
  * @returns The parsed JSON
  * @throws Error if the body is not valid JSON
  */
-export function json(response: Response | ResponseTemplate): unknown
+export function json(response: Response | ResponseTemplate): unknown;
 /**
  * Parses the response body as JSON
  * @param responseFn - Function that returns an object with result function that returns Response
  * @returns Object with result function that returns the parsed JSON
  * @throws Error if the body is not valid JSON
  */
-export function json(responseFn: () => { result: Response | ResponseTemplate }): {
-	result: () => unknown
-}
 export function json(
-	responseOrFn: Response | ResponseTemplate | (() => { result: Response | ResponseTemplate }),
+  responseFn: () => { result: Response | ResponseTemplate },
+): {
+  result: () => unknown;
+};
+export function json(
+  responseOrFn:
+    | Response
+    | ResponseTemplate
+    | (() => { result: Response | ResponseTemplate }),
 ): unknown | { result: () => unknown } {
-	if (typeof responseOrFn === 'function') {
-		return {
-			result: () => json(responseOrFn().result),
-		}
-	}
+  if (typeof responseOrFn === "function") {
+    return {
+      result: () => json(responseOrFn().result),
+    };
+  }
 
-	return decodeJson(responseOrFn.body)
+  return decodeJson(responseOrFn.body);
 }
 
 /**
@@ -118,7 +128,7 @@ export function json(
  * @param name - The header name (case-insensitive)
  * @returns The header value or undefined if not found
  */
-export function getHeader(response: Response, name: string): string | undefined
+export function getHeader(response: Response, name: string): string | undefined;
 /**
  * Gets a specific header value
  * @param responseFn - Function that returns an object with result function that returns Response
@@ -126,23 +136,23 @@ export function getHeader(response: Response, name: string): string | undefined
  * @returns Object with result function that returns the header value or undefined if not found
  */
 export function getHeader(
-	responseFn: () => { result: Response },
-	name: string,
-): { result: () => string | undefined }
+  responseFn: () => { result: Response },
+  name: string,
+): { result: () => string | undefined };
 export function getHeader(
-	responseOrFn: Response | (() => { result: Response }),
-	name: string,
+  responseOrFn: Response | (() => { result: Response }),
+  name: string,
 ): string | undefined | { result: () => string | undefined } {
-	if (typeof responseOrFn === 'function') {
-		return {
-			result: () => getHeader(responseOrFn().result, name),
-		}
-	} else {
-		const lowerName = name.toLowerCase()
-		return Object.entries(responseOrFn.headers).find(
-			([key]) => key.toLowerCase() === lowerName,
-		)?.[1]
-	}
+  if (typeof responseOrFn === "function") {
+    return {
+      result: () => getHeader(responseOrFn().result, name),
+    };
+  } else {
+    const lowerName = name.toLowerCase();
+    return Object.entries(responseOrFn.headers).find(
+      ([key]) => key.toLowerCase() === lowerName,
+    )?.[1];
+  }
 }
 
 /**
@@ -150,25 +160,28 @@ export function getHeader(
  * @param response - The Response object
  * @returns True if the status code is in the 200-299 range
  */
-export function ok(response: Response | ResponseTemplate): boolean
+export function ok(response: Response | ResponseTemplate): boolean;
 /**
  * Checks if the response status indicates success (200-299)
  * @param responseFn - Function that returns an object with result function that returns Response
  * @returns Object with result function that returns true if the status code is in the 200-299 range
  */
 export function ok(responseFn: () => { result: Response | ResponseTemplate }): {
-	result: () => boolean
-}
+  result: () => boolean;
+};
 export function ok(
-	responseOrFn: Response | ResponseTemplate | (() => { result: Response | ResponseTemplate }),
+  responseOrFn:
+    | Response
+    | ResponseTemplate
+    | (() => { result: Response | ResponseTemplate }),
 ): boolean | { result: () => boolean } {
-	if (typeof responseOrFn === 'function') {
-		return {
-			result: () => ok(responseOrFn().result),
-		}
-	} else {
-		return responseOrFn.statusCode >= 200 && responseOrFn.statusCode < 300
-	}
+  if (typeof responseOrFn === "function") {
+    return {
+      result: () => ok(responseOrFn().result),
+    };
+  } else {
+    return responseOrFn.statusCode >= 200 && responseOrFn.statusCode < 300;
+  }
 }
 
 // ============================================================================
@@ -187,14 +200,14 @@ export function ok(
  * @returns Response result function
  */
 function sendReport(
-	this: ClientCapability,
-	runtime: NodeRuntime<unknown>,
-	report: Report,
-	fn: (reportResponse: ReportResponse) => Request | RequestJson,
+  this: ClientCapability,
+  runtime: NodeRuntime<unknown>,
+  report: Report,
+  fn: (reportResponse: ReportResponse) => Request | RequestJson,
 ): { result: () => Response } {
-	const rawReport = report.x_generatedCodeOnly_unwrap()
-	const request = fn(rawReport)
-	return this.sendRequest(runtime, request)
+  const rawReport = report.x_generatedCodeOnly_unwrap();
+  const request = fn(rawReport);
+  return this.sendRequest(runtime, request);
 }
 
 /**
@@ -208,13 +221,13 @@ function sendReport(
  * @returns Response result function
  */
 function sendRequesterSendReport(
-	this: SendRequester,
-	report: Report,
-	fn: (reportResponse: ReportResponse) => Request | RequestJson,
+  this: SendRequester,
+  report: Report,
+  fn: (reportResponse: ReportResponse) => Request | RequestJson,
 ): { result: () => Response } {
-	const rawReport = report.x_generatedCodeOnly_unwrap()
-	const request = fn(rawReport)
-	return this.sendRequest(request)
+  const rawReport = report.x_generatedCodeOnly_unwrap();
+  const request = fn(rawReport);
+  return this.sendRequest(request);
 }
 
 // ============================================================================
@@ -223,55 +236,55 @@ function sendRequesterSendReport(
 
 // Import the actual classes for prototype extension
 import {
-	ClientCapability as ClientCapabilityClass,
-	SendRequester as SendRequesterClass,
-} from '@cre/generated-sdk/capabilities/networking/http/v1alpha/client_sdk_gen'
+  ClientCapability as ClientCapabilityClass,
+  SendRequester as SendRequesterClass,
+} from "@cre/generated-sdk/capabilities/networking/http/v1alpha/client_sdk_gen";
 
 // Extend ClientCapability prototype
-ClientCapabilityClass.prototype.sendReport = sendReport
+ClientCapabilityClass.prototype.sendReport = sendReport;
 
 // Extend SendRequester prototype
-SendRequesterClass.prototype.sendReport = sendRequesterSendReport
+SendRequesterClass.prototype.sendReport = sendRequesterSendReport;
 
 // ============================================================================
 // Type Declarations for Prototype Extensions
 // ============================================================================
 
 // Augment the module declarations to include the new methods
-declare module '@cre/generated-sdk/capabilities/networking/http/v1alpha/client_sdk_gen' {
-	interface ClientCapability {
-		/**
-		 * SendReport functions the same as SendRequest, but takes a Report and a function
-		 * to convert the inner ReportResponse to a Request.
-		 * Note that caching is limited as reports may contain different sets of signatures
-		 * on different nodes, leading to a cache miss.
-		 *
-		 * @param runtime - The runtime instance
-		 * @param report - The Report to process
-		 * @param fn - Function to convert ReportResponse to Request
-		 * @returns Response result function
-		 */
-		sendReport(
-			runtime: NodeRuntime<unknown>,
-			report: Report,
-			fn: (reportResponse: ReportResponse) => Request | RequestJson,
-		): { result: () => Response }
-	}
+declare module "@cre/generated-sdk/capabilities/networking/http/v1alpha/client_sdk_gen" {
+  interface ClientCapability {
+    /**
+     * SendReport functions the same as SendRequest, but takes a Report and a function
+     * to convert the inner ReportResponse to a Request.
+     * Note that caching is limited as reports may contain different sets of signatures
+     * on different nodes, leading to a cache miss.
+     *
+     * @param runtime - The runtime instance
+     * @param report - The Report to process
+     * @param fn - Function to convert ReportResponse to Request
+     * @returns Response result function
+     */
+    sendReport(
+      runtime: NodeRuntime<unknown>,
+      report: Report,
+      fn: (reportResponse: ReportResponse) => Request | RequestJson,
+    ): { result: () => Response };
+  }
 
-	interface SendRequester {
-		/**
-		 * SendReport functions the same as SendRequest, but takes a Report and a function
-		 * to convert the inner ReportResponse to a Request.
-		 * Note that caching is limited as reports may contain different sets of signatures
-		 * on different nodes, leading to a cache miss.
-		 *
-		 * @param report - The Report to process
-		 * @param fn - Function to convert ReportResponse to Request
-		 * @returns Response result function
-		 */
-		sendReport(
-			report: Report,
-			fn: (reportResponse: ReportResponse) => Request | RequestJson,
-		): { result: () => Response }
-	}
+  interface SendRequester {
+    /**
+     * SendReport functions the same as SendRequest, but takes a Report and a function
+     * to convert the inner ReportResponse to a Request.
+     * Note that caching is limited as reports may contain different sets of signatures
+     * on different nodes, leading to a cache miss.
+     *
+     * @param report - The Report to process
+     * @param fn - Function to convert ReportResponse to Request
+     * @returns Response result function
+     */
+    sendReport(
+      report: Report,
+      fn: (reportResponse: ReportResponse) => Request | RequestJson,
+    ): { result: () => Response };
+  }
 }

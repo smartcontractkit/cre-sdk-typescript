@@ -5,6 +5,8 @@
 import type { Message } from '@bufbuild/protobuf'
 import type { GenFile, GenMessage, GenService } from '@bufbuild/protobuf/codegenv2'
 import { fileDesc, messageDesc, serviceDesc } from '@bufbuild/protobuf/codegenv2'
+import type { Duration, DurationJson } from '@bufbuild/protobuf/wkt'
+import { file_google_protobuf_duration } from '@bufbuild/protobuf/wkt'
 import { file_tools_generator_v1alpha_cre_metadata } from '../../../../tools/generator/v1alpha/cre_metadata_pb'
 
 /**
@@ -13,8 +15,8 @@ import { file_tools_generator_v1alpha_cre_metadata } from '../../../../tools/gen
 export const file_capabilities_networking_confidentialhttp_v1alpha_client: GenFile =
 	/*@__PURE__*/
 	fileDesc(
-		'Cj1jYXBhYmlsaXRpZXMvbmV0d29ya2luZy9jb25maWRlbnRpYWxodHRwL3YxYWxwaGEvY2xpZW50LnByb3RvEjBjYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEiUAoQU2VjcmV0SWRlbnRpZmllchILCgNrZXkYASABKAkSEQoJbmFtZXNwYWNlGAIgASgJEhIKBW93bmVyGAMgASgJSACIAQFCCAoGX293bmVyIpMCCgdSZXF1ZXN0EgsKA3VybBgBIAEoCRIOCgZtZXRob2QYAiABKAkSDAoEYm9keRgDIAEoCRIPCgdoZWFkZXJzGAQgAygJEnMKFnB1YmxpY190ZW1wbGF0ZV92YWx1ZXMYBSADKAsyUy5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuUmVxdWVzdC5QdWJsaWNUZW1wbGF0ZVZhbHVlc0VudHJ5EhoKEmN1c3RvbV9jZXJ0X2J1bmRsZRgGIAEoDBo7ChlQdWJsaWNUZW1wbGF0ZVZhbHVlc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEiOQoQUmVzcG9uc2VUZW1wbGF0ZRIXCgtzdGF0dXNfY29kZRgBIAEoA0ICMAASDAoEYm9keRgCIAEoDCJlChZIVFRQRW5jbGF2ZVJlcXVlc3REYXRhEksKCHJlcXVlc3RzGAEgAygLMjkuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLlJlcXVlc3QizAEKEkVuY2xhdmVBY3Rpb25JbnB1dBJdChF2YXVsdF9kb25fc2VjcmV0cxgBIAMoCzJCLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5TZWNyZXRJZGVudGlmaWVyElcKBWlucHV0GAIgASgLMkguY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLkhUVFBFbmNsYXZlUmVxdWVzdERhdGEicAoXSFRUUEVuY2xhdmVSZXNwb25zZURhdGESVQoJcmVzcG9uc2VzGAEgAygLMkIuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLlJlc3BvbnNlVGVtcGxhdGUy0QEKBkNsaWVudBKfAQoMU2VuZFJlcXVlc3RzEkQuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLkVuY2xhdmVBY3Rpb25JbnB1dBpJLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IVFRQRW5jbGF2ZVJlc3BvbnNlRGF0YRolgrUYIQgCEh1jb25maWRlbnRpYWwtaHR0cEAxLjAuMC1hbHBoYUKmAgo0Y29tLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYUILQ2xpZW50UHJvdG9QAaICA0NOQ6oCMENhcGFiaWxpdGllcy5OZXR3b3JraW5nLkNvbmZpZGVudGlhbGh0dHAuVjFhbHBoYcoCMENhcGFiaWxpdGllc1xOZXR3b3JraW5nXENvbmZpZGVudGlhbGh0dHBcVjFhbHBoYeICPENhcGFiaWxpdGllc1xOZXR3b3JraW5nXENvbmZpZGVudGlhbGh0dHBcVjFhbHBoYVxHUEJNZXRhZGF0YeoCM0NhcGFiaWxpdGllczo6TmV0d29ya2luZzo6Q29uZmlkZW50aWFsaHR0cDo6VjFhbHBoYWIGcHJvdG8z',
-		[file_tools_generator_v1alpha_cre_metadata],
+		'Cj1jYXBhYmlsaXRpZXMvbmV0d29ya2luZy9jb25maWRlbnRpYWxodHRwL3YxYWxwaGEvY2xpZW50LnByb3RvEjBjYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEiUAoQU2VjcmV0SWRlbnRpZmllchILCgNrZXkYASABKAkSEQoJbmFtZXNwYWNlGAIgASgJEhIKBW93bmVyGAMgASgJSACIAQFCCAoGX293bmVyIh4KDEhlYWRlclZhbHVlcxIOCgZ2YWx1ZXMYASADKAkivwQKC0hUVFBSZXF1ZXN0EgsKA3VybBgBIAEoCRIOCgZtZXRob2QYAiABKAkSFQoLYm9keV9zdHJpbmcYAyABKAlIABIUCgpib2R5X2J5dGVzGAggASgMSAASZgoNbXVsdGlfaGVhZGVycxgEIAMoCzJPLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IVFRQUmVxdWVzdC5NdWx0aUhlYWRlcnNFbnRyeRJ3ChZ0ZW1wbGF0ZV9wdWJsaWNfdmFsdWVzGAUgAygLMlcuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLkhUVFBSZXF1ZXN0LlRlbXBsYXRlUHVibGljVmFsdWVzRW50cnkSHwoXY3VzdG9tX3Jvb3RfY2FfY2VydF9wZW0YBiABKAwSKgoHdGltZW91dBgHIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhpzChFNdWx0aUhlYWRlcnNFbnRyeRILCgNrZXkYASABKAkSTQoFdmFsdWUYAiABKAsyPi5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuSGVhZGVyVmFsdWVzOgI4ARo7ChlUZW1wbGF0ZVB1YmxpY1ZhbHVlc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAFCBgoEYm9keSKPAgoMSFRUUFJlc3BvbnNlEhMKC3N0YXR1c19jb2RlGAEgASgNEgwKBGJvZHkYAiABKAwSZwoNbXVsdGlfaGVhZGVycxgDIAMoCzJQLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IVFRQUmVzcG9uc2UuTXVsdGlIZWFkZXJzRW50cnkacwoRTXVsdGlIZWFkZXJzRW50cnkSCwoDa2V5GAEgASgJEk0KBXZhbHVlGAIgASgLMj4uY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLkhlYWRlclZhbHVlczoCOAEi4AEKF0NvbmZpZGVudGlhbEhUVFBSZXF1ZXN0El0KEXZhdWx0X2Rvbl9zZWNyZXRzGAEgAygLMkIuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLlNlY3JldElkZW50aWZpZXISTgoHcmVxdWVzdBgCIAEoCzI9LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IVFRQUmVxdWVzdBIWCg5lbmNyeXB0X291dHB1dBgDIAEoCDLKAQoGQ2xpZW50EpgBCgtTZW5kUmVxdWVzdBJJLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5Db25maWRlbnRpYWxIVFRQUmVxdWVzdBo+LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IVFRQUmVzcG9uc2UaJYK1GCEIAhIdY29uZmlkZW50aWFsLWh0dHBAMS4wLjAtYWxwaGFCpgIKNGNvbS5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGFCC0NsaWVudFByb3RvUAGiAgNDTkOqAjBDYXBhYmlsaXRpZXMuTmV0d29ya2luZy5Db25maWRlbnRpYWxodHRwLlYxYWxwaGHKAjBDYXBhYmlsaXRpZXNcTmV0d29ya2luZ1xDb25maWRlbnRpYWxodHRwXFYxYWxwaGHiAjxDYXBhYmlsaXRpZXNcTmV0d29ya2luZ1xDb25maWRlbnRpYWxodHRwXFYxYWxwaGFcR1BCTWV0YWRhdGHqAjNDYXBhYmlsaXRpZXM6Ok5ldHdvcmtpbmc6OkNvbmZpZGVudGlhbGh0dHA6OlYxYWxwaGFiBnByb3RvMw',
+		[file_google_protobuf_duration, file_tools_generator_v1alpha_cre_metadata],
 	)
 
 /**
@@ -68,233 +70,328 @@ export const SecretIdentifierSchema: GenMessage<
 > = /*@__PURE__*/ messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 0)
 
 /**
- * @generated from message capabilities.networking.confidentialhttp.v1alpha.Request
+ * HeaderValues represents multiple values for a single header key.
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.HeaderValues
  */
-export type Request = Message<'capabilities.networking.confidentialhttp.v1alpha.Request'> & {
-	/**
-	 * @generated from field: string url = 1;
-	 */
-	url: string
+export type HeaderValues =
+	Message<'capabilities.networking.confidentialhttp.v1alpha.HeaderValues'> & {
+		/**
+		 * @generated from field: repeated string values = 1;
+		 */
+		values: string[]
+	}
 
+/**
+ * HeaderValues represents multiple values for a single header key.
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.HeaderValues
+ */
+export type HeaderValuesJson = {
 	/**
-	 * @generated from field: string method = 2;
+	 * @generated from field: repeated string values = 1;
 	 */
-	method: string
-
-	/**
-	 * @generated from field: string body = 3;
-	 */
-	body: string
-
-	/**
-	 * @generated from field: repeated string headers = 4;
-	 */
-	headers: string[]
-
-	/**
-	 * @generated from field: map<string, string> public_template_values = 5;
-	 */
-	publicTemplateValues: { [key: string]: string }
-
-	/**
-	 * @generated from field: bytes custom_cert_bundle = 6;
-	 */
-	customCertBundle: Uint8Array
+	values?: string[]
 }
 
 /**
- * @generated from message capabilities.networking.confidentialhttp.v1alpha.Request
+ * Describes the message capabilities.networking.confidentialhttp.v1alpha.HeaderValues.
+ * Use `create(HeaderValuesSchema)` to create a new message.
  */
-export type RequestJson = {
+export const HeaderValuesSchema: GenMessage<HeaderValues, { jsonType: HeaderValuesJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 1)
+
+/**
+ * HTTPRequest contains the HTTP fields used to make a request from the enclave.
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.HTTPRequest
+ */
+export type HTTPRequest =
+	Message<'capabilities.networking.confidentialhttp.v1alpha.HTTPRequest'> & {
+		/**
+		 * url is the endpoint to which the request is sent.
+		 *
+		 * @generated from field: string url = 1;
+		 */
+		url: string
+
+		/**
+		 * method is the HTTP method (GET, POST, PUT, DELETE, etc.).
+		 *
+		 * @generated from field: string method = 2;
+		 */
+		method: string
+
+		/**
+		 * body is the request body - either a string template or raw bytes.
+		 *
+		 * @generated from oneof capabilities.networking.confidentialhttp.v1alpha.HTTPRequest.body
+		 */
+		body:
+			| {
+					/**
+					 * @generated from field: string body_string = 3;
+					 */
+					value: string
+					case: 'bodyString'
+			  }
+			| {
+					/**
+					 * @generated from field: bytes body_bytes = 8;
+					 */
+					value: Uint8Array
+					case: 'bodyBytes'
+			  }
+			| { case: undefined; value?: undefined }
+
+		/**
+		 * multi_headers are the request headers as name-value pairs.
+		 * Supports multiple values per header key.
+		 *
+		 * @generated from field: map<string, capabilities.networking.confidentialhttp.v1alpha.HeaderValues> multi_headers = 4;
+		 */
+		multiHeaders: { [key: string]: HeaderValues }
+
+		/**
+		 * template_public_values are public values used to fill in request body and header templates.
+		 *
+		 * @generated from field: map<string, string> template_public_values = 5;
+		 */
+		templatePublicValues: { [key: string]: string }
+
+		/**
+		 * custom_root_ca_cert_pem is an optional custom root CA certificate (PEM format)
+		 * for verifying the external server's TLS certificate.
+		 *
+		 * @generated from field: bytes custom_root_ca_cert_pem = 6;
+		 */
+		customRootCaCertPem: Uint8Array
+
+		/**
+		 * timeout is the request timeout duration.
+		 *
+		 * @generated from field: google.protobuf.Duration timeout = 7;
+		 */
+		timeout?: Duration
+	}
+
+/**
+ * HTTPRequest contains the HTTP fields used to make a request from the enclave.
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.HTTPRequest
+ */
+export type HTTPRequestJson = {
 	/**
+	 * url is the endpoint to which the request is sent.
+	 *
 	 * @generated from field: string url = 1;
 	 */
 	url?: string
 
 	/**
+	 * method is the HTTP method (GET, POST, PUT, DELETE, etc.).
+	 *
 	 * @generated from field: string method = 2;
 	 */
 	method?: string
 
 	/**
-	 * @generated from field: string body = 3;
+	 * @generated from field: string body_string = 3;
 	 */
-	body?: string
+	bodyString?: string
 
 	/**
-	 * @generated from field: repeated string headers = 4;
+	 * @generated from field: bytes body_bytes = 8;
 	 */
-	headers?: string[]
+	bodyBytes?: string
 
 	/**
-	 * @generated from field: map<string, string> public_template_values = 5;
+	 * multi_headers are the request headers as name-value pairs.
+	 * Supports multiple values per header key.
+	 *
+	 * @generated from field: map<string, capabilities.networking.confidentialhttp.v1alpha.HeaderValues> multi_headers = 4;
 	 */
-	publicTemplateValues?: { [key: string]: string }
+	multiHeaders?: { [key: string]: HeaderValuesJson }
 
 	/**
-	 * @generated from field: bytes custom_cert_bundle = 6;
+	 * template_public_values are public values used to fill in request body and header templates.
+	 *
+	 * @generated from field: map<string, string> template_public_values = 5;
 	 */
-	customCertBundle?: string
+	templatePublicValues?: { [key: string]: string }
+
+	/**
+	 * custom_root_ca_cert_pem is an optional custom root CA certificate (PEM format)
+	 * for verifying the external server's TLS certificate.
+	 *
+	 * @generated from field: bytes custom_root_ca_cert_pem = 6;
+	 */
+	customRootCaCertPem?: string
+
+	/**
+	 * timeout is the request timeout duration.
+	 *
+	 * @generated from field: google.protobuf.Duration timeout = 7;
+	 */
+	timeout?: DurationJson
 }
 
 /**
- * Describes the message capabilities.networking.confidentialhttp.v1alpha.Request.
- * Use `create(RequestSchema)` to create a new message.
+ * Describes the message capabilities.networking.confidentialhttp.v1alpha.HTTPRequest.
+ * Use `create(HTTPRequestSchema)` to create a new message.
  */
-export const RequestSchema: GenMessage<Request, { jsonType: RequestJson }> =
+export const HTTPRequestSchema: GenMessage<HTTPRequest, { jsonType: HTTPRequestJson }> =
 	/*@__PURE__*/
-	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 1)
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 2)
 
 /**
- * @generated from message capabilities.networking.confidentialhttp.v1alpha.ResponseTemplate
+ * HTTPResponse contains the HTTP response from the enclave.
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.HTTPResponse
  */
-export type ResponseTemplate =
-	Message<'capabilities.networking.confidentialhttp.v1alpha.ResponseTemplate'> & {
+export type HTTPResponse =
+	Message<'capabilities.networking.confidentialhttp.v1alpha.HTTPResponse'> & {
 		/**
-		 * @generated from field: int64 status_code = 1 [jstype = JS_NORMAL];
+		 * status_code is the HTTP status code.
+		 *
+		 * @generated from field: uint32 status_code = 1;
 		 */
-		statusCode: bigint
+		statusCode: number
 
 		/**
+		 * body is the response body.
+		 *
 		 * @generated from field: bytes body = 2;
 		 */
 		body: Uint8Array
+
+		/**
+		 * multi_headers are the response headers.
+		 * Supports multiple values per header key.
+		 *
+		 * @generated from field: map<string, capabilities.networking.confidentialhttp.v1alpha.HeaderValues> multi_headers = 3;
+		 */
+		multiHeaders: { [key: string]: HeaderValues }
 	}
 
 /**
- * @generated from message capabilities.networking.confidentialhttp.v1alpha.ResponseTemplate
+ * HTTPResponse contains the HTTP response from the enclave.
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.HTTPResponse
  */
-export type ResponseTemplateJson = {
+export type HTTPResponseJson = {
 	/**
-	 * @generated from field: int64 status_code = 1 [jstype = JS_NORMAL];
+	 * status_code is the HTTP status code.
+	 *
+	 * @generated from field: uint32 status_code = 1;
 	 */
-	statusCode?: string
+	statusCode?: number
 
 	/**
+	 * body is the response body.
+	 *
 	 * @generated from field: bytes body = 2;
 	 */
 	body?: string
-}
 
-/**
- * Describes the message capabilities.networking.confidentialhttp.v1alpha.ResponseTemplate.
- * Use `create(ResponseTemplateSchema)` to create a new message.
- */
-export const ResponseTemplateSchema: GenMessage<
-	ResponseTemplate,
-	{ jsonType: ResponseTemplateJson }
-> = /*@__PURE__*/ messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 2)
-
-/**
- * @generated from message capabilities.networking.confidentialhttp.v1alpha.HTTPEnclaveRequestData
- */
-export type HTTPEnclaveRequestData =
-	Message<'capabilities.networking.confidentialhttp.v1alpha.HTTPEnclaveRequestData'> & {
-		/**
-		 * @generated from field: repeated capabilities.networking.confidentialhttp.v1alpha.Request requests = 1;
-		 */
-		requests: Request[]
-	}
-
-/**
- * @generated from message capabilities.networking.confidentialhttp.v1alpha.HTTPEnclaveRequestData
- */
-export type HTTPEnclaveRequestDataJson = {
 	/**
-	 * @generated from field: repeated capabilities.networking.confidentialhttp.v1alpha.Request requests = 1;
+	 * multi_headers are the response headers.
+	 * Supports multiple values per header key.
+	 *
+	 * @generated from field: map<string, capabilities.networking.confidentialhttp.v1alpha.HeaderValues> multi_headers = 3;
 	 */
-	requests?: RequestJson[]
+	multiHeaders?: { [key: string]: HeaderValuesJson }
 }
 
 /**
- * Describes the message capabilities.networking.confidentialhttp.v1alpha.HTTPEnclaveRequestData.
- * Use `create(HTTPEnclaveRequestDataSchema)` to create a new message.
+ * Describes the message capabilities.networking.confidentialhttp.v1alpha.HTTPResponse.
+ * Use `create(HTTPResponseSchema)` to create a new message.
  */
-export const HTTPEnclaveRequestDataSchema: GenMessage<
-	HTTPEnclaveRequestData,
-	{ jsonType: HTTPEnclaveRequestDataJson }
-> = /*@__PURE__*/ messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 3)
+export const HTTPResponseSchema: GenMessage<HTTPResponse, { jsonType: HTTPResponseJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 3)
 
 /**
- * @generated from message capabilities.networking.confidentialhttp.v1alpha.EnclaveActionInput
+ * ConfidentialHTTPRequest is the input provided to the confidential HTTP capability.
+ * It combines an HTTPRequest with secrets from VaultDON.
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.ConfidentialHTTPRequest
  */
-export type EnclaveActionInput =
-	Message<'capabilities.networking.confidentialhttp.v1alpha.EnclaveActionInput'> & {
+export type ConfidentialHTTPRequest =
+	Message<'capabilities.networking.confidentialhttp.v1alpha.ConfidentialHTTPRequest'> & {
 		/**
 		 * @generated from field: repeated capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier vault_don_secrets = 1;
 		 */
 		vaultDonSecrets: SecretIdentifier[]
 
 		/**
-		 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.HTTPEnclaveRequestData input = 2;
+		 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.HTTPRequest request = 2;
 		 */
-		input?: HTTPEnclaveRequestData
+		request?: HTTPRequest
+
+		/**
+		 * encrypt_output controls whether the enclave response should be encrypted.
+		 * If true and a secret named "san_marino_aes_gcm_encryption_key" is provided,
+		 * the response will be AES-GCM encrypted using that key.
+		 * If true and no such key is provided, the response will be TDH2 encrypted
+		 * using the VaultDON master public key.
+		 * Default is false (response returned unencrypted).
+		 *
+		 * @generated from field: bool encrypt_output = 3;
+		 */
+		encryptOutput: boolean
 	}
 
 /**
- * @generated from message capabilities.networking.confidentialhttp.v1alpha.EnclaveActionInput
+ * ConfidentialHTTPRequest is the input provided to the confidential HTTP capability.
+ * It combines an HTTPRequest with secrets from VaultDON.
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.ConfidentialHTTPRequest
  */
-export type EnclaveActionInputJson = {
+export type ConfidentialHTTPRequestJson = {
 	/**
 	 * @generated from field: repeated capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier vault_don_secrets = 1;
 	 */
 	vaultDonSecrets?: SecretIdentifierJson[]
 
 	/**
-	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.HTTPEnclaveRequestData input = 2;
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.HTTPRequest request = 2;
 	 */
-	input?: HTTPEnclaveRequestDataJson
-}
+	request?: HTTPRequestJson
 
-/**
- * Describes the message capabilities.networking.confidentialhttp.v1alpha.EnclaveActionInput.
- * Use `create(EnclaveActionInputSchema)` to create a new message.
- */
-export const EnclaveActionInputSchema: GenMessage<
-	EnclaveActionInput,
-	{ jsonType: EnclaveActionInputJson }
-> = /*@__PURE__*/ messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 4)
-
-/**
- * @generated from message capabilities.networking.confidentialhttp.v1alpha.HTTPEnclaveResponseData
- */
-export type HTTPEnclaveResponseData =
-	Message<'capabilities.networking.confidentialhttp.v1alpha.HTTPEnclaveResponseData'> & {
-		/**
-		 * @generated from field: repeated capabilities.networking.confidentialhttp.v1alpha.ResponseTemplate responses = 1;
-		 */
-		responses: ResponseTemplate[]
-	}
-
-/**
- * @generated from message capabilities.networking.confidentialhttp.v1alpha.HTTPEnclaveResponseData
- */
-export type HTTPEnclaveResponseDataJson = {
 	/**
-	 * @generated from field: repeated capabilities.networking.confidentialhttp.v1alpha.ResponseTemplate responses = 1;
+	 * encrypt_output controls whether the enclave response should be encrypted.
+	 * If true and a secret named "san_marino_aes_gcm_encryption_key" is provided,
+	 * the response will be AES-GCM encrypted using that key.
+	 * If true and no such key is provided, the response will be TDH2 encrypted
+	 * using the VaultDON master public key.
+	 * Default is false (response returned unencrypted).
+	 *
+	 * @generated from field: bool encrypt_output = 3;
 	 */
-	responses?: ResponseTemplateJson[]
+	encryptOutput?: boolean
 }
 
 /**
- * Describes the message capabilities.networking.confidentialhttp.v1alpha.HTTPEnclaveResponseData.
- * Use `create(HTTPEnclaveResponseDataSchema)` to create a new message.
+ * Describes the message capabilities.networking.confidentialhttp.v1alpha.ConfidentialHTTPRequest.
+ * Use `create(ConfidentialHTTPRequestSchema)` to create a new message.
  */
-export const HTTPEnclaveResponseDataSchema: GenMessage<
-	HTTPEnclaveResponseData,
-	{ jsonType: HTTPEnclaveResponseDataJson }
-> = /*@__PURE__*/ messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 5)
+export const ConfidentialHTTPRequestSchema: GenMessage<
+	ConfidentialHTTPRequest,
+	{ jsonType: ConfidentialHTTPRequestJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 4)
 
 /**
  * @generated from service capabilities.networking.confidentialhttp.v1alpha.Client
  */
 export const Client: GenService<{
 	/**
-	 * @generated from rpc capabilities.networking.confidentialhttp.v1alpha.Client.SendRequests
+	 * @generated from rpc capabilities.networking.confidentialhttp.v1alpha.Client.SendRequest
 	 */
-	sendRequests: {
+	sendRequest: {
 		methodKind: 'unary'
-		input: typeof EnclaveActionInputSchema
-		output: typeof HTTPEnclaveResponseDataSchema
+		input: typeof ConfidentialHTTPRequestSchema
+		output: typeof HTTPResponseSchema
 	}
 }> = /*@__PURE__*/ serviceDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 0)
