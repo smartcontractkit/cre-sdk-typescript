@@ -15,7 +15,7 @@ import { file_tools_generator_v1alpha_cre_metadata } from '../../../../tools/gen
 export const file_capabilities_networking_confidentialhttp_v1alpha_client: GenFile =
 	/*@__PURE__*/
 	fileDesc(
-		'Cj1jYXBhYmlsaXRpZXMvbmV0d29ya2luZy9jb25maWRlbnRpYWxodHRwL3YxYWxwaGEvY2xpZW50LnByb3RvEjBjYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEiUAoQU2VjcmV0SWRlbnRpZmllchILCgNrZXkYASABKAkSEQoJbmFtZXNwYWNlGAIgASgJEhIKBW93bmVyGAMgASgJSACIAQFCCAoGX293bmVyIiUKBkhlYWRlchIMCgRuYW1lGAEgASgJEg0KBXZhbHVlGAIgASgJIu8DCgtIVFRQUmVxdWVzdBILCgN1cmwYASABKAkSDgoGbWV0aG9kGAIgASgJEhUKC2JvZHlfc3RyaW5nGAMgASgJSAASFAoKYm9keV9ieXRlcxgIIAEoDEgAElsKB2hlYWRlcnMYBCADKAsySi5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuSFRUUFJlcXVlc3QuSGVhZGVyc0VudHJ5EncKFnRlbXBsYXRlX3B1YmxpY192YWx1ZXMYBSADKAsyVy5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuSFRUUFJlcXVlc3QuVGVtcGxhdGVQdWJsaWNWYWx1ZXNFbnRyeRIfChdjdXN0b21fcm9vdF9jYV9jZXJ0X3BlbRgGIAEoDBIqCgd0aW1lb3V0GAcgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uGi4KDEhlYWRlcnNFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBGjsKGVRlbXBsYXRlUHVibGljVmFsdWVzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4AUIGCgRib2R5InwKDEhUVFBSZXNwb25zZRITCgtzdGF0dXNfY29kZRgBIAEoDRIMCgRib2R5GAIgASgMEkkKB2hlYWRlcnMYAyADKAsyOC5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuSGVhZGVyIsgBChdDb25maWRlbnRpYWxIVFRQUmVxdWVzdBJdChF2YXVsdF9kb25fc2VjcmV0cxgBIAMoCzJCLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5TZWNyZXRJZGVudGlmaWVyEk4KB3JlcXVlc3QYAiABKAsyPS5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuSFRUUFJlcXVlc3QyygEKBkNsaWVudBKYAQoLU2VuZFJlcXVlc3QSSS5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuQ29uZmlkZW50aWFsSFRUUFJlcXVlc3QaPi5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuSFRUUFJlc3BvbnNlGiWCtRghCAISHWNvbmZpZGVudGlhbC1odHRwQDEuMC4wLWFscGhhQqYCCjRjb20uY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhQgtDbGllbnRQcm90b1ABogIDQ05DqgIwQ2FwYWJpbGl0aWVzLk5ldHdvcmtpbmcuQ29uZmlkZW50aWFsaHR0cC5WMWFscGhhygIwQ2FwYWJpbGl0aWVzXE5ldHdvcmtpbmdcQ29uZmlkZW50aWFsaHR0cFxWMWFscGhh4gI8Q2FwYWJpbGl0aWVzXE5ldHdvcmtpbmdcQ29uZmlkZW50aWFsaHR0cFxWMWFscGhhXEdQQk1ldGFkYXRh6gIzQ2FwYWJpbGl0aWVzOjpOZXR3b3JraW5nOjpDb25maWRlbnRpYWxodHRwOjpWMWFscGhhYgZwcm90bzM',
+		'Cj1jYXBhYmlsaXRpZXMvbmV0d29ya2luZy9jb25maWRlbnRpYWxodHRwL3YxYWxwaGEvY2xpZW50LnByb3RvEjBjYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEiUAoQU2VjcmV0SWRlbnRpZmllchILCgNrZXkYASABKAkSEQoJbmFtZXNwYWNlGAIgASgJEhIKBW93bmVyGAMgASgJSACIAQFCCAoGX293bmVyIh4KDEhlYWRlclZhbHVlcxIOCgZ2YWx1ZXMYASADKAkivwQKC0hUVFBSZXF1ZXN0EgsKA3VybBgBIAEoCRIOCgZtZXRob2QYAiABKAkSFQoLYm9keV9zdHJpbmcYAyABKAlIABIUCgpib2R5X2J5dGVzGAggASgMSAASZgoNbXVsdGlfaGVhZGVycxgEIAMoCzJPLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IVFRQUmVxdWVzdC5NdWx0aUhlYWRlcnNFbnRyeRJ3ChZ0ZW1wbGF0ZV9wdWJsaWNfdmFsdWVzGAUgAygLMlcuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLkhUVFBSZXF1ZXN0LlRlbXBsYXRlUHVibGljVmFsdWVzRW50cnkSHwoXY3VzdG9tX3Jvb3RfY2FfY2VydF9wZW0YBiABKAwSKgoHdGltZW91dBgHIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhpzChFNdWx0aUhlYWRlcnNFbnRyeRILCgNrZXkYASABKAkSTQoFdmFsdWUYAiABKAsyPi5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuSGVhZGVyVmFsdWVzOgI4ARo7ChlUZW1wbGF0ZVB1YmxpY1ZhbHVlc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAFCBgoEYm9keSKPAgoMSFRUUFJlc3BvbnNlEhMKC3N0YXR1c19jb2RlGAEgASgNEgwKBGJvZHkYAiABKAwSZwoNbXVsdGlfaGVhZGVycxgDIAMoCzJQLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IVFRQUmVzcG9uc2UuTXVsdGlIZWFkZXJzRW50cnkacwoRTXVsdGlIZWFkZXJzRW50cnkSCwoDa2V5GAEgASgJEk0KBXZhbHVlGAIgASgLMj4uY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLkhlYWRlclZhbHVlczoCOAEi4AEKF0NvbmZpZGVudGlhbEhUVFBSZXF1ZXN0El0KEXZhdWx0X2Rvbl9zZWNyZXRzGAEgAygLMkIuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLlNlY3JldElkZW50aWZpZXISTgoHcmVxdWVzdBgCIAEoCzI9LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IVFRQUmVxdWVzdBIWCg5lbmNyeXB0X291dHB1dBgDIAEoCDLKAQoGQ2xpZW50EpgBCgtTZW5kUmVxdWVzdBJJLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5Db25maWRlbnRpYWxIVFRQUmVxdWVzdBo+LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IVFRQUmVzcG9uc2UaJYK1GCEIAhIdY29uZmlkZW50aWFsLWh0dHBAMS4wLjAtYWxwaGFCpgIKNGNvbS5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGFCC0NsaWVudFByb3RvUAGiAgNDTkOqAjBDYXBhYmlsaXRpZXMuTmV0d29ya2luZy5Db25maWRlbnRpYWxodHRwLlYxYWxwaGHKAjBDYXBhYmlsaXRpZXNcTmV0d29ya2luZ1xDb25maWRlbnRpYWxodHRwXFYxYWxwaGHiAjxDYXBhYmlsaXRpZXNcTmV0d29ya2luZ1xDb25maWRlbnRpYWxodHRwXFYxYWxwaGFcR1BCTWV0YWRhdGHqAjNDYXBhYmlsaXRpZXM6Ok5ldHdvcmtpbmc6OkNvbmZpZGVudGlhbGh0dHA6OlYxYWxwaGFiBnByb3RvMw',
 		[file_google_protobuf_duration, file_tools_generator_v1alpha_cre_metadata],
 	)
 
@@ -70,46 +70,35 @@ export const SecretIdentifierSchema: GenMessage<
 > = /*@__PURE__*/ messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 0)
 
 /**
- * Header represents a single HTTP header as a name-value pair.
- * Using repeated messages instead of a map allows duplicate header names (e.g., multiple Set-Cookie headers).
+ * HeaderValues represents multiple values for a single header key.
  *
- * @generated from message capabilities.networking.confidentialhttp.v1alpha.Header
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.HeaderValues
  */
-export type Header = Message<'capabilities.networking.confidentialhttp.v1alpha.Header'> & {
-	/**
-	 * @generated from field: string name = 1;
-	 */
-	name: string
+export type HeaderValues =
+	Message<'capabilities.networking.confidentialhttp.v1alpha.HeaderValues'> & {
+		/**
+		 * @generated from field: repeated string values = 1;
+		 */
+		values: string[]
+	}
 
+/**
+ * HeaderValues represents multiple values for a single header key.
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.HeaderValues
+ */
+export type HeaderValuesJson = {
 	/**
-	 * @generated from field: string value = 2;
+	 * @generated from field: repeated string values = 1;
 	 */
-	value: string
+	values?: string[]
 }
 
 /**
- * Header represents a single HTTP header as a name-value pair.
- * Using repeated messages instead of a map allows duplicate header names (e.g., multiple Set-Cookie headers).
- *
- * @generated from message capabilities.networking.confidentialhttp.v1alpha.Header
+ * Describes the message capabilities.networking.confidentialhttp.v1alpha.HeaderValues.
+ * Use `create(HeaderValuesSchema)` to create a new message.
  */
-export type HeaderJson = {
-	/**
-	 * @generated from field: string name = 1;
-	 */
-	name?: string
-
-	/**
-	 * @generated from field: string value = 2;
-	 */
-	value?: string
-}
-
-/**
- * Describes the message capabilities.networking.confidentialhttp.v1alpha.Header.
- * Use `create(HeaderSchema)` to create a new message.
- */
-export const HeaderSchema: GenMessage<Header, { jsonType: HeaderJson }> =
+export const HeaderValuesSchema: GenMessage<HeaderValues, { jsonType: HeaderValuesJson }> =
 	/*@__PURE__*/
 	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 1)
 
@@ -157,11 +146,12 @@ export type HTTPRequest =
 			| { case: undefined; value?: undefined }
 
 		/**
-		 * headers are the request headers as name-value pairs.
+		 * multi_headers are the request headers as name-value pairs.
+		 * Supports multiple values per header key.
 		 *
-		 * @generated from field: map<string, string> headers = 4;
+		 * @generated from field: map<string, capabilities.networking.confidentialhttp.v1alpha.HeaderValues> multi_headers = 4;
 		 */
-		headers: { [key: string]: string }
+		multiHeaders: { [key: string]: HeaderValues }
 
 		/**
 		 * template_public_values are public values used to fill in request body and header templates.
@@ -217,11 +207,12 @@ export type HTTPRequestJson = {
 	bodyBytes?: string
 
 	/**
-	 * headers are the request headers as name-value pairs.
+	 * multi_headers are the request headers as name-value pairs.
+	 * Supports multiple values per header key.
 	 *
-	 * @generated from field: map<string, string> headers = 4;
+	 * @generated from field: map<string, capabilities.networking.confidentialhttp.v1alpha.HeaderValues> multi_headers = 4;
 	 */
-	headers?: { [key: string]: string }
+	multiHeaders?: { [key: string]: HeaderValuesJson }
 
 	/**
 	 * template_public_values are public values used to fill in request body and header templates.
@@ -276,11 +267,12 @@ export type HTTPResponse =
 		body: Uint8Array
 
 		/**
-		 * headers are the response headers.
+		 * multi_headers are the response headers.
+		 * Supports multiple values per header key.
 		 *
-		 * @generated from field: repeated capabilities.networking.confidentialhttp.v1alpha.Header headers = 3;
+		 * @generated from field: map<string, capabilities.networking.confidentialhttp.v1alpha.HeaderValues> multi_headers = 3;
 		 */
-		headers: Header[]
+		multiHeaders: { [key: string]: HeaderValues }
 	}
 
 /**
@@ -304,11 +296,12 @@ export type HTTPResponseJson = {
 	body?: string
 
 	/**
-	 * headers are the response headers.
+	 * multi_headers are the response headers.
+	 * Supports multiple values per header key.
 	 *
-	 * @generated from field: repeated capabilities.networking.confidentialhttp.v1alpha.Header headers = 3;
+	 * @generated from field: map<string, capabilities.networking.confidentialhttp.v1alpha.HeaderValues> multi_headers = 3;
 	 */
-	headers?: HeaderJson[]
+	multiHeaders?: { [key: string]: HeaderValuesJson }
 }
 
 /**
@@ -336,6 +329,18 @@ export type ConfidentialHTTPRequest =
 		 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.HTTPRequest request = 2;
 		 */
 		request?: HTTPRequest
+
+		/**
+		 * encrypt_output controls whether the enclave response should be encrypted.
+		 * If true and a secret named "san_marino_aes_gcm_encryption_key" is provided,
+		 * the response will be AES-GCM encrypted using that key.
+		 * If true and no such key is provided, the response will be TDH2 encrypted
+		 * using the VaultDON master public key.
+		 * Default is false (response returned unencrypted).
+		 *
+		 * @generated from field: bool encrypt_output = 3;
+		 */
+		encryptOutput: boolean
 	}
 
 /**
@@ -354,6 +359,18 @@ export type ConfidentialHTTPRequestJson = {
 	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.HTTPRequest request = 2;
 	 */
 	request?: HTTPRequestJson
+
+	/**
+	 * encrypt_output controls whether the enclave response should be encrypted.
+	 * If true and a secret named "san_marino_aes_gcm_encryption_key" is provided,
+	 * the response will be AES-GCM encrypted using that key.
+	 * If true and no such key is provided, the response will be TDH2 encrypted
+	 * using the VaultDON master public key.
+	 * Default is false (response returned unencrypted).
+	 *
+	 * @generated from field: bool encrypt_output = 3;
+	 */
+	encryptOutput?: boolean
 }
 
 /**

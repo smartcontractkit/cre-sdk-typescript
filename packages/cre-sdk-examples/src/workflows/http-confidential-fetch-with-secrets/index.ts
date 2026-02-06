@@ -34,7 +34,7 @@ const fetchResult = (sendRequester: ConfidentialHTTPSendRequester, config: Confi
 			request: {
 				url: config.url,
 				method: 'GET',
-				headers: { 'secret-header': '{{.SECRET_HEADER}}' },
+				multiHeaders: { 'secret-header': { values: ['{{.SECRET_HEADER}}'] } },
 			},
 			vaultDonSecrets: [
 				{
