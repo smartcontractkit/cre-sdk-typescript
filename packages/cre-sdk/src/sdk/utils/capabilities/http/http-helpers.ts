@@ -72,7 +72,10 @@ export function text(responseFn: () => { result: Response | ConfidentialHTTPResp
 	result: () => string
 }
 export function text(
-	responseOrFn: Response | ConfidentialHTTPResponse | (() => { result: Response | ConfidentialHTTPResponse }),
+	responseOrFn:
+		| Response
+		| ConfidentialHTTPResponse
+		| (() => { result: Response | ConfidentialHTTPResponse }),
 ): string | { result: () => string } {
 	if (typeof responseOrFn === 'function') {
 		return {
@@ -101,7 +104,10 @@ export function json(responseFn: () => { result: Response | ConfidentialHTTPResp
 	result: () => unknown
 }
 export function json(
-	responseOrFn: Response | ConfidentialHTTPResponse | (() => { result: Response | ConfidentialHTTPResponse }),
+	responseOrFn:
+		| Response
+		| ConfidentialHTTPResponse
+		| (() => { result: Response | ConfidentialHTTPResponse }),
 ): unknown | { result: () => unknown } {
 	if (typeof responseOrFn === 'function') {
 		return {
@@ -160,7 +166,10 @@ export function ok(responseFn: () => { result: Response | ConfidentialHTTPRespon
 	result: () => boolean
 }
 export function ok(
-	responseOrFn: Response | ConfidentialHTTPResponse | (() => { result: Response | ConfidentialHTTPResponse }),
+	responseOrFn:
+		| Response
+		| ConfidentialHTTPResponse
+		| (() => { result: Response | ConfidentialHTTPResponse }),
 ): boolean | { result: () => boolean } {
 	if (typeof responseOrFn === 'function') {
 		return {
