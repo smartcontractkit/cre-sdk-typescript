@@ -1,5 +1,5 @@
 {
-	"name": "@chainlink/cre-sdk",
+	"name": "@spaceandtime/cre-sdk",
 	"version": "1.0.1",
 	"type": "module",
 	"main": "dist/index.js",
@@ -55,7 +55,7 @@
 	"dependencies": {
 		"@bufbuild/protobuf": "2.6.3",
 		"@bufbuild/protoc-gen-es": "2.6.3",
-		"@chainlink/cre-sdk-javy-plugin": "workspace:*",
+		"@spaceandtime/cre-sdk-javy-plugin": "1.0.1",
 		"@standard-schema/spec": "1.0.0",
 		"viem": "2.34.0",
 		"zod": "3.25.76"

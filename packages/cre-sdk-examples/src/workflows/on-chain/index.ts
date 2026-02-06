@@ -11,7 +11,7 @@ import {
 	Runner,
 	type Runtime,
 	text,
-} from '@chainlink/cre-sdk'
+} from '@spaceandtime/cre-sdk'
 import { type Address, decodeFunctionResult, encodeFunctionData, zeroAddress } from 'viem'
 import { z } from 'zod'
 
