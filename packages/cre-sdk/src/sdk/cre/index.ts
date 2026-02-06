@@ -30,7 +30,7 @@ export {
 // Confidential HTTP Capability
 export {
 	ClientCapability as ConfidentialHTTPClient,
-	type SendRequestser as ConfidentialHTTPSendRequester,
+	type SendRequester as ConfidentialHTTPSendRequester,
 } from '@cre/generated-sdk/capabilities/networking/confidentialhttp/v1alpha/client_sdk_gen'
 // HTTP Capability
 export {

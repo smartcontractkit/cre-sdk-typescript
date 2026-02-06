@@ -19,19 +19,14 @@ const configSchema = z.object({
 type Config = z.infer<typeof configSchema>
 
 const fetchMathResult = (sendRequester: ConfidentialHTTPSendRequester, config: Config) => {
-	const { responses } = sendRequester
-		.sendRequests({
-			input: {
-				requests: [
-					{
-						url: config.url,
-						method: 'GET',
-					},
-				],
+	const response = sendRequester
+		.sendRequest({
+			request: {
+				url: config.url,
+				method: 'GET',
 			},
 		})
 		.result()
-	const response = responses[0]
 
 	if (!ok(response)) {
 		throw new Error(`HTTP request failed with status: ${response.statusCode}`)
@@ -48,7 +43,7 @@ const onCronTrigger = (runtime: Runtime<Config>) => {
 
 	const confHTTPClient = new ConfidentialHTTPClient()
 	const result = confHTTPClient
-		.sendRequests(
+		.sendRequest(
 			runtime,
 			fetchMathResult,
 			consensusMedianAggregation(),
