@@ -12,7 +12,7 @@ Use the spaceandtime fork of the cre-sdk within `package.json`
 },
 ```
 
-Copy the following into index.js:
+Copy the following into main.ts:
 
 ```
 import {cre, hostBindings, type HTTPPayload, Runner, type Runtime} from '@spaceandtime/cre-sdk'
