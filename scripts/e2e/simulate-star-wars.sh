@@ -17,7 +17,7 @@ SIM_EXIT=0
 cre workflow simulate ./src/workflows/star-wars \
   --non-interactive \
   --trigger-index 0 \
-  --http-payload ./src/workflows/star-wars/http_trigger_payload.json \
+  --http-payload ./http_trigger_payload.json \
   > "$OUTPUT_FILE" 2>&1 || SIM_EXIT=$?
 cat "$OUTPUT_FILE"
 
