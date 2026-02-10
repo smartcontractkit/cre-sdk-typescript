@@ -8,6 +8,7 @@
     "check": {
       "dependsOn": ["^check"]
     },
+    "check:ci": {},
     "format": {
       "dependsOn": ["^format"]
     },

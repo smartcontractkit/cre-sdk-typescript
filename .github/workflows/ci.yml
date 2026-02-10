@@ -9,7 +9,36 @@ on:
     branches: [main]
 
 jobs:
+  lint-format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Check formatting & linting
+        run: |
+          if ! bun turbo run check:ci; then
+            echo ""
+            echo "=========================================="
+            echo "Formatting or linting issues detected!"
+            echo "Did you forget to run 'bun full-checks' (or 'bun check') before pushing?"
+            echo "=========================================="
+            exit 1
+          fi
+
   full-checks:
+    needs: lint-format
     runs-on: ubuntu-latest
 
     defaults:
@@ -71,38 +100,7 @@ jobs:
       - name: Verify CRE CLI installation
         run: cre version
 
-      - name: Simulate hello-world workflow
-        run: |
-          cd packages/cre-sdk-examples
-          cp .env.example .env
-          CRE_API_KEY=${{ secrets.CRE_CLI_API_KEY }} cre workflow simulate ./src/workflows/hello-world > simulation_output.txt 2>&1
-          cat simulation_output.txt
-
-          # Validate expected outputs
-          echo "Validating simulation output..."
-
-          if ! grep -q "USER LOG.*Hello world! Workflow triggered" simulation_output.txt; then
-            echo "❌ ERROR: Expected '[USER LOG] Hello world! Workflow triggered.' not found"
-            exit 1
-          fi
-          echo "✓ Found: [USER LOG] Hello world! Workflow triggered."
-
-          if ! grep -q 'Workflow Simulation Result:' simulation_output.txt; then
-            echo "❌ ERROR: Expected 'Workflow Simulation Result:' not found"
-            exit 1
-          fi
-          echo "✓ Found: Workflow Simulation Result:"
-
-          if ! grep -q '"Hello world!"' simulation_output.txt; then
-            echo "❌ ERROR: Expected '\"Hello world!\"' not found"
-            exit 1
-          fi
-          echo "✓ Found: \"Hello world!\""
-
-          if ! grep -q "Execution finished signal received" simulation_output.txt; then
-            echo "❌ ERROR: Expected 'Execution finished signal received' not found"
-            exit 1
-          fi
-          echo "✓ Found: Execution finished signal received"
-
-          echo "✅ All validation checks passed!"
+      - name: E2E - Simulate hello-world workflow
+        env:
+          CRE_API_KEY: ${{ secrets.CRE_CLI_API_KEY }}
+        run: ./scripts/e2e/simulate-hello-world.sh

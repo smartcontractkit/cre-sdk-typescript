@@ -8,6 +8,7 @@
 	"description": "Demo app with example workflows utilizing CRE TypeScript SDK. It presents usage of CRE SDK and allows SDK developers to test workflows.",
 	"scripts": {
 		"check": "biome check --write ${BIOME_PATHS:-.}",
+		"check:ci": "biome ci .",
 		"format": "biome format --write ${BIOME_PATHS:-.}",
 		"full-checks": "bun typecheck && bun check",
 		"lint": "biome lint --write",
@@ -20,7 +21,7 @@
 		"zod": "3.25.76"
 	},
 	"devDependencies": {
-		"@types/bun": "1.2.21"
+		"@types/bun": "1.3.8"
 	},
 	"engines": {
 		"bun": ">=1.2.21"

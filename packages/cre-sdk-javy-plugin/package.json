@@ -10,6 +10,7 @@
 		"build": "bun run clean && bun scripts/compile-javy-sdk-plugin.ts",
 		"clean": "rm -rf dist",
 		"check": "biome check --write ${BIOME_PATHS:-.}",
+		"check:ci": "biome ci .",
 		"format": "biome format --write ${BIOME_PATHS:-.}",
 		"full-checks": "&& bun typecheck && bun check",
 		"lint": "biome lint --write",
