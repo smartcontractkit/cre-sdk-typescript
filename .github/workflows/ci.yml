@@ -9,7 +9,36 @@ on:
     branches: [main]
 
 jobs:
+  lint-format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Check formatting & linting
+        run: |
+          if ! bun turbo run check:ci; then
+            echo ""
+            echo "=========================================="
+            echo "Formatting or linting issues detected!"
+            echo "Did you forget to run 'bun full-checks' (or 'bun check') before pushing?"
+            echo "=========================================="
+            exit 1
+          fi
+
   full-checks:
+    needs: lint-format
     runs-on: ubuntu-latest
 
     defaults:
