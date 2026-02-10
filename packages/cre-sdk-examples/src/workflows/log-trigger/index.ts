@@ -1,5 +1,6 @@
 import {
 	bigintToProtoBigInt,
+	bytesToHex,
 	EVMClient,
 	type EVMLog,
 	getNetwork,
@@ -7,7 +8,6 @@ import {
 	protoBigIntToBigint,
 	Runner,
 	type Runtime,
-	safeJsonStringify,
 } from '@chainlink/cre-sdk'
 import { z } from 'zod'
 
@@ -47,7 +47,9 @@ const initWorkflow = (config: Config) => {
 			throw new Error(`log payload does not contain enough topics ${topics.length}`)
 		}
 
-		runtime.log(`Log payload: ${safeJsonStringify(payload)}`)
+		runtime.log(`Contract address: ${bytesToHex(payload.address)}`)
+		runtime.log(`Topics: ${payload.topics.map((t) => bytesToHex(t)).join(', ')}`)
+		runtime.log(`Tx hash: ${bytesToHex(payload.txHash)}`)
 
 		if (!payload.blockNumber) {
 			throw new Error('Block number is required')
