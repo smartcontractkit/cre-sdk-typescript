@@ -104,3 +104,13 @@ jobs:
         env:
           CRE_API_KEY: ${{ secrets.CRE_CLI_API_KEY }}
         run: ./scripts/e2e/simulate-hello-world.sh
+
+      - name: E2E - Simulate star-wars workflow
+        env:
+          CRE_API_KEY: ${{ secrets.CRE_CLI_API_KEY }}
+        run: ./scripts/e2e/simulate-star-wars.sh
+
+      - name: E2E - Simulate log-trigger workflow
+        env:
+          CRE_API_KEY: ${{ secrets.CRE_CLI_API_KEY }}
+        run: ./scripts/e2e/simulate-log-trigger.sh
