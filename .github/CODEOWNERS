@@ -7,3 +7,7 @@
 # Please put the CODEOWNERS file in .github
 
 * @smartcontractkit/keystone @smartcontractkit/frontend-team
+
+#CRE Privacy
+/packages/cre-sdk/src/generated/capabilities/networking/confidentialhttp @smartcontractkit/privacy @smartcontractkit/keystone
+/packages/cre-sdk/src/generated-sdk/capabilities/networking/confidentialhttp @smartcontractkit/privacy @smartcontractkit/keystone
