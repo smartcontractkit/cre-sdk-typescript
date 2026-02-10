@@ -33,6 +33,7 @@ export const main = async () => {
 			if (code === 0) {
 				mkdirSync('dist', { recursive: true })
 				copyFileSync(builtWasmPath, distWasmPath)
+				copyFileSync(builtWasmPath, join(process.cwd(), 'dist', 'javy-chainlink-sdk.plugin.wasm'))
 				copyFileSync(witFilePath, distWitFilePath)
 
 				console.info('✅ Done!')

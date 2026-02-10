@@ -222,8 +222,6 @@ dependencies = [
 [[package]]
 name = "javy-plugin-api"
 version = "3.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fc259712f0b003a0b63ae04389312303d4e4940ff7df941990069ed2b1166aaf"
 dependencies = [
  "anyhow",
  "javy",

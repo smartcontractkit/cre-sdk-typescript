@@ -1,0 +1,21 @@
+[package]
+edition = "2021"
+name = "javy-plugin-api"
+version = "3.1.0"
+description = "APIs for Javy plugins (patched: lazy runtime initialization)"
+license = "Apache-2.0 WITH LLVM-exception"
+
+[features]
+json = ["javy/json"]
+messagepack = ["javy/messagepack"]
+
+[lib]
+name = "javy_plugin_api"
+path = "src/lib.rs"
+
+[dependencies.anyhow]
+version = "1.0"
+
+[dependencies.javy]
+version = "4.0.0"
+features = ["export_alloc_fns"]
