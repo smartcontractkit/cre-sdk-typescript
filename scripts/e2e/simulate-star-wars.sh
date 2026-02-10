@@ -13,12 +13,18 @@ cd "$EXAMPLES_DIR"
 cp -n .env.example .env 2>/dev/null || true
 
 echo "Running star-wars workflow simulation..."
+SIM_EXIT=0
 cre workflow simulate ./src/workflows/star-wars \
   --non-interactive \
   --trigger-index 0 \
   --http-payload ./src/workflows/star-wars/http_trigger_payload.json \
-  > "$OUTPUT_FILE" 2>&1
+  > "$OUTPUT_FILE" 2>&1 || SIM_EXIT=$?
 cat "$OUTPUT_FILE"
+
+if [ "$SIM_EXIT" -ne 0 ]; then
+  echo "❌ ERROR: cre workflow simulate exited with code $SIM_EXIT"
+  exit "$SIM_EXIT"
+fi
 
 # --- Validation ---
 echo ""
