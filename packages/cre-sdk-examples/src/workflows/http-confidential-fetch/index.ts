@@ -1,8 +1,6 @@
 import {
 	ConfidentialHTTPClient,
-	type ConfidentialHTTPSendRequester,
 	CronCapability,
-	consensusMedianAggregation,
 	handler,
 	ok,
 	Runner,
@@ -18,11 +16,14 @@ const configSchema = z.object({
 
 type Config = z.infer<typeof configSchema>
 
-const fetchMathResult = (sendRequester: ConfidentialHTTPSendRequester, config: Config) => {
-	const response = sendRequester
-		.sendRequest({
+const onCronTrigger = (runtime: Runtime<Config>) => {
+	runtime.log('Confidential HTTP workflow triggered.')
+
+	const confHTTPClient = new ConfidentialHTTPClient()
+	const response = confHTTPClient
+		.sendRequest(runtime, {
 			request: {
-				url: config.url,
+				url: runtime.config.url,
 				method: 'GET',
 			},
 		})
@@ -32,23 +33,8 @@ const fetchMathResult = (sendRequester: ConfidentialHTTPSendRequester, config: C
 		throw new Error(`HTTP request failed with status: ${response.statusCode}`)
 	}
 
-	// Convert response body to text using the helper function
 	const responseText = text(response)
-
-	return Number.parseFloat(responseText)
-}
-
-const onCronTrigger = (runtime: Runtime<Config>) => {
-	runtime.log('Confidential HTTP workflow triggered.')
-
-	const confHTTPClient = new ConfidentialHTTPClient()
-	const result = confHTTPClient
-		.sendRequest(
-			runtime,
-			fetchMathResult,
-			consensusMedianAggregation(),
-		)(runtime.config)
-		.result()
+	const result = Number.parseFloat(responseText)
 
 	runtime.log(`Successfully fetched result: ${result}`)
 

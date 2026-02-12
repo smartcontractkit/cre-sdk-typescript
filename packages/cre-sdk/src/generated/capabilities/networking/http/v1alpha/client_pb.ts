@@ -15,7 +15,7 @@ import { file_tools_generator_v1alpha_cre_metadata } from '../../../../tools/gen
 export const file_capabilities_networking_http_v1alpha_client: GenFile =
 	/*@__PURE__*/
 	fileDesc(
-		'CjFjYXBhYmlsaXRpZXMvbmV0d29ya2luZy9odHRwL3YxYWxwaGEvY2xpZW50LnByb3RvEiRjYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGEiSgoNQ2FjaGVTZXR0aW5ncxINCgVzdG9yZRgBIAEoCBIqCgdtYXhfYWdlGAIgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uIqoCCgdSZXF1ZXN0EgsKA3VybBgBIAEoCRIOCgZtZXRob2QYAiABKAkSSwoHaGVhZGVycxgDIAMoCzI6LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmh0dHAudjFhbHBoYS5SZXF1ZXN0LkhlYWRlcnNFbnRyeRIMCgRib2R5GAQgASgMEioKB3RpbWVvdXQYBSABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24SSwoOY2FjaGVfc2V0dGluZ3MYBiABKAsyMy5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGEuQ2FjaGVTZXR0aW5ncxouCgxIZWFkZXJzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASKrAQoIUmVzcG9uc2USEwoLc3RhdHVzX2NvZGUYASABKA0STAoHaGVhZGVycxgCIAMoCzI7LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmh0dHAudjFhbHBoYS5SZXNwb25zZS5IZWFkZXJzRW50cnkSDAoEYm9keRgDIAEoDBouCgxIZWFkZXJzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ATKYAQoGQ2xpZW50EmwKC1NlbmRSZXF1ZXN0Ei0uY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuaHR0cC52MWFscGhhLlJlcXVlc3QaLi5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGEuUmVzcG9uc2UaIIK1GBwIAhIYaHR0cC1hY3Rpb25zQDEuMC4wLWFscGhhQuoBCihjb20uY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuaHR0cC52MWFscGhhQgtDbGllbnRQcm90b1ABogIDQ05IqgIkQ2FwYWJpbGl0aWVzLk5ldHdvcmtpbmcuSHR0cC5WMWFscGhhygIkQ2FwYWJpbGl0aWVzXE5ldHdvcmtpbmdcSHR0cFxWMWFscGhh4gIwQ2FwYWJpbGl0aWVzXE5ldHdvcmtpbmdcSHR0cFxWMWFscGhhXEdQQk1ldGFkYXRh6gInQ2FwYWJpbGl0aWVzOjpOZXR3b3JraW5nOjpIdHRwOjpWMWFscGhhYgZwcm90bzM',
+		'CjFjYXBhYmlsaXRpZXMvbmV0d29ya2luZy9odHRwL3YxYWxwaGEvY2xpZW50LnByb3RvEiRjYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGEiSgoNQ2FjaGVTZXR0aW5ncxINCgVzdG9yZRgBIAEoCBIqCgdtYXhfYWdlGAIgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uIh4KDEhlYWRlclZhbHVlcxIOCgZ2YWx1ZXMYASADKAki7wMKB1JlcXVlc3QSCwoDdXJsGAEgASgJEg4KBm1ldGhvZBgCIAEoCRJPCgdoZWFkZXJzGAMgAygLMjouY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuaHR0cC52MWFscGhhLlJlcXVlc3QuSGVhZGVyc0VudHJ5QgIYARIMCgRib2R5GAQgASgMEioKB3RpbWVvdXQYBSABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24SSwoOY2FjaGVfc2V0dGluZ3MYBiABKAsyMy5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGEuQ2FjaGVTZXR0aW5ncxJWCg1tdWx0aV9oZWFkZXJzGAcgAygLMj8uY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuaHR0cC52MWFscGhhLlJlcXVlc3QuTXVsdGlIZWFkZXJzRW50cnkaLgoMSGVhZGVyc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEaZwoRTXVsdGlIZWFkZXJzRW50cnkSCwoDa2V5GAEgASgJEkEKBXZhbHVlGAIgASgLMjIuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuaHR0cC52MWFscGhhLkhlYWRlclZhbHVlczoCOAEi8QIKCFJlc3BvbnNlEhMKC3N0YXR1c19jb2RlGAEgASgNElAKB2hlYWRlcnMYAiADKAsyOy5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGEuUmVzcG9uc2UuSGVhZGVyc0VudHJ5QgIYARIMCgRib2R5GAMgASgMElcKDW11bHRpX2hlYWRlcnMYBCADKAsyQC5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5odHRwLnYxYWxwaGEuUmVzcG9uc2UuTXVsdGlIZWFkZXJzRW50cnkaLgoMSGVhZGVyc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEaZwoRTXVsdGlIZWFkZXJzRW50cnkSCwoDa2V5GAEgASgJEkEKBXZhbHVlGAIgASgLMjIuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuaHR0cC52MWFscGhhLkhlYWRlclZhbHVlczoCOAEymAEKBkNsaWVudBJsCgtTZW5kUmVxdWVzdBItLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmh0dHAudjFhbHBoYS5SZXF1ZXN0Gi4uY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuaHR0cC52MWFscGhhLlJlc3BvbnNlGiCCtRgcCAISGGh0dHAtYWN0aW9uc0AxLjAuMC1hbHBoYULqAQooY29tLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmh0dHAudjFhbHBoYUILQ2xpZW50UHJvdG9QAaICA0NOSKoCJENhcGFiaWxpdGllcy5OZXR3b3JraW5nLkh0dHAuVjFhbHBoYcoCJENhcGFiaWxpdGllc1xOZXR3b3JraW5nXEh0dHBcVjFhbHBoYeICMENhcGFiaWxpdGllc1xOZXR3b3JraW5nXEh0dHBcVjFhbHBoYVxHUEJNZXRhZGF0YeoCJ0NhcGFiaWxpdGllczo6TmV0d29ya2luZzo6SHR0cDo6VjFhbHBoYWIGcHJvdG8z',
 		[file_google_protobuf_duration, file_tools_generator_v1alpha_cre_metadata],
 	)
 
@@ -70,6 +70,38 @@ export const CacheSettingsSchema: GenMessage<CacheSettings, { jsonType: CacheSet
 	messageDesc(file_capabilities_networking_http_v1alpha_client, 0)
 
 /**
+ * HeaderValues represents multiple values for a single header key
+ *
+ * @generated from message capabilities.networking.http.v1alpha.HeaderValues
+ */
+export type HeaderValues = Message<'capabilities.networking.http.v1alpha.HeaderValues'> & {
+	/**
+	 * @generated from field: repeated string values = 1;
+	 */
+	values: string[]
+}
+
+/**
+ * HeaderValues represents multiple values for a single header key
+ *
+ * @generated from message capabilities.networking.http.v1alpha.HeaderValues
+ */
+export type HeaderValuesJson = {
+	/**
+	 * @generated from field: repeated string values = 1;
+	 */
+	values?: string[]
+}
+
+/**
+ * Describes the message capabilities.networking.http.v1alpha.HeaderValues.
+ * Use `create(HeaderValuesSchema)` to create a new message.
+ */
+export const HeaderValuesSchema: GenMessage<HeaderValues, { jsonType: HeaderValuesJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_networking_http_v1alpha_client, 1)
+
+/**
  * @generated from message capabilities.networking.http.v1alpha.Request
  */
 export type Request = Message<'capabilities.networking.http.v1alpha.Request'> & {
@@ -84,7 +116,10 @@ export type Request = Message<'capabilities.networking.http.v1alpha.Request'> & 
 	method: string
 
 	/**
-	 * @generated from field: map<string, string> headers = 3;
+	 * Deprecated: use multi_headers
+	 *
+	 * @generated from field: map<string, string> headers = 3 [deprecated = true];
+	 * @deprecated
 	 */
 	headers: { [key: string]: string }
 
@@ -104,6 +139,11 @@ export type Request = Message<'capabilities.networking.http.v1alpha.Request'> & 
 	 * @generated from field: capabilities.networking.http.v1alpha.CacheSettings cache_settings = 6;
 	 */
 	cacheSettings?: CacheSettings
+
+	/**
+	 * @generated from field: map<string, capabilities.networking.http.v1alpha.HeaderValues> multi_headers = 7;
+	 */
+	multiHeaders: { [key: string]: HeaderValues }
 }
 
 /**
@@ -121,7 +161,10 @@ export type RequestJson = {
 	method?: string
 
 	/**
-	 * @generated from field: map<string, string> headers = 3;
+	 * Deprecated: use multi_headers
+	 *
+	 * @generated from field: map<string, string> headers = 3 [deprecated = true];
+	 * @deprecated
 	 */
 	headers?: { [key: string]: string }
 
@@ -141,6 +184,11 @@ export type RequestJson = {
 	 * @generated from field: capabilities.networking.http.v1alpha.CacheSettings cache_settings = 6;
 	 */
 	cacheSettings?: CacheSettingsJson
+
+	/**
+	 * @generated from field: map<string, capabilities.networking.http.v1alpha.HeaderValues> multi_headers = 7;
+	 */
+	multiHeaders?: { [key: string]: HeaderValuesJson }
 }
 
 /**
@@ -149,7 +197,7 @@ export type RequestJson = {
  */
 export const RequestSchema: GenMessage<Request, { jsonType: RequestJson }> =
 	/*@__PURE__*/
-	messageDesc(file_capabilities_networking_http_v1alpha_client, 1)
+	messageDesc(file_capabilities_networking_http_v1alpha_client, 2)
 
 /**
  * @generated from message capabilities.networking.http.v1alpha.Response
@@ -161,7 +209,10 @@ export type Response = Message<'capabilities.networking.http.v1alpha.Response'> 
 	statusCode: number
 
 	/**
-	 * @generated from field: map<string, string> headers = 2;
+	 * Deprecated: use multi_headers
+	 *
+	 * @generated from field: map<string, string> headers = 2 [deprecated = true];
+	 * @deprecated
 	 */
 	headers: { [key: string]: string }
 
@@ -169,6 +220,11 @@ export type Response = Message<'capabilities.networking.http.v1alpha.Response'> 
 	 * @generated from field: bytes body = 3;
 	 */
 	body: Uint8Array
+
+	/**
+	 * @generated from field: map<string, capabilities.networking.http.v1alpha.HeaderValues> multi_headers = 4;
+	 */
+	multiHeaders: { [key: string]: HeaderValues }
 }
 
 /**
@@ -181,7 +237,10 @@ export type ResponseJson = {
 	statusCode?: number
 
 	/**
-	 * @generated from field: map<string, string> headers = 2;
+	 * Deprecated: use multi_headers
+	 *
+	 * @generated from field: map<string, string> headers = 2 [deprecated = true];
+	 * @deprecated
 	 */
 	headers?: { [key: string]: string }
 
@@ -189,6 +248,11 @@ export type ResponseJson = {
 	 * @generated from field: bytes body = 3;
 	 */
 	body?: string
+
+	/**
+	 * @generated from field: map<string, capabilities.networking.http.v1alpha.HeaderValues> multi_headers = 4;
+	 */
+	multiHeaders?: { [key: string]: HeaderValuesJson }
 }
 
 /**
@@ -197,7 +261,7 @@ export type ResponseJson = {
  */
 export const ResponseSchema: GenMessage<Response, { jsonType: ResponseJson }> =
 	/*@__PURE__*/
-	messageDesc(file_capabilities_networking_http_v1alpha_client, 2)
+	messageDesc(file_capabilities_networking_http_v1alpha_client, 3)
 
 /**
  * @generated from service capabilities.networking.http.v1alpha.Client

@@ -1,8 +1,6 @@
 import {
 	ConfidentialHTTPClient,
-	type ConfidentialHTTPSendRequester,
 	CronCapability,
-	consensusIdenticalAggregation,
 	handler,
 	json,
 	ok,
@@ -28,18 +26,21 @@ type ResponseValues = {
 	}
 }
 
-const fetchResult = (sendRequester: ConfidentialHTTPSendRequester, config: Config) => {
-	const response = sendRequester
-		.sendRequest({
+const onCronTrigger = (runtime: Runtime<Config>) => {
+	runtime.log('Confidential HTTP workflow triggered.')
+
+	const confHTTPClient = new ConfidentialHTTPClient()
+	const response = confHTTPClient
+		.sendRequest(runtime, {
 			request: {
-				url: config.url,
+				url: runtime.config.url,
 				method: 'GET',
 				multiHeaders: { 'secret-header': { values: ['{{.SECRET_HEADER}}'] } },
 			},
 			vaultDonSecrets: [
 				{
 					key: 'SECRET_HEADER',
-					owner: config.owner,
+					owner: runtime.config.owner,
 				},
 			],
 		})
@@ -49,20 +50,7 @@ const fetchResult = (sendRequester: ConfidentialHTTPSendRequester, config: Confi
 		throw new Error(`HTTP request failed with status: ${response.statusCode}`)
 	}
 
-	return json(response) as ResponseValues
-}
-
-const onCronTrigger = (runtime: Runtime<Config>) => {
-	runtime.log('Confidential HTTP workflow triggered.')
-
-	const confHTTPClient = new ConfidentialHTTPClient()
-	const result = confHTTPClient
-		.sendRequest(
-			runtime,
-			fetchResult,
-			consensusIdenticalAggregation(),
-		)(runtime.config)
-		.result()
+	const result = json(response) as ResponseValues
 
 	runtime.log(`Successfully fetched result: ${safeJsonStringify(result)}`)
 
