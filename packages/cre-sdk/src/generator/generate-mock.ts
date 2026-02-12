@@ -13,6 +13,12 @@ import { getImportPathForFile, lowerCaseFirstLetter } from './utils'
 const MOCK_OUTSIDE_TEST_ERROR =
 	"Capability mocks must be used within the CRE test framework's test() method."
 
+function escapeForDoubleQuotedStringLiteral(s: string): string {
+	// Use JSON.stringify to correctly escape backslashes, quotes, and control characters,
+	// then strip the surrounding quotes it adds.
+	return JSON.stringify(s).slice(1, -1)
+}
+
 export type GeneratedMockExport = { className: string; relativePath: string }
 
 function getCapabilityServiceOptions(service: DescService): CapabilityMetadata | false {
@@ -105,7 +111,7 @@ export function generateMocks(file: GenFile, outputDir: string): GeneratedMockEx
 				return `      case "${method.name}": {
         const input = anyUnpack(req.payload, ${inputType}Schema) as ${inputType};
         const handler = self.${propName};
-        if (typeof handler !== "function") throw new Error("${errMsg.replace(/"/g, '\\"')}");
+        if (typeof handler !== "function") throw new Error("${escapeForDoubleQuotedStringLiteral(errMsg)}");
         const raw = handler(input);
         const output = raw && typeof (raw as unknown as { $typeName?: string }).$typeName === "string" ? (raw as ${outputType}) : fromJson(${outputType}Schema, raw as ${outputJsonType});
         return { response: { case: "payload", value: anyPack(${outputType}Schema, output) } };
