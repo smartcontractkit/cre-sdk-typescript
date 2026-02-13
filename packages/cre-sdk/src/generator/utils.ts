@@ -7,6 +7,15 @@ import { ReportRequestSchema, ReportResponseSchema } from '@cre/generated/sdk/v1
 export const lowerCaseFirstLetter = (str: string) => `${str.charAt(0).toLowerCase()}${str.slice(1)}`
 
 /**
+ * Converts a hyphenated string to PascalCase (e.g. "http-actions" -> "HttpActions")
+ */
+export const toPascalCase = (str: string): string =>
+	str
+		.split('-')
+		.map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+		.join('')
+
+/**
  * Gets the import path for a given protobuf file
  */
 export const getImportPathForFile = (fileName: string): string => {

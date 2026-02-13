@@ -16,6 +16,10 @@
 		"./pb": {
 			"types": "./dist/pb.d.ts",
 			"import": "./dist/pb.js"
+		},
+		"./test": {
+			"types": "./dist/sdk/test/index.d.ts",
+			"import": "./dist/sdk/test/index.js"
 		}
 	},
 	"bin": {
@@ -46,12 +50,12 @@
 		"full-checks": "bun generate:sdk && bun build && bun typecheck && bun check && bun test && bun test:standard",
 		"generate:chain-selectors": "bun scripts/run.ts generate-chain-selectors && BIOME_PATHS=\"src/generated\" bun check",
 		"generate:proto": "bunx @bufbuild/buf generate && BIOME_PATHS=\"src/generated\" bun check",
-		"generate:sdk": "bun generate:proto && bun generate:chain-selectors && bun scripts/run generate-sdks && BIOME_PATHS=\"src/generated src/generated-sdk\" bun check",
+		"generate:sdk": "bun generate:proto && bun generate:chain-selectors && bun scripts/run generate-sdks && BIOME_PATHS=\"src/generated src/generated-sdk src/sdk/test/generated\" bun check",
 		"lint": "biome lint --write",
 		"prepublishOnly": "bun typecheck && bun check && bun test && bun test:standard",
 		"test": "bun test",
 		"test:standard": "./scripts/run-standard-tests.sh",
-		"typecheck": "tsc"
+		"typecheck": "tsc -p tsconfig.json --noEmit"
 	},
 	"dependencies": {
 		"@bufbuild/protobuf": "2.6.3",

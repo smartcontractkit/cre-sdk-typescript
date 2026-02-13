@@ -49,6 +49,7 @@ import {
 } from '@cre/sdk/utils'
 import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
 import { DonModeError, NodeModeError, SecretsError } from '../errors'
+import { RESPONSE_BUFFER_TOO_SMALL } from '../testutils/test-runtime'
 import { type RuntimeHelpers, RuntimeImpl } from './runtime-impl'
 
 // Helper function to create a RuntimeHelpers mock with error-throwing defaults
@@ -267,6 +268,62 @@ describe('test runtime', () => {
 
 			expect(() => call1.result()).toThrow(
 				new CapabilityError('No response found for callback ID 1', {
+					callbackId: 1,
+					capabilityId: BasicActionCapability.CAPABILITY_ID,
+					method: 'PerformAction',
+				}),
+			)
+		})
+
+		test('await throws RESPONSE_BUFFER_TOO_SMALL when response exceeds max size', () => {
+			const helpers = createRuntimeHelpersMock({
+				call: mock((_: CapabilityRequest) => true),
+				await: mock((_: AwaitCapabilitiesRequest) => {
+					throw new Error(RESPONSE_BUFFER_TOO_SMALL)
+				}),
+			})
+
+			const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+			const workflowAction1 = new BasicActionCapability()
+			const call1 = workflowAction1.performAction(
+				runtime,
+				create(InputsSchema, { inputThing: true }),
+			)
+
+			expect(() => call1.result()).toThrow(RESPONSE_BUFFER_TOO_SMALL)
+		})
+
+		test('await returns unparsable payload throws CapabilityError', () => {
+			// Any with correct type_url but invalid value bytes so fromBinary throws
+			const validAny = anyPack(OutputsSchema, create(OutputsSchema, { adaptedThing: 'x' }))
+			const corruptPayload = {
+				typeUrl: validAny.typeUrl,
+				value: new Uint8Array([0xff, 0xff]),
+			}
+
+			const helpers = createRuntimeHelpersMock({
+				call: mock((_: CapabilityRequest) => true),
+				await: mock((request: AwaitCapabilitiesRequest) => {
+					const id = request.ids[0]
+					return create(AwaitCapabilitiesResponseSchema, {
+						responses: {
+							[id]: create(CapabilityResponseSchema, {
+								response: { case: 'payload', value: corruptPayload as Any },
+							}),
+						},
+					})
+				}),
+			})
+
+			const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+			const workflowAction1 = new BasicActionCapability()
+			const call1 = workflowAction1.performAction(
+				runtime,
+				create(InputsSchema, { inputThing: true }),
+			)
+
+			expect(() => call1.result()).toThrow(
+				new CapabilityError('Error cannot unwrap payload', {
 					callbackId: 1,
 					capabilityId: BasicActionCapability.CAPABILITY_ID,
 					method: 'PerformAction',
@@ -708,6 +765,69 @@ describe('test run in node mode', () => {
 			throw new Error(anyError)
 		}, consensusMedianAggregation())()
 		expect(() => result.result()).toThrow(new Error(anyError))
+	})
+
+	test('primitive consensus with unused default returns observation value', () => {
+		const observationValue = 99
+		const defaultValue = 100
+		const helpers = createRuntimeHelpersMock({
+			switchModes: mock((_: Mode) => {}),
+		})
+
+		ConsensusCapability.prototype.simple = mock(
+			(_: Runtime<unknown>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
+				const inputsProto = inputs as SimpleConsensusInputs
+				expect(inputsProto.observation.case).toEqual('value')
+				expect(Value.wrap(inputsProto.observation.value as ProtoValue).unwrap()).toEqual(
+					observationValue,
+				)
+				expect(inputsProto.default).toBeDefined()
+				expect(Value.wrap(inputsProto.default as ProtoValue).unwrap()).toEqual(defaultValue)
+				return {
+					result: () => Value.from(observationValue).proto(),
+				}
+			},
+		)
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		const result = runtime
+			.runInNodeMode(
+				(_: NodeRuntime<unknown>) => observationValue,
+				consensusMedianAggregation<number>().withDefault(defaultValue),
+			)()
+			.result()
+
+		expect(result).toEqual(observationValue)
+	})
+
+	test('primitive consensus with used default returns default when function errors', () => {
+		const defaultVal = 100
+		const anyError = 'error'
+		const helpers = createRuntimeHelpersMock({
+			switchModes: mock((_: Mode) => {}),
+		})
+
+		ConsensusCapability.prototype.simple = mock(
+			(_: Runtime<unknown>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
+				const inputsProto = inputs as SimpleConsensusInputs
+				expect(inputsProto.observation.case).toEqual('error')
+				expect(inputsProto.observation.value).toEqual(anyError)
+				expect(inputsProto.default).toBeDefined()
+				expect(Value.wrap(inputsProto.default as ProtoValue).unwrap()).toEqual(defaultVal)
+				return {
+					result: () => Value.from(defaultVal).proto(),
+				}
+			},
+		)
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		const result = runtime
+			.runInNodeMode((_: NodeRuntime<unknown>) => {
+				throw new Error(anyError)
+			}, consensusMedianAggregation<number>().withDefault(defaultVal))()
+			.result()
+
+		expect(result).toEqual(defaultVal)
 	})
 
 	test('node runtime in don mode fails', () => {
