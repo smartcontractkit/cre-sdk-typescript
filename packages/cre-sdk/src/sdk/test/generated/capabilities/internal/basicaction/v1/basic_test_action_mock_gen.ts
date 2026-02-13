@@ -1,12 +1,12 @@
 import { fromJson } from '@bufbuild/protobuf'
 import { anyPack, anyUnpack } from '@bufbuild/protobuf/wkt'
 import {
-	type Input,
-	InputSchema,
-	type Output,
-	type OutputJson,
-	OutputSchema,
-} from '@cre/generated/capabilities/internal/actionandtrigger/v1/action_and_trigger_pb'
+	type Inputs,
+	InputsSchema,
+	type Outputs,
+	type OutputsJson,
+	OutputsSchema,
+} from '@cre/generated/capabilities/internal/basicaction/v1/basic_action_pb'
 import {
 	__getTestMockInstance,
 	__setTestMockInstance,
@@ -14,34 +14,34 @@ import {
 } from '../../../../../../testutils/test-runtime'
 
 /**
- * Mock for BasicCapability. Use testInstance() to obtain an instance; do not construct directly.
+ * Mock for BasicActionCapability. Use testInstance() to obtain an instance; do not construct directly.
  * Set per-method properties (e.g. performAction) to define return values. If a method is invoked without a handler set, an error is thrown.
  */
-export class BasicCapabilityMock {
-	static readonly CAPABILITY_ID = 'basic-test-action-trigger@1.0.0'
+export class BasicTestActionMock {
+	static readonly CAPABILITY_ID = 'basic-test-action@1.0.0'
 
-	/** Set to define the return value for Action. May return a plain object (OutputJson) or the message type. */
-	action?: (input: Input) => Output | OutputJson
+	/** Set to define the return value for PerformAction. May return a plain object (OutputsJson) or the message type. */
+	performAction?: (input: Inputs) => Outputs | OutputsJson
 
 	private constructor() {
 		const self = this
-		const qualifiedId = BasicCapabilityMock.CAPABILITY_ID
+		const qualifiedId = BasicTestActionMock.CAPABILITY_ID
 		try {
 			registerTestCapability(qualifiedId, (req) => {
 				switch (req.method) {
-					case 'Action': {
-						const input = anyUnpack(req.payload, InputSchema) as Input
-						const handler = self.action
+					case 'PerformAction': {
+						const input = anyUnpack(req.payload, InputsSchema) as Inputs
+						const handler = self.performAction
 						if (typeof handler !== 'function')
 							throw new Error(
-								"Action: no implementation provided; set the mock's action property to define the return value.",
+								"PerformAction: no implementation provided; set the mock's performAction property to define the return value.",
 							)
 						const raw = handler(input)
 						const output =
 							raw && typeof (raw as unknown as { $typeName?: string }).$typeName === 'string'
-								? (raw as Output)
-								: fromJson(OutputSchema, raw as OutputJson)
-						return { response: { case: 'payload', value: anyPack(OutputSchema, output) } }
+								? (raw as Outputs)
+								: fromJson(OutputsSchema, raw as OutputsJson)
+						return { response: { case: 'payload', value: anyPack(OutputsSchema, output) } }
 					}
 					default:
 						return { response: { case: 'error', value: `unknown method ${req.method}` } }
@@ -59,11 +59,11 @@ export class BasicCapabilityMock {
 	 * Multiple calls with the same arguments return the same instance.
 	 * Must be called within the test framework's test() method.
 	 */
-	static testInstance(): BasicCapabilityMock {
-		const qualifiedId = BasicCapabilityMock.CAPABILITY_ID
-		let instance = __getTestMockInstance<BasicCapabilityMock>(qualifiedId)
+	static testInstance(): BasicTestActionMock {
+		const qualifiedId = BasicTestActionMock.CAPABILITY_ID
+		let instance = __getTestMockInstance<BasicTestActionMock>(qualifiedId)
 		if (!instance) {
-			instance = new BasicCapabilityMock()
+			instance = new BasicTestActionMock()
 			__setTestMockInstance(qualifiedId, instance)
 		}
 		return instance

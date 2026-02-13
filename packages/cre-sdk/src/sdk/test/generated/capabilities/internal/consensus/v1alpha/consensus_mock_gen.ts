@@ -20,7 +20,7 @@ import {
  * Mock for ConsensusCapability. Use testInstance() to obtain an instance; do not construct directly.
  * Set per-method properties (e.g. performAction) to define return values. If a method is invoked without a handler set, an error is thrown.
  */
-export class ConsensusCapabilityMock {
+export class ConsensusMock {
 	static readonly CAPABILITY_ID = 'consensus@1.0.0-alpha'
 
 	/** Set to define the return value for Simple. May return a plain object (ValueJson) or the message type. */
@@ -31,7 +31,7 @@ export class ConsensusCapabilityMock {
 
 	private constructor() {
 		const self = this
-		const qualifiedId = ConsensusCapabilityMock.CAPABILITY_ID
+		const qualifiedId = ConsensusMock.CAPABILITY_ID
 		try {
 			registerTestCapability(qualifiedId, (req) => {
 				switch (req.method) {
@@ -82,11 +82,11 @@ export class ConsensusCapabilityMock {
 	 * Multiple calls with the same arguments return the same instance.
 	 * Must be called within the test framework's test() method.
 	 */
-	static testInstance(): ConsensusCapabilityMock {
-		const qualifiedId = ConsensusCapabilityMock.CAPABILITY_ID
-		let instance = __getTestMockInstance<ConsensusCapabilityMock>(qualifiedId)
+	static testInstance(): ConsensusMock {
+		const qualifiedId = ConsensusMock.CAPABILITY_ID
+		let instance = __getTestMockInstance<ConsensusMock>(qualifiedId)
 		if (!instance) {
-			instance = new ConsensusCapabilityMock()
+			instance = new ConsensusMock()
 			__setTestMockInstance(qualifiedId, instance)
 		}
 		return instance

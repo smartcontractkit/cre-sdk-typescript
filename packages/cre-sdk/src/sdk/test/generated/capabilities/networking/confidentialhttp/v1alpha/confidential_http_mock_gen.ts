@@ -1,12 +1,12 @@
 import { fromJson } from '@bufbuild/protobuf'
 import { anyPack, anyUnpack } from '@bufbuild/protobuf/wkt'
 import {
-	type Request,
-	RequestSchema,
-	type Response,
-	type ResponseJson,
-	ResponseSchema,
-} from '@cre/generated/capabilities/networking/http/v1alpha/client_pb'
+	type ConfidentialHTTPRequest,
+	ConfidentialHTTPRequestSchema,
+	type HTTPResponse,
+	type HTTPResponseJson,
+	HTTPResponseSchema,
+} from '@cre/generated/capabilities/networking/confidentialhttp/v1alpha/client_pb'
 import {
 	__getTestMockInstance,
 	__setTestMockInstance,
@@ -17,20 +17,23 @@ import {
  * Mock for ClientCapability. Use testInstance() to obtain an instance; do not construct directly.
  * Set per-method properties (e.g. performAction) to define return values. If a method is invoked without a handler set, an error is thrown.
  */
-export class ClientCapabilityMock {
-	static readonly CAPABILITY_ID = 'http-actions@1.0.0-alpha'
+export class ConfidentialHttpMock {
+	static readonly CAPABILITY_ID = 'confidential-http@1.0.0-alpha'
 
-	/** Set to define the return value for SendRequest. May return a plain object (ResponseJson) or the message type. */
-	sendRequest?: (input: Request) => Response | ResponseJson
+	/** Set to define the return value for SendRequest. May return a plain object (HTTPResponseJson) or the message type. */
+	sendRequest?: (input: ConfidentialHTTPRequest) => HTTPResponse | HTTPResponseJson
 
 	private constructor() {
 		const self = this
-		const qualifiedId = ClientCapabilityMock.CAPABILITY_ID
+		const qualifiedId = ConfidentialHttpMock.CAPABILITY_ID
 		try {
 			registerTestCapability(qualifiedId, (req) => {
 				switch (req.method) {
 					case 'SendRequest': {
-						const input = anyUnpack(req.payload, RequestSchema) as Request
+						const input = anyUnpack(
+							req.payload,
+							ConfidentialHTTPRequestSchema,
+						) as ConfidentialHTTPRequest
 						const handler = self.sendRequest
 						if (typeof handler !== 'function')
 							throw new Error(
@@ -39,9 +42,9 @@ export class ClientCapabilityMock {
 						const raw = handler(input)
 						const output =
 							raw && typeof (raw as unknown as { $typeName?: string }).$typeName === 'string'
-								? (raw as Response)
-								: fromJson(ResponseSchema, raw as ResponseJson)
-						return { response: { case: 'payload', value: anyPack(ResponseSchema, output) } }
+								? (raw as HTTPResponse)
+								: fromJson(HTTPResponseSchema, raw as HTTPResponseJson)
+						return { response: { case: 'payload', value: anyPack(HTTPResponseSchema, output) } }
 					}
 					default:
 						return { response: { case: 'error', value: `unknown method ${req.method}` } }
@@ -59,11 +62,11 @@ export class ClientCapabilityMock {
 	 * Multiple calls with the same arguments return the same instance.
 	 * Must be called within the test framework's test() method.
 	 */
-	static testInstance(): ClientCapabilityMock {
-		const qualifiedId = ClientCapabilityMock.CAPABILITY_ID
-		let instance = __getTestMockInstance<ClientCapabilityMock>(qualifiedId)
+	static testInstance(): ConfidentialHttpMock {
+		const qualifiedId = ConfidentialHttpMock.CAPABILITY_ID
+		let instance = __getTestMockInstance<ConfidentialHttpMock>(qualifiedId)
 		if (!instance) {
-			instance = new ClientCapabilityMock()
+			instance = new ConfidentialHttpMock()
 			__setTestMockInstance(qualifiedId, instance)
 		}
 		return instance

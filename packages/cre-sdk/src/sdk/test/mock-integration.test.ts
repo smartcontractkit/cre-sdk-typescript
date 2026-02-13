@@ -6,8 +6,8 @@
  */
 import { test as bunTest, describe, expect } from 'bun:test'
 import {
-	BasicActionCapabilityMock,
-	ClientCapabilityMock as EvmClientCapabilityMock,
+	BasicTestActionMock,
+	EvmMock,
 	newTestRuntime,
 	test,
 } from '@chainlink/cre-sdk/test'
@@ -22,7 +22,7 @@ const NO_IMPL_PATTERN =
 
 describe('Generated capability mocks', () => {
 	test('invoking capability without setting handler throws clear error', async () => {
-		BasicActionCapabilityMock.testInstance() // registers mock; do not set performAction
+		BasicTestActionMock.testInstance() // registers mock; do not set performAction
 		const runtime = newTestRuntime()
 		const capability = new BasicActionCapability()
 
@@ -32,7 +32,7 @@ describe('Generated capability mocks', () => {
 
 	test('handler receives decoded input exactly as passed at call site', async () => {
 		const expectedInputValue = true
-		const mock = BasicActionCapabilityMock.testInstance()
+		const mock = BasicTestActionMock.testInstance()
 		let receivedInputThing: boolean | undefined
 		mock.performAction = (input) => {
 			receivedInputThing = input.inputThing
@@ -49,7 +49,7 @@ describe('Generated capability mocks', () => {
 
 	test('returned output matches handler return value exactly', async () => {
 		const expectedOutputValue = 'custom-adapted-result'
-		const mock = BasicActionCapabilityMock.testInstance()
+		const mock = BasicTestActionMock.testInstance()
 		mock.performAction = () => {
 			return { adaptedThing: expectedOutputValue }
 		}
@@ -64,7 +64,7 @@ describe('Generated capability mocks', () => {
 	test('both callCapability and awaitCapability paths return identical handler result', async () => {
 		const expectedOutput = 'result-from-handler'
 		const inputValue = true
-		const mock = BasicActionCapabilityMock.testInstance()
+		const mock = BasicTestActionMock.testInstance()
 		mock.performAction = (input) => {
 			expect(input.inputThing).toBe(inputValue)
 			return { adaptedThing: expectedOutput }
@@ -80,8 +80,8 @@ describe('Generated capability mocks', () => {
 	})
 
 	test('calling testInstance twice returns same instance', async () => {
-		const instance1 = BasicActionCapabilityMock.testInstance()
-		const instance2 = BasicActionCapabilityMock.testInstance()
+		const instance1 = BasicTestActionMock.testInstance()
+		const instance2 = BasicTestActionMock.testInstance()
 		expect(instance1).toBe(instance2)
 	})
 })
@@ -89,16 +89,16 @@ describe('Generated capability mocks', () => {
 describe('Tag-aware capability mocks (EVM with chain selectors)', () => {
 	test('testInstance with same chain selector returns same instance', async () => {
 		const chainSelector = 11155111n // Sepolia
-		const instance1 = EvmClientCapabilityMock.testInstance(chainSelector)
-		const instance2 = EvmClientCapabilityMock.testInstance(chainSelector)
+		const instance1 = EvmMock.testInstance(chainSelector)
+		const instance2 = EvmMock.testInstance(chainSelector)
 		expect(instance1).toBe(instance2)
 	})
 
 	test('testInstance with different chain selectors returns different instances', async () => {
 		const sepoliaSelector = 11155111n
 		const mumbaiSelector = 80001n
-		const sepoliaInstance = EvmClientCapabilityMock.testInstance(sepoliaSelector)
-		const mumbaiInstance = EvmClientCapabilityMock.testInstance(mumbaiSelector)
+		const sepoliaInstance = EvmMock.testInstance(sepoliaSelector)
+		const mumbaiInstance = EvmMock.testInstance(mumbaiSelector)
 		expect(sepoliaInstance).not.toBe(mumbaiInstance)
 	})
 
@@ -106,8 +106,8 @@ describe('Tag-aware capability mocks (EVM with chain selectors)', () => {
 		const sepoliaSelector = 11155111n
 		const mumbaiSelector = 80001n
 
-		const sepoliaMock = EvmClientCapabilityMock.testInstance(sepoliaSelector)
-		const mumbaiMock = EvmClientCapabilityMock.testInstance(mumbaiSelector)
+		const sepoliaMock = EvmMock.testInstance(sepoliaSelector)
+		const mumbaiMock = EvmMock.testInstance(mumbaiSelector)
 
 		// Use JSON types with base64 strings for bytes
 		sepoliaMock.callContract = () => ({ data: 'AQID' }) // base64 for [1, 2, 3]
@@ -130,5 +130,5 @@ describe('Tag-aware capability mocks (EVM with chain selectors)', () => {
 })
 
 bunTest('mock throws when used outside CRE test()', () => {
-	expect(() => BasicActionCapabilityMock.testInstance()).toThrow(MOCK_OUTSIDE_TEST_ERROR)
+	expect(() => BasicTestActionMock.testInstance()).toThrow(MOCK_OUTSIDE_TEST_ERROR)
 })

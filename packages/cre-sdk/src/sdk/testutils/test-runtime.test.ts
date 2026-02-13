@@ -10,7 +10,7 @@ import { BasicActionCapability } from '@cre/generated-sdk/capabilities/internal/
 import { consensusMedianAggregation } from '@cre/sdk/utils'
 import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
 import { SecretsError } from '../errors'
-import { BasicActionCapabilityMock } from '../test/generated/capabilities/internal/basicaction/v1/basicaction_mock_gen'
+import { BasicTestActionMock } from '../test/generated/capabilities/internal/basicaction/v1/basic_test_action_mock_gen'
 import {
 	__testOnlyRegistryStore,
 	__testOnlyRunWithRegistry,
@@ -81,7 +81,7 @@ describe('TestRuntime / helper layer', () => {
 
 	test('registered capability: callCapability and await path both route to handler and return result', () => {
 		const expectedResult = 'result-from-registered-handler'
-		const mock = BasicActionCapabilityMock.testInstance()
+		const mock = BasicTestActionMock.testInstance()
 		mock.performAction = () => ({ adaptedThing: expectedResult })
 		const rt = newTestRuntime()
 

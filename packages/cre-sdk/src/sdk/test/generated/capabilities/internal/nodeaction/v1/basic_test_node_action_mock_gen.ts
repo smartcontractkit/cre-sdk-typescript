@@ -17,7 +17,7 @@ import {
  * Mock for BasicActionCapability. Use testInstance() to obtain an instance; do not construct directly.
  * Set per-method properties (e.g. performAction) to define return values. If a method is invoked without a handler set, an error is thrown.
  */
-export class BasicActionCapabilityMock {
+export class BasicTestNodeActionMock {
 	static readonly CAPABILITY_ID = 'basic-test-node-action@1.0.0'
 
 	/** Set to define the return value for PerformAction. May return a plain object (NodeOutputsJson) or the message type. */
@@ -25,7 +25,7 @@ export class BasicActionCapabilityMock {
 
 	private constructor() {
 		const self = this
-		const qualifiedId = BasicActionCapabilityMock.CAPABILITY_ID
+		const qualifiedId = BasicTestNodeActionMock.CAPABILITY_ID
 		try {
 			registerTestCapability(qualifiedId, (req) => {
 				switch (req.method) {
@@ -59,11 +59,11 @@ export class BasicActionCapabilityMock {
 	 * Multiple calls with the same arguments return the same instance.
 	 * Must be called within the test framework's test() method.
 	 */
-	static testInstance(): BasicActionCapabilityMock {
-		const qualifiedId = BasicActionCapabilityMock.CAPABILITY_ID
-		let instance = __getTestMockInstance<BasicActionCapabilityMock>(qualifiedId)
+	static testInstance(): BasicTestNodeActionMock {
+		const qualifiedId = BasicTestNodeActionMock.CAPABILITY_ID
+		let instance = __getTestMockInstance<BasicTestNodeActionMock>(qualifiedId)
 		if (!instance) {
-			instance = new BasicActionCapabilityMock()
+			instance = new BasicTestNodeActionMock()
 			__setTestMockInstance(qualifiedId, instance)
 		}
 		return instance

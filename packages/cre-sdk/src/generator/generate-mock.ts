@@ -8,7 +8,7 @@ import {
 	method as methodOption,
 } from '@cre/generated/tools/generator/v1alpha/cre_metadata_pb'
 import { processLabels } from './label-utils'
-import { getImportPathForFile, lowerCaseFirstLetter } from './utils'
+import { getImportPathForFile, lowerCaseFirstLetter, toPascalCase } from './utils'
 
 const MOCK_OUTSIDE_TEST_ERROR =
 	"Capability mocks must be used within the CRE test framework's test() method."
@@ -126,17 +126,16 @@ export function generateMocks(file: GenFile, outputDir: string): GeneratedMockEx
 			)
 			.join('\n\n')
 
-		const capabilityClassName = `${service.name}Capability`
-		const mockClassName = `${capabilityClassName}Mock`
-		const serviceNameLower = service.name.toLowerCase() as Lowercase<string>
-
-		const labels = processLabels(capOption)
-		const hasLabels = labels.length > 0
-
 		// Extract name and version from capability ID (e.g., "evm@1.0.0" -> name="evm", version="1.0.0")
 		const capIdParts = capOption.capabilityId.split('@')
 		const capabilityName = capIdParts[0]
 		const capabilityVersion = capIdParts[1] || ''
+
+		const capabilityClassName = `${service.name}Capability`
+		const mockClassName = `${toPascalCase(capabilityName)}Mock`
+
+		const labels = processLabels(capOption)
+		const hasLabels = labels.length > 0
 
 		// Generate testInstance parameters and capability ID computation
 		let testInstanceParams = ''
@@ -202,7 +201,7 @@ ${handlerCases}
 `
 
 		const relDir = dirname(file.name)
-		const fileName = `${serviceNameLower}_mock_gen.ts`
+		const fileName = `${capabilityName.replace(/-/g, '_')}_mock_gen.ts`
 		const outPath = join(outputDir, relDir, fileName)
 		mkdirSync(dirname(outPath), { recursive: true })
 		writeFileSync(outPath, output)
@@ -216,29 +215,11 @@ ${handlerCases}
 	return exports
 }
 
-function pathToUniqueExportName(relativePath: string): string {
-	const withoutExt = relativePath.replace(/\.ts$/, '').replace(/_mock_gen$/, '')
-	const parts = withoutExt.split('/')
-	const pascal = parts.map((p) => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase()).join('')
-	return `${pascal}Mock`
-}
-
 /**
  * Writes a barrel file that re-exports all generated mocks. Use so the test package can export * from './generated'.
- * Duplicate class names (e.g. multiple ClientCapabilityMock) are exported with path-based unique aliases.
  */
 export function writeTestGeneratedBarrel(exports: GeneratedMockExport[], outputDir: string): void {
-	const seen = new Set<string>()
-	const lines = exports.map((e) => {
-		let exportName = e.className
-		if (seen.has(exportName)) {
-			exportName = pathToUniqueExportName(e.relativePath)
-		}
-		seen.add(e.className)
-		return exportName === e.className
-			? `export { ${e.className} } from "./${e.relativePath}"`
-			: `export { ${e.className} as ${exportName} } from "./${e.relativePath}"`
-	})
+	const lines = exports.map((e) => `export { ${e.className} } from "./${e.relativePath}"`)
 	const output = `/** Auto-generated barrel of capability mocks. Do not edit. */\n\n${lines.join('\n')}\n`
 	writeFileSync(join(outputDir, 'index.ts'), output)
 	console.log(`✅ Wrote test generated barrel (${exports.length} mocks)`)

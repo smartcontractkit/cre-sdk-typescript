@@ -52,7 +52,7 @@ import {
  * Mock for ClientCapability. Use testInstance() to obtain an instance; do not construct directly.
  * Set per-method properties (e.g. performAction) to define return values. If a method is invoked without a handler set, an error is thrown.
  */
-export class ClientCapabilityMock {
+export class EvmMock {
 	static readonly CAPABILITY_ID = 'evm@1.0.0'
 
 	/** Set to define the return value for CallContract. May return a plain object (CallContractReplyJson) or the message type. */
@@ -240,11 +240,11 @@ export class ClientCapabilityMock {
 	 * Multiple calls with the same tag values return the same instance.
 	 * Must be called within the test framework's test() method.
 	 */
-	static testInstance(chainSelector: bigint): ClientCapabilityMock {
+	static testInstance(chainSelector: bigint): EvmMock {
 		const qualifiedId = `evm:ChainSelector:${chainSelector}@1.0.0`
-		let instance = __getTestMockInstance<ClientCapabilityMock>(qualifiedId)
+		let instance = __getTestMockInstance<EvmMock>(qualifiedId)
 		if (!instance) {
-			instance = new ClientCapabilityMock(chainSelector)
+			instance = new EvmMock(chainSelector)
 			__setTestMockInstance(qualifiedId, instance)
 		}
 		return instance
