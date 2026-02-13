@@ -28,10 +28,7 @@ export {
 	type WriteCreReportRequestJson,
 } from '@cre/generated-sdk/capabilities/blockchain/evm/v1alpha/client_sdk_gen'
 // Confidential HTTP Capability
-export {
-	ClientCapability as ConfidentialHTTPClient,
-	type SendRequester as ConfidentialHTTPSendRequester,
-} from '@cre/generated-sdk/capabilities/networking/confidentialhttp/v1alpha/client_sdk_gen'
+export { ClientCapability as ConfidentialHTTPClient } from '@cre/generated-sdk/capabilities/networking/confidentialhttp/v1alpha/client_sdk_gen'
 // HTTP Capability
 export {
 	ClientCapability as HTTPClient,
