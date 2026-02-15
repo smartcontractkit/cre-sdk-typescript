@@ -100,11 +100,14 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 		if (!this.helpers.call(req)) {
 			return {
 				result: () => {
-					throw new CapabilityError(`Capability '${capabilityId}' not found: the host rejected the call to method '${method}'. Verify the capability ID is correct and the capability is available in this CRE environment`, {
-						callbackId,
-						method,
-						capabilityId,
-					})
+					throw new CapabilityError(
+						`Capability '${capabilityId}' not found: the host rejected the call to method '${method}'. Verify the capability ID is correct and the capability is available in this CRE environment`,
+						{
+							callbackId,
+							method,
+							capabilityId,
+						},
+					)
 				},
 			}
 		}
@@ -146,11 +149,14 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 		const capabilityResponse = awaitResponse.responses[callbackId]
 
 		if (!capabilityResponse) {
-			throw new CapabilityError(`No response found for capability '${capabilityId}' method '${method}' (callback ID ${callbackId}): the host returned a response map that does not contain an entry for this call`, {
-				capabilityId,
-				method,
-				callbackId,
-			})
+			throw new CapabilityError(
+				`No response found for capability '${capabilityId}' method '${method}' (callback ID ${callbackId}): the host returned a response map that does not contain an entry for this call`,
+				{
+					capabilityId,
+					method,
+					callbackId,
+				},
+			)
 		}
 
 		const response = capabilityResponse.response
@@ -159,25 +165,34 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 				try {
 					return anyUnpack(response.value as Any, outputSchema) as O
 				} catch {
-					throw new CapabilityError(`Failed to deserialize response payload for capability '${capabilityId}' method '${method}': the response could not be unpacked into the expected output schema`, {
-						capabilityId,
-						method,
-						callbackId,
-					})
+					throw new CapabilityError(
+						`Failed to deserialize response payload for capability '${capabilityId}' method '${method}': the response could not be unpacked into the expected output schema`,
+						{
+							capabilityId,
+							method,
+							callbackId,
+						},
+					)
 				}
 			}
 			case 'error':
-				throw new CapabilityError(`Capability '${capabilityId}' method '${method}' returned an error: ${response.value}`, {
-					capabilityId,
-					method,
-					callbackId,
-				})
+				throw new CapabilityError(
+					`Capability '${capabilityId}' method '${method}' returned an error: ${response.value}`,
+					{
+						capabilityId,
+						method,
+						callbackId,
+					},
+				)
 			default:
-				throw new CapabilityError(`Unexpected response type '${response.case}' for capability '${capabilityId}' method '${method}': expected 'payload' or 'error'`, {
-					capabilityId,
-					method,
-					callbackId,
-				})
+				throw new CapabilityError(
+					`Unexpected response type '${response.case}' for capability '${capabilityId}' method '${method}': expected 'payload' or 'error'`,
+					{
+						capabilityId,
+						method,
+						callbackId,
+					},
+				)
 		}
 	}
 

@@ -179,11 +179,14 @@ describe('test runtime', () => {
 			)
 
 			expect(() => call1.result()).toThrow(
-				new CapabilityError(`Capability '${BasicActionCapability.CAPABILITY_ID}' not found: the host rejected the call to method 'PerformAction'. Verify the capability ID is correct and the capability is available in this CRE environment`, {
-					callbackId: 1,
-					capabilityId: BasicActionCapability.CAPABILITY_ID,
-					method: 'PerformAction',
-				}),
+				new CapabilityError(
+					`Capability '${BasicActionCapability.CAPABILITY_ID}' not found: the host rejected the call to method 'PerformAction'. Verify the capability ID is correct and the capability is available in this CRE environment`,
+					{
+						callbackId: 1,
+						capabilityId: BasicActionCapability.CAPABILITY_ID,
+						method: 'PerformAction',
+					},
+				),
 			)
 		})
 
@@ -213,11 +216,14 @@ describe('test runtime', () => {
 			)
 
 			expect(() => call1.result()).toThrow(
-				new CapabilityError(`Capability '${BasicActionCapability.CAPABILITY_ID}' method 'PerformAction' returned an error: ${anyError}`, {
-					callbackId: 1,
-					capabilityId: BasicActionCapability.CAPABILITY_ID,
-					method: 'PerformAction',
-				}),
+				new CapabilityError(
+					`Capability '${BasicActionCapability.CAPABILITY_ID}' method 'PerformAction' returned an error: ${anyError}`,
+					{
+						callbackId: 1,
+						capabilityId: BasicActionCapability.CAPABILITY_ID,
+						method: 'PerformAction',
+					},
+				),
 			)
 		})
 
@@ -266,11 +272,14 @@ describe('test runtime', () => {
 			)
 
 			expect(() => call1.result()).toThrow(
-				new CapabilityError(`No response found for capability '${BasicActionCapability.CAPABILITY_ID}' method 'PerformAction' (callback ID 1): the host returned a response map that does not contain an entry for this call`, {
-					callbackId: 1,
-					capabilityId: BasicActionCapability.CAPABILITY_ID,
-					method: 'PerformAction',
-				}),
+				new CapabilityError(
+					`No response found for capability '${BasicActionCapability.CAPABILITY_ID}' method 'PerformAction' (callback ID 1): the host returned a response map that does not contain an entry for this call`,
+					{
+						callbackId: 1,
+						capabilityId: BasicActionCapability.CAPABILITY_ID,
+						method: 'PerformAction',
+					},
+				),
 			)
 		})
 	})
