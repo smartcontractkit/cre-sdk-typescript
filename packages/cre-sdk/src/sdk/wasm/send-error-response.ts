@@ -40,6 +40,17 @@ export const prepareErrorResponse = (error: unknown): Uint8Array | null => {
 export const sendErrorResponse = (error: unknown): void => {
 	const payload = prepareErrorResponse(error)
 	if (payload === null) {
+		console.error(
+			'Failed to serialize error response: the error could not be converted to a string. Original error:',
+			error,
+		)
+		// Create a fallback error message so the error is not silently lost
+		const fallback = prepareErrorResponse(
+			'Unknown error: the original error could not be serialized',
+		)
+		if (fallback !== null) {
+			hostBindings.sendResponse(fallback)
+		}
 		return
 	}
 
