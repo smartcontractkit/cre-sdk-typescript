@@ -20,7 +20,7 @@ const initWorkflow = () => {
 
 export async function main() {
 	console.log(
-		`TS workflow: standard test: capability calls are async [${new Date().toISOString()}]`,
+		`TS workflow: standard test: host_wasm_write_errors_are_respected [${new Date().toISOString()}]`,
 	)
 
 	const runner = await Runner.newRunner<Uint8Array>({

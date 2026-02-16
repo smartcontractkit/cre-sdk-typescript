@@ -29,6 +29,16 @@ export class NodeRuntime<C> extends NodeRuntimeImpl<C> {
 	}
 }
 
+/** Convert bigint maxResponseSize to i32 for WASM host binding, with range validation. */
+function toI32ResponseSize(maxResponseSize: bigint): number {
+	if (maxResponseSize > 2147483647n || maxResponseSize < -2147483648n) {
+		throw new Error(
+			`maxResponseSize ${maxResponseSize} exceeds i32 range. Expected a value between -2147483648 and 2147483647`,
+		)
+	}
+	return Math.trunc(Number(maxResponseSize))
+}
+
 class WasmRuntimeHelpers implements RuntimeHelpers {
 	private static instance: WasmRuntimeHelpers
 
@@ -49,9 +59,7 @@ class WasmRuntimeHelpers implements RuntimeHelpers {
 	}
 
 	await(request: AwaitCapabilitiesRequest, maxResponseSize: bigint): AwaitCapabilitiesResponse {
-		// Convert bigint to integer for WASM host binding
-		// it's an i32, so we shouldn't need to trunc it (all i32 numbers are within the range of float64 without percision loss), but somehow it makes a difference...
-		const responseSize = Math.trunc(Number(maxResponseSize))
+		const responseSize = toI32ResponseSize(maxResponseSize)
 
 		const response = hostBindings.awaitCapabilities(
 			toBinary(AwaitCapabilitiesRequestSchema, request),
@@ -62,16 +70,12 @@ class WasmRuntimeHelpers implements RuntimeHelpers {
 	}
 
 	getSecrets(request: GetSecretsRequest, maxResponseSize: bigint): boolean {
-		// Convert bigint to integer for WASM host binding
-		// it's an i32, so we shouldn't need to trunc it (all i32 numbers are within the range of float64 without percision loss), but somehow it makes a difference...
-		const responseSize = Math.trunc(Number(maxResponseSize))
+		const responseSize = toI32ResponseSize(maxResponseSize)
 		return hostBindings.getSecrets(toBinary(GetSecretsRequestSchema, request), responseSize) >= 0
 	}
 
 	awaitSecrets(request: AwaitSecretsRequest, maxResponseSize: bigint): AwaitSecretsResponse {
-		// Convert bigint to integer for WASM host binding
-		// it's an i32, so we shouldn't need to trunc it (all i32 numbers are within the range of float64 without percision loss), but somehow it makes a difference...
-		const responseSize = Math.trunc(Number(maxResponseSize))
+		const responseSize = toI32ResponseSize(maxResponseSize)
 		const response = hostBindings.awaitSecrets(
 			toBinary(AwaitSecretsRequestSchema, request),
 			responseSize,

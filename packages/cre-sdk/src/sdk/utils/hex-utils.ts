@@ -48,6 +48,19 @@ export const bytesToHex = (bytes: Uint8Array): Hex => {
  */
 export const hexToBase64 = (hex: string): string => {
 	const cleanHex = hex.startsWith('0x') ? hex.slice(2) : hex
+
+	if (cleanHex.length === 0) {
+		return ''
+	}
+
+	if (cleanHex.length % 2 !== 0) {
+		throw new Error(`Hex string must have an even number of characters: ${hex}`)
+	}
+
+	if (!/^[0-9a-fA-F]*$/.test(cleanHex)) {
+		throw new Error(`Invalid hex string: ${hex}`)
+	}
+
 	return Buffer.from(cleanHex, 'hex').toString('base64')
 }
 
@@ -56,6 +69,9 @@ export const hexToBase64 = (hex: string): string => {
  * Returns empty array for 0n.
  */
 export const bigintToBytes = (n: bigint): Uint8Array => {
+	if (n < 0n) {
+		throw new Error(`bigintToBytes does not support negative values: ${n}`)
+	}
 	if (n === 0n) {
 		return new Uint8Array()
 	}

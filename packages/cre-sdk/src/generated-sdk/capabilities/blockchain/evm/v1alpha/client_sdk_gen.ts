@@ -423,7 +423,7 @@ export class ClientCapability {
 		let payload: WriteReportRequest
 
 		// Check if it's a wrapped type by looking for the $report property
-		if ((input as unknown as { $report?: string }).$report) {
+		if ((input as unknown as { $report?: boolean }).$report) {
 			// It's a wrapped type, unwrap it
 			payload = x_generatedCodeOnly_unwrap_WriteCreReportRequest(input as WriteCreReportRequest)
 		} else {
