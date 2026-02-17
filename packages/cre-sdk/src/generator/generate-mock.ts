@@ -46,8 +46,7 @@ export function generateMocks(file: GenFile, outputDir: string): GeneratedMockEx
 		return []
 	}
 
-	const dirDepth = dirname(file.name).split('/').length + 2
-	const registerImportPath = '../'.repeat(dirDepth) + 'testutils/test-runtime'
+	const registerImportPath = '@cre/sdk/testutils/test-runtime'
 	const exports: GeneratedMockExport[] = []
 
 	capabilityServices.forEach((service) => {
