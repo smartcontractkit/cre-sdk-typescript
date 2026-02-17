@@ -32,6 +32,7 @@ The Chainlink Runtime Environment (CRE) SDK for TypeScript enables developers to
   - [Core Functions](#core-functions)
   - [Capabilities](#capabilities)
   - [Utilities](#utilities)
+- [Testing](#testing)
 - [Building from Source](#building-from-source)
   - [Protobuf Generation](#protobuf-generation)
   - [Chain Selectors Generation](#chain-selectors-generation)
@@ -429,6 +430,34 @@ See the [star-wars example](https://github.com/smartcontractkit/cre-sdk-typescri
 
 - `getAllNetworks()`: Get all supported networks
 - `getNetwork(options)`: Get specific network metadata
+
+## Testing
+
+The CRE SDK includes a built-in test framework for unit testing your workflows without compiling to WASM or running on a DON. It provides capability mocks, secrets simulation, time control, and log capture — all with full type safety.
+
+See the [Testing Guide](./TESTING.md) for full documentation, including examples for mocking EVM, HTTP, consensus, and more.
+
+Quick example:
+
+```typescript
+import { describe, expect } from "bun:test";
+import { test, newTestRuntime, EvmMock } from "@chainlink/cre-sdk/test";
+import { ClientCapability as EvmClient } from "@cre/generated-sdk/capabilities/blockchain/evm/v1alpha/client_sdk_gen";
+
+describe("my workflow", () => {
+  test("reads from EVM", () => {
+    const mock = EvmMock.testInstance(11155111n);
+    mock.callContract = () => ({ data: "AQID" });
+
+    const runtime = newTestRuntime();
+    const result = new EvmClient(11155111n)
+      .callContract(runtime, { call: { to: "", data: "" } })
+      .result();
+
+    expect(result.data).toEqual(new Uint8Array([1, 2, 3]));
+  });
+});
+```
 
 ## Building from Source
 
