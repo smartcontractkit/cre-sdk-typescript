@@ -483,8 +483,18 @@ describe('val helpers', () => {
 
 	test('decimal invalid strings throw', () => {
 		expect(() => Value.from(Decimal.parse('abc'))).toThrow()
-		expect(() => Value.from(Decimal.parse('1.'))).toThrow()
-		expect(() => Value.from(Decimal.parse('.5'))).toThrow()
+		expect(() => Value.from(Decimal.parse(''))).toThrow()
+		expect(() => Value.from(Decimal.parse('.'))).toThrow()
+	})
+
+	test('decimal parses leading/trailing dot formats', () => {
+		const trailingDot = Decimal.parse('1.')
+		expect(trailingDot.coeffecient).toBe(1n)
+		expect(trailingDot.exponent).toBe(0)
+
+		const leadingDot = Decimal.parse('.5')
+		expect(leadingDot.coeffecient).toBe(5n)
+		expect(leadingDot.exponent).toBe(-1)
 	})
 
 	test('from throws on null/undefined', () => {

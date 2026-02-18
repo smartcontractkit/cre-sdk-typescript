@@ -26,11 +26,16 @@ export type ProtoBigInt = Pick<GeneratedBigInt, 'absVal' | 'sign'>
  * @returns The protobuf BigInt JSON representation.
  */
 export const bigintToProtoBigInt = (n: number | bigint | string) => {
+	if (typeof n === 'number' && (!Number.isFinite(n) || !Number.isInteger(n))) {
+		throw new Error(`bigintToProtoBigInt requires an integer number, received ${n}`)
+	}
 	const val = BigInt(n)
 	const abs = val < 0n ? -val : val
+	const sign = val === 0n ? 0n : val < 0n ? -1n : 1n
 
 	const msg = create(BigIntSchema, {
 		absVal: bigintToBytes(abs),
+		sign,
 	})
 
 	return toJson(BigIntSchema, msg)
@@ -137,7 +142,7 @@ export const EVM_DEFAULT_REPORT_ENCODER = {
  */
 export const prepareReportRequest = (
 	hexEncodedPayload: Hex,
-	reportEncoder: Exclude<ReportRequestJson, 'encodedPayload'> = EVM_DEFAULT_REPORT_ENCODER,
+	reportEncoder: Omit<ReportRequestJson, 'encodedPayload'> = EVM_DEFAULT_REPORT_ENCODER,
 ): ReportRequestJson => ({
 	encodedPayload: hexToBase64(hexEncodedPayload),
 	...reportEncoder,

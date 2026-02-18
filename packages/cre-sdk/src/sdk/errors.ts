@@ -17,10 +17,10 @@ export class NodeModeError extends Error {
 export class SecretsError extends Error {
 	constructor(
 		public secretRequest: SecretRequest,
-		public error: String,
+		public error: string,
 	) {
 		super(
-			`secret retrieval failed for ${secretRequest}: ${error}. Verify the secret name is correct and that the secret has been configured for this workflow`,
+			`secret retrieval failed for ${secretRequest.id || 'unknown'} (namespace: ${secretRequest.namespace || 'default'}): ${error}. Verify the secret name is correct and that the secret has been configured for this workflow`,
 		)
 		this.name = 'SecretsError'
 	}

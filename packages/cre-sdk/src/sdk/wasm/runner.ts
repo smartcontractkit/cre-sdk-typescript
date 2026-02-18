@@ -61,7 +61,7 @@ export class Runner<TConfig> {
 	) {
 		const runtime = new Runtime(this.config, 0, this.request.maxResponseSize)
 
-		var result: Promise<ExecutionResult> | ExecutionResult
+		let result: Promise<ExecutionResult> | ExecutionResult
 		try {
 			const workflow = await initFn(this.config, {
 				getSecret: runtime.getSecret.bind(runtime),
@@ -115,7 +115,17 @@ export class Runner<TConfig> {
 		if (Number.isFinite(index) && index >= 0 && index < workflow.length) {
 			const entry = workflow[index]
 			const schema = entry.trigger.outputSchema()
-			const payloadAny = triggerMsg.payload!
+
+			if (!triggerMsg.payload) {
+				return create(ExecutionResultSchema, {
+					result: {
+						case: 'error',
+						value: `trigger payload is missing for handler at index ${index} (trigger ID ${triggerMsg.id}). The trigger event must include a payload`,
+					},
+				})
+			}
+
+			const payloadAny = triggerMsg.payload
 
 			/**
 			 * Note: do not hardcode method name; routing by id is authoritative.

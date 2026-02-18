@@ -53,8 +53,8 @@ export function generateSdk(file: GenFile, outputDir: string) {
 		// Generate imports - collect all unique types first
 		const typeImports = new Map<string, Set<string>>()
 
-		var hasTriggers = false
-		var hasActions = false
+		let hasTriggers = false
+		let hasActions = false
 		// Process each method to collect types
 		service.methods.forEach((method) => {
 			if (method.methodKind === 'server_streaming') {
@@ -98,12 +98,9 @@ export function generateSdk(file: GenFile, outputDir: string) {
 		const modePrefix = capOption.mode === Mode.NODE ? 'Node' : ''
 
 		// Build import statements
+		// Note: protobuf imports are deferred until after report wrappers are processed,
+		// since report wrappers may require 'create' from "@bufbuild/protobuf"
 		const imports = new Set<string>()
-		if (hasTriggers) {
-			imports.add('import { fromJson, create } from "@bufbuild/protobuf"')
-		} else {
-			imports.add('import { fromJson } from "@bufbuild/protobuf"')
-		}
 
 		// Add trigger imports if needed
 		if (hasTriggers) {
@@ -111,8 +108,7 @@ export function generateSdk(file: GenFile, outputDir: string) {
 			imports.add(`import { type Any, AnySchema, anyPack } from "@bufbuild/protobuf/wkt"`)
 		}
 
-		// TODO???
-		if (hasActions || true) {
+		if (hasActions) {
 			if (modePrefix !== '') {
 				imports.add(`import { type Runtime, type ${modePrefix}Runtime } from "@cre/sdk"`)
 				imports.add(`import { Report } from "@cre/sdk/report"`)
@@ -182,6 +178,14 @@ export function generateSdk(file: GenFile, outputDir: string) {
 			.filter((wrapper) => wrapper !== '')
 			.join('\n')
 
+		// Add protobuf imports - 'create' is needed by triggers and report wrappers
+		const hasReportWrappers = reportWrappers.length > 0
+		if (hasTriggers || hasReportWrappers) {
+			imports.add('import { fromJson, create } from "@bufbuild/protobuf"')
+		} else {
+			imports.add('import { fromJson } from "@bufbuild/protobuf"')
+		}
+
 		// Generate deduplicated type imports (after report wrapper processing)
 		typeImports.forEach((types, path) => {
 			const sortedTypes = Array.from(types).sort()
@@ -217,7 +221,10 @@ export function generateSdk(file: GenFile, outputDir: string) {
 			.map((method) => generateTriggerClass(method, service.name, labels))
 			.join('\n')
 
-		const [capabilityName, capabilityVersion] = capOption.capabilityId.split('@')
+		const atIndex = capOption.capabilityId.indexOf('@')
+		const capabilityName =
+			atIndex >= 0 ? capOption.capabilityId.slice(0, atIndex) : capOption.capabilityId
+		const capabilityVersion = atIndex >= 0 ? capOption.capabilityId.slice(atIndex + 1) : ''
 
 		// Generate label support (constants and constructor params)
 		const labelSupport = generateLabelSupport(labels)

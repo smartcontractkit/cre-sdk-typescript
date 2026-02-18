@@ -21,7 +21,7 @@ const initWorkflow = () => {
 
 export async function main() {
 	console.log(
-		`TS workflow: standard test: mode_switch: successful_mode_switch [${new Date().toISOString()}]`,
+		`TS workflow: standard test: mode_switch: don_runtime_in_node_mode [${new Date().toISOString()}]`,
 	)
 
 	const runner = await Runner.newRunner<Uint8Array>({

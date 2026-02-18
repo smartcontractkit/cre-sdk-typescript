@@ -39,7 +39,10 @@ export async function triggerWorkflow(workflowSelector: WorkflowSelector, payloa
 		body: stringify(jsonrpcRequest),
 	})
 
-	console.log('   Response:', response)
+	if (!response.ok) {
+		const body = await response.text()
+		throw new Error(`Gateway request failed with status ${response.status}: ${body}`)
+	}
 
 	const result = await response.json()
 

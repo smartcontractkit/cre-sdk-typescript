@@ -85,7 +85,9 @@ export class Int64 {
 	}
 
 	public div(i: Int64, safe: boolean = true): Int64 {
-		return new Int64(this.value / i.value)
+		return safe
+			? new Int64(this.value / i.value)
+			: new Int64(BigInt.asIntN(64, this.value / i.value))
 	}
 }
 
@@ -105,7 +107,7 @@ export class UInt64 {
 		}
 
 		if (!Number.isFinite(v) || !Number.isInteger(v))
-			throw new Error('int64 requires an integer number')
+			throw new Error('uint64 requires an integer number')
 		const bi = BigInt(v)
 		if (bi > UInt64.UINT64_MAX) throw new Error('uint64 overflow')
 		else if (bi < 0n) throw new Error('uint64 underflow')
@@ -135,15 +137,18 @@ export class UInt64 {
 	}
 
 	public div(i: UInt64, safe: boolean = true): UInt64 {
-		return new UInt64(this.value / i.value)
+		return safe
+			? new UInt64(this.value / i.value)
+			: new UInt64(BigInt.asUintN(64, this.value / i.value))
 	}
 }
 
 export class Decimal {
 	public static parse(s: string): Decimal {
 		// Parse decimal string into coefficient (bigint) and exponent (int32)
-		const m = /^([+-])?(\d+)(?:\.(\d+))?$/.exec(s.trim())
-		if (!m) throw new Error('invalid decimal string')
+		const m = /^([+-])?(\d*)(?:\.(\d*))?$/.exec(s.trim())
+		if (!m || (m[2] === '' && (m[3] === undefined || m[3] === '')))
+			throw new Error('invalid decimal string')
 		const signStr = m[1] ?? '+'
 		const intPart = m[2] ?? '0'
 		let fracPart = m[3] ?? ''
@@ -449,6 +454,6 @@ function unwrap(value: ProtoValue): unknown {
 
 function isValueProto(value: any): boolean {
 	return (
-		value.$typeName && typeof value.$typeName === 'string' && value.$typeName === 'values.v1.Value'
+		value != null && typeof value.$typeName === 'string' && value.$typeName === 'values.v1.Value'
 	)
 }
