@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'bun:test'
 import {
 	ENCRYPTION_KEY_SECRET_NAME,
-	createEncryptedRequest,
+	createRequestForEncryptedResponse,
 	decryptResponseBody,
 	deriveEncryptionKey,
 } from './encryption'
@@ -36,9 +36,9 @@ describe('deriveEncryptionKey', () => {
 	})
 })
 
-describe('createEncryptedRequest', () => {
+describe('createRequestForEncryptedResponse', () => {
 	it('sets encryptOutput and injects the secret identifier (JSON input)', () => {
-		const req = createEncryptedRequest(
+		const req = createRequestForEncryptedResponse(
 			{ url: 'https://example.com', method: 'GET' },
 			'0xDeaDBeeF',
 		)

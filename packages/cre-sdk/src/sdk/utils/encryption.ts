@@ -55,7 +55,7 @@ export async function deriveEncryptionKey(passphrase: string): Promise<Uint8Arra
  *
  * Accepts either a protobuf HTTPRequest message or a plain HTTPRequestJson object.
  */
-export function createEncryptedRequest(
+export function createRequestForEncryptedResponse(
 	req: HTTPRequest | HTTPRequestJson,
 	owner: string,
 ): ConfidentialHTTPRequest {
