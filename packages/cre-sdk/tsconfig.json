@@ -16,7 +16,8 @@
 		// Path aliases
 		"baseUrl": ".",
 		"paths": {
-			"@cre/*": ["src/*"]
+			"@cre/*": ["src/*"],
+			"@chainlink/cre-sdk/test": ["src/sdk/test/index.ts"]
 		},
 
 		// Best practices
