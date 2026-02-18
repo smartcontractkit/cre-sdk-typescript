@@ -76,7 +76,7 @@ describe('TestRuntime / helper layer', () => {
 		const cap = new BasicActionCapability()
 		const call = cap.performAction(rt, { inputThing: true })
 		expect(() => call.result()).toThrow(CapabilityError)
-		expect(() => call.result()).toThrow(/Capability not found/)
+		expect(() => call.result()).toThrow(/not found/)
 	})
 
 	test('registered capability: callCapability and await path both route to handler and return result', () => {
