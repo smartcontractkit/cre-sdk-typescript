@@ -11,7 +11,7 @@ import {
 	__getTestMockInstance,
 	__setTestMockInstance,
 	registerTestCapability,
-} from '../../../../../../testutils/test-runtime'
+} from '@cre/sdk/testutils/test-runtime'
 
 /**
  * Mock for ClientCapability. Use testInstance() to obtain an instance; do not construct directly.
