@@ -53,8 +53,11 @@ const server = serve({
 						response,
 					})
 				} catch (error) {
-					const errorMessage = error instanceof Error ? error.message : 'Invalid JSON payload'
-					return Response.json({ error: errorMessage }, { status: 400 })
+					if (error instanceof SyntaxError) {
+						return Response.json({ error: 'Invalid JSON payload' }, { status: 400 })
+					}
+					const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+					return Response.json({ error: errorMessage }, { status: 500 })
 				}
 			},
 		},

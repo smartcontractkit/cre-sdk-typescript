@@ -33,14 +33,18 @@ export class Runner<TConfig> {
 		try {
 			args = JSON.parse(argsString)
 		} catch (e) {
-			throw new Error('Invalid request: could not parse arguments')
+			throw new Error(
+				'Invalid request: could not parse WASI arguments as JSON. Ensure the WASM runtime is passing valid arguments to the workflow',
+			)
 		}
 
 		// SDK expects exactly 2 args:
 		// 1st is the script name
 		// 2nd is the base64 encoded request
 		if (args.length !== 2) {
-			throw new Error('Invalid request: must contain payload')
+			throw new Error(
+				`Invalid request: expected exactly 2 WASI arguments (script name and base64-encoded request payload), but received ${args.length}`,
+			)
 		}
 
 		const base64Request = args[1]
@@ -57,7 +61,7 @@ export class Runner<TConfig> {
 	) {
 		const runtime = new Runtime(this.config, 0, this.request.maxResponseSize)
 
-		var result: Promise<ExecutionResult> | ExecutionResult
+		let result: Promise<ExecutionResult> | ExecutionResult
 		try {
 			const workflow = await initFn(this.config, {
 				getSecret: runtime.getSecret.bind(runtime),
@@ -71,7 +75,9 @@ export class Runner<TConfig> {
 					result = this.handleExecutionPhase(this.request, workflow, runtime)
 					break
 				default:
-					throw new Error('Unknown request type')
+					throw new Error(
+						`Unknown request type '${this.request.request.case}': expected 'subscribe' or 'trigger'. This may indicate a version mismatch between the SDK and the CRE runtime`,
+					)
 			}
 		} catch (e) {
 			const err = e instanceof Error ? e.message : String(e)
@@ -90,7 +96,9 @@ export class Runner<TConfig> {
 		runtime: Runtime<TConfig>,
 	): Promise<ExecutionResult> {
 		if (req.request.case !== 'trigger') {
-			throw new Error('cannot handle non-trigger request as a trigger')
+			throw new Error(
+				`cannot handle non-trigger request as a trigger: received request type '${req.request.case}' in handleExecutionPhase. This is an internal SDK error`,
+			)
 		}
 
 		const triggerMsg = req.request.value
@@ -98,14 +106,26 @@ export class Runner<TConfig> {
 		// We're about to cast bigint to number, so we need to check if it's safe
 		const id = BigInt(triggerMsg.id)
 		if (id > BigInt(Number.MAX_SAFE_INTEGER)) {
-			throw new Error(`Trigger ID ${id} exceeds safe integer range`)
+			throw new Error(
+				`Trigger ID ${id} exceeds JavaScript safe integer range (Number.MAX_SAFE_INTEGER = ${Number.MAX_SAFE_INTEGER}). This trigger ID cannot be safely represented as a number`,
+			)
 		}
 
 		const index = Number(triggerMsg.id)
 		if (Number.isFinite(index) && index >= 0 && index < workflow.length) {
 			const entry = workflow[index]
 			const schema = entry.trigger.outputSchema()
-			const payloadAny = triggerMsg.payload!
+
+			if (!triggerMsg.payload) {
+				return create(ExecutionResultSchema, {
+					result: {
+						case: 'error',
+						value: `trigger payload is missing for handler at index ${index} (trigger ID ${triggerMsg.id}). The trigger event must include a payload`,
+					},
+				})
+			}
+
+			const payloadAny = triggerMsg.payload
 
 			/**
 			 * Note: do not hardcode method name; routing by id is authoritative.
@@ -132,14 +152,20 @@ export class Runner<TConfig> {
 		}
 
 		return create(ExecutionResultSchema, {
-			result: { case: 'error', value: 'trigger not found' },
+			result: {
+				case: 'error',
+				value: `trigger not found: no workflow handler registered at index ${index} (trigger ID ${triggerMsg.id}). The workflow has ${workflow.length} handler(s) registered. Verify the trigger subscription matches a registered handler`,
+			},
 		})
 	}
 
 	handleSubscribePhase(req: ExecuteRequest, workflow: Workflow<TConfig>): ExecutionResult {
 		if (req.request.case !== 'subscribe') {
 			return create(ExecutionResultSchema, {
-				result: { case: 'error', value: 'subscribe request expected' },
+				result: {
+					case: 'error',
+					value: `subscribe request expected but received '${req.request.case}' in handleSubscribePhase. This is an internal SDK error`,
+				},
 			})
 		}
 

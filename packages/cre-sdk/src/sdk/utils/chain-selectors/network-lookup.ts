@@ -40,7 +40,7 @@ export class NetworkLookup {
 		}
 
 		// Validate input - need either chainSelector or chainSelectorName
-		if (!chainSelector && !chainSelectorName) {
+		if (chainSelector === undefined && !chainSelectorName) {
 			return undefined
 		}
 

@@ -20,6 +20,7 @@ describe('blockchain-helpers', () => {
 			const result = bigintToProtoBigInt(123)
 			expect(result).toEqual({
 				absVal: Buffer.from([123]).toString('base64'),
+				sign: '1',
 			})
 		})
 
@@ -27,6 +28,7 @@ describe('blockchain-helpers', () => {
 			const result = bigintToProtoBigInt('9768438')
 			expect(result).toEqual({
 				absVal: Buffer.from([0x95, 0x0d, 0xf6]).toString('base64'),
+				sign: '1',
 			})
 		})
 
@@ -34,19 +36,39 @@ describe('blockchain-helpers', () => {
 			const result = bigintToProtoBigInt(9768438n)
 			expect(result).toEqual({
 				absVal: Buffer.from([0x95, 0x0d, 0xf6]).toString('base64'),
+				sign: '1',
 			})
 		})
 
 		test('should encode zero', () => {
 			const result = bigintToProtoBigInt(0)
-			expect(result).toEqual({}) // Empty absVal is omitted by toJson
+			expect(result).toEqual({}) // Empty absVal and zero sign are omitted by toJson
 		})
 
-		test('should take absolute value of negative numbers', () => {
+		test('should preserve sign of negative numbers', () => {
 			const result = bigintToProtoBigInt(-123)
 			expect(result).toEqual({
 				absVal: Buffer.from([123]).toString('base64'),
+				sign: '-1',
 			})
+		})
+
+		test('should reject float numbers', () => {
+			expect(() => bigintToProtoBigInt(3.14)).toThrow(
+				'bigintToProtoBigInt requires an integer number',
+			)
+		})
+
+		test('should reject NaN', () => {
+			expect(() => bigintToProtoBigInt(NaN)).toThrow(
+				'bigintToProtoBigInt requires an integer number',
+			)
+		})
+
+		test('should reject Infinity', () => {
+			expect(() => bigintToProtoBigInt(Infinity)).toThrow(
+				'bigintToProtoBigInt requires an integer number',
+			)
 		})
 	})
 
