@@ -45,7 +45,9 @@ const validateGlobalHostBindings = (): GlobalHostBindingsMap => {
 
 		throw new Error(
 			`Missing required global host functions: ${missingFunctions.join(', ')}. ` +
-				`This indicates the runtime environment is not properly configured.`,
+				`The CRE WASM runtime must provide these functions on globalThis. ` +
+				`This usually means the workflow is being executed outside the CRE WASM environment, ` +
+				`or the host runtime version is incompatible with this SDK version.`,
 		)
 	}
 }
