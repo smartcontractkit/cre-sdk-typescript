@@ -6,7 +6,7 @@ import {
 	type HTTPResponse,
 	HTTPResponseSchema,
 } from '@cre/generated/capabilities/networking/confidentialhttp/v1alpha/client_pb'
-import { type Runtime } from '@cre/sdk'
+import type { Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import { hexToBytes } from '@cre/sdk/utils/hex-utils'
 

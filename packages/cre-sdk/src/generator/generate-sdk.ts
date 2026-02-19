@@ -104,16 +104,16 @@ export function generateSdk(file: GenFile, outputDir: string) {
 
 		// Add trigger imports if needed
 		if (hasTriggers) {
-			imports.add(`import { type Trigger } from "@cre/sdk/utils/triggers/trigger-interface"`)
+			imports.add(`import type { Trigger } from "@cre/sdk/utils/triggers/trigger-interface"`)
 			imports.add(`import { type Any, AnySchema, anyPack } from "@bufbuild/protobuf/wkt"`)
 		}
 
 		if (hasActions) {
 			if (modePrefix !== '') {
-				imports.add(`import { type Runtime, type ${modePrefix}Runtime } from "@cre/sdk"`)
+				imports.add(`import type { Runtime, ${modePrefix}Runtime } from "@cre/sdk"`)
 				imports.add(`import { Report } from "@cre/sdk/report"`)
 			} else {
-				imports.add(`import { type Runtime } from "@cre/sdk"`)
+				imports.add(`import type { Runtime } from "@cre/sdk"`)
 				imports.add(`import { Report } from "@cre/sdk/report"`)
 				imports.add(`import { hexToBytes } from "@cre/sdk/utils/hex-utils";`)
 			}
@@ -186,12 +186,23 @@ export function generateSdk(file: GenFile, outputDir: string) {
 			imports.add('import { fromJson } from "@bufbuild/protobuf"')
 		}
 
-		// Generate deduplicated type imports (after report wrapper processing)
+		// Generate deduplicated type imports (after report wrapper processing).
+		// When all imports from a path are type-only, use `import type` so the
+		// import is fully erased in JS output (avoids circular-dependency issues).
 		typeImports.forEach((types, path) => {
 			const sortedTypes = Array.from(types).sort()
-			imports.add(`import {
+			const hasValues = sortedTypes.some((t) => !t.startsWith('type '))
+
+			if (hasValues) {
+				imports.add(`import {
   ${sortedTypes.join(',\n  ')},
 } from "${path}"`)
+			} else {
+				const stripped = sortedTypes.map((t) => t.slice(5))
+				imports.add(`import type {
+  ${stripped.join(',\n  ')},
+} from "${path}"`)
+			}
 		})
 
 		// Generate methods
