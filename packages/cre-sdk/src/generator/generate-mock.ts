@@ -96,8 +96,14 @@ export function generateMocks(file: GenFile, outputDir: string): GeneratedMockEx
 		]
 		typeImports.forEach((types, path) => {
 			const sorted = Array.from(types).sort()
-			const parts = sorted.map((s) => (s.endsWith('Schema') ? s : `type ${s}`))
-			imports.push(`import { ${parts.join(', ')} } from "${path}"`)
+			const hasValues = sorted.some((s) => s.endsWith('Schema'))
+
+			if (hasValues) {
+				const parts = sorted.map((s) => (s.endsWith('Schema') ? s : `type ${s}`))
+				imports.push(`import { ${parts.join(', ')} } from "${path}"`)
+			} else {
+				imports.push(`import type { ${sorted.join(', ')} } from "${path}"`)
+			}
 		})
 
 		const handlerCases = actionMethods

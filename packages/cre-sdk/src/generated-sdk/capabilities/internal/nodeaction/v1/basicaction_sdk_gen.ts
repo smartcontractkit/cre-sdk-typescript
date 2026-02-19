@@ -6,7 +6,7 @@ import {
 	type NodeOutputs,
 	NodeOutputsSchema,
 } from '@cre/generated/capabilities/internal/nodeaction/v1/node_action_pb'
-import { type NodeRuntime, type Runtime } from '@cre/sdk'
+import type { NodeRuntime, Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import type { ConsensusAggregation, PrimitiveTypes, UnwrapOptions } from '@cre/sdk/utils'
 

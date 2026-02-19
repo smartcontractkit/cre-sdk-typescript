@@ -7,7 +7,7 @@ import {
 	type Outputs,
 	OutputsSchema,
 } from '@cre/generated/capabilities/internal/basictrigger/v1/basic_trigger_pb'
-import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
+import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 
 /**
  * Basic Capability

@@ -6,7 +6,7 @@ import {
 	type Outputs,
 	OutputsSchema,
 } from '@cre/generated/capabilities/internal/basicaction/v1/basic_action_pb'
-import { type Runtime } from '@cre/sdk'
+import type { Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import { hexToBytes } from '@cre/sdk/utils/hex-utils'
 

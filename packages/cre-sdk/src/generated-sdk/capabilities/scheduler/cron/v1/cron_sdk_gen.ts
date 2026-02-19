@@ -9,7 +9,7 @@ import {
 	type Payload,
 	PayloadSchema,
 } from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
-import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
+import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 
 /**
  * Cron Capability

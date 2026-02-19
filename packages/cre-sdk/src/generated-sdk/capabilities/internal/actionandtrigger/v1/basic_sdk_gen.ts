@@ -12,10 +12,10 @@ import {
 	type TriggerEvent,
 	TriggerEventSchema,
 } from '@cre/generated/capabilities/internal/actionandtrigger/v1/action_and_trigger_pb'
-import { type Runtime } from '@cre/sdk'
+import type { Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import { hexToBytes } from '@cre/sdk/utils/hex-utils'
-import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
+import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 
 /**
  * Basic Capability

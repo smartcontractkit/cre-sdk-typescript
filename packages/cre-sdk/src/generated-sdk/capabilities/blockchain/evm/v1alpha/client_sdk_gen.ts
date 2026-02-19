@@ -55,10 +55,10 @@ import {
 	type ReportResponseJson,
 	ReportResponseSchema,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import { type Runtime } from '@cre/sdk'
+import type { Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import { hexToBytes } from '@cre/sdk/utils/hex-utils'
-import { type Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
+import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 
 export type WriteCreReportRequest = {
 	receiver: Uint8Array
