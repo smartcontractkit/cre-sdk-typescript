@@ -1,29 +1,26 @@
-import {
-  type Abi,
-  type AbiFunction,
-  decodeFunctionData,
-  encodeFunctionResult,
-  type Address,
-  type Hex,
-} from "viem"
 import type {
-  CallContractReply,
-  CallContractReplyJson,
-  CallContractRequest,
-  GasConfig,
-  WriteReportReply,
-  WriteReportReplyJson,
-  WriteReportRequest,
-} from "@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb"
-import type { ReportResponse } from "@cre/generated/sdk/v1alpha/sdk_pb"
-import type { EvmMock } from "./generated"
+	CallContractReply,
+	CallContractReplyJson,
+	CallContractRequest,
+	GasConfig,
+	WriteReportReply,
+	WriteReportReplyJson,
+	WriteReportRequest,
+} from '@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb'
+import type { ReportResponse } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import {
+	type Abi,
+	type AbiFunction,
+	type Address,
+	decodeFunctionData,
+	encodeFunctionResult,
+	type Hex,
+} from 'viem'
+import type { EvmMock } from './generated'
 
-type ViewFunction = AbiFunction & { stateMutability: "view" | "pure" }
+type ViewFunction = AbiFunction & { stateMutability: 'view' | 'pure' }
 
-type ExtractViewFunctionNames<TAbi extends Abi> = Extract<
-  TAbi[number],
-  ViewFunction
->["name"]
+type ExtractViewFunctionNames<TAbi extends Abi> = Extract<TAbi[number], ViewFunction>['name']
 
 /**
  * Strict version of {@link WriteReportRequest} where `report` and `gasConfig`
@@ -31,9 +28,9 @@ type ExtractViewFunctionNames<TAbi extends Abi> = Extract<
  * to check for undefined.
  */
 export interface WriteReportMockInput {
-  receiver: Uint8Array
-  report: ReportResponse
-  gasConfig: GasConfig
+	receiver: Uint8Array
+	report: ReportResponse
+	gasConfig: GasConfig
 }
 
 /**
@@ -48,39 +45,35 @@ export interface WriteReportMockInput {
  * where `report` and `gasConfig` are guaranteed to be present.
  */
 export type ContractMock<TAbi extends Abi> = {
-  [K in ExtractViewFunctionNames<TAbi>]?: (
-    ...args: readonly unknown[]
-  ) => unknown
+	[K in ExtractViewFunctionNames<TAbi>]?: (...args: readonly unknown[]) => unknown
 } & {
-  writeReport?: (
-    input: WriteReportMockInput
-  ) => WriteReportReply | WriteReportReplyJson
+	writeReport?: (input: WriteReportMockInput) => WriteReportReply | WriteReportReplyJson
 }
 
 export interface AddContractMockOptions<TAbi extends Abi> {
-  address: Address
-  abi: TAbi
+	address: Address
+	abi: TAbi
 }
 
 function bytesToHexAddress(bytes: Uint8Array): string {
-  return `0x${Array.from(bytes)
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("")}`.toLowerCase()
+	return `0x${Array.from(bytes)
+		.map((b) => b.toString(16).padStart(2, '0'))
+		.join('')}`.toLowerCase()
 }
 
 function bytesToHex(bytes: Uint8Array): Hex {
-  return `0x${Array.from(bytes)
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("")}`
+	return `0x${Array.from(bytes)
+		.map((b) => b.toString(16).padStart(2, '0'))
+		.join('')}`
 }
 
 function hexToUint8Array(hex: Hex): Uint8Array {
-  const clean = hex.startsWith("0x") ? hex.slice(2) : hex
-  const bytes = new Uint8Array(clean.length / 2)
-  for (let i = 0; i < clean.length; i += 2) {
-    bytes[i / 2] = Number.parseInt(clean.slice(i, i + 2), 16)
-  }
-  return bytes
+	const clean = hex.startsWith('0x') ? hex.slice(2) : hex
+	const bytes = new Uint8Array(clean.length / 2)
+	for (let i = 0; i < clean.length; i += 2) {
+		bytes[i / 2] = Number.parseInt(clean.slice(i, i + 2), 16)
+	}
+	return bytes
 }
 
 /**
@@ -112,115 +105,99 @@ function hexToUint8Array(hex: Hex): Uint8Array {
  * @returns A mock object with settable handler properties for each view/pure function.
  */
 export function addContractMock<const TAbi extends Abi>(
-  evmMock: EvmMock,
-  options: AddContractMockOptions<TAbi>
+	evmMock: EvmMock,
+	options: AddContractMockOptions<TAbi>,
 ): ContractMock<TAbi> {
-  const mock = {} as ContractMock<TAbi>
-  const normalizedAddress = options.address.toLowerCase()
+	const mock = {} as ContractMock<TAbi>
+	const normalizedAddress = options.address.toLowerCase()
 
-  const previousCallContract = evmMock.callContract
-  evmMock.callContract = (
-    req: CallContractRequest
-  ): CallContractReply | CallContractReplyJson => {
-    const toBytes = req.call?.to
-    if (!toBytes || bytesToHexAddress(toBytes) !== normalizedAddress) {
-      if (previousCallContract) return previousCallContract(req)
-      throw new Error(
-        `addContractMock: no mock registered for address ${
-          toBytes ? bytesToHexAddress(toBytes) : "(empty)"
-        }`
-      )
-    }
+	const previousCallContract = evmMock.callContract
+	evmMock.callContract = (req: CallContractRequest): CallContractReply | CallContractReplyJson => {
+		const toBytes = req.call?.to
+		if (!toBytes || bytesToHexAddress(toBytes) !== normalizedAddress) {
+			if (previousCallContract) return previousCallContract(req)
+			throw new Error(
+				`addContractMock: no mock registered for address ${
+					toBytes ? bytesToHexAddress(toBytes) : '(empty)'
+				}`,
+			)
+		}
 
-    const dataBytes = req.call?.data
-    if (!dataBytes || dataBytes.length < 4) {
-      throw new Error(
-        "addContractMock: call data too short (need at least 4 bytes for selector)"
-      )
-    }
+		const dataBytes = req.call?.data
+		if (!dataBytes || dataBytes.length < 4) {
+			throw new Error('addContractMock: call data too short (need at least 4 bytes for selector)')
+		}
 
-    const callDataHex = bytesToHex(dataBytes)
+		const callDataHex = bytesToHex(dataBytes)
 
-    let decoded: { functionName: string; args: readonly unknown[] | undefined }
-    try {
-      decoded = decodeFunctionData({
-        abi: options.abi,
-        data: callDataHex,
-      }) as { functionName: string; args: readonly unknown[] | undefined }
-    } catch (e) {
-      if (previousCallContract) return previousCallContract(req)
-      throw new Error(
-        `addContractMock: failed to decode function data for ${
-          options.address
-        }: ${e instanceof Error ? e.message : e}`
-      )
-    }
+		let decoded: { functionName: string; args: readonly unknown[] | undefined }
+		try {
+			decoded = decodeFunctionData({
+				abi: options.abi,
+				data: callDataHex,
+			}) as { functionName: string; args: readonly unknown[] | undefined }
+		} catch (e) {
+			if (previousCallContract) return previousCallContract(req)
+			throw new Error(
+				`addContractMock: failed to decode function data for ${
+					options.address
+				}: ${e instanceof Error ? e.message : e}`,
+			)
+		}
 
-    const handler = (
-      mock as Record<
-        string,
-        ((...a: readonly unknown[]) => unknown) | undefined
-      >
-    )[decoded.functionName]
-    if (typeof handler !== "function") {
-      throw new Error(
-        `addContractMock: no handler set for ${decoded.functionName} on ${options.address}`
-      )
-    }
+		const handler = (mock as Record<string, ((...a: readonly unknown[]) => unknown) | undefined>)[
+			decoded.functionName
+		]
+		if (typeof handler !== 'function') {
+			throw new Error(
+				`addContractMock: no handler set for ${decoded.functionName} on ${options.address}`,
+			)
+		}
 
-    const result = handler(...(decoded.args ?? []))
+		const result = handler(...(decoded.args ?? []))
 
-    const encoded = encodeFunctionResult({
-      abi: options.abi as Abi,
-      functionName: decoded.functionName,
-      result: result as never,
-    })
+		const encoded = encodeFunctionResult({
+			abi: options.abi as Abi,
+			functionName: decoded.functionName,
+			result: result as never,
+		})
 
-    return {
-      data: hexToUint8Array(encoded),
-    } as unknown as CallContractReplyJson
-  }
+		return {
+			data: hexToUint8Array(encoded),
+		} as unknown as CallContractReplyJson
+	}
 
-  const previousWriteReport = evmMock.writeReport
-  evmMock.writeReport = (
-    req: WriteReportRequest
-  ): WriteReportReply | WriteReportReplyJson => {
-    const receiverBytes = req.receiver
-    if (
-      !receiverBytes ||
-      bytesToHexAddress(receiverBytes) !== normalizedAddress
-    ) {
-      if (previousWriteReport) return previousWriteReport(req)
-      throw new Error(
-        `addContractMock: no writeReport mock registered for receiver ${
-          receiverBytes ? bytesToHexAddress(receiverBytes) : "(empty)"
-        }`
-      )
-    }
+	const previousWriteReport = evmMock.writeReport
+	evmMock.writeReport = (req: WriteReportRequest): WriteReportReply | WriteReportReplyJson => {
+		const receiverBytes = req.receiver
+		if (!receiverBytes || bytesToHexAddress(receiverBytes) !== normalizedAddress) {
+			if (previousWriteReport) return previousWriteReport(req)
+			throw new Error(
+				`addContractMock: no writeReport mock registered for receiver ${
+					receiverBytes ? bytesToHexAddress(receiverBytes) : '(empty)'
+				}`,
+			)
+		}
 
-    if (typeof mock.writeReport !== "function") {
-      throw new Error(
-        `addContractMock: no writeReport handler set for ${options.address}`
-      )
-    }
+		if (typeof mock.writeReport !== 'function') {
+			throw new Error(`addContractMock: no writeReport handler set for ${options.address}`)
+		}
 
-    if (!req.report) {
-      throw new Error(
-        `addContractMock: writeReport called without report for ${options.address}`
-      )
-    }
-    if (!req.gasConfig) {
-      throw new Error(
-        `addContractMock: writeReport called without gasConfig for ${options.address}`
-      )
-    }
+		if (!req.report) {
+			throw new Error(`addContractMock: writeReport called without report for ${options.address}`)
+		}
+		if (!req.gasConfig) {
+			throw new Error(
+				`addContractMock: writeReport called without gasConfig for ${options.address}`,
+			)
+		}
 
-    return mock.writeReport({
-      receiver: req.receiver,
-      report: req.report,
-      gasConfig: req.gasConfig,
-    })
-  }
+		return mock.writeReport({
+			receiver: req.receiver,
+			report: req.report,
+			gasConfig: req.gasConfig,
+		})
+	}
 
-  return mock
+	return mock
 }

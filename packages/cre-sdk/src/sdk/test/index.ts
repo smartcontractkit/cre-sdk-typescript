@@ -18,6 +18,10 @@ export {
 	test,
 } from '../testutils/test-runtime'
 export { TestWriter } from '../testutils/test-writer'
-
+export {
+	type AddContractMockOptions,
+	addContractMock,
+	type ContractMock,
+	type WriteReportMockInput,
+} from './evm-contract-mock'
 export * from './generated'
-export { addContractMock, type ContractMock, type AddContractMockOptions, type WriteReportMockInput } from './evm-contract-mock'
