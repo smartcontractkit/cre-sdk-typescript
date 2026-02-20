@@ -20,3 +20,4 @@ export {
 export { TestWriter } from '../testutils/test-writer'
 
 export * from './generated'
+export { addContractMock, type ContractMock, type AddContractMockOptions, type WriteReportMockInput } from './evm-contract-mock'
