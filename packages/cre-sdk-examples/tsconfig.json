@@ -21,7 +21,7 @@
 		"skipLibCheck": true,
 		"noFallthroughCasesInSwitch": true,
 
-		// Do not auto-include @types/* — mirrors the customer WASM environment
+		// Do not auto-include @types/* — mirrors the customer cre cli initialized environment
 		"types": [],
 
 		// Some stricter flags (disabled by default)
