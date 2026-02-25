@@ -78,6 +78,18 @@ declare global {
 	 * @returns Unix timestamp in milliseconds
 	 */
 	function now(): number
+
+	/**
+	 * Console API available in the QuickJS runtime
+	 */
+	interface Console {
+		log(...args: unknown[]): void
+		warn(...args: unknown[]): void
+		error(...args: unknown[]): void
+		info(...args: unknown[]): void
+		debug(...args: unknown[]): void
+	}
+	var console: Console
 }
 
 export {}
