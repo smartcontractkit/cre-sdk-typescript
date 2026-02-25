@@ -19,6 +19,7 @@ import {
 	Runner,
 	type Runtime,
 	TxStatus,
+	text,
 } from '@chainlink/cre-sdk'
 import { type Address, decodeFunctionResult, encodeFunctionData, zeroAddress } from 'viem'
 import { z } from 'zod'
@@ -66,7 +67,7 @@ const fetchReserveInfo = (sendRequester: HTTPSendRequester, config: Config): Res
 		throw new Error(`HTTP request failed with status: ${response.statusCode}`)
 	}
 
-	const responseText = Buffer.from(response.body).toString('utf-8')
+	const responseText = text(response)
 	const porResp: PORResponse = JSON.parse(responseText)
 
 	if (porResp.ripcord) {
