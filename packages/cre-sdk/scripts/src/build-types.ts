@@ -32,18 +32,33 @@ const buildTypes = async () => {
 	// Prepend triple-slash references to dist/index.d.ts so consumers pick up
 	// global type augmentations (e.g. restricted-apis.d.ts) automatically.
 	// tsc strips these from the emitted .d.ts, so we add them back here.
+	//
+	// Note: restricted-node-modules is intentionally NOT referenced from src/index.ts
+	// because the SDK's own build scripts legitimately use Node.js modules. It is
+	// added here explicitly so that workflow consumers still receive the restrictions.
 	const indexDts = join(packageRoot, 'dist/index.d.ts')
 	const sourceIndex = join(packageRoot, 'src/index.ts')
 	const sourceContent = await readFile(sourceIndex, 'utf-8')
 
-	const tripleSlashRefs = sourceContent
+	const refsFromSource = sourceContent
 		.split('\n')
 		.filter((line) => line.startsWith('/// <reference types='))
-		.join('\n')
+
+	// This is the part where we re-add restricted-node-modules.d.ts for the consumers
+	const distributionOnlyRefs = ['/// <reference types="./sdk/types/restricted-node-modules" />']
+
+	const tripleSlashRefs = [...refsFromSource, ...distributionOnlyRefs].join('\n')
 
 	if (tripleSlashRefs) {
 		const indexContent = await readFile(indexDts, 'utf-8')
-		await writeFile(indexDts, `${tripleSlashRefs}\n${indexContent}`)
+		// Strip any existing triple-slash references from the top of the file
+		// so that re-running build-types is idempotent.
+		const withoutExistingRefs = indexContent
+			.split('\n')
+			.filter((line) => !line.startsWith('/// <reference types='))
+			.join('\n')
+			.replace(/^\n+/, '') // trim leading blank lines left after stripping
+		await writeFile(indexDts, `${tripleSlashRefs}\n${withoutExistingRefs}`)
 		console.log('✅ Added triple-slash references to dist/index.d.ts')
 	}
 }
