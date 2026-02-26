@@ -90,6 +90,35 @@ declare global {
 		debug(...args: unknown[]): void
 	}
 	var console: Console
+
+	/**
+	 * TextEncoder/TextDecoder APIs available via Javy's text_encoding support
+	 */
+	interface TextEncoderEncodeIntoResult {
+		read: number
+		written: number
+	}
+
+	interface TextEncoder {
+		readonly encoding: string
+		encode(input?: string): Uint8Array
+		encodeInto(input: string, dest: Uint8Array): TextEncoderEncodeIntoResult
+	}
+	var TextEncoder: {
+		prototype: TextEncoder
+		new (): TextEncoder
+	}
+
+	interface TextDecoder {
+		readonly encoding: string
+		readonly fatal: boolean
+		readonly ignoreBOM: boolean
+		decode(input?: ArrayBuffer | ArrayBufferView, options?: { stream?: boolean }): string
+	}
+	var TextDecoder: {
+		prototype: TextDecoder
+		new (label?: string, options?: { fatal?: boolean; ignoreBOM?: boolean }): TextDecoder
+	}
 }
 
 export {}
