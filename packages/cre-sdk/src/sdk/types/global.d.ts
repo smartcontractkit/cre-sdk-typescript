@@ -119,6 +119,59 @@ declare global {
 		prototype: TextDecoder
 		new (label?: string, options?: { fatal?: boolean; ignoreBOM?: boolean }): TextDecoder
 	}
+
+	/**
+	 * Base64 encoding/decoding — exposed via prepareRuntime() from node:buffer
+	 */
+	function atob(encodedData: string): string
+	function btoa(stringToEncode: string): string
+
+	/**
+	 * URL and URLSearchParams — exposed via prepareRuntime() from node:url
+	 */
+	interface URLSearchParams {
+		append(name: string, value: string): void
+		delete(name: string): void
+		get(name: string): string | null
+		getAll(name: string): string[]
+		has(name: string): boolean
+		set(name: string, value: string): void
+		sort(): void
+		toString(): string
+		forEach(callback: (value: string, key: string, parent: URLSearchParams) => void): void
+		entries(): IterableIterator<[string, string]>
+		keys(): IterableIterator<string>
+		values(): IterableIterator<string>
+		[Symbol.iterator](): IterableIterator<[string, string]>
+		readonly size: number
+	}
+	var URLSearchParams: {
+		prototype: URLSearchParams
+		new (
+			init?: string | Record<string, string> | [string, string][] | URLSearchParams,
+		): URLSearchParams
+	}
+
+	interface URL {
+		hash: string
+		host: string
+		hostname: string
+		href: string
+		readonly origin: string
+		password: string
+		pathname: string
+		port: string
+		protocol: string
+		search: string
+		readonly searchParams: URLSearchParams
+		username: string
+		toString(): string
+		toJSON(): string
+	}
+	var URL: {
+		prototype: URL
+		new (url: string, base?: string | URL): URL
+	}
 }
 
 export {}
