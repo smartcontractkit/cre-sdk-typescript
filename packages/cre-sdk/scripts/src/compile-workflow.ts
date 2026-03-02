@@ -1,15 +1,31 @@
 import { existsSync } from 'node:fs'
 import { mkdir } from 'node:fs/promises'
 import path from 'node:path'
+import { parseCompileFlags } from '../../../cre-sdk-javy-plugin/scripts/parse-compile-flags'
 import { main as compileToJs } from './compile-to-js'
 import { main as compileToWasm } from './compile-to-wasm'
 
-export const main = async (inputFile?: string, outputWasmFile?: string) => {
+export const main = async (
+	inputFile?: string,
+	outputWasmFile?: string,
+	creExportsPaths?: string[],
+	pluginPath?: string | null,
+) => {
 	const cliArgs = process.argv.slice(3)
+	const { creExports: cliCreExports, plugin: cliPlugin, rest: cliRest } = parseCompileFlags(cliArgs)
 
 	// Resolve input/output from params or CLI
-	const inputPath = inputFile ?? cliArgs[0]
-	const outputPathArg = outputWasmFile ?? cliArgs[1]
+	const inputPath = inputFile ?? cliRest[0]
+	const outputPathArg = outputWasmFile ?? cliRest[1]
+	const creExports = creExportsPaths ?? cliCreExports
+	const plugin = pluginPath !== undefined ? pluginPath : cliPlugin
+
+	if (plugin != null && plugin !== '' && creExports.length > 0) {
+		console.error(
+			'❌ Error: --plugin and --cre-exports are mutually exclusive. Use one or the other.',
+		)
+		process.exit(1)
+	}
 
 	if (!inputPath) {
 		console.error('Usage: bun compile:workflow <path/to/workflow.ts> [path/to/output.wasm]')
@@ -51,7 +67,7 @@ export const main = async (inputFile?: string, outputWasmFile?: string) => {
 
 	// Step 2: JS → WASM
 	console.info('\n🔨 Step 2: Compiling to WASM...')
-	await compileToWasm(resolvedJsOutput, resolvedWasmOutput)
+	await compileToWasm(resolvedJsOutput, resolvedWasmOutput, creExports, plugin)
 
 	console.info(`\n✅ Workflow built: ${resolvedWasmOutput}`)
 	return resolvedWasmOutput
