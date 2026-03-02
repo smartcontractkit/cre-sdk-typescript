@@ -12,8 +12,9 @@
 		"check": "biome check --write ${BIOME_PATHS:-.}",
 		"check:ci": "biome ci .",
 		"format": "biome format --write ${BIOME_PATHS:-.}",
-		"full-checks": "&& bun typecheck && bun check",
+		"full-checks": "bun run build && bun typecheck && bun check && bun test",
 		"lint": "biome lint --write",
+		"test": "bun test",
 		"typecheck": "tsc",
 		"prepublishOnly": "bun typecheck && bun check"
 	},
@@ -26,9 +27,13 @@
 		"url": "https://github.com/smartcontractkit/cre-sdk-typescript",
 		"directory": "packages/cre-sdk-javy-plugin"
 	},
+	"dependencies": {
+		"zod": "3.25.76"
+	},
 	"files": [
 		"bin/",
 		"scripts/",
+		"runtime/",
 		"dist/"
 	],
 	"publishConfig": {
