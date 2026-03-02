@@ -305,7 +305,7 @@ describe('blockchain-helpers', () => {
 		test('should encode a single address', () => {
 			const result = logTriggerConfig({ addresses: [VALID_ADDRESS] })
 			expect(result.addresses).toHaveLength(1)
-			expect(typeof result.addresses[0]).toBe('string') // base64
+			expect(typeof result.addresses![0]).toBe('string') // base64
 		})
 
 		test('should encode multiple addresses', () => {
@@ -322,7 +322,7 @@ describe('blockchain-helpers', () => {
 			})
 			expect(result.topics).toHaveLength(1)
 			expect(result.topics![0].values).toHaveLength(1)
-			expect(typeof result.topics![0].values[0]).toBe('string') // base64
+			expect(typeof result.topics![0]!.values![0]).toBe('string') // base64
 		})
 
 		test('should encode multiple topic slots', () => {
