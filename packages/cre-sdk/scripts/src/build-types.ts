@@ -40,7 +40,11 @@ const buildTypes = async () => {
 		.split('\n')
 		.filter((line) => line.startsWith('/// <reference types='))
 
-	const tripleSlashRefs = refsFromSource.join('\n')
+	// Add references for consumer-only type declarations that cannot be in src/index.ts
+	// because they would break the SDK's own scripts/tests (which legitimately use Node.js APIs).
+	const consumerOnlyRefs = ['/// <reference types="./sdk/types/restricted-node-modules" />']
+
+	const tripleSlashRefs = [...refsFromSource, ...consumerOnlyRefs].join('\n')
 
 	if (tripleSlashRefs) {
 		const indexContent = await readFile(indexDts, 'utf-8')
