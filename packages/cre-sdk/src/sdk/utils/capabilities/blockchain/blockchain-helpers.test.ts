@@ -300,8 +300,7 @@ describe('blockchain-helpers', () => {
 
 	describe('logTriggerConfig', () => {
 		const VALID_ADDRESS = '0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9'
-		const VALID_TOPIC =
-			'0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
+		const VALID_TOPIC = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
 
 		test('should encode a single address', () => {
 			const result = logTriggerConfig({ addresses: [VALID_ADDRESS] })
@@ -369,15 +368,15 @@ describe('blockchain-helpers', () => {
 		})
 
 		test('should throw for invalid hex address', () => {
-			expect(() =>
-				logTriggerConfig({ addresses: ['not-hex' as `0x${string}`] }),
-			).toThrow('Invalid address at index 0')
+			expect(() => logTriggerConfig({ addresses: ['not-hex' as `0x${string}`] })).toThrow(
+				'Invalid address at index 0',
+			)
 		})
 
 		test('should throw for address with wrong byte length', () => {
-			expect(() =>
-				logTriggerConfig({ addresses: ['0x1234' as `0x${string}`] }),
-			).toThrow('expected 20 bytes')
+			expect(() => logTriggerConfig({ addresses: ['0x1234' as `0x${string}`] })).toThrow(
+				'expected 20 bytes',
+			)
 		})
 
 		test('should throw for topic with wrong byte length', () => {
