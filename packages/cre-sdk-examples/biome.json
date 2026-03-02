@@ -7,7 +7,7 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"includes": ["src/**/*", "**/*.json"]
+		"includes": ["src/**/*", "rust-inject/**/*", "**/*.json"]
 	},
 	"formatter": {
 		"enabled": true,
