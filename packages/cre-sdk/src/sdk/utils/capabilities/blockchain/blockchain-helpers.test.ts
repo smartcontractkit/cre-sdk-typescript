@@ -9,6 +9,7 @@ import {
 	isChainSelectorSupported,
 	LAST_FINALIZED_BLOCK_NUMBER,
 	LATEST_BLOCK_NUMBER,
+	logTriggerConfig,
 	type ProtoBigInt,
 	prepareReportRequest,
 	protoBigIntToBigint,
@@ -265,6 +266,144 @@ describe('blockchain-helpers', () => {
 			const result = prepareReportRequest(hexPayload)
 
 			expect(result.encodedPayload).toBeDefined()
+		})
+	})
+
+	describe('encodeCallMsg error context', () => {
+		test('should include field name in error for invalid from address', () => {
+			const payload: EncodeCallMsgPayload = {
+				from: 'not-hex' as `0x${string}`,
+				to: '0x0000000000000000000000000000000000000000',
+				data: '0x',
+			}
+			expect(() => encodeCallMsg(payload)).toThrow("Invalid hex in 'from' field of CallMsg")
+		})
+
+		test('should include field name in error for invalid to address', () => {
+			const payload: EncodeCallMsgPayload = {
+				from: '0x0000000000000000000000000000000000000000',
+				to: 'bad-hex' as `0x${string}`,
+				data: '0x',
+			}
+			expect(() => encodeCallMsg(payload)).toThrow("Invalid hex in 'to' field of CallMsg")
+		})
+
+		test('should include field name in error for invalid data', () => {
+			const payload: EncodeCallMsgPayload = {
+				from: '0x0000000000000000000000000000000000000000',
+				to: '0x0000000000000000000000000000000000000000',
+				data: 'not-hex' as `0x${string}`,
+			}
+			expect(() => encodeCallMsg(payload)).toThrow("Invalid hex in 'data' field of CallMsg")
+		})
+	})
+
+	describe('logTriggerConfig', () => {
+		const VALID_ADDRESS = '0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9'
+		const VALID_TOPIC =
+			'0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
+
+		test('should encode a single address', () => {
+			const result = logTriggerConfig({ addresses: [VALID_ADDRESS] })
+			expect(result.addresses).toHaveLength(1)
+			expect(typeof result.addresses[0]).toBe('string') // base64
+		})
+
+		test('should encode multiple addresses', () => {
+			const result = logTriggerConfig({
+				addresses: [VALID_ADDRESS, '0x0000000000000000000000000000000000000000'],
+			})
+			expect(result.addresses).toHaveLength(2)
+		})
+
+		test('should encode topics with correct structure', () => {
+			const result = logTriggerConfig({
+				addresses: [VALID_ADDRESS],
+				topics: [[VALID_TOPIC]],
+			})
+			expect(result.topics).toHaveLength(1)
+			expect(result.topics![0].values).toHaveLength(1)
+			expect(typeof result.topics![0].values[0]).toBe('string') // base64
+		})
+
+		test('should encode multiple topic slots', () => {
+			const result = logTriggerConfig({
+				addresses: [VALID_ADDRESS],
+				topics: [[VALID_TOPIC], [VALID_TOPIC, VALID_TOPIC]],
+			})
+			expect(result.topics).toHaveLength(2)
+			expect(result.topics![0].values).toHaveLength(1)
+			expect(result.topics![1].values).toHaveLength(2)
+		})
+
+		test('should omit topics when not provided', () => {
+			const result = logTriggerConfig({ addresses: [VALID_ADDRESS] })
+			expect(result.topics).toBeUndefined()
+		})
+
+		test('should set confidence level', () => {
+			const result = logTriggerConfig({
+				addresses: [VALID_ADDRESS],
+				confidence: 'LATEST',
+			})
+			expect(result.confidence).toBe('CONFIDENCE_LEVEL_LATEST')
+		})
+
+		test('should set FINALIZED confidence level', () => {
+			const result = logTriggerConfig({
+				addresses: [VALID_ADDRESS],
+				confidence: 'FINALIZED',
+			})
+			expect(result.confidence).toBe('CONFIDENCE_LEVEL_FINALIZED')
+		})
+
+		test('should omit confidence when not provided', () => {
+			const result = logTriggerConfig({ addresses: [VALID_ADDRESS] })
+			expect(result.confidence).toBeUndefined()
+		})
+
+		test('should throw for empty addresses array', () => {
+			expect(() => logTriggerConfig({ addresses: [] })).toThrow(
+				'logTriggerConfig requires at least one address',
+			)
+		})
+
+		test('should throw for invalid hex address', () => {
+			expect(() =>
+				logTriggerConfig({ addresses: ['not-hex' as `0x${string}`] }),
+			).toThrow('Invalid address at index 0')
+		})
+
+		test('should throw for address with wrong byte length', () => {
+			expect(() =>
+				logTriggerConfig({ addresses: ['0x1234' as `0x${string}`] }),
+			).toThrow('expected 20 bytes')
+		})
+
+		test('should throw for topic with wrong byte length', () => {
+			expect(() =>
+				logTriggerConfig({
+					addresses: [VALID_ADDRESS],
+					topics: [['0x1234' as `0x${string}`]],
+				}),
+			).toThrow('expected 32 bytes')
+		})
+
+		test('should include index in address error', () => {
+			expect(() =>
+				logTriggerConfig({
+					addresses: [VALID_ADDRESS, 'bad' as `0x${string}`],
+				}),
+			).toThrow('Invalid address at index 1')
+		})
+
+		test('should include slot and value index in topic error', () => {
+			expect(() =>
+				logTriggerConfig({
+					addresses: [VALID_ADDRESS],
+					topics: [[VALID_TOPIC], ['bad' as `0x${string}`]],
+				}),
+			).toThrow('Invalid topic at topics[1][0]')
 		})
 	})
 

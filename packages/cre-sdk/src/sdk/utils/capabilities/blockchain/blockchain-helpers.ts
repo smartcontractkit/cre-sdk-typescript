@@ -1,9 +1,13 @@
 import { create, toJson } from '@bufbuild/protobuf'
-import type { CallMsgJson } from '@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb'
+import type {
+	CallMsgJson,
+	ConfidenceLevelJson,
+	FilterLogTriggerRequestJson,
+} from '@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb'
 import type { ReportRequestJson } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { BigIntSchema, type BigInt as GeneratedBigInt } from '@cre/generated/values/v1/values_pb'
 import { EVMClient } from '@cre/sdk/cre'
-import { bigintToBytes, bytesToBigint, hexToBase64 } from '@cre/sdk/utils/hex-utils'
+import { bigintToBytes, bytesToBigint, hexToBase64, hexToBytes } from '@cre/sdk/utils/hex-utils'
 import type { Address, Hex } from 'viem'
 
 /**
@@ -118,11 +122,23 @@ export interface EncodeCallMsgPayload {
  * @param payload - The call message payload to encode.
  * @returns The encoded call message payload.
  */
-export const encodeCallMsg = (payload: EncodeCallMsgPayload): CallMsgJson => ({
-	from: hexToBase64(payload.from),
-	to: hexToBase64(payload.to),
-	data: hexToBase64(payload.data),
-})
+export const encodeCallMsg = (payload: EncodeCallMsgPayload): CallMsgJson => {
+	const encodeField = (fieldName: string, value: string): string => {
+		try {
+			return hexToBase64(value)
+		} catch (e) {
+			throw new Error(
+				`Invalid hex in '${fieldName}' field of CallMsg: ${e instanceof Error ? e.message : String(e)}`,
+			)
+		}
+	}
+
+	return {
+		from: encodeField('from', payload.from),
+		to: encodeField('to', payload.to),
+		data: encodeField('data', payload.data),
+	}
+}
 
 /**
  * Default values expected by the EVM capability for report encoding.
@@ -147,6 +163,96 @@ export const prepareReportRequest = (
 	encodedPayload: hexToBase64(hexEncodedPayload),
 	...reportEncoder,
 })
+
+/**
+ * Validates a hex string and checks that the decoded bytes have the expected length.
+ */
+const validateHexByteLength = (hex: string, expectedBytes: number, fieldLabel: string): string => {
+	const bytes = hexToBytes(hex)
+	if (bytes.length !== expectedBytes) {
+		throw new Error(
+			`Invalid ${fieldLabel}: expected ${expectedBytes} bytes, got ${bytes.length} bytes from '${hex.length > 200 ? hex.slice(0, 200) + '...' : hex}'. EVM ${fieldLabel}s must be exactly ${expectedBytes} bytes.`,
+		)
+	}
+	return hexToBase64(hex)
+}
+
+export interface LogTriggerConfigOptions {
+	/** EVM addresses to monitor — hex strings with 0x prefix (20 bytes each) */
+	addresses: Hex[]
+	/** Topic filters — array of up to 4 arrays of hex topic values (32 bytes each).
+	 *  - topics[0]: event signatures (keccak256 hashes), at least one required
+	 *  - topics[1]: possible values for first indexed arg (optional)
+	 *  - topics[2]: possible values for second indexed arg (optional)
+	 *  - topics[3]: possible values for third indexed arg (optional)
+	 */
+	topics?: Hex[][]
+	/** Confidence level for log finality. Defaults to SAFE. */
+	confidence?: 'SAFE' | 'LATEST' | 'FINALIZED'
+}
+
+/**
+ * Creates a log trigger configuration from hex-encoded addresses and topics.
+ *
+ * This helper converts hex addresses and topic hashes to the base64-encoded format
+ * expected by the EVM capability's `FilterLogTriggerRequest`, and validates that
+ * addresses are 20 bytes and topics are 32 bytes.
+ *
+ * @example
+ * const WETH = '0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9'
+ * const TRANSFER = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
+ *
+ * handler(
+ *   evmClient.logTrigger(logTriggerConfig({
+ *     addresses: [WETH],
+ *     topics: [[TRANSFER]],
+ *     confidence: 'LATEST',
+ *   })),
+ *   onLogTrigger,
+ * )
+ *
+ * @param opts - Hex-encoded addresses, topic filters, and optional confidence level.
+ * @returns The `FilterLogTriggerRequestJson` ready to pass to `evmClient.logTrigger()`.
+ */
+export const logTriggerConfig = (opts: LogTriggerConfigOptions): FilterLogTriggerRequestJson => {
+	if (!opts.addresses || opts.addresses.length === 0) {
+		throw new Error(
+			'logTriggerConfig requires at least one address. Provide an array of hex-encoded EVM addresses (20 bytes each).',
+		)
+	}
+
+	const addresses = opts.addresses.map((addr, i) => {
+		try {
+			return validateHexByteLength(addr, 20, 'address')
+		} catch (e) {
+			throw new Error(
+				`Invalid address at index ${i}: ${e instanceof Error ? e.message : String(e)}`,
+			)
+		}
+	})
+
+	const topics = opts.topics?.map((topicSlot, slotIndex) => ({
+		values: topicSlot.map((topic, valueIndex) => {
+			try {
+				return validateHexByteLength(topic, 32, 'topic')
+			} catch (e) {
+				throw new Error(
+					`Invalid topic at topics[${slotIndex}][${valueIndex}]: ${e instanceof Error ? e.message : String(e)}`,
+				)
+			}
+		}),
+	}))
+
+	const confidence: ConfidenceLevelJson | undefined = opts.confidence
+		? `CONFIDENCE_LEVEL_${opts.confidence}`
+		: undefined
+
+	return {
+		addresses,
+		...(topics ? { topics } : {}),
+		...(confidence ? { confidence } : {}),
+	}
+}
 
 export const isChainSelectorSupported = (chainSelectorName: string) =>
 	Object.keys(EVMClient.SUPPORTED_CHAIN_SELECTORS).includes(chainSelectorName)
