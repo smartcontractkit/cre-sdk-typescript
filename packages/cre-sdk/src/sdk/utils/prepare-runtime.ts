@@ -10,6 +10,8 @@ export const prepareRuntime = () => {
 	globalThis.Buffer = Buffer
 	globalThis.atob = atob
 	globalThis.btoa = btoa
-	globalThis.URL = URL as any
-	globalThis.URLSearchParams = URLSearchParams
+	// node:url constructor types are slightly narrower than lib.dom/global types.
+	// Runtime behavior is compatible; cast to the global constructor shapes.
+	globalThis.URL = URL as unknown as typeof globalThis.URL
+	globalThis.URLSearchParams = URLSearchParams as unknown as typeof globalThis.URLSearchParams
 }
