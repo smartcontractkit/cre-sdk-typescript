@@ -37,7 +37,11 @@ const main = async () => {
 			process.exit(1)
 		}
 	} catch (error) {
-		console.error(`Failed to load script ${scriptName}:`, error)
+		if (error instanceof Error && error.name === 'WorkflowRuntimeCompatibilityError') {
+			console.error(error.message)
+		} else {
+			console.error(`Failed to run script ${scriptName}:`, error)
+		}
 		process.exit(1)
 	}
 }

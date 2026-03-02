@@ -1,5 +1,8 @@
-// Global type declarations for the CRE SDK runtime
-// Those are the methods that the Host exposes to the Guest.
+// Global type declarations for the CRE SDK runtime.
+// These are the methods and globals exposed by the Host to the Guest.
+
+type ExistingGlobal<K extends PropertyKey, Fallback> =
+	typeof globalThis extends Record<K, infer T> ? T : Fallback
 
 /**
  * Host functions exposed by the CRE runtime to WASM guests
@@ -82,43 +85,46 @@ declare global {
 	/**
 	 * Console API available in the QuickJS runtime
 	 */
-	interface Console {
+	type CreConsole = {
 		log(...args: unknown[]): void
 		warn(...args: unknown[]): void
 		error(...args: unknown[]): void
 		info(...args: unknown[]): void
 		debug(...args: unknown[]): void
 	}
-	var console: Console
+	var console: ExistingGlobal<'console', CreConsole>
 
 	/**
 	 * TextEncoder/TextDecoder APIs available via Javy's text_encoding support
 	 */
-	interface TextEncoderEncodeIntoResult {
+	interface CreTextEncoderEncodeIntoResult {
 		read: number
 		written: number
 	}
 
-	interface TextEncoder {
+	interface CreTextEncoder {
 		readonly encoding: string
 		encode(input?: string): Uint8Array
-		encodeInto(input: string, dest: Uint8Array): TextEncoderEncodeIntoResult
+		encodeInto(input: string, dest: Uint8Array): CreTextEncoderEncodeIntoResult
 	}
-	var TextEncoder: {
-		prototype: TextEncoder
-		new (): TextEncoder
-	}
+	var TextEncoder: ExistingGlobal<
+		'TextEncoder',
+		{ prototype: CreTextEncoder; new (): CreTextEncoder }
+	>
 
-	interface TextDecoder {
+	interface CreTextDecoder {
 		readonly encoding: string
 		readonly fatal: boolean
 		readonly ignoreBOM: boolean
 		decode(input?: ArrayBuffer | ArrayBufferView, options?: { stream?: boolean }): string
 	}
-	var TextDecoder: {
-		prototype: TextDecoder
-		new (label?: string, options?: { fatal?: boolean; ignoreBOM?: boolean }): TextDecoder
-	}
+	var TextDecoder: ExistingGlobal<
+		'TextDecoder',
+		{
+			prototype: CreTextDecoder
+			new (label?: string, options?: { fatal?: boolean; ignoreBOM?: boolean }): CreTextDecoder
+		}
+	>
 
 	/**
 	 * Base64 encoding/decoding — exposed via prepareRuntime() from node:buffer
@@ -129,7 +135,7 @@ declare global {
 	/**
 	 * URL and URLSearchParams — exposed via prepareRuntime() from node:url
 	 */
-	interface URLSearchParams {
+	interface CreURLSearchParams {
 		append(name: string, value: string): void
 		delete(name: string): void
 		get(name: string): string | null
@@ -138,21 +144,24 @@ declare global {
 		set(name: string, value: string): void
 		sort(): void
 		toString(): string
-		forEach(callback: (value: string, key: string, parent: URLSearchParams) => void): void
+		forEach(callback: (value: string, key: string, parent: CreURLSearchParams) => void): void
 		entries(): IterableIterator<[string, string]>
 		keys(): IterableIterator<string>
 		values(): IterableIterator<string>
 		[Symbol.iterator](): IterableIterator<[string, string]>
 		readonly size: number
 	}
-	var URLSearchParams: {
-		prototype: URLSearchParams
-		new (
-			init?: string | Record<string, string> | [string, string][] | URLSearchParams,
-		): URLSearchParams
-	}
+	var URLSearchParams: ExistingGlobal<
+		'URLSearchParams',
+		{
+			prototype: CreURLSearchParams
+			new (
+				init?: string | Record<string, string> | [string, string][] | CreURLSearchParams,
+			): CreURLSearchParams
+		}
+	>
 
-	interface URL {
+	interface CreURL {
 		hash: string
 		host: string
 		hostname: string
@@ -163,15 +172,15 @@ declare global {
 		port: string
 		protocol: string
 		search: string
-		readonly searchParams: URLSearchParams
+		readonly searchParams: CreURLSearchParams
 		username: string
 		toString(): string
 		toJSON(): string
 	}
-	var URL: {
-		prototype: URL
-		new (url: string, base?: string | URL): URL
-	}
+	var URL: ExistingGlobal<
+		'URL',
+		{ prototype: CreURL; new (url: string, base?: string | CreURL): CreURL }
+	>
 }
 
 export {}
