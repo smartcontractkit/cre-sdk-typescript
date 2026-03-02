@@ -2,8 +2,12 @@
 // These modules require native bindings or system access that cannot run in WebAssembly.
 // Importing from these modules is allowed by TypeScript, but all exports are typed as
 // `never` so any usage produces a clear error at the call site.
+// See https://docs.chain.link/cre/concepts/typescript-wasm-runtime
 
-/** @deprecated node:crypto is not available in CRE WASM workflows. It requires native bindings that cannot run in WebAssembly. */
+/**
+ * @deprecated node:crypto is not available in CRE WASM workflows. It requires native bindings that cannot run in WebAssembly.
+ * @see https://docs.chain.link/cre/concepts/typescript-wasm-runtime
+ */
 declare module 'node:crypto' {
 	export const randomBytes: never
 	export const randomUUID: never
@@ -59,7 +63,10 @@ declare module 'node:crypto' {
 	export const constants: never
 }
 
-/** @deprecated node:fs is not available in CRE WASM workflows. It requires filesystem access that is not available in WebAssembly. */
+/**
+ * @deprecated node:fs is not available in CRE WASM workflows. It requires filesystem access that is not available in WebAssembly.
+ * @see https://docs.chain.link/cre/concepts/typescript-wasm-runtime
+ */
 declare module 'node:fs' {
 	export const readFile: never
 	export const readFileSync: never
@@ -139,7 +146,10 @@ declare module 'node:fs' {
 	export const FSWatcher: never
 }
 
-/** @deprecated node:fs/promises is not available in CRE WASM workflows. It requires filesystem access that is not available in WebAssembly. */
+/**
+ * @deprecated node:fs/promises is not available in CRE WASM workflows. It requires filesystem access that is not available in WebAssembly.
+ * @see https://docs.chain.link/cre/concepts/typescript-wasm-runtime
+ */
 declare module 'node:fs/promises' {
 	export const readFile: never
 	export const writeFile: never
@@ -171,7 +181,10 @@ declare module 'node:fs/promises' {
 	export const FileHandle: never
 }
 
-/** @deprecated node:net is not available in CRE WASM workflows. It requires network access. Use cre.capabilities.HTTPClient instead. */
+/**
+ * @deprecated node:net is not available in CRE WASM workflows. It requires network access. Use cre.capabilities.HTTPClient instead.
+ * @see https://docs.chain.link/cre/concepts/typescript-wasm-runtime
+ */
 declare module 'node:net' {
 	export const createServer: never
 	export const createConnection: never
@@ -187,7 +200,10 @@ declare module 'node:net' {
 	export const SocketAddress: never
 }
 
-/** @deprecated node:http is not available in CRE WASM workflows. It requires network access. Use cre.capabilities.HTTPClient instead. */
+/**
+ * @deprecated node:http is not available in CRE WASM workflows. It requires network access. Use cre.capabilities.HTTPClient instead.
+ * @see https://docs.chain.link/cre/concepts/typescript-wasm-runtime
+ */
 declare module 'node:http' {
 	export const createServer: never
 	export const request: never
@@ -207,7 +223,10 @@ declare module 'node:http' {
 	export const maxHeaderSize: never
 }
 
-/** @deprecated node:https is not available in CRE WASM workflows. It requires network access. Use cre.capabilities.HTTPClient instead. */
+/**
+ * @deprecated node:https is not available in CRE WASM workflows. It requires network access. Use cre.capabilities.HTTPClient instead.
+ * @see https://docs.chain.link/cre/concepts/typescript-wasm-runtime
+ */
 declare module 'node:https' {
 	export const createServer: never
 	export const request: never
@@ -217,7 +236,10 @@ declare module 'node:https' {
 	export const globalAgent: never
 }
 
-/** @deprecated node:child_process is not available in CRE WASM workflows. It requires OS process spawning that is not available in WebAssembly. */
+/**
+ * @deprecated node:child_process is not available in CRE WASM workflows. It requires OS process spawning that is not available in WebAssembly.
+ * @see https://docs.chain.link/cre/concepts/typescript-wasm-runtime
+ */
 declare module 'node:child_process' {
 	export const spawn: never
 	export const spawnSync: never
@@ -229,7 +251,10 @@ declare module 'node:child_process' {
 	export const ChildProcess: never
 }
 
-/** @deprecated node:os is not available in CRE WASM workflows. It requires OS access that is not available in WebAssembly. */
+/**
+ * @deprecated node:os is not available in CRE WASM workflows. It requires OS access that is not available in WebAssembly.
+ * @see https://docs.chain.link/cre/concepts/typescript-wasm-runtime
+ */
 declare module 'node:os' {
 	export const hostname: never
 	export const platform: never
@@ -256,7 +281,10 @@ declare module 'node:os' {
 	export const constants: never
 }
 
-/** @deprecated node:stream is not available in CRE WASM workflows. It requires native bindings that cannot run in WebAssembly. */
+/**
+ * @deprecated node:stream is not available in CRE WASM workflows. It requires native bindings that cannot run in WebAssembly.
+ * @see https://docs.chain.link/cre/concepts/typescript-wasm-runtime
+ */
 declare module 'node:stream' {
 	export const Readable: never
 	export const Writable: never
@@ -273,7 +301,10 @@ declare module 'node:stream' {
 	export const isReadable: never
 }
 
-/** @deprecated node:worker_threads is not available in CRE WASM workflows. It requires threading support that is not available in WebAssembly. */
+/**
+ * @deprecated node:worker_threads is not available in CRE WASM workflows. It requires threading support that is not available in WebAssembly.
+ * @see https://docs.chain.link/cre/concepts/typescript-wasm-runtime
+ */
 declare module 'node:worker_threads' {
 	export const Worker: never
 	export const MessageChannel: never
@@ -296,7 +327,10 @@ declare module 'node:worker_threads' {
 	export const postMessageToThread: never
 }
 
-/** @deprecated node:dns is not available in CRE WASM workflows. It requires network access that is not available in WebAssembly. */
+/**
+ * @deprecated node:dns is not available in CRE WASM workflows. It requires network access that is not available in WebAssembly.
+ * @see https://docs.chain.link/cre/concepts/typescript-wasm-runtime
+ */
 declare module 'node:dns' {
 	export const lookup: never
 	export const lookupService: never
@@ -321,7 +355,10 @@ declare module 'node:dns' {
 	export const Resolver: never
 }
 
-/** @deprecated node:zlib is not available in CRE WASM workflows. It requires native compression bindings that cannot run in WebAssembly. */
+/**
+ * @deprecated node:zlib is not available in CRE WASM workflows. It requires native compression bindings that cannot run in WebAssembly.
+ * @see https://docs.chain.link/cre/concepts/typescript-wasm-runtime
+ */
 declare module 'node:zlib' {
 	export const createGzip: never
 	export const createGunzip: never

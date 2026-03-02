@@ -67,7 +67,8 @@ class WorkflowRuntimeCompatibilityError extends Error {
 		super(
 			'Unsupported API usage found in workflow source.\n' +
 				'CRE workflows run on Javy (QuickJS), not full Node.js.\n' +
-				'Use CRE capabilities instead (for example, HTTPClient instead of fetch/node:http).\n\n' +
+				'Use CRE capabilities instead (for example, HTTPClient instead of fetch/node:http).\n' +
+				'See https://docs.chain.link/cre/concepts/typescript-wasm-runtime\n\n' +
 				formattedViolations,
 		)
 		this.name = 'WorkflowRuntimeCompatibilityError'
