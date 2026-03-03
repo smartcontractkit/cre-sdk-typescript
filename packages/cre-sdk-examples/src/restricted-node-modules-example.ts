@@ -20,7 +20,6 @@
  * - node:zlib
  *
  * For HTTP requests, use cre.capabilities.HTTPClient instead of node:http/node:https/node:net.
- * For scheduling, use cre.capabilities.CronCapability instead of setTimeout/setInterval.
  *
  * @see https://docs.chain.link/cre/concepts/typescript-wasm-runtime
  */

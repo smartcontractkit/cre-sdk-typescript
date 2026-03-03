@@ -67,7 +67,7 @@
  * @see https://docs.chain.link/cre/concepts/typescript-wasm-runtime
  */
 
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readFileSync, statSync } from 'node:fs'
 import path from 'node:path'
 import * as ts from 'typescript'
 
@@ -158,11 +158,12 @@ class WorkflowRuntimeCompatibilityError extends Error {
 			.join('\n')
 
 		super(
-			'Unsupported API usage found in workflow source.\n' +
-				'CRE workflows run on Javy (QuickJS), not full Node.js.\n' +
-				'Use CRE capabilities instead (for example, HTTPClient instead of fetch/node:http).\n' +
-				'See https://docs.chain.link/cre/concepts/typescript-wasm-runtime\n\n' +
-				formattedViolations,
+			`Unsupported API usage found in workflow source.
+CRE workflows run on Javy (QuickJS), not full Node.js.
+Use CRE capabilities instead (for example, HTTPClient instead of fetch/node:http).
+See https://docs.chain.link/cre/concepts/typescript-wasm-runtime
+
+${formattedViolations}`,
 		)
 		this.name = 'WorkflowRuntimeCompatibilityError'
 	}
@@ -231,7 +232,7 @@ const resolveRelativeImport = (fromFilePath: string, specifier: string): string 
 		? path.resolve(specifier)
 		: path.resolve(path.dirname(fromFilePath), specifier)
 
-	if (existsSync(basePath)) {
+	if (existsSync(basePath) && statSync(basePath).isFile()) {
 		return toAbsolutePath(basePath)
 	}
 
