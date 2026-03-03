@@ -78,6 +78,15 @@ jobs:
           echo "CRE_SDK_VERSION=$CURRENT_VERSION" >> $GITHUB_ENV
           echo "Using CRE SDK version from package.json: $CURRENT_VERSION"
 
+          # Detect pre-release tag from version (e.g. 1.1.3-alpha.1 → alpha)
+          if [[ "$CURRENT_VERSION" =~ -([a-zA-Z]+) ]]; then
+            NPM_TAG="${match[1]}"
+          else
+            NPM_TAG="latest"
+          fi
+          echo "NPM_DIST_TAG=$NPM_TAG" >> $GITHUB_ENV
+          echo "npm dist-tag: $NPM_TAG"
+
       - name: Build cre-sdk
         working-directory: packages/cre-sdk
         run: bun run build
@@ -91,12 +100,12 @@ jobs:
       - name: Publish cre-sdk package
         working-directory: packages/cre-sdk
         run: |
-          echo "Publishing @chainlink/cre-sdk..."
+          echo "Publishing @chainlink/cre-sdk with dist-tag: $NPM_DIST_TAG..."
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
             echo "DRY RUN: Would publish @chainlink/cre-sdk"
-            npm publish --dry-run --access public --verbose
+            npm publish --dry-run --access public --tag "$NPM_DIST_TAG" --verbose
           else
-            npm publish --access public --verbose
+            npm publish --access public --tag "$NPM_DIST_TAG" --verbose
           fi
 
       - name: Create release summary
@@ -105,14 +114,18 @@ jobs:
           echo "## 📦 Published CRE SDK Package" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- 📋 \`@chainlink/cre-sdk@$CRE_SDK_VERSION\`" >> $GITHUB_STEP_SUMMARY
+          echo "- 🏷️ npm dist-tag: \`$NPM_DIST_TAG\`" >> $GITHUB_STEP_SUMMARY
           echo "- 📋 Published from: \`${{ github.event.inputs.tag || 'main' }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- 🔗 Commit: \`$(git rev-parse --short HEAD)\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
           echo "### Installation" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
-          echo "# Using bun" >> $GITHUB_STEP_SUMMARY
-          echo "bun add @chainlink/cre-sdk" >> $GITHUB_STEP_SUMMARY
+          if [ "$NPM_DIST_TAG" = "latest" ]; then
+            echo "bun add @chainlink/cre-sdk" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "bun add @chainlink/cre-sdk@$NPM_DIST_TAG" >> $GITHUB_STEP_SUMMARY
+          fi
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
@@ -138,14 +151,14 @@ jobs:
 
       - name: Verify cre-sdk package installation
         run: |
-          echo "Verifying @chainlink/cre-sdk can be installed..."
-          bun add @chainlink/cre-sdk --dry-run
+          echo "Verifying @chainlink/cre-sdk@$CRE_SDK_VERSION can be installed..."
+          bun add @chainlink/cre-sdk@$CRE_SDK_VERSION --dry-run
           echo "✅ CRE SDK package verification successful"
 
       - name: Verify CLI binary is available
         run: |
           echo "Installing package to test CLI binary..."
-          bun add @chainlink/cre-sdk
+          bun add @chainlink/cre-sdk@$CRE_SDK_VERSION
 
           echo "Checking cre-compile command via bunx..."
           if bun x cre-compile --help >/dev/null 2>&1; then
