@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
 
 import { main as compileWorkflow } from "../scripts/src/compile-workflow";
+import { WorkflowRuntimeCompatibilityError } from "../scripts/src/validate-workflow-runtime-compat";
 
 const main = async () => {
   const cliArgs = process.argv.slice(2);
@@ -26,6 +27,10 @@ const main = async () => {
 
 // CLI entry point
 main().catch((e) => {
-  console.error(e);
+  if (e instanceof WorkflowRuntimeCompatibilityError) {
+    console.error(`\n❌ ${e.message}`);
+  } else {
+    console.error(e);
+  }
   process.exit(1);
 });
