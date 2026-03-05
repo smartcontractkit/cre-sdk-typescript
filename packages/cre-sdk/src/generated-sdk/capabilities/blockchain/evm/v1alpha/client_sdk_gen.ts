@@ -146,6 +146,7 @@ export class ClientCapability {
 		'ink-testnet-sepolia': 9763904284804119144n,
 		'jovay-mainnet': 1523760397290643893n,
 		'jovay-testnet': 945045181441419236n,
+		'pharos-atlantic-testnet': 16098325658947243212n,
 		'pharos-mainnet': 7801139999541420232n,
 		'plasma-testnet': 3967220077692964309n,
 		'polygon-mainnet': 4051577828743386545n,
