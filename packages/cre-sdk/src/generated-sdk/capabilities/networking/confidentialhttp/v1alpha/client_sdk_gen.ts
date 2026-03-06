@@ -1,4 +1,4 @@
-import { fromJson } from '@bufbuild/protobuf'
+import { create, fromJson, type MessageInitShape } from '@bufbuild/protobuf'
 import {
 	type ConfidentialHTTPRequest,
 	type ConfidentialHTTPRequestJson,
@@ -26,7 +26,7 @@ export class ClientCapability {
 
 	sendRequest(
 		runtime: Runtime<unknown>,
-		input: ConfidentialHTTPRequest | ConfidentialHTTPRequestJson,
+		input: ConfidentialHTTPRequest | MessageInitShape<typeof ConfidentialHTTPRequestSchema>,
 	): { result: () => HTTPResponse } {
 		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
 		let payload: ConfidentialHTTPRequest
@@ -35,8 +35,11 @@ export class ClientCapability {
 			// It's the original protobuf type
 			payload = input as ConfidentialHTTPRequest
 		} else {
-			// It's regular JSON, convert using fromJson
-			payload = fromJson(ConfidentialHTTPRequestSchema, input as ConfidentialHTTPRequestJson)
+			// It's a plain object initializer, convert using create
+			payload = create(
+				ConfidentialHTTPRequestSchema,
+				input as MessageInitShape<typeof ConfidentialHTTPRequestSchema>,
+			)
 		}
 
 		const capabilityId = ClientCapability.CAPABILITY_ID

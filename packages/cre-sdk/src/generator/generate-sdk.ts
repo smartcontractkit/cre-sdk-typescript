@@ -101,6 +101,9 @@ export function generateSdk(file: GenFile, outputDir: string) {
 		// Note: protobuf imports are deferred until after report wrappers are processed,
 		// since report wrappers may require 'create' from "@bufbuild/protobuf"
 		const imports = new Set<string>()
+		// Always import create + MessageInitShape (for action methods accepting plain objects)
+		// and fromJson (for triggers and wrapped types). Biome will remove unused imports.
+		imports.add('import { create, fromJson, type MessageInitShape } from "@bufbuild/protobuf"')
 
 		// Add trigger imports if needed
 		if (hasTriggers) {
@@ -178,13 +181,7 @@ export function generateSdk(file: GenFile, outputDir: string) {
 			.filter((wrapper) => wrapper !== '')
 			.join('\n')
 
-		// Add protobuf imports - 'create' is needed by triggers and report wrappers
-		const hasReportWrappers = reportWrappers.length > 0
-		if (hasTriggers || hasReportWrappers) {
-			imports.add('import { fromJson, create } from "@bufbuild/protobuf"')
-		} else {
-			imports.add('import { fromJson } from "@bufbuild/protobuf"')
-		}
+		// protobuf imports already added above (create, fromJson, MessageInitShape)
 
 		// Generate deduplicated type imports (after report wrapper processing).
 		// When all imports from a path are type-only, use `import type` so the
@@ -253,7 +250,7 @@ export function generateSdk(file: GenFile, outputDir: string) {
 		const classComment = `
 /**
  * ${service.name} Capability
- * 
+ *
  * Capability ID: ${capOption.capabilityId}
  * Capability Name: ${capabilityName}
  * Capability Version: ${capabilityVersion}

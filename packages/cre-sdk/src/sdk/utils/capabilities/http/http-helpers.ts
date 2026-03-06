@@ -1,7 +1,8 @@
+import type { MessageInitShape } from '@bufbuild/protobuf'
 import type { HTTPResponse as ConfidentialHTTPResponse } from '@cre/generated/capabilities/networking/confidentialhttp/v1alpha/client_pb'
 import type {
 	Request,
-	RequestJson,
+	RequestSchema,
 	Response,
 } from '@cre/generated/capabilities/networking/http/v1alpha/client_pb'
 import type { ReportResponse } from '@cre/generated/sdk/v1alpha/sdk_pb'
@@ -199,7 +200,7 @@ function sendReport(
 	this: ClientCapability,
 	runtime: NodeRuntime<unknown>,
 	report: Report,
-	fn: (reportResponse: ReportResponse) => Request | RequestJson,
+	fn: (reportResponse: ReportResponse) => Request | MessageInitShape<typeof RequestSchema>,
 ): { result: () => Response } {
 	const rawReport = report.x_generatedCodeOnly_unwrap()
 	const request = fn(rawReport)
@@ -219,7 +220,7 @@ function sendReport(
 function sendRequesterSendReport(
 	this: SendRequester,
 	report: Report,
-	fn: (reportResponse: ReportResponse) => Request | RequestJson,
+	fn: (reportResponse: ReportResponse) => Request | MessageInitShape<typeof RequestSchema>,
 ): { result: () => Response } {
 	const rawReport = report.x_generatedCodeOnly_unwrap()
 	const request = fn(rawReport)
@@ -263,7 +264,7 @@ declare module '@cre/generated-sdk/capabilities/networking/http/v1alpha/client_s
 		sendReport(
 			runtime: NodeRuntime<unknown>,
 			report: Report,
-			fn: (reportResponse: ReportResponse) => Request | RequestJson,
+			fn: (reportResponse: ReportResponse) => Request | MessageInitShape<typeof RequestSchema>,
 		): { result: () => Response }
 	}
 
@@ -280,7 +281,7 @@ declare module '@cre/generated-sdk/capabilities/networking/http/v1alpha/client_s
 		 */
 		sendReport(
 			report: Report,
-			fn: (reportResponse: ReportResponse) => Request | RequestJson,
+			fn: (reportResponse: ReportResponse) => Request | MessageInitShape<typeof RequestSchema>,
 		): { result: () => Response }
 	}
 }

@@ -113,10 +113,10 @@ describe('Tag-aware capability mocks (EVM with chain selectors)', () => {
 		const mumbaiCapability = new EvmClientCapability(mumbaiSelector)
 
 		const sepoliaResult = sepoliaCapability
-			.callContract(runtime, { call: { to: '', data: '' } })
+			.callContract(runtime, { call: { to: new Uint8Array(), data: new Uint8Array() } })
 			.result()
 		const mumbaiResult = mumbaiCapability
-			.callContract(runtime, { call: { to: '', data: '' } })
+			.callContract(runtime, { call: { to: new Uint8Array(), data: new Uint8Array() } })
 			.result()
 
 		expect(sepoliaResult.data).toEqual(new Uint8Array([1, 2, 3]))

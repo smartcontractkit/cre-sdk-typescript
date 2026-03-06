@@ -1,4 +1,4 @@
-import { fromJson } from '@bufbuild/protobuf'
+import { create, fromJson, type MessageInitShape } from '@bufbuild/protobuf'
 import {
 	type ReportRequest,
 	type ReportRequestJson,
@@ -30,7 +30,7 @@ export class ConsensusCapability {
 
 	simple(
 		runtime: Runtime<unknown>,
-		input: SimpleConsensusInputs | SimpleConsensusInputsJson,
+		input: SimpleConsensusInputs | MessageInitShape<typeof SimpleConsensusInputsSchema>,
 	): { result: () => Value } {
 		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
 		let payload: SimpleConsensusInputs
@@ -39,8 +39,11 @@ export class ConsensusCapability {
 			// It's the original protobuf type
 			payload = input as SimpleConsensusInputs
 		} else {
-			// It's regular JSON, convert using fromJson
-			payload = fromJson(SimpleConsensusInputsSchema, input as SimpleConsensusInputsJson)
+			// It's a plain object initializer, convert using create
+			payload = create(
+				SimpleConsensusInputsSchema,
+				input as MessageInitShape<typeof SimpleConsensusInputsSchema>,
+			)
 		}
 
 		const capabilityId = ConsensusCapability.CAPABILITY_ID
@@ -64,7 +67,7 @@ export class ConsensusCapability {
 
 	report(
 		runtime: Runtime<unknown>,
-		input: ReportRequest | ReportRequestJson,
+		input: ReportRequest | MessageInitShape<typeof ReportRequestSchema>,
 	): { result: () => Report } {
 		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
 		let payload: ReportRequest
@@ -73,8 +76,8 @@ export class ConsensusCapability {
 			// It's the original protobuf type
 			payload = input as ReportRequest
 		} else {
-			// It's regular JSON, convert using fromJson
-			payload = fromJson(ReportRequestSchema, input as ReportRequestJson)
+			// It's a plain object initializer, convert using create
+			payload = create(ReportRequestSchema, input as MessageInitShape<typeof ReportRequestSchema>)
 		}
 
 		const capabilityId = ConsensusCapability.CAPABILITY_ID

@@ -1,11 +1,11 @@
-import type { Message } from '@bufbuild/protobuf'
+import type { Message, MessageInitShape } from '@bufbuild/protobuf'
 import type { GenMessage } from '@bufbuild/protobuf/codegenv2'
-import type { ReportRequest, ReportRequestJson } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import type { ReportRequest, ReportRequestSchema } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import type { Report } from '@cre/sdk/report'
 import type { ConsensusAggregation, PrimitiveTypes, UnwrapOptions } from '@cre/sdk/utils'
 import type { SecretsProvider } from '.'
 
-export type { ReportRequest, ReportRequestJson }
+export type { ReportRequest }
 
 export type CallCapabilityParams<I extends Message, O extends Message> = {
 	capabilityId: string
@@ -57,5 +57,7 @@ export interface Runtime<C> extends BaseRuntime<C>, SecretsProvider {
 		unwrapOptions?: TOutput extends PrimitiveTypes ? never : UnwrapOptions<TOutput>,
 	): (...args: TArgs) => { result: () => TOutput }
 
-	report(input: ReportRequest | ReportRequestJson): { result: () => Report }
+	report(input: ReportRequest | MessageInitShape<typeof ReportRequestSchema>): {
+		result: () => Report
+	}
 }

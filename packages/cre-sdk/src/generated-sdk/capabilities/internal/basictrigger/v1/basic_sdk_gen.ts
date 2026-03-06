@@ -1,4 +1,4 @@
-import { create, fromJson } from '@bufbuild/protobuf'
+import { create, fromJson, type MessageInitShape } from '@bufbuild/protobuf'
 import { type Any, AnySchema, anyPack } from '@bufbuild/protobuf/wkt'
 import {
 	type Config,

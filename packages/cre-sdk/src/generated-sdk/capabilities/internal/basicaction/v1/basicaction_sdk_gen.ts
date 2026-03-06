@@ -1,4 +1,4 @@
-import { fromJson } from '@bufbuild/protobuf'
+import { create, fromJson, type MessageInitShape } from '@bufbuild/protobuf'
 import {
 	type Inputs,
 	type InputsJson,
@@ -24,7 +24,10 @@ export class BasicActionCapability {
 	static readonly CAPABILITY_NAME = 'basic-test-action'
 	static readonly CAPABILITY_VERSION = '1.0.0'
 
-	performAction(runtime: Runtime<unknown>, input: Inputs | InputsJson): { result: () => Outputs } {
+	performAction(
+		runtime: Runtime<unknown>,
+		input: Inputs | MessageInitShape<typeof InputsSchema>,
+	): { result: () => Outputs } {
 		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
 		let payload: Inputs
 
@@ -32,8 +35,8 @@ export class BasicActionCapability {
 			// It's the original protobuf type
 			payload = input as Inputs
 		} else {
-			// It's regular JSON, convert using fromJson
-			payload = fromJson(InputsSchema, input as InputsJson)
+			// It's a plain object initializer, convert using create
+			payload = create(InputsSchema, input as MessageInitShape<typeof InputsSchema>)
 		}
 
 		const capabilityId = BasicActionCapability.CAPABILITY_ID

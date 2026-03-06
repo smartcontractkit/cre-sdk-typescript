@@ -1,4 +1,4 @@
-import { fromJson } from '@bufbuild/protobuf'
+import { create, fromJson, type MessageInitShape } from '@bufbuild/protobuf'
 import {
 	type NodeInputs,
 	type NodeInputsJson,
@@ -15,7 +15,9 @@ export class PerformActioner {
 		private readonly runtime: NodeRuntime<unknown>,
 		private readonly client: BasicActionCapability,
 	) {}
-	performAction(input: NodeInputs | NodeInputsJson): { result: () => NodeOutputs } {
+	performAction(input: NodeInputs | MessageInitShape<typeof NodeInputsSchema>): {
+		result: () => NodeOutputs
+	} {
 		return this.client.performAction(this.runtime, input)
 	}
 }
@@ -36,7 +38,7 @@ export class BasicActionCapability {
 
 	performAction(
 		runtime: NodeRuntime<unknown>,
-		input: NodeInputs | NodeInputsJson,
+		input: NodeInputs | MessageInitShape<typeof NodeInputsSchema>,
 	): { result: () => NodeOutputs }
 	performAction<TArgs extends unknown[], TOutput>(
 		runtime: Runtime<unknown>,
@@ -56,12 +58,15 @@ export class BasicActionCapability {
 			return this.performActionSugarHelper(runtime, fn, consensusAggregation, unwrapOptions)
 		}
 		// Otherwise, this is the basic call overload
-		const [runtime, input] = args as [NodeRuntime<unknown>, NodeInputs | NodeInputsJson]
+		const [runtime, input] = args as [
+			NodeRuntime<unknown>,
+			NodeInputs | MessageInitShape<typeof NodeInputsSchema>,
+		]
 		return this.performActionCallHelper(runtime, input)
 	}
 	private performActionCallHelper(
 		runtime: NodeRuntime<unknown>,
-		input: NodeInputs | NodeInputsJson,
+		input: NodeInputs | MessageInitShape<typeof NodeInputsSchema>,
 	): { result: () => NodeOutputs } {
 		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
 		let payload: NodeInputs
@@ -70,8 +75,8 @@ export class BasicActionCapability {
 			// It's the original protobuf type
 			payload = input as NodeInputs
 		} else {
-			// It's regular JSON, convert using fromJson
-			payload = fromJson(NodeInputsSchema, input as NodeInputsJson)
+			// It's a plain object initializer, convert using create
+			payload = create(NodeInputsSchema, input as MessageInitShape<typeof NodeInputsSchema>)
 		}
 
 		const capabilityId = BasicActionCapability.CAPABILITY_ID
