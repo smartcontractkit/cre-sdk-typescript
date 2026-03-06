@@ -28,6 +28,7 @@ import type {
 	CallCapabilityParams,
 	NodeRuntime,
 	ReportRequest,
+	ReportRequestJson,
 	Runtime,
 } from '@cre/sdk'
 import type { Report } from '@cre/sdk/report'
@@ -417,7 +418,7 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 	/**
 	 * Generates a report via consensus mechanism.
 	 */
-	report(input: ReportRequest | MessageInitShape<typeof ReportRequestSchema>): {
+	report(input: ReportRequest | ReportRequestJson | MessageInitShape<typeof ReportRequestSchema>): {
 		result: () => Report
 	} {
 		const consensus = new ConsensusCapability()

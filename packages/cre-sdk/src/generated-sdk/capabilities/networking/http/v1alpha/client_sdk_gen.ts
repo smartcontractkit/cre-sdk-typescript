@@ -9,13 +9,16 @@ import {
 import type { NodeRuntime, Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import type { ConsensusAggregation, PrimitiveTypes, UnwrapOptions } from '@cre/sdk/utils'
+import { coerceMessageInput } from '@cre/sdk/utils/protobuf-input'
 
 export class SendRequester {
 	constructor(
 		private readonly runtime: NodeRuntime<unknown>,
 		private readonly client: ClientCapability,
 	) {}
-	sendRequest(input: Request | MessageInitShape<typeof RequestSchema>): { result: () => Response } {
+	sendRequest(input: Request | RequestJson | MessageInitShape<typeof RequestSchema>): {
+		result: () => Response
+	} {
 		return this.client.sendRequest(this.runtime, input)
 	}
 }
@@ -36,7 +39,7 @@ export class ClientCapability {
 
 	sendRequest(
 		runtime: NodeRuntime<unknown>,
-		input: Request | MessageInitShape<typeof RequestSchema>,
+		input: Request | RequestJson | MessageInitShape<typeof RequestSchema>,
 	): { result: () => Response }
 	sendRequest<TArgs extends unknown[], TOutput>(
 		runtime: Runtime<unknown>,
@@ -58,13 +61,13 @@ export class ClientCapability {
 		// Otherwise, this is the basic call overload
 		const [runtime, input] = args as [
 			NodeRuntime<unknown>,
-			Request | MessageInitShape<typeof RequestSchema>,
+			Request | RequestJson | MessageInitShape<typeof RequestSchema>,
 		]
 		return this.sendRequestCallHelper(runtime, input)
 	}
 	private sendRequestCallHelper(
 		runtime: NodeRuntime<unknown>,
-		input: Request | MessageInitShape<typeof RequestSchema>,
+		input: Request | RequestJson | MessageInitShape<typeof RequestSchema>,
 	): { result: () => Response } {
 		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
 		let payload: Request
@@ -73,8 +76,8 @@ export class ClientCapability {
 			// It's the original protobuf type
 			payload = input as Request
 		} else {
-			// It's a plain object initializer, convert using create
-			payload = create(RequestSchema, input as MessageInitShape<typeof RequestSchema>)
+			// It's a plain object, support both legacy JSON wire format and MessageInitShape
+			payload = coerceMessageInput(RequestSchema, input)
 		}
 
 		const capabilityId = ClientCapability.CAPABILITY_ID

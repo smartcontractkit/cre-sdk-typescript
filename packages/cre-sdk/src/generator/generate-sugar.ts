@@ -9,6 +9,12 @@ export function generateActionSugarClass(
 	const sugarClassName = `${methodName.charAt(0).toUpperCase() + methodName.slice(1)}er`
 	if (modePrefix !== 'Node') return ''
 
+	const wrappedInputType = wrapType(method.input)
+	const hasWrappedInput = wrappedInputType !== method.input
+	const inputType = hasWrappedInput
+		? `${wrappedInputType.name} | ${wrappedInputType.name}Json`
+		: `${method.input.name} | ${method.input.name}Json | MessageInitShape<typeof ${method.input.name}Schema>`
+
 	// Determine the output type - match the action method's logic
 	const wrappedOutputType = wrapType(method.output)
 	const hasWrappedOutput = wrappedOutputType !== method.output
@@ -22,7 +28,7 @@ export function generateActionSugarClass(
 	return `
 export class ${sugarClassName} {
 	constructor(private readonly runtime: NodeRuntime<unknown>, private readonly client: ${capabilityClassName}) {}
-	${methodName}(input: ${method.input.name} | MessageInitShape<typeof ${method.input.name}Schema>): {result: () => ${outputType}} {
+	${methodName}(input: ${inputType}): {result: () => ${outputType}} {
 		return this.client.${methodName}(this.runtime, input)
 	}
 }`

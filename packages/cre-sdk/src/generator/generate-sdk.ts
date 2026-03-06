@@ -115,9 +115,11 @@ export function generateSdk(file: GenFile, outputDir: string) {
 			if (modePrefix !== '') {
 				imports.add(`import type { Runtime, ${modePrefix}Runtime } from "@cre/sdk"`)
 				imports.add(`import { Report } from "@cre/sdk/report"`)
+				imports.add(`import { coerceMessageInput } from "@cre/sdk/utils/protobuf-input"`)
 			} else {
 				imports.add(`import type { Runtime } from "@cre/sdk"`)
 				imports.add(`import { Report } from "@cre/sdk/report"`)
+				imports.add(`import { coerceMessageInput } from "@cre/sdk/utils/protobuf-input"`)
 				imports.add(`import { hexToBytes } from "@cre/sdk/utils/hex-utils";`)
 			}
 		}

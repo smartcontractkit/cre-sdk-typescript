@@ -9,13 +9,14 @@ import {
 import type { NodeRuntime, Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import type { ConsensusAggregation, PrimitiveTypes, UnwrapOptions } from '@cre/sdk/utils'
+import { coerceMessageInput } from '@cre/sdk/utils/protobuf-input'
 
 export class PerformActioner {
 	constructor(
 		private readonly runtime: NodeRuntime<unknown>,
 		private readonly client: BasicActionCapability,
 	) {}
-	performAction(input: NodeInputs | MessageInitShape<typeof NodeInputsSchema>): {
+	performAction(input: NodeInputs | NodeInputsJson | MessageInitShape<typeof NodeInputsSchema>): {
 		result: () => NodeOutputs
 	} {
 		return this.client.performAction(this.runtime, input)
@@ -38,7 +39,7 @@ export class BasicActionCapability {
 
 	performAction(
 		runtime: NodeRuntime<unknown>,
-		input: NodeInputs | MessageInitShape<typeof NodeInputsSchema>,
+		input: NodeInputs | NodeInputsJson | MessageInitShape<typeof NodeInputsSchema>,
 	): { result: () => NodeOutputs }
 	performAction<TArgs extends unknown[], TOutput>(
 		runtime: Runtime<unknown>,
@@ -60,13 +61,13 @@ export class BasicActionCapability {
 		// Otherwise, this is the basic call overload
 		const [runtime, input] = args as [
 			NodeRuntime<unknown>,
-			NodeInputs | MessageInitShape<typeof NodeInputsSchema>,
+			NodeInputs | NodeInputsJson | MessageInitShape<typeof NodeInputsSchema>,
 		]
 		return this.performActionCallHelper(runtime, input)
 	}
 	private performActionCallHelper(
 		runtime: NodeRuntime<unknown>,
-		input: NodeInputs | MessageInitShape<typeof NodeInputsSchema>,
+		input: NodeInputs | NodeInputsJson | MessageInitShape<typeof NodeInputsSchema>,
 	): { result: () => NodeOutputs } {
 		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
 		let payload: NodeInputs
@@ -75,8 +76,8 @@ export class BasicActionCapability {
 			// It's the original protobuf type
 			payload = input as NodeInputs
 		} else {
-			// It's a plain object initializer, convert using create
-			payload = create(NodeInputsSchema, input as MessageInitShape<typeof NodeInputsSchema>)
+			// It's a plain object, support both legacy JSON wire format and MessageInitShape
+			payload = coerceMessageInput(NodeInputsSchema, input)
 		}
 
 		const capabilityId = BasicActionCapability.CAPABILITY_ID

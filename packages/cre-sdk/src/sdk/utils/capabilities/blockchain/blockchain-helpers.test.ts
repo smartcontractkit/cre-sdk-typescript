@@ -2,16 +2,22 @@ import { describe, expect, test } from 'bun:test'
 import { EVMClient } from '@cre/sdk/cre'
 import {
 	bigintToProtoBigInt,
+	bigintToProtoBigIntInit,
 	blockNumber,
+	blockNumberInit,
 	type EncodeCallMsgPayload,
 	EVM_DEFAULT_REPORT_ENCODER,
 	encodeCallMsg,
+	encodeCallMsgInit,
 	isChainSelectorSupported,
 	LAST_FINALIZED_BLOCK_NUMBER,
+	LAST_FINALIZED_BLOCK_NUMBER_INIT,
 	LATEST_BLOCK_NUMBER,
+	LATEST_BLOCK_NUMBER_INIT,
 	logTriggerConfig,
 	type ProtoBigInt,
 	prepareReportRequest,
+	prepareReportRequestInit,
 	protoBigIntToBigint,
 } from './blockchain-helpers'
 
@@ -20,40 +26,37 @@ describe('blockchain-helpers', () => {
 		test('should encode number', () => {
 			const result = bigintToProtoBigInt(123)
 			expect(result).toEqual({
-				absVal: new Uint8Array([123]),
-				sign: 1n,
+				absVal: Buffer.from([123]).toString('base64'),
+				sign: '1',
 			})
 		})
 
 		test('should encode string', () => {
 			const result = bigintToProtoBigInt('9768438')
 			expect(result).toEqual({
-				absVal: new Uint8Array([0x95, 0x0d, 0xf6]),
-				sign: 1n,
+				absVal: Buffer.from([0x95, 0x0d, 0xf6]).toString('base64'),
+				sign: '1',
 			})
 		})
 
 		test('should encode bigint', () => {
 			const result = bigintToProtoBigInt(9768438n)
 			expect(result).toEqual({
-				absVal: new Uint8Array([0x95, 0x0d, 0xf6]),
-				sign: 1n,
+				absVal: Buffer.from([0x95, 0x0d, 0xf6]).toString('base64'),
+				sign: '1',
 			})
 		})
 
 		test('should encode zero', () => {
 			const result = bigintToProtoBigInt(0)
-			expect(result).toEqual({
-				absVal: new Uint8Array(),
-				sign: 0n,
-			})
+			expect(result).toEqual({})
 		})
 
 		test('should preserve sign of negative numbers', () => {
 			const result = bigintToProtoBigInt(-123)
 			expect(result).toEqual({
-				absVal: new Uint8Array([123]),
-				sign: -1n,
+				absVal: Buffer.from([123]).toString('base64'),
+				sign: '-1',
 			})
 		})
 
@@ -73,6 +76,15 @@ describe('blockchain-helpers', () => {
 			expect(() => bigintToProtoBigInt(Infinity)).toThrow(
 				'bigintToProtoBigInt requires an integer number',
 			)
+		})
+	})
+
+	describe('bigintToProtoBigIntInit', () => {
+		test('should encode native init values', () => {
+			expect(bigintToProtoBigIntInit(123)).toEqual({
+				absVal: new Uint8Array([123]),
+				sign: 1n,
+			})
 		})
 	})
 
@@ -102,7 +114,6 @@ describe('blockchain-helpers', () => {
 		})
 
 		test('should roundtrip with bigintToProtoBigInt (positive)', () => {
-			// Note: bigintToProtoBigInt returns native types
 			// This tests the conceptual roundtrip
 			const original = 9768438n
 			const proto: ProtoBigInt = {
@@ -121,31 +132,41 @@ describe('blockchain-helpers', () => {
 		test('should produce same result as bigintToProtoBigInt', () => {
 			expect(blockNumber(9768438n)).toEqual(bigintToProtoBigInt(9768438n))
 		})
+
+		test('blockNumberInit aliases bigintToProtoBigIntInit', () => {
+			expect(blockNumberInit).toBe(bigintToProtoBigIntInit)
+		})
 	})
 
 	describe('LAST_FINALIZED_BLOCK_NUMBER', () => {
 		test('should have correct structure for finalized block', () => {
 			expect(LAST_FINALIZED_BLOCK_NUMBER).toEqual({
-				absVal: new Uint8Array([3]),
-				sign: -1n,
+				absVal: Buffer.from([3]).toString('base64'),
+				sign: '-1',
 			})
 		})
 
-		test('should encode value 3 as Uint8Array', () => {
-			expect(LAST_FINALIZED_BLOCK_NUMBER.absVal).toEqual(new Uint8Array([3]))
+		test('should expose native init variant', () => {
+			expect(LAST_FINALIZED_BLOCK_NUMBER_INIT).toEqual({
+				absVal: new Uint8Array([3]),
+				sign: -1n,
+			})
 		})
 	})
 
 	describe('LATEST_BLOCK_NUMBER', () => {
 		test('should have correct structure for latest block', () => {
 			expect(LATEST_BLOCK_NUMBER).toEqual({
-				absVal: new Uint8Array([2]),
-				sign: -1n,
+				absVal: Buffer.from([2]).toString('base64'),
+				sign: '-1',
 			})
 		})
 
-		test('should encode value 2 as Uint8Array', () => {
-			expect(LATEST_BLOCK_NUMBER.absVal).toEqual(new Uint8Array([2]))
+		test('should expose native init variant', () => {
+			expect(LATEST_BLOCK_NUMBER_INIT).toEqual({
+				absVal: new Uint8Array([2]),
+				sign: -1n,
+			})
 		})
 	})
 
@@ -162,9 +183,9 @@ describe('blockchain-helpers', () => {
 			expect(result).toHaveProperty('from')
 			expect(result).toHaveProperty('to')
 			expect(result).toHaveProperty('data')
-			expect(result.from).toBeInstanceOf(Uint8Array)
-			expect(result.to).toBeInstanceOf(Uint8Array)
-			expect(result.data).toBeInstanceOf(Uint8Array)
+			expect(typeof result.from).toBe('string')
+			expect(typeof result.to).toBe('string')
+			expect(typeof result.data).toBe('string')
 		})
 
 		test('should encode zero address', () => {
@@ -192,9 +213,24 @@ describe('blockchain-helpers', () => {
 
 			expect(result.data).toBeTruthy()
 			expect(result.data).toBeDefined()
-			if (result.data) {
-				expect(result.data.length).toBeGreaterThan(0)
+			if (!result.data) {
+				throw new Error('expected encoded call data')
 			}
+			expect(result.data.length).toBeGreaterThan(0)
+		})
+
+		test('encodeCallMsgInit returns native bytes', () => {
+			const payload: EncodeCallMsgPayload = {
+				from: '0x1234567890123456789012345678901234567890',
+				to: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
+				data: '0x095ea7b3',
+			}
+
+			const result = encodeCallMsgInit(payload)
+
+			expect(result.from).toBeInstanceOf(Uint8Array)
+			expect(result.to).toBeInstanceOf(Uint8Array)
+			expect(result.data).toBeInstanceOf(Uint8Array)
 		})
 	})
 
@@ -256,11 +292,12 @@ describe('blockchain-helpers', () => {
 
 			const result = prepareReportRequest(hexPayload)
 
-			expect(result.encodedPayload).toBeInstanceOf(Uint8Array)
+			expect(typeof result.encodedPayload).toBe('string')
 			expect(result.encodedPayload).toBeDefined()
-			if (result.encodedPayload) {
-				expect(result.encodedPayload.length).toBeGreaterThan(0)
+			if (!result.encodedPayload) {
+				throw new Error('expected encoded payload')
 			}
+			expect(result.encodedPayload.length).toBeGreaterThan(0)
 		})
 
 		test('should handle empty hex payload', () => {
@@ -269,6 +306,11 @@ describe('blockchain-helpers', () => {
 			const result = prepareReportRequest(hexPayload)
 
 			expect(result.encodedPayload).toBeDefined()
+		})
+
+		test('prepareReportRequestInit returns native bytes', () => {
+			const result = prepareReportRequestInit('0x1234')
+			expect(result.encodedPayload).toBeInstanceOf(Uint8Array)
 		})
 	})
 
@@ -298,6 +340,7 @@ describe('blockchain-helpers', () => {
 				data: 'not-hex' as `0x${string}`,
 			}
 			expect(() => encodeCallMsg(payload)).toThrow("Invalid hex in 'data' field of CallMsg")
+			expect(() => encodeCallMsgInit(payload)).toThrow("Invalid hex in 'data' field of CallMsg")
 		})
 	})
 

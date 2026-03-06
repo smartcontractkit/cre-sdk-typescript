@@ -1,10 +1,12 @@
-import { type MessageInitShape } from '@bufbuild/protobuf'
-import type { CallMsgSchema } from '@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb'
-import type { ReportRequestSchema } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import {
-	type BigIntSchema,
-	type BigInt as GeneratedBigInt,
-} from '@cre/generated/values/v1/values_pb'
+import { create, type MessageInitShape, toJson } from '@bufbuild/protobuf'
+import type {
+	CallMsgJson,
+	CallMsgSchema,
+	ConfidenceLevelJson,
+	FilterLogTriggerRequestJson,
+} from '@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb'
+import type { ReportRequestJson, ReportRequestSchema } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import { BigIntSchema, type BigInt as GeneratedBigInt } from '@cre/generated/values/v1/values_pb'
 import { EVMClient } from '@cre/sdk/cre'
 import { bigintToBytes, bytesToBigint, hexToBase64, hexToBytes } from '@cre/sdk/utils/hex-utils'
 import type { Address, Hex } from 'viem'
@@ -16,7 +18,7 @@ import type { Address, Hex } from 'viem'
 export type ProtoBigInt = Pick<GeneratedBigInt, 'absVal' | 'sign'>
 
 /**
- * Converts a native JS bigint to a protobuf BigInt initializer.
+ * Converts a native JS bigint to a protobuf BigInt JSON representation.
  * Use this when passing bigint values to SDK methods.
  *
  * @example
@@ -26,9 +28,9 @@ export type ProtoBigInt = Pick<GeneratedBigInt, 'absVal' | 'sign'>
  * }).result()
  *
  * @param n - The native bigint, number, or string value.
- * @returns The protobuf BigInt initializer with native types.
+ * @returns The protobuf BigInt JSON representation.
  */
-export const bigintToProtoBigInt = (
+export const bigintToProtoBigIntInit = (
 	n: number | bigint | string,
 ): MessageInitShape<typeof BigIntSchema> => {
 	if (typeof n === 'number' && (!Number.isFinite(n) || !Number.isInteger(n))) {
@@ -43,6 +45,9 @@ export const bigintToProtoBigInt = (
 		sign,
 	}
 }
+
+export const bigintToProtoBigInt = (n: number | bigint | string) =>
+	toJson(BigIntSchema, create(BigIntSchema, bigintToProtoBigIntInit(n)))
 
 /**
  * Converts a protobuf BigInt to a native JS bigint.
@@ -69,6 +74,7 @@ export const protoBigIntToBigint = (pb: ProtoBigInt): bigint => {
  * @returns The protobuf BigInt JSON representation.
  */
 export const blockNumber = bigintToProtoBigInt
+export const blockNumberInit = bigintToProtoBigIntInit
 
 /**
  * EVM Capability Helper.
@@ -81,8 +87,13 @@ export const blockNumber = bigintToProtoBigInt
  *
  * Using this constant will indicate that the call should be executed at the last finalized block.
  */
-export const LAST_FINALIZED_BLOCK_NUMBER: MessageInitShape<typeof BigIntSchema> = {
-	absVal: new Uint8Array([3]), // 3 for finalized block
+export const LAST_FINALIZED_BLOCK_NUMBER = {
+	absVal: Buffer.from([3]).toString('base64'), // 3 for finalized block
+	sign: '-1',
+}
+
+export const LAST_FINALIZED_BLOCK_NUMBER_INIT: MessageInitShape<typeof BigIntSchema> = {
+	absVal: new Uint8Array([3]),
 	sign: -1n,
 }
 
@@ -96,8 +107,13 @@ export const LAST_FINALIZED_BLOCK_NUMBER: MessageInitShape<typeof BigIntSchema> 
  *
  * Using this constant will indicate that the call should be executed at the latest mined block.
  */
-export const LATEST_BLOCK_NUMBER: MessageInitShape<typeof BigIntSchema> = {
-	absVal: new Uint8Array([2]), // 2 for the latest block
+export const LATEST_BLOCK_NUMBER = {
+	absVal: Buffer.from([2]).toString('base64'), // 2 for the latest block
+	sign: '-1',
+}
+
+export const LATEST_BLOCK_NUMBER_INIT: MessageInitShape<typeof BigIntSchema> = {
+	absVal: new Uint8Array([2]),
 	sign: -1n,
 }
 
@@ -108,7 +124,7 @@ export interface EncodeCallMsgPayload {
 }
 
 /**
- * Encodes a call message payload into a CallMsg initializer, expected by the EVM capability.
+ * Encodes a call message payload into a `CallMsgJson` protobuf structure, expected by the EVM capability.
  *
  * When creating a `CallContractRequest` 3 parameters are required:
  *
@@ -119,14 +135,32 @@ export interface EncodeCallMsgPayload {
  * This helper wraps that data and packs into format acceptable by the EVM capability.
  *
  * @param payload - The call message payload to encode.
- * @returns The encoded call message payload with native types.
+ * @returns The encoded call message payload.
  */
-export const encodeCallMsg = (
+export const encodeCallMsgInit = (
 	payload: EncodeCallMsgPayload,
 ): MessageInitShape<typeof CallMsgSchema> => {
 	const encodeField = (fieldName: string, value: string): Uint8Array => {
 		try {
 			return hexToBytes(value)
+		} catch (e) {
+			throw new Error(
+				`Invalid hex in '${fieldName}' field of CallMsg: ${e instanceof Error ? e.message : String(e)}`,
+			)
+		}
+	}
+
+	return {
+		from: encodeField('from', payload.from),
+		to: encodeField('to', payload.to),
+		data: encodeField('data', payload.data),
+	}
+}
+
+export const encodeCallMsg = (payload: EncodeCallMsgPayload): CallMsgJson => {
+	const encodeField = (fieldName: string, value: string): string => {
+		try {
+			return hexToBase64(value)
 		} catch (e) {
 			throw new Error(
 				`Invalid hex in '${fieldName}' field of CallMsg: ${e instanceof Error ? e.message : String(e)}`,
@@ -150,6 +184,12 @@ export const EVM_DEFAULT_REPORT_ENCODER = {
 	hashingAlgo: 'keccak256',
 }
 
+type ReportRequestInitInput = {
+	encoderName?: string
+	signingAlgo?: string
+	hashingAlgo?: string
+}
+
 /**
  * Prepares a report request for the EVM capability to pass to `.report()` function.
  *
@@ -157,14 +197,19 @@ export const EVM_DEFAULT_REPORT_ENCODER = {
  * @param reportEncoder - The report encoder to be used. Defaults to EVM_DEFAULT_REPORT_ENCODER.
  * @returns The prepared report request.
  */
-export const prepareReportRequest = (
+export const prepareReportRequestInit = (
 	hexEncodedPayload: Hex,
-	reportEncoder: Exclude<
-		MessageInitShape<typeof ReportRequestSchema>,
-		'encodedPayload'
-	> = EVM_DEFAULT_REPORT_ENCODER,
+	reportEncoder: ReportRequestInitInput = EVM_DEFAULT_REPORT_ENCODER,
 ): MessageInitShape<typeof ReportRequestSchema> => ({
 	encodedPayload: hexToBytes(hexEncodedPayload),
+	...reportEncoder,
+})
+
+export const prepareReportRequest = (
+	hexEncodedPayload: Hex,
+	reportEncoder: Omit<ReportRequestJson, 'encodedPayload'> = EVM_DEFAULT_REPORT_ENCODER,
+): ReportRequestJson => ({
+	encodedPayload: hexToBase64(hexEncodedPayload),
 	...reportEncoder,
 })
 
@@ -218,7 +263,7 @@ export interface LogTriggerConfigOptions {
  * @param opts - Hex-encoded addresses, topic filters, and optional confidence level.
  * @returns The `FilterLogTriggerRequestJson` ready to pass to `evmClient.logTrigger()`.
  */
-export const logTriggerConfig = (opts: LogTriggerConfigOptions) => {
+export const logTriggerConfig = (opts: LogTriggerConfigOptions): FilterLogTriggerRequestJson => {
 	if (!opts.addresses || opts.addresses.length === 0) {
 		throw new Error(
 			'logTriggerConfig requires at least one address. Provide an array of hex-encoded EVM addresses (20 bytes each).',
@@ -247,7 +292,9 @@ export const logTriggerConfig = (opts: LogTriggerConfigOptions) => {
 		}),
 	}))
 
-	const confidence = opts.confidence ? `CONFIDENCE_LEVEL_${opts.confidence}` : undefined
+	const confidence: ConfidenceLevelJson | undefined = opts.confidence
+		? `CONFIDENCE_LEVEL_${opts.confidence}`
+		: undefined
 
 	return {
 		addresses,

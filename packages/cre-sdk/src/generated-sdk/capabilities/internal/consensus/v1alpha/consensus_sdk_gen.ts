@@ -13,6 +13,7 @@ import { type Value, ValueSchema } from '@cre/generated/values/v1/values_pb'
 import type { Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import { hexToBytes } from '@cre/sdk/utils/hex-utils'
+import { coerceMessageInput } from '@cre/sdk/utils/protobuf-input'
 
 /**
  * Consensus Capability
@@ -30,7 +31,10 @@ export class ConsensusCapability {
 
 	simple(
 		runtime: Runtime<unknown>,
-		input: SimpleConsensusInputs | MessageInitShape<typeof SimpleConsensusInputsSchema>,
+		input:
+			| SimpleConsensusInputs
+			| SimpleConsensusInputsJson
+			| MessageInitShape<typeof SimpleConsensusInputsSchema>,
 	): { result: () => Value } {
 		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
 		let payload: SimpleConsensusInputs
@@ -39,11 +43,8 @@ export class ConsensusCapability {
 			// It's the original protobuf type
 			payload = input as SimpleConsensusInputs
 		} else {
-			// It's a plain object initializer, convert using create
-			payload = create(
-				SimpleConsensusInputsSchema,
-				input as MessageInitShape<typeof SimpleConsensusInputsSchema>,
-			)
+			// It's a plain object, support both legacy JSON wire format and MessageInitShape
+			payload = coerceMessageInput(SimpleConsensusInputsSchema, input)
 		}
 
 		const capabilityId = ConsensusCapability.CAPABILITY_ID
@@ -67,7 +68,7 @@ export class ConsensusCapability {
 
 	report(
 		runtime: Runtime<unknown>,
-		input: ReportRequest | MessageInitShape<typeof ReportRequestSchema>,
+		input: ReportRequest | ReportRequestJson | MessageInitShape<typeof ReportRequestSchema>,
 	): { result: () => Report } {
 		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
 		let payload: ReportRequest
@@ -76,8 +77,8 @@ export class ConsensusCapability {
 			// It's the original protobuf type
 			payload = input as ReportRequest
 		} else {
-			// It's a plain object initializer, convert using create
-			payload = create(ReportRequestSchema, input as MessageInitShape<typeof ReportRequestSchema>)
+			// It's a plain object, support both legacy JSON wire format and MessageInitShape
+			payload = coerceMessageInput(ReportRequestSchema, input)
 		}
 
 		const capabilityId = ConsensusCapability.CAPABILITY_ID

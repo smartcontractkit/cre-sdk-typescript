@@ -116,7 +116,7 @@ describe('TestRuntime / helper layer', () => {
 		const payload = new Uint8Array(new ArrayBuffer(3))
 		payload.set([1, 2, 3])
 		const reportCall = rt.report({
-			encodedPayload: payload,
+			encodedPayload: Buffer.from(payload).toString('base64'),
 		})
 		expect(() => reportCall.result()).toThrow(RESPONSE_BUFFER_TOO_SMALL)
 	})
@@ -126,7 +126,7 @@ describe('TestRuntime / helper layer', () => {
 		const payloadBytes = new TextEncoder().encode('some_encoded_report_data')
 		const payload = new Uint8Array(new ArrayBuffer(payloadBytes.length))
 		payload.set(payloadBytes)
-		const result = rt.report({ encodedPayload: payload }).result()
+		const result = rt.report({ encodedPayload: Buffer.from(payload).toString('base64') }).result()
 		const unwrapped = result.x_generatedCodeOnly_unwrap()
 		expect(unwrapped.rawReport.length).toBe(REPORT_METADATA_HEADER_LENGTH + payload.length)
 		const expectedMetadata = new Uint8Array(REPORT_METADATA_HEADER_LENGTH)
@@ -138,6 +138,16 @@ describe('TestRuntime / helper layer', () => {
 		expect(unwrapped.sigs).toHaveLength(2)
 		expect(new TextDecoder().decode(unwrapped.sigs[0].signature)).toBe('default_signature_1')
 		expect(new TextDecoder().decode(unwrapped.sigs[1].signature)).toBe('default_signature_2')
+	})
+
+	test('runtime.report also accepts native init payloads', () => {
+		const rt = newTestRuntime()
+		const payloadBytes = new TextEncoder().encode('native-payload')
+		const payload = new Uint8Array(new ArrayBuffer(payloadBytes.length))
+		payload.set(payloadBytes)
+		const result = rt.report({ encodedPayload: payload }).result()
+		const unwrapped = result.x_generatedCodeOnly_unwrap()
+		expect(unwrapped.rawReport.slice(REPORT_METADATA_HEADER_LENGTH)).toEqual(payload)
 	})
 
 	test('default Simple handler: observation value branch returns value', () => {
@@ -196,7 +206,9 @@ describe('TestRuntime / helper layer', () => {
 		const rt = newTestRuntime(null, { maxResponseSize: 1 })
 		const payload = new Uint8Array(new ArrayBuffer(2))
 		payload.set([1, 2])
-		expect(() => rt.report({ encodedPayload: payload }).result()).toThrow(RESPONSE_BUFFER_TOO_SMALL)
+		expect(() =>
+			rt.report({ encodedPayload: Buffer.from(payload).toString('base64') }).result(),
+		).toThrow(RESPONSE_BUFFER_TOO_SMALL)
 	})
 
 	test('newTestRuntime with null/undefined secrets uses empty map', () => {

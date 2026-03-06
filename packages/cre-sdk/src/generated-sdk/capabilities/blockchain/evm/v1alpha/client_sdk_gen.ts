@@ -58,6 +58,7 @@ import {
 import type { Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import { hexToBytes } from '@cre/sdk/utils/hex-utils'
+import { coerceMessageInput } from '@cre/sdk/utils/protobuf-input'
 import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 
 export type WriteCreReportRequest = {
@@ -158,7 +159,10 @@ export class ClientCapability {
 
 	callContract(
 		runtime: Runtime<unknown>,
-		input: CallContractRequest | MessageInitShape<typeof CallContractRequestSchema>,
+		input:
+			| CallContractRequest
+			| CallContractRequestJson
+			| MessageInitShape<typeof CallContractRequestSchema>,
 	): { result: () => CallContractReply } {
 		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
 		let payload: CallContractRequest
@@ -167,11 +171,8 @@ export class ClientCapability {
 			// It's the original protobuf type
 			payload = input as CallContractRequest
 		} else {
-			// It's a plain object initializer, convert using create
-			payload = create(
-				CallContractRequestSchema,
-				input as MessageInitShape<typeof CallContractRequestSchema>,
-			)
+			// It's a plain object, support both legacy JSON wire format and MessageInitShape
+			payload = coerceMessageInput(CallContractRequestSchema, input)
 		}
 
 		// Include all labels in capability ID for routing when specified
@@ -196,7 +197,10 @@ export class ClientCapability {
 
 	filterLogs(
 		runtime: Runtime<unknown>,
-		input: FilterLogsRequest | MessageInitShape<typeof FilterLogsRequestSchema>,
+		input:
+			| FilterLogsRequest
+			| FilterLogsRequestJson
+			| MessageInitShape<typeof FilterLogsRequestSchema>,
 	): { result: () => FilterLogsReply } {
 		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
 		let payload: FilterLogsRequest
@@ -205,11 +209,8 @@ export class ClientCapability {
 			// It's the original protobuf type
 			payload = input as FilterLogsRequest
 		} else {
-			// It's a plain object initializer, convert using create
-			payload = create(
-				FilterLogsRequestSchema,
-				input as MessageInitShape<typeof FilterLogsRequestSchema>,
-			)
+			// It's a plain object, support both legacy JSON wire format and MessageInitShape
+			payload = coerceMessageInput(FilterLogsRequestSchema, input)
 		}
 
 		// Include all labels in capability ID for routing when specified
@@ -234,7 +235,10 @@ export class ClientCapability {
 
 	balanceAt(
 		runtime: Runtime<unknown>,
-		input: BalanceAtRequest | MessageInitShape<typeof BalanceAtRequestSchema>,
+		input:
+			| BalanceAtRequest
+			| BalanceAtRequestJson
+			| MessageInitShape<typeof BalanceAtRequestSchema>,
 	): { result: () => BalanceAtReply } {
 		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
 		let payload: BalanceAtRequest
@@ -243,11 +247,8 @@ export class ClientCapability {
 			// It's the original protobuf type
 			payload = input as BalanceAtRequest
 		} else {
-			// It's a plain object initializer, convert using create
-			payload = create(
-				BalanceAtRequestSchema,
-				input as MessageInitShape<typeof BalanceAtRequestSchema>,
-			)
+			// It's a plain object, support both legacy JSON wire format and MessageInitShape
+			payload = coerceMessageInput(BalanceAtRequestSchema, input)
 		}
 
 		// Include all labels in capability ID for routing when specified
@@ -272,7 +273,10 @@ export class ClientCapability {
 
 	estimateGas(
 		runtime: Runtime<unknown>,
-		input: EstimateGasRequest | MessageInitShape<typeof EstimateGasRequestSchema>,
+		input:
+			| EstimateGasRequest
+			| EstimateGasRequestJson
+			| MessageInitShape<typeof EstimateGasRequestSchema>,
 	): { result: () => EstimateGasReply } {
 		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
 		let payload: EstimateGasRequest
@@ -281,11 +285,8 @@ export class ClientCapability {
 			// It's the original protobuf type
 			payload = input as EstimateGasRequest
 		} else {
-			// It's a plain object initializer, convert using create
-			payload = create(
-				EstimateGasRequestSchema,
-				input as MessageInitShape<typeof EstimateGasRequestSchema>,
-			)
+			// It's a plain object, support both legacy JSON wire format and MessageInitShape
+			payload = coerceMessageInput(EstimateGasRequestSchema, input)
 		}
 
 		// Include all labels in capability ID for routing when specified
@@ -310,7 +311,10 @@ export class ClientCapability {
 
 	getTransactionByHash(
 		runtime: Runtime<unknown>,
-		input: GetTransactionByHashRequest | MessageInitShape<typeof GetTransactionByHashRequestSchema>,
+		input:
+			| GetTransactionByHashRequest
+			| GetTransactionByHashRequestJson
+			| MessageInitShape<typeof GetTransactionByHashRequestSchema>,
 	): { result: () => GetTransactionByHashReply } {
 		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
 		let payload: GetTransactionByHashRequest
@@ -319,11 +323,8 @@ export class ClientCapability {
 			// It's the original protobuf type
 			payload = input as GetTransactionByHashRequest
 		} else {
-			// It's a plain object initializer, convert using create
-			payload = create(
-				GetTransactionByHashRequestSchema,
-				input as MessageInitShape<typeof GetTransactionByHashRequestSchema>,
-			)
+			// It's a plain object, support both legacy JSON wire format and MessageInitShape
+			payload = coerceMessageInput(GetTransactionByHashRequestSchema, input)
 		}
 
 		// Include all labels in capability ID for routing when specified
@@ -353,6 +354,7 @@ export class ClientCapability {
 		runtime: Runtime<unknown>,
 		input:
 			| GetTransactionReceiptRequest
+			| GetTransactionReceiptRequestJson
 			| MessageInitShape<typeof GetTransactionReceiptRequestSchema>,
 	): { result: () => GetTransactionReceiptReply } {
 		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
@@ -362,11 +364,8 @@ export class ClientCapability {
 			// It's the original protobuf type
 			payload = input as GetTransactionReceiptRequest
 		} else {
-			// It's a plain object initializer, convert using create
-			payload = create(
-				GetTransactionReceiptRequestSchema,
-				input as MessageInitShape<typeof GetTransactionReceiptRequestSchema>,
-			)
+			// It's a plain object, support both legacy JSON wire format and MessageInitShape
+			payload = coerceMessageInput(GetTransactionReceiptRequestSchema, input)
 		}
 
 		// Include all labels in capability ID for routing when specified
@@ -394,7 +393,10 @@ export class ClientCapability {
 
 	headerByNumber(
 		runtime: Runtime<unknown>,
-		input: HeaderByNumberRequest | MessageInitShape<typeof HeaderByNumberRequestSchema>,
+		input:
+			| HeaderByNumberRequest
+			| HeaderByNumberRequestJson
+			| MessageInitShape<typeof HeaderByNumberRequestSchema>,
 	): { result: () => HeaderByNumberReply } {
 		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
 		let payload: HeaderByNumberRequest
@@ -403,11 +405,8 @@ export class ClientCapability {
 			// It's the original protobuf type
 			payload = input as HeaderByNumberRequest
 		} else {
-			// It's a plain object initializer, convert using create
-			payload = create(
-				HeaderByNumberRequestSchema,
-				input as MessageInitShape<typeof HeaderByNumberRequestSchema>,
-			)
+			// It's a plain object, support both legacy JSON wire format and MessageInitShape
+			payload = coerceMessageInput(HeaderByNumberRequestSchema, input)
 		}
 
 		// Include all labels in capability ID for routing when specified

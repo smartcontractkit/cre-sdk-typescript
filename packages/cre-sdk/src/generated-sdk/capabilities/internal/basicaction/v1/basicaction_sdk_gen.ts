@@ -9,6 +9,7 @@ import {
 import type { Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import { hexToBytes } from '@cre/sdk/utils/hex-utils'
+import { coerceMessageInput } from '@cre/sdk/utils/protobuf-input'
 
 /**
  * BasicAction Capability
@@ -26,7 +27,7 @@ export class BasicActionCapability {
 
 	performAction(
 		runtime: Runtime<unknown>,
-		input: Inputs | MessageInitShape<typeof InputsSchema>,
+		input: Inputs | InputsJson | MessageInitShape<typeof InputsSchema>,
 	): { result: () => Outputs } {
 		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
 		let payload: Inputs
@@ -35,8 +36,8 @@ export class BasicActionCapability {
 			// It's the original protobuf type
 			payload = input as Inputs
 		} else {
-			// It's a plain object initializer, convert using create
-			payload = create(InputsSchema, input as MessageInitShape<typeof InputsSchema>)
+			// It's a plain object, support both legacy JSON wire format and MessageInitShape
+			payload = coerceMessageInput(InputsSchema, input)
 		}
 
 		const capabilityId = BasicActionCapability.CAPABILITY_ID

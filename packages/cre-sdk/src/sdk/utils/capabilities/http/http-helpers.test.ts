@@ -1,6 +1,7 @@
 import { describe, expect, it, mock } from 'bun:test'
 import { create, type MessageInitShape } from '@bufbuild/protobuf'
 import type {
+	RequestJson,
 	RequestSchema,
 	Response,
 } from '@cre/generated/capabilities/networking/http/v1alpha/client_pb'
@@ -122,8 +123,14 @@ describe('HTTP Helpers', () => {
 })
 
 describe('sendReport extension', () => {
-	const anyRequest: MessageInitShape<typeof RequestSchema> = {
+	const anyRequestInit: MessageInitShape<typeof RequestSchema> = {
 		body: new TextEncoder().encode('test'),
+		headers: { a: 'b' },
+		method: 'GET',
+		url: 'https://example.com',
+	}
+	const anyRequestJson: RequestJson = {
+		body: Buffer.from('test').toString('base64'),
 		headers: { a: 'b' },
 		method: 'GET',
 		url: 'https://example.com',
@@ -152,9 +159,14 @@ describe('sendReport extension', () => {
 	//  safe for this test as we don't use the runtime itself
 	const anyRuntime = {} as NodeRuntime<unknown>
 
-	const produceReport = (reportResponse: ReportResponse) => {
+	const produceInitReport = (reportResponse: ReportResponse) => {
 		expect(reportResponse).toEqual(anyReportResponse)
-		return anyRequest
+		return anyRequestInit
+	}
+
+	const produceJsonReport = (reportResponse: ReportResponse) => {
+		expect(reportResponse).toEqual(anyReportResponse)
+		return anyRequestJson
 	}
 
 	class ClientCapabilityMock extends ClientCapability {
@@ -163,20 +175,32 @@ describe('sendReport extension', () => {
 			expect(2).toEqual(args.length)
 			const [runtime, input] = args
 			expect(runtime).toBe(anyRuntime)
-			expect(input).toBe(anyRequest)
+			expect(input === anyRequestInit || input === anyRequestJson).toBe(true)
 			return { result: () => anyResponse }
 		}
 	}
 
-	it('ClientCapability should call the transform function and use the result', () => {
+	it('ClientCapability should call the transform function and use native init result', () => {
 		const clientCapability = new ClientCapabilityMock()
-		const response = clientCapability.sendReport(anyRuntime, anyReport, produceReport)
+		const response = clientCapability.sendReport(anyRuntime, anyReport, produceInitReport)
 		expect(response.result()).toBe(anyResponse)
 	})
 
-	it('SendRequester should call the transform function and use the result', () => {
+	it('ClientCapability should call the transform function and use legacy json result', () => {
+		const clientCapability = new ClientCapabilityMock()
+		const response = clientCapability.sendReport(anyRuntime, anyReport, produceJsonReport)
+		expect(response.result()).toBe(anyResponse)
+	})
+
+	it('SendRequester should call the transform function and use native init result', () => {
 		const sendRequester = new SendRequester(anyRuntime, new ClientCapabilityMock())
-		const response = sendRequester.sendReport(anyReport, produceReport)
+		const response = sendRequester.sendReport(anyReport, produceInitReport)
+		expect(response.result()).toBe(anyResponse)
+	})
+
+	it('SendRequester should call the transform function and use legacy json result', () => {
+		const sendRequester = new SendRequester(anyRuntime, new ClientCapabilityMock())
+		const response = sendRequester.sendReport(anyReport, produceJsonReport)
 		expect(response.result()).toBe(anyResponse)
 	})
 })

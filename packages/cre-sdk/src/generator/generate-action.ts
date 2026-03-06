@@ -28,7 +28,11 @@ export function generateActionMethod(
 	const hasWrappedInput = wrappedInputType !== method.input
 	const inputTypes = hasWrappedInput
 		? [wrappedInputType.name, `${wrappedInputType.name}Json`]
-		: [method.input.name, `MessageInitShape<typeof ${method.input.name}Schema>`]
+		: [
+				method.input.name,
+				`${method.input.name}Json`,
+				`MessageInitShape<typeof ${method.input.name}Schema>`,
+			]
 
 	// Build output type
 	const hasWrappedOutput = wrappedOutputType !== method.output
@@ -60,8 +64,8 @@ export function generateActionMethod(
       // It's the original protobuf type
       payload = input as ${method.input.name}
     } else {
-      // It's a plain object initializer, convert using create
-      payload = create(${method.input.name}Schema, input as MessageInitShape<typeof ${method.input.name}Schema>)
+      // It's a plain object, support both legacy JSON wire format and MessageInitShape
+      payload = coerceMessageInput(${method.input.name}Schema, input)
     }`
 		}
     

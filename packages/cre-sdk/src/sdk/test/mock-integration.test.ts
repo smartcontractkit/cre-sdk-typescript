@@ -113,14 +113,29 @@ describe('Tag-aware capability mocks (EVM with chain selectors)', () => {
 		const mumbaiCapability = new EvmClientCapability(mumbaiSelector)
 
 		const sepoliaResult = sepoliaCapability
-			.callContract(runtime, { call: { to: new Uint8Array(), data: new Uint8Array() } })
+			.callContract(runtime, { call: { to: '', data: '' } })
 			.result()
 		const mumbaiResult = mumbaiCapability
-			.callContract(runtime, { call: { to: new Uint8Array(), data: new Uint8Array() } })
+			.callContract(runtime, { call: { to: '', data: '' } })
 			.result()
 
 		expect(sepoliaResult.data).toEqual(new Uint8Array([1, 2, 3]))
 		expect(mumbaiResult.data).toEqual(new Uint8Array([4, 5, 6]))
+	})
+
+	test('generated EVM client accepts native init inputs alongside legacy json', async () => {
+		const chainSelector = 11155111n
+		const mock = EvmMock.testInstance(chainSelector)
+		mock.callContract = () => ({ data: 'AQID' })
+
+		const runtime = newTestRuntime()
+		const capability = new EvmClientCapability(chainSelector)
+
+		const result = capability
+			.callContract(runtime, { call: { to: new Uint8Array(), data: new Uint8Array() } })
+			.result()
+
+		expect(result.data).toEqual(new Uint8Array([1, 2, 3]))
 	})
 })
 

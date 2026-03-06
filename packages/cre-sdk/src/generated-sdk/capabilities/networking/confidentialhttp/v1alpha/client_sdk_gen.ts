@@ -9,6 +9,7 @@ import {
 import type { Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import { hexToBytes } from '@cre/sdk/utils/hex-utils'
+import { coerceMessageInput } from '@cre/sdk/utils/protobuf-input'
 
 /**
  * Client Capability
@@ -26,7 +27,10 @@ export class ClientCapability {
 
 	sendRequest(
 		runtime: Runtime<unknown>,
-		input: ConfidentialHTTPRequest | MessageInitShape<typeof ConfidentialHTTPRequestSchema>,
+		input:
+			| ConfidentialHTTPRequest
+			| ConfidentialHTTPRequestJson
+			| MessageInitShape<typeof ConfidentialHTTPRequestSchema>,
 	): { result: () => HTTPResponse } {
 		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
 		let payload: ConfidentialHTTPRequest
@@ -35,11 +39,8 @@ export class ClientCapability {
 			// It's the original protobuf type
 			payload = input as ConfidentialHTTPRequest
 		} else {
-			// It's a plain object initializer, convert using create
-			payload = create(
-				ConfidentialHTTPRequestSchema,
-				input as MessageInitShape<typeof ConfidentialHTTPRequestSchema>,
-			)
+			// It's a plain object, support both legacy JSON wire format and MessageInitShape
+			payload = coerceMessageInput(ConfidentialHTTPRequestSchema, input)
 		}
 
 		const capabilityId = ClientCapability.CAPABILITY_ID
