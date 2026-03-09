@@ -283,6 +283,27 @@ describe('global API analysis', () => {
 		const entry = writeTemp('workflow.ts', `import { doFetch } from './helper';\ndoFetch();\n`)
 		expectViolations(entry, ["'fetch' is not available"])
 	})
+
+	test('handles a nearby tsconfig with sparse libs and no ambient types', () => {
+		writeTemp(
+			'tsconfig.json',
+			JSON.stringify(
+				{
+					compilerOptions: {
+						lib: ['ESNext'],
+						module: 'ESNext',
+						moduleResolution: 'Bundler',
+						skipLibCheck: true,
+						types: [],
+					},
+				},
+				null,
+				2,
+			),
+		)
+		const entry = writeTemp('workflow.ts', `fetch('https://example.com');\n`)
+		expectViolations(entry, ["'fetch' is not available"])
+	})
 })
 
 // ---------------------------------------------------------------------------

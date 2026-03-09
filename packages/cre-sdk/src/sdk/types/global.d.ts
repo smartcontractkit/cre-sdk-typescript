@@ -127,8 +127,49 @@ declare global {
 	>
 
 	/**
-	 * Base64 encoding/decoding — exposed via prepareRuntime() from node:buffer
+	 * Buffer and Base64 APIs exposed via prepareRuntime() from node:buffer.
+	 * Declared structurally so they work even when consumers opt out of @types/node.
 	 */
+	type CreBufferEncoding =
+		| 'ascii'
+		| 'base64'
+		| 'base64url'
+		| 'binary'
+		| 'hex'
+		| 'latin1'
+		| 'ucs-2'
+		| 'ucs2'
+		| 'utf-8'
+		| 'utf-16le'
+		| 'utf8'
+		| 'utf16le'
+
+	interface CreBuffer extends Uint8Array {
+		toString(encoding?: CreBufferEncoding, start?: number, end?: number): string
+		slice(start?: number, end?: number): CreBuffer
+		subarray(begin?: number, end?: number): CreBuffer
+	}
+
+	var Buffer: ExistingGlobal<
+		'Buffer',
+		{
+			prototype: CreBuffer
+			alloc(
+				size: number,
+				fill?: string | number | Uint8Array | ArrayBuffer | ArrayBufferView,
+				encoding?: CreBufferEncoding,
+			): CreBuffer
+			byteLength(
+				value: string | Uint8Array | ArrayBuffer | ArrayBufferView,
+				encoding?: CreBufferEncoding,
+			): number
+			concat(list: readonly Uint8Array[], totalLength?: number): CreBuffer
+			from(value: string, encoding?: CreBufferEncoding): CreBuffer
+			from(value: Uint8Array | ArrayBuffer | ArrayBufferView | ArrayLike<number>): CreBuffer
+			isBuffer(value: unknown): value is CreBuffer
+		}
+	>
+
 	function atob(encodedData: string): string
 	function btoa(stringToEncode: string): string
 

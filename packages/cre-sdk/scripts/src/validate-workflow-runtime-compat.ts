@@ -172,6 +172,64 @@ ${formattedViolations}`,
 /** Resolves a file path to an absolute path using the current working directory. */
 const toAbsolutePath = (filePath: string) => path.resolve(filePath)
 
+const defaultValidationCompilerOptions: ts.CompilerOptions = {
+	allowJs: true,
+	checkJs: true,
+	noEmit: true,
+	skipLibCheck: true,
+	target: ts.ScriptTarget.ESNext,
+	module: ts.ModuleKind.ESNext,
+	moduleResolution: ts.ModuleResolutionKind.Bundler,
+}
+
+const formatDiagnostic = (diagnostic: ts.Diagnostic) => {
+	const message = ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n')
+	if (!diagnostic.file || diagnostic.start == null) {
+		return message
+	}
+
+	const { line, character } = diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start)
+	return `${toAbsolutePath(diagnostic.file.fileName)}:${line + 1}:${character + 1} ${message}`
+}
+
+/**
+ * Loads compiler options from the nearest tsconfig.json so validation runs
+ * against the same ambient/type environment as the workflow project.
+ */
+const loadClosestTsconfigCompilerOptions = (entryFilePath: string): ts.CompilerOptions | null => {
+	const configPath = ts.findConfigFile(
+		path.dirname(entryFilePath),
+		ts.sys.fileExists,
+		'tsconfig.json',
+	)
+	if (!configPath) {
+		return null
+	}
+
+	let unrecoverableDiagnostic: ts.Diagnostic | null = null
+	const parsed = ts.getParsedCommandLineOfConfigFile(
+		configPath,
+		{},
+		{
+			...ts.sys,
+			onUnRecoverableConfigFileDiagnostic: (diagnostic) => {
+				unrecoverableDiagnostic = diagnostic
+			},
+		},
+	)
+
+	if (!parsed) {
+		if (unrecoverableDiagnostic) {
+			throw new Error(
+				`Failed to parse TypeScript config for workflow validation.\n${formatDiagnostic(unrecoverableDiagnostic)}`,
+			)
+		}
+		return null
+	}
+
+	return parsed.options
+}
+
 /**
  * Maps a file extension to the appropriate TypeScript {@link ts.ScriptKind}
  * so the parser handles JSX, CommonJS, and ESM files correctly.
@@ -519,6 +577,7 @@ const collectGlobalApiUsage = (
  */
 export const assertWorkflowRuntimeCompatibility = (entryFilePath: string) => {
 	const rootFile = toAbsolutePath(entryFilePath)
+	const projectCompilerOptions = loadClosestTsconfigCompilerOptions(rootFile) ?? {}
 	const filesToScan = [rootFile]
 	const scannedFiles = new Set<string>()
 	const localSourceFiles = new Set<string>()
@@ -553,13 +612,12 @@ export const assertWorkflowRuntimeCompatibility = (entryFilePath: string) => {
 	const program = ts.createProgram({
 		rootNames: [...localSourceFiles],
 		options: {
+			...defaultValidationCompilerOptions,
+			...projectCompilerOptions,
 			allowJs: true,
 			checkJs: true,
 			noEmit: true,
 			skipLibCheck: true,
-			target: ts.ScriptTarget.ESNext,
-			module: ts.ModuleKind.ESNext,
-			moduleResolution: ts.ModuleResolutionKind.Bundler,
 		},
 	})
 
