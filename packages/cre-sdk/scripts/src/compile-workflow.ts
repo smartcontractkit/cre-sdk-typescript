@@ -3,7 +3,6 @@ import { mkdir } from 'node:fs/promises'
 import path from 'node:path'
 import { main as compileToJs } from './compile-to-js'
 import { main as compileToWasm } from './compile-to-wasm'
-import { WorkflowRuntimeCompatibilityError } from './validate-workflow-runtime-compat'
 
 export const main = async (inputFile?: string, outputWasmFile?: string) => {
 	const cliArgs = process.argv.slice(3)
@@ -54,16 +53,4 @@ export const main = async (inputFile?: string, outputWasmFile?: string) => {
 
 	console.info(`\n✅ Workflow built: ${resolvedWasmOutput}`)
 	return resolvedWasmOutput
-}
-
-// Optional: allow direct CLI usage
-if (import.meta.main) {
-	main().catch((e) => {
-		if (e instanceof WorkflowRuntimeCompatibilityError) {
-			console.error(`\n❌ ${e.message}`)
-		} else {
-			console.error(e)
-		}
-		process.exit(1)
-	})
 }

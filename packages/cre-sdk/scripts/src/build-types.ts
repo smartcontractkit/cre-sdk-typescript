@@ -52,7 +52,7 @@ const buildTypes = async () => {
 		// so that re-running build-types is idempotent.
 		const withoutExistingRefs = indexContent
 			.split('\n')
-			.filter((line) => !line.startsWith('/// <reference types='))
+			.filter((line) => !line.trim().startsWith('/// <reference types='))
 			.join('\n')
 			.replace(/^\n+/, '') // trim leading blank lines left after stripping
 		await writeFile(indexDts, `${tripleSlashRefs}\n${withoutExistingRefs}`)

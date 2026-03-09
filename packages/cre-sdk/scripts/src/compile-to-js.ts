@@ -56,16 +56,13 @@ export const main = async (tsFilePath?: string, outputFilePath?: string) => {
 			naming: path.basename(resolvedOutput),
 		})
 
-		// The file Bun will emit before bundling
-		const builtFile = path.join(path.dirname(resolvedOutput), path.basename(resolvedOutput))
-
-		if (!existsSync(builtFile)) {
-			console.error(`❌ Expected file not found: ${builtFile}`)
+		if (!existsSync(resolvedOutput)) {
+			console.error(`❌ Expected file not found: ${resolvedOutput}`)
 			process.exit(1)
 		}
 
 		// Bundle into the final file (overwrite)
-		await $`bun build ${builtFile} --bundle --outfile=${resolvedOutput}`
+		await $`bun build ${resolvedOutput} --bundle --outfile=${resolvedOutput}`
 
 		console.info(`✅ Built: ${resolvedOutput}`)
 		return resolvedOutput

@@ -2,7 +2,64 @@
 // These modules require native bindings or system access that cannot run in WebAssembly.
 // Importing from these modules is allowed by TypeScript, but all exports are typed as
 // `never` so any usage produces a clear error at the call site.
+// Both bare specifiers (e.g. 'crypto') and node:-prefixed specifiers (e.g. 'node:crypto')
+// are covered so IDE red-squiggles appear regardless of import style.
 // See https://docs.chain.link/cre/concepts/typescript-wasm-runtime
+
+// --- Bare-specifier aliases ---
+// Re-export from the node:-prefixed declarations below so that
+// `import { createHash } from 'crypto'` gets the same `never` types.
+
+/** @deprecated crypto is not available in CRE WASM workflows. @see https://docs.chain.link/cre/concepts/typescript-wasm-runtime */
+declare module 'crypto' {
+	export * from 'node:crypto'
+}
+/** @deprecated fs is not available in CRE WASM workflows. @see https://docs.chain.link/cre/concepts/typescript-wasm-runtime */
+declare module 'fs' {
+	export * from 'node:fs'
+}
+/** @deprecated fs/promises is not available in CRE WASM workflows. @see https://docs.chain.link/cre/concepts/typescript-wasm-runtime */
+declare module 'fs/promises' {
+	export * from 'node:fs/promises'
+}
+/** @deprecated net is not available in CRE WASM workflows. @see https://docs.chain.link/cre/concepts/typescript-wasm-runtime */
+declare module 'net' {
+	export * from 'node:net'
+}
+/** @deprecated http is not available in CRE WASM workflows. @see https://docs.chain.link/cre/concepts/typescript-wasm-runtime */
+declare module 'http' {
+	export * from 'node:http'
+}
+/** @deprecated https is not available in CRE WASM workflows. @see https://docs.chain.link/cre/concepts/typescript-wasm-runtime */
+declare module 'https' {
+	export * from 'node:https'
+}
+/** @deprecated child_process is not available in CRE WASM workflows. @see https://docs.chain.link/cre/concepts/typescript-wasm-runtime */
+declare module 'child_process' {
+	export * from 'node:child_process'
+}
+/** @deprecated os is not available in CRE WASM workflows. @see https://docs.chain.link/cre/concepts/typescript-wasm-runtime */
+declare module 'os' {
+	export * from 'node:os'
+}
+/** @deprecated stream is not available in CRE WASM workflows. @see https://docs.chain.link/cre/concepts/typescript-wasm-runtime */
+declare module 'stream' {
+	export * from 'node:stream'
+}
+/** @deprecated worker_threads is not available in CRE WASM workflows. @see https://docs.chain.link/cre/concepts/typescript-wasm-runtime */
+declare module 'worker_threads' {
+	export * from 'node:worker_threads'
+}
+/** @deprecated dns is not available in CRE WASM workflows. @see https://docs.chain.link/cre/concepts/typescript-wasm-runtime */
+declare module 'dns' {
+	export * from 'node:dns'
+}
+/** @deprecated zlib is not available in CRE WASM workflows. @see https://docs.chain.link/cre/concepts/typescript-wasm-runtime */
+declare module 'zlib' {
+	export * from 'node:zlib'
+}
+
+// --- node:-prefixed declarations (canonical definitions) ---
 
 /**
  * @deprecated node:crypto is not available in CRE WASM workflows. It requires native bindings that cannot run in WebAssembly.
