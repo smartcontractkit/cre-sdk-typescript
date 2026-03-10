@@ -1,5 +1,7 @@
 #!/usr/bin/env bun
 
+import { WorkflowRuntimeCompatibilityError } from './src/validate-workflow-runtime-compat'
+
 const availableScripts = [
 	'build-types',
 	'compile-to-js',
@@ -37,7 +39,11 @@ const main = async () => {
 			process.exit(1)
 		}
 	} catch (error) {
-		console.error(`Failed to load script ${scriptName}:`, error)
+		if (error instanceof WorkflowRuntimeCompatibilityError) {
+			console.error(`\n❌ ${error.message}`)
+		} else {
+			console.error(`Failed to run script ${scriptName}:`, error)
+		}
 		process.exit(1)
 	}
 }

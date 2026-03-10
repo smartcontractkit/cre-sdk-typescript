@@ -8,6 +8,7 @@ The Chainlink Runtime Environment (CRE) SDK for TypeScript enables developers to
 - [Examples](#examples)
 - [Simulate locally with CRE CLI](#simulate-locally-with-cre-cli)
 - [Installation](#installation)
+- [Runtime Compatibility Constraints](#runtime-compatibility-constraints)
 - [Core Concepts](#core-concepts)
   - [Workflows](#workflows)
   - [Runtime Modes](#runtime-modes)
@@ -47,9 +48,19 @@ This package must be used along with the [CRE CLI tool](https://github.com/smart
 
 ## Prerequisites
 
-1. the [bun runtime](https://bun.com/). The wasm compilation currently is only supported by the bun runtime which has near-complete NodeJS compatibility.
+1. the [bun runtime](https://bun.com/) for local tooling and workflow compilation.
 
 2. the [CRE CLI tool](https://github.com/smartcontractkit/cre-cli) installed.
+
+## Runtime Compatibility Constraints
+
+CRE workflows are compiled to WASM and executed through Javy (QuickJS). This is **not** a full Node.js runtime.
+
+- Node built-ins like `node:fs`, `node:crypto`, `node:http`, `node:net`, etc. are not supported in workflows.
+- Browser globals like `fetch`, `window`, and `setTimeout` are also not available in workflow runtime.
+- `cre compile:workflow` / `cre-compile` now validates workflow source and fails fast when unsupported APIs are used.
+
+Use CRE capabilities (for example, `cre.capabilities.HTTPClient`) instead of direct Node/browser APIs.
 
 ## Getting Started
 

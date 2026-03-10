@@ -41,9 +41,7 @@ export const main = async (inputFile?: string, outputWasmFile?: string) => {
 	await mkdir(path.dirname(resolvedJsOutput), { recursive: true })
 
 	console.info(`🚀 Compiling workflow`)
-	console.info(`📁 Input:   ${resolvedInput}`)
-	console.info(`🧪 JS out:  ${resolvedJsOutput}`)
-	console.info(`🎯 WASM out:${resolvedWasmOutput}\n`)
+	console.info(`📁 Input:   ${resolvedInput}\n`)
 
 	// Step 1: TS/JS → JS (bundled)
 	console.info('📦 Step 1: Compiling JS...')
@@ -55,12 +53,4 @@ export const main = async (inputFile?: string, outputWasmFile?: string) => {
 
 	console.info(`\n✅ Workflow built: ${resolvedWasmOutput}`)
 	return resolvedWasmOutput
-}
-
-// Optional: allow direct CLI usage
-if (import.meta.main) {
-	main().catch((e) => {
-		console.error(e)
-		process.exit(1)
-	})
 }
