@@ -23,7 +23,8 @@
 		}
 	},
 	"bin": {
-		"cre-compile": "bin/cre-compile.ts"
+		"cre-compile": "bin/cre-compile.ts",
+		"compile": "bin/cre-compile.ts"
 	},
 	"files": [
 		"bin/",

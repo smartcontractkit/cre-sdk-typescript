@@ -1,23 +1,59 @@
 import { existsSync } from 'node:fs'
 import { mkdir } from 'node:fs/promises'
 import path from 'node:path'
+import { parseCompileCliArgs, skipTypeChecksFlag } from './compile-cli-args'
 import { main as compileToJs } from './compile-to-js'
 import { main as compileToWasm } from './compile-to-wasm'
 
-export const main = async (inputFile?: string, outputWasmFile?: string) => {
-	const cliArgs = process.argv.slice(3)
+type CompileWorkflowOptions = {
+	skipTypeChecks?: boolean
+}
 
-	// Resolve input/output from params or CLI
-	const inputPath = inputFile ?? cliArgs[0]
-	const outputPathArg = outputWasmFile ?? cliArgs[1]
+const printUsage = () => {
+	console.error(
+		`Usage: bun compile:workflow <path/to/workflow.ts> [path/to/output.wasm] [${skipTypeChecksFlag}]`,
+	)
+	console.error('Examples:')
+	console.error('  bun compile:workflow src/standard_tests/secrets/test.ts')
+	console.error(
+		'  bun compile:workflow src/standard_tests/secrets/test.ts .temp/standard_tests/secrets/test.wasm',
+	)
+	console.error(
+		`  bun compile:workflow src/standard_tests/secrets/test.ts .temp/standard_tests/secrets/test.wasm ${skipTypeChecksFlag}`,
+	)
+}
+
+export const main = async (
+	inputFile?: string,
+	outputWasmFile?: string,
+	options?: CompileWorkflowOptions,
+) => {
+	let parsedInputPath: string | undefined
+	let parsedOutputPath: string | undefined
+	let parsedSkipTypeChecks = false
+
+	if (inputFile != null || outputWasmFile != null || options?.skipTypeChecks != null) {
+		parsedInputPath = inputFile
+		parsedOutputPath = outputWasmFile
+		parsedSkipTypeChecks = options?.skipTypeChecks ?? false
+	} else {
+		try {
+			const parsed = parseCompileCliArgs(process.argv.slice(3))
+			parsedInputPath = parsed.inputPath
+			parsedOutputPath = parsed.outputPath
+			parsedSkipTypeChecks = parsed.skipTypeChecks
+		} catch (error) {
+			console.error(error instanceof Error ? error.message : error)
+			printUsage()
+			process.exit(1)
+		}
+	}
+
+	const inputPath = parsedInputPath
+	const outputPathArg = parsedOutputPath
 
 	if (!inputPath) {
-		console.error('Usage: bun compile:workflow <path/to/workflow.ts> [path/to/output.wasm]')
-		console.error('Examples:')
-		console.error('  bun compile:workflow src/standard_tests/secrets/test.ts')
-		console.error(
-			'  bun compile:workflow src/standard_tests/secrets/test.ts .temp/standard_tests/secrets/test.wasm',
-		)
+		printUsage()
 		process.exit(1)
 	}
 
@@ -42,10 +78,13 @@ export const main = async (inputFile?: string, outputWasmFile?: string) => {
 
 	console.info(`🚀 Compiling workflow`)
 	console.info(`📁 Input:   ${resolvedInput}\n`)
+	if (parsedSkipTypeChecks) {
+		console.info(`⚠️  Skipping TypeScript checks (${skipTypeChecksFlag})`)
+	}
 
 	// Step 1: TS/JS → JS (bundled)
 	console.info('📦 Step 1: Compiling JS...')
-	await compileToJs(resolvedInput, resolvedJsOutput)
+	await compileToJs(resolvedInput, resolvedJsOutput, { skipTypeChecks: parsedSkipTypeChecks })
 
 	// Step 2: JS → WASM
 	console.info('\n🔨 Step 2: Compiling to WASM...')
