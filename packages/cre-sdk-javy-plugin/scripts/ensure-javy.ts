@@ -5,7 +5,8 @@ import path from 'node:path'
 import zlib from 'node:zlib'
 
 function log(...args: any[]) {
-	console.log('[cre-sdk-javy-plugin]', ...args)
+	const w = process.env.CRE_SDK_JAVY_LOG_STDERR === '1' ? console.error : console.log
+	w('[cre-sdk-javy-plugin]', ...args)
 }
 
 const exists = (p: string) => {
@@ -334,7 +335,7 @@ async function ensureJavyUnix(version: string, platform: string, arch: string) {
 /**
  * Main entry point - detects platform and delegates
  */
-export async function ensureJavy({ version = 'v5.0.4' } = {}) {
+export async function ensureJavy({ version = 'v8.1.0' } = {}) {
 	const platform = os.platform()
 	const arch = os.arch()
 

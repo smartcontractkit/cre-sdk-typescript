@@ -127,6 +127,31 @@ After building, you'll find:
 - `dist/javy_chainlink_sdk.wasm` - The compiled plugin
 - `dist/workflow.wit` - WebAssembly Interface Types definitions
 
+### Deterministic initialized plugin (`build:plugin-wasm`)
+
+`bun run build:plugin-wasm` (via `scripts/build-plugin-docker.sh`) produces the **initialized** plugin WASM to match `Dockerfile` (deterministic `javy init-plugin`).
+
+| Mode | When |
+|------|------|
+| **Docker** (default; **canonical for committed `dist/*.wasm`**) | `docker build --platform linux/amd64` runs **`ensureJavy`** in a Bun stage, then pinned **`rust:…-slim-bookworm`** + `rust-toolchain.toml` build the plugin and `javy init-plugin --deterministic`. **Javy is never compiled from source.** Repo CI uses this path so `git diff` after `bun full-checks` stays clean. |
+| **Local host only** | Set **`SKIP_DOCKER_IMAGE=1`** — `scripts/build-plugin-local.sh`: **`ensureJavy`** + host `cargo` + `init-plugin`. **Bytecode can differ** from the Docker build (different OS / LLVM / `rustc`), so do not use this for artifacts you commit unless you accept regenerating them. |
+
+**Environment variables**
+
+| Variable | Purpose |
+|----------|---------|
+| **`SKIP_DOCKER_IMAGE=1`** | Skip Docker; build on the host (machines without Docker). Not bit-identical to the Docker output. |
+| **`SKIP_DOCKER_CRE_JAVY_PLUGIN_BUILD=1`** | Deprecated alias for `SKIP_DOCKER_IMAGE`; still honored in `build-plugin-docker.sh`. |
+| **`CRE_JAVY_VERSION`** | Javy release tag for `ensureJavy` (default `v8.1.0`). **`JAVY_VERSION`** is a fallback for the same value when unsetting `CRE_JAVY_VERSION`. |
+
+**Custom CI** (no Docker): Rust + `wasm32-wasip1`, Bun, then:
+
+```dockerfile
+ENV SKIP_DOCKER_IMAGE=1
+```
+
+Keep `build-plugin-local.sh` aligned with `Dockerfile` when changing the Javy version or build steps.
+
 ### Debugging Compiled WASM
 
 Use `wasm-tools` to inspect compiled workflows:

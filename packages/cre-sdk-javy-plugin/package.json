@@ -8,6 +8,7 @@
 	},
 	"scripts": {
 		"build": "bun run clean && bun scripts/compile-javy-sdk-plugin.ts",
+		"build:plugin-wasm": "./scripts/build-plugin-docker.sh",
 		"clean": "rm -rf dist",
 		"check": "biome check --write ${BIOME_PATHS:-.}",
 		"check:ci": "biome ci .",
