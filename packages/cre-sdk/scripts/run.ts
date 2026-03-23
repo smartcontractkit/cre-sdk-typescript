@@ -40,7 +40,10 @@ const main = async () => {
 			process.exit(1)
 		}
 	} catch (error) {
-		if (error instanceof WorkflowRuntimeCompatibilityError || error instanceof WorkflowTypecheckError) {
+		if (
+			error instanceof WorkflowRuntimeCompatibilityError ||
+			error instanceof WorkflowTypecheckError
+		) {
 			console.error(`\n❌ ${error.message}`)
 		} else {
 			console.error(`Failed to run script ${scriptName}:`, error)

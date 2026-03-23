@@ -75,10 +75,9 @@ Fix your tsconfig.json, or re-run compile with ${skipTypeChecksFlag}.`,
 		projectReferences: parsedConfig.projectReferences,
 	})
 
-	const diagnostics = [
-		...parsedConfig.errors,
-		...ts.getPreEmitDiagnostics(program),
-	].filter((diagnostic) => diagnostic.category === ts.DiagnosticCategory.Error)
+	const diagnostics = [...parsedConfig.errors, ...ts.getPreEmitDiagnostics(program)].filter(
+		(diagnostic) => diagnostic.category === ts.DiagnosticCategory.Error,
+	)
 
 	if (diagnostics.length > 0) {
 		const formatted = diagnostics.map(formatDiagnostic).join('\n')

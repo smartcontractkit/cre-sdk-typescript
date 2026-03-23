@@ -25,8 +25,8 @@ describe('parseCompileCliArgs', () => {
 	})
 
 	test('throws on too many positional args', () => {
-		expect(() =>
-			parseCompileCliArgs(['src/workflow.ts', 'dist/workflow.wasm', 'extra']),
-		).toThrow('Too many positional arguments.')
+		expect(() => parseCompileCliArgs(['src/workflow.ts', 'dist/workflow.wasm', 'extra'])).toThrow(
+			'Too many positional arguments.',
+		)
 	})
 })

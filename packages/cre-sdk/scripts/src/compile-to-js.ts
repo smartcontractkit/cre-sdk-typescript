@@ -12,9 +12,7 @@ type CompileToJsOptions = {
 }
 
 const printUsage = () => {
-	console.error(
-		`Usage: bun compile:ts-to-js <path-to-file> [output-file] [${skipTypeChecksFlag}]`,
-	)
+	console.error(`Usage: bun compile:ts-to-js <path-to-file> [output-file] [${skipTypeChecksFlag}]`)
 	console.error('Example:')
 	console.error('  bun compile:ts-to-js src/tests/foo.ts dist/tests/foo.bundle.js')
 	console.error(
