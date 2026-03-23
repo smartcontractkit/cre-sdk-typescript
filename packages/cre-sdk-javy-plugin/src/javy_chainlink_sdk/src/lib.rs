@@ -9,9 +9,13 @@ use javy_plugin_api::javy::quickjs::{
 };
 use std::env;
 use std::collections::HashMap;
+use std::sync::{Mutex, OnceLock};
 use base64::Engine;
 use rand::{Rng, SeedableRng};
 use rand_chacha::ChaCha8Rng;
+
+static CURRENT_MODE: Mutex<i32> = Mutex::new(0);
+static RANDOM_GENERATORS: OnceLock<Mutex<HashMap<i32, ChaCha8Rng>>> = OnceLock::new();
 
 // ✅ Host imports: implemented in Go
 #[link(wasm_import_module = "env")]
@@ -87,10 +91,7 @@ pub unsafe extern "C" fn initialize_runtime() {
 
     javy_plugin_api::initialize_runtime(config, |runtime| {
         runtime.context().with(|ctx| {
-            static mut CURRENT_MODE: i32 = 0;
-            static mut RANDOM_GENERATORS: Option<HashMap<i32, ChaCha8Rng>> = None;
-            unsafe { RANDOM_GENERATORS = Some(HashMap::new()); }
-            
+            RANDOM_GENERATORS.get_or_init(|| Mutex::new(HashMap::new()));
 
             // callCapability(data: Uint8Array | ArrayBuffer | Base64 string) -> i64
             ctx.globals()
@@ -102,7 +103,7 @@ pub unsafe extern "C" fn initialize_runtime() {
                         Ok::<i64, Error>(rc)
                     }),
                 )
-                .unwrap();
+                .expect("failed to set global function 'callCapability'");
 
             // awaitCapabilities(req, maxLen) -> Uint8Array (via IntoJs<Vec<u8>>)
             ctx.globals()
@@ -129,12 +130,15 @@ pub unsafe extern "C" fn initialize_runtime() {
                             let error_msg_static: &'static str = Box::leak(error_msg.into_boxed_str());
                             return Err(Error::new_into_js("Error", error_msg_static));
                         }
+                        if n > max_len as i64 {
+                            return Err(Error::new_into_js("Error", "await_capabilities: host returned length exceeding buffer capacity"));
+                        }
 
                         let out = &buf[..n as usize];
                         Ok::<Vec<u8>, Error>(out.to_vec())
                     }),
                 )
-                .unwrap();
+                .expect("failed to set global function 'awaitCapabilities'");
 
             // getSecrets(req, maxLen) -> Uint8Array (via IntoJs<Vec<u8>>)
             ctx.globals()
@@ -158,12 +162,15 @@ pub unsafe extern "C" fn initialize_runtime() {
                         if n < 0 {
                             return Err(Error::new_into_js("Error", "get_secrets failed"));
                         }
+                        if n > max_len as i64 {
+                            return Err(Error::new_into_js("Error", "get_secrets: host returned length exceeding buffer capacity"));
+                        }
 
                         let out = &buf[..n as usize];
                         Ok::<Vec<u8>, Error>(out.to_vec())
                     }),
                 )
-                .unwrap();
+                .expect("failed to set global function 'getSecrets'");
 
             // awaitSecrets(req, maxLen) -> Uint8Array (via IntoJs<Vec<u8>>)
             ctx.globals()
@@ -187,12 +194,15 @@ pub unsafe extern "C" fn initialize_runtime() {
                         if n < 0 {
                             return Err(Error::new_into_js("Error", "await_secrets failed"));
                         }
+                        if n > max_len as i64 {
+                            return Err(Error::new_into_js("Error", "await_secrets: host returned length exceeding buffer capacity"));
+                        }
 
                         let out = &buf[..n as usize];
                         Ok::<Vec<u8>, Error>(out.to_vec())
                     }),
                 )
-                .unwrap();
+                .expect("failed to set global function 'awaitSecrets'");
 
             // log(message: string)
             ctx.globals()
@@ -203,7 +213,7 @@ pub unsafe extern "C" fn initialize_runtime() {
                         unsafe { log(bytes.as_ptr(), bytes.len() as i32) };
                     }),
                 )
-                .unwrap();
+                .expect("failed to set global function 'log'");
 
             // sendResponse(data: Uint8Array | ArrayBuffer | Base64 string) -> i32 (exits on rc==0)
             ctx.globals()
@@ -218,20 +228,18 @@ pub unsafe extern "C" fn initialize_runtime() {
                         Ok::<i32, Error>(rc)
                     }),
                 )
-                .unwrap();
+                .expect("failed to set global function 'sendResponse'");
 
             // switchModes(mode: number)
             ctx.globals()
                 .set(
                     "switchModes",
                     Func::from(|mode: i32| {
-                        unsafe { 
-                            CURRENT_MODE = mode;
-                            switch_modes(mode);
-                        };
+                        *CURRENT_MODE.lock().expect("failed to lock CURRENT_MODE mutex in switchModes") = mode;
+                        unsafe { switch_modes(mode) };
                     }),
                 )
-                .unwrap();
+                .expect("failed to set global function 'switchModes'");
 
             // versionV2(): void
             ctx.globals()
@@ -241,26 +249,24 @@ pub unsafe extern "C" fn initialize_runtime() {
                         unsafe { version_v2_typescript() };
                     }),
                 )
-                .unwrap();
+                .expect("failed to set global function 'versionV2'");
 
             // Override Math.random to use mode-based seeded generators
-            let math_value = ctx.globals().get::<_, Value>("Math").unwrap();
-            let math_object = math_value.as_object().unwrap();
+            let math_value = ctx.globals().get::<_, Value>("Math").expect("failed to get global 'Math' object");
+            let math_object = math_value.as_object().expect("global 'Math' is not an object");
             math_object.set("random", Func::from(|| {
-                unsafe {
-                    let generators = (*std::ptr::addr_of_mut!(RANDOM_GENERATORS)).as_mut().unwrap();
-                    let current_mode = *std::ptr::addr_of!(CURRENT_MODE);
-                    
-                    // Get or create a generator for the current mode
-                    if !generators.contains_key(&current_mode) {
-                        let seed = random_seed(current_mode) as u64;
-                        generators.insert(current_mode, ChaCha8Rng::seed_from_u64(seed));
-                    }
-                    
-                    let generator = generators.get_mut(&current_mode).unwrap();
-                    Ok::<f64, Error>(generator.gen_range(0.0..1.0))
+                let current_mode = *CURRENT_MODE.lock().expect("failed to lock CURRENT_MODE mutex in Math.random");
+                let mut generators = RANDOM_GENERATORS.get().expect("RANDOM_GENERATORS not initialized").lock().expect("failed to lock RANDOM_GENERATORS mutex");
+
+                // Get or create a generator for the current mode
+                if !generators.contains_key(&current_mode) {
+                    let seed = unsafe { random_seed(current_mode) } as u64;
+                    generators.insert(current_mode, ChaCha8Rng::seed_from_u64(seed));
                 }
-            })).unwrap();
+
+                let generator = generators.get_mut(&current_mode).expect("no random generator found for current mode");
+                Ok::<f64, Error>(generator.gen_range(0.0..1.0))
+            })).expect("failed to set 'Math.random' override");
 
             // getWasiArgs(): string (JSON array)
             ctx.globals()
@@ -273,7 +279,7 @@ pub unsafe extern "C" fn initialize_runtime() {
                         Ok(args_json)
                     }),
                 )
-                .unwrap();
+                .expect("failed to set global function 'getWasiArgs'");
 
             // now(): number (Unix timestamp in milliseconds)
             ctx.globals()
@@ -302,10 +308,10 @@ pub unsafe extern "C" fn initialize_runtime() {
                         Ok(milliseconds as f64)
                     }),
                 )
-                .unwrap();
+                .expect("failed to set global function 'now'");
         });
 
         runtime
     })
-    .unwrap();
+    .expect("failed to initialize Javy runtime");
 }
