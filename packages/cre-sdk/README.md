@@ -66,7 +66,6 @@ If you need to compile despite TypeScript errors, pass `--skip-type-checks`:
 
 ```bash
 bun x cre-compile src/workflow.ts dist/workflow.wasm --skip-type-checks
-bun x compile src/workflow.ts dist/workflow.wasm --skip-type-checks
 ```
 
 ## Getting Started
