@@ -153,6 +153,8 @@ export class ClientCapability {
 		'ethereum-testnet-sepolia-worldchain-1': 5299555114858065850n,
 		'ethereum-testnet-sepolia-zksync-1': 6898391096552792247n,
 		'gnosis_chain-mainnet': 465200170687744372n,
+		'gnosis_chain-testnet-chiado': 8871595565390010547n,
+		'hyperliquid-mainnet': 2442541497099098535n,
 		'hyperliquid-testnet': 4286062357653186312n,
 		'ink-testnet-sepolia': 9763904284804119144n,
 		'jovay-mainnet': 1523760397290643893n,
