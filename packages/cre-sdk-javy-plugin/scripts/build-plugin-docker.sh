@@ -18,7 +18,6 @@ cd "$PLUGIN_DIR"
 echo "---> Building plugin WASM in Docker (Javy via ensureJavy in image; CRE_JAVY_VERSION=${CRE_JAVY_VERSION})"
 echo ""
 
-# linux/amd64: same WASM as CI (ubuntu-latest) and reproducible for Apple Silicon hosts.
 docker build \
 	--platform linux/amd64 \
 	--build-arg "CRE_JAVY_VERSION=${CRE_JAVY_VERSION}" \
