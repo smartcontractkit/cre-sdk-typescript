@@ -49,7 +49,7 @@
 		"format": "biome format --write ${BIOME_PATHS:-.}",
 		"full-checks": "bun generate:sdk && bun run build && bun typecheck && bun check && bun test && bun test:standard",
 		"generate:chain-selectors": "bun scripts/run.ts generate-chain-selectors && BIOME_PATHS=\"src/generated\" bun check",
-		"generate:proto": "bunx @bufbuild/buf generate && BIOME_PATHS=\"src/generated\" bun check",
+		"generate:proto": "bun x @bufbuild/buf generate && BIOME_PATHS=\"src/generated\" bun check",
 		"generate:sdk": "bun generate:proto && bun generate:chain-selectors && bun scripts/run generate-sdks && BIOME_PATHS=\"src/generated src/generated-sdk src/sdk/test/generated\" bun check",
 		"lint": "biome lint --write",
 		"prepublishOnly": "bun typecheck && bun check && bun test && bun test:standard",
