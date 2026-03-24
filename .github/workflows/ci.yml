@@ -67,11 +67,11 @@ jobs:
         # Use bash or sh for this step, because zsh isn't set yet
         shell: bash {0}
 
-      # Install Rust + add wasm32-wasip1 target
-      - name: Setup Rust (stable) with wasm target
+      # Match packages/cre-sdk-javy-plugin/src/javy_chainlink_sdk/rust-toolchain.toml (host cargo build step).
+      - name: Setup Rust (1.85.0) with wasm target
         uses: actions-rust-lang/setup-rust-toolchain@1780873c7b576612439a134613cc4cc74ce5538c
         with:
-          toolchain: stable
+          toolchain: 1.85.0
           target: wasm32-wasip1
           override: true
 
@@ -86,11 +86,35 @@ jobs:
           path: ~/.bun/install/cache
           key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
 
+      # Host cargo (compile-javy-sdk-plugin) + optional local plugin path; Docker build uses its own layers.
+      - name: Cache cargo + Javy release binary cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            ~/.cache/javy
+          key: ${{ runner.os }}-cre-plugin-v8.1.0-${{ hashFiles('packages/cre-sdk-javy-plugin/src/javy_chainlink_sdk/Cargo.lock', 'packages/cre-sdk-javy-plugin/src/javy_chainlink_sdk/rust-toolchain.toml', 'packages/cre-sdk-javy-plugin/scripts/build-plugin-local.sh', 'packages/cre-sdk-javy-plugin/scripts/print-javy-path-for-build.ts', 'packages/cre-sdk-javy-plugin/scripts/ensure-javy.ts', 'packages/cre-sdk-javy-plugin/Dockerfile') }}
+
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      # build:plugin-wasm uses Docker (same as default locally) so committed dist/*.wasm matches CI.
+      # SKIP_DOCKER_IMAGE=1 is for machines without Docker only; it produces different bytes than the image.
       - name: Full checks
         run: bun full-checks
+
+      - name: Verify no uncommitted changes
+        run: |
+          if ! git diff --exit-code; then
+            echo ""
+            echo "=========================================="
+            echo "Uncommitted file changes detected after full-checks!"
+            echo "Run 'bun full-checks' locally and commit the resulting changes."
+            echo "=========================================="
+            exit 1
+          fi
+        shell: bash {0}
 
       - name: Install CRE CLI
         run: |

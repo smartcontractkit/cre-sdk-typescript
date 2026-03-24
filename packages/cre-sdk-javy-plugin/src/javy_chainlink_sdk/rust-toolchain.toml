@@ -1,0 +1,5 @@
+# Pin rustc so Docker and any host `cargo build` for this crate stay aligned with CI expectations.
+# Edition 2024 requires Rust 1.85+.
+[toolchain]
+channel = "1.85.0"
+targets = ["wasm32-wasip1"]

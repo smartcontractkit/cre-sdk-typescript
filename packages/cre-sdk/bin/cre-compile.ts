@@ -4,10 +4,7 @@ import { main as compileWorkflow } from "../scripts/src/compile-workflow";
 import { WorkflowRuntimeCompatibilityError } from "../scripts/src/validate-workflow-runtime-compat";
 
 const main = async () => {
-  const cliArgs = process.argv.slice(2);
-
-  const inputPath = cliArgs[0];
-  const outputPathArg = cliArgs[1];
+  const [inputPath, outputPathArg] = process.argv.slice(2);
 
   if (!inputPath) {
     console.error(
@@ -21,7 +18,6 @@ const main = async () => {
     process.exit(1);
   }
 
-  // Delegate to the compile-workflow script
   await compileWorkflow(inputPath, outputPathArg);
 };
 
