@@ -18,6 +18,7 @@ run_in_package() {
 
 # cre-sdk-javy-plugin package
 run_in_package "cre-sdk-javy-plugin" "build"
+run_in_package "cre-sdk-javy-plugin" "build:plugin-wasm"
 run_in_package "cre-sdk-javy-plugin" "typecheck"
 run_in_package "cre-sdk-javy-plugin" "check"
 
