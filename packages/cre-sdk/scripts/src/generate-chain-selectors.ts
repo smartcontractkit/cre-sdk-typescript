@@ -78,34 +78,16 @@ const CHAIN_CONFIGS: ChainSelectorConfig[] = [
 	},
 ]
 
+const resolveChainSelectorsDir = (): string => {
+	// Use require.resolve to find the package through bun/Node module resolution,
+	// which correctly handles workspace hoisting, .bun cache, etc.
+	const packageDir = require.resolve('chain-selectors/selectors.yml')
+	return join(packageDir, '..')
+}
+
 const readYamlFile = (filename: string): string => {
-	// Look for chain-selectors in node_modules by trying multiple possible locations
-	// This handles different execution contexts (local dev, CI, etc.)
-	const possiblePaths = [
-		// Try workspace root (3 levels up from scripts/)
-		join(process.cwd(), '..', '..', '..', 'node_modules', 'chain-selectors', filename),
-		// Try 2 levels up (in case cwd is already in scripts/src/)
-		join(process.cwd(), '..', '..', 'node_modules', 'chain-selectors', filename),
-		// Try current directory's node_modules
-		join(process.cwd(), 'node_modules', 'chain-selectors', filename),
-		// Try parent directory's node_modules
-		join(process.cwd(), '..', 'node_modules', 'chain-selectors', filename),
-	]
-
-	for (const path of possiblePaths) {
-		try {
-			return readFileSync(path, 'utf-8')
-		} catch {
-			// Try next path
-			continue
-		}
-	}
-
-	throw new Error(
-		`Failed to find ${filename} in any of the expected locations. Tried:\n${possiblePaths.join(
-			'\n',
-		)}`,
-	)
+	const filePath = join(resolveChainSelectorsDir(), filename)
+	return readFileSync(filePath, 'utf-8')
 }
 
 const parseChainSelectors = (): NetworkInfo[] => {
