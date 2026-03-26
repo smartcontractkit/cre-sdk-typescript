@@ -1,7 +1,7 @@
 {
 	"name": "@chainlink/cre-sdk-examples",
 	"private": true,
-	"version": "release-candidate-v1.5.0-alpha.2",
+	"version": "v1.5.0-alpha.2",
 	"type": "module",
 	"author": "Ernest Nowacki",
 	"license": "BUSL-1.1",
@@ -16,8 +16,8 @@
 	},
 	"dependencies": {
 		"@bufbuild/protobuf": "2.6.3",
-		"@chainlink/cre-sdk": "release-candidate-v1.5.0-alpha.2",
-		"@chainlink/cre-sdk-javy-plugin": "release-candidate-v1.5.0-alpha.2",
+		"@chainlink/cre-sdk": "v1.5.0-alpha.2",
+		"@chainlink/cre-sdk-javy-plugin": "v1.5.0-alpha.2",
 		"viem": "2.34.0",
 		"zod": "3.25.76"
 	},
