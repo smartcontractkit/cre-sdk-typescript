@@ -1,0 +1,11 @@
+{
+	"name": "@chainlink/cre-rust-prebuilt-plugin-example",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"description": "Simulates a customer project: installs @chainlink/cre-rust-inject-alpha and uses its pre-built Javy plugin via --plugin.",
+	"dependencies": {
+		"@chainlink/cre-sdk-javy-plugin": "file:../.packaged/cre-sdk-javy-plugin",
+		"@chainlink/cre-rust-inject-alpha": "file:../.packaged/lib-alpha"
+	}
+}

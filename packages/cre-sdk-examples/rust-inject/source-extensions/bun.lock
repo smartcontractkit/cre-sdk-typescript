@@ -1,0 +1,20 @@
+{
+  "lockfileVersion": 1,
+  "configVersion": 1,
+  "workspaces": {
+    "": {
+      "name": "@chainlink/cre-rust-source-extensions-example",
+      "dependencies": {
+        "@chainlink/cre-rust-inject-alpha": "file:../.packaged/lib-alpha",
+        "@chainlink/cre-sdk-javy-plugin": "file:../.packaged/cre-sdk-javy-plugin",
+      },
+    },
+  },
+  "packages": {
+    "@chainlink/cre-rust-inject-alpha": ["@chainlink/cre-rust-inject-alpha@file:../.packaged/lib-alpha", {}],
+
+    "@chainlink/cre-sdk-javy-plugin": ["@chainlink/cre-sdk-javy-plugin@file:../.packaged/cre-sdk-javy-plugin", { "dependencies": { "zod": "3.25.76" }, "bin": { "cre-setup": "bin/setup.ts", "cre-compile-workflow": "bin/compile-workflow.ts" } }],
+
+    "zod": ["zod@3.25.76", "", {}, "sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ=="],
+  }
+}

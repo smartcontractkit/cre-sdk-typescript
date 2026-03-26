@@ -2,6 +2,7 @@ import { spawn } from 'node:child_process'
 import { existsSync } from 'node:fs'
 import { mkdir } from 'node:fs/promises'
 import path from 'node:path'
+import { parseCompileFlags } from '../../../cre-sdk-javy-plugin/scripts/parse-compile-flags'
 
 function runBun(args: string[]): Promise<void> {
 	return new Promise((resolve, reject) => {
@@ -19,20 +20,29 @@ function runBun(args: string[]): Promise<void> {
 
 const isJsFile = (p: string) => ['.js', '.mjs', '.cjs'].includes(path.extname(p).toLowerCase())
 
-export const main = async (inputFile?: string, outputFile?: string) => {
+export const main = async (
+	inputFile?: string,
+	outputFile?: string,
+	creExportsPaths?: string[],
+	pluginPath?: string | null,
+) => {
 	const cliArgs = process.argv.slice(3)
+	const { creExports: cliCreExports, plugin: cliPlugin, rest: cliRest } = parseCompileFlags(cliArgs)
 
-	// Resolve input/output from params or CLI
-	const inputPath = inputFile ?? cliArgs[0]
-	const outputPathArg = outputFile ?? cliArgs[1]
+	const inputPath = inputFile ?? cliRest[0]
+	const outputPathArg = outputFile ?? cliRest[1]
+	const creExports = creExportsPaths ?? cliCreExports
+	const plugin = pluginPath !== undefined ? pluginPath : cliPlugin
+
+	if (plugin !== null && plugin !== undefined && creExports.length > 0) {
+		console.error('❌ Error: --plugin and --cre-exports are mutually exclusive.')
+		process.exit(1)
+	}
 
 	if (!inputPath) {
 		console.error(
 			'Usage: bun compile:js-to-wasm <path/to/input.(js|mjs|cjs)> [path/to/output.wasm]',
 		)
-		console.error('Examples:')
-		console.error('  bun compile:js-to-wasm ./build/workflows/test.js')
-		console.error('  bun compile:js-to-wasm ./build/workflows/test.mjs ./artifacts/test.wasm')
 		process.exit(1)
 	}
 
@@ -47,31 +57,35 @@ export const main = async (inputFile?: string, outputFile?: string) => {
 		process.exit(1)
 	}
 
-	// Default output = same dir, same basename, .wasm extension
 	const defaultOut = path.join(
 		path.dirname(resolvedInput),
 		path.basename(resolvedInput).replace(/\.(m|c)?js$/i, '.wasm'),
 	)
 	const resolvedOutput = outputPathArg ? path.resolve(outputPathArg) : defaultOut
 
-	// Ensure output directory exists
 	await mkdir(path.dirname(resolvedOutput), { recursive: true })
 
-	console.info(`🔨 Compiling to WASM`)
+	console.info('🔨 Compiling to WASM')
 	console.info(`📁 Input:  ${resolvedInput}`)
 	console.info(`🎯 Output: ${resolvedOutput}`)
 
-	// Prefer the sibling @chainlink/cre-sdk-javy-plugin install (same as monorepo layout).
-	// Bun's shell `$` template can throw EINVAL on some Linux/arm64 Docker setups; use spawn.
-	const scriptDir = import.meta.dir
-	const compilerPath = path.resolve(
-		scriptDir,
-		'../../../cre-sdk-javy-plugin/bin/compile-workflow.ts',
-	)
-	if (existsSync(compilerPath)) {
-		await runBun(['--bun', compilerPath, resolvedInput, resolvedOutput])
+	const compileArgs: string[] = []
+	if (plugin != null && plugin !== '') {
+		compileArgs.push('--plugin', path.resolve(plugin))
 	} else {
-		await runBun(['x', 'cre-compile-workflow', resolvedInput, resolvedOutput])
+		compileArgs.push(...creExports.flatMap((p) => ['--cre-exports', path.resolve(p)]))
+	}
+	compileArgs.push(resolvedInput, resolvedOutput)
+
+	const scriptDir = import.meta.dir
+	const javyPluginRoot = process.env.CRE_SDK_JAVY_PLUGIN_HOME
+		? path.resolve(process.env.CRE_SDK_JAVY_PLUGIN_HOME)
+		: path.resolve(scriptDir, '../../../cre-sdk-javy-plugin')
+	const compilerPath = path.join(javyPluginRoot, 'bin/compile-workflow.ts')
+	if (existsSync(compilerPath)) {
+		await runBun(['--bun', compilerPath, ...compileArgs])
+	} else {
+		await runBun(['x', 'cre-compile-workflow', ...compileArgs])
 	}
 
 	console.info(`✅ Compiled: ${resolvedOutput}`)

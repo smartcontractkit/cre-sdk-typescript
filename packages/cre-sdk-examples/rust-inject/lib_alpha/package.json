@@ -1,0 +1,19 @@
+{
+	"name": "@chainlink/cre-rust-inject-alpha",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"description": "Example Rust extension (alpha) for CRE rust-inject demos — packaged plugin wasm + crate source.",
+	"files": [
+		"dist",
+		"src",
+		"Cargo.toml",
+		"index.ts"
+	],
+	"keywords": [],
+	"license": "BUSL-1.1",
+	"peerDependencies": {
+		"@chainlink/cre-sdk-javy-plugin": ">=1.0.0",
+		"zod": ">=3.0.0"
+	}
+}

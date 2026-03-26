@@ -17,6 +17,7 @@
 	"dependencies": {
 		"@bufbuild/protobuf": "2.6.3",
 		"@chainlink/cre-sdk": "workspace:*",
+		"@chainlink/cre-sdk-javy-plugin": "workspace:*",
 		"viem": "2.34.0",
 		"zod": "3.25.76"
 	},
