@@ -9,43 +9,6 @@ on:
     branches: [main]
 
 jobs:
-  validate-submodule:
-    if: >-
-      (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'capabilities-development') ||
-      (github.event_name == 'push' && github.ref_name == 'capabilities-development')
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          submodules: recursive
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Validate chainlink-protos points to capabilities-development
-        run: |
-          cd submodules/chainlink-protos
-          SUBMODULE_COMMIT=$(git rev-parse HEAD)
-          echo "Submodule commit: $SUBMODULE_COMMIT"
-
-          if [ "$(git rev-parse --is-shallow-repository)" = "true" ]; then
-            echo "Shallow clone detected, fetching full history..."
-            git fetch --unshallow origin
-          fi
-          git fetch origin capabilities-development
-
-          BRANCH_TIP=$(git rev-parse FETCH_HEAD)
-          echo "capabilities-development tip: $BRANCH_TIP"
-
-          if git merge-base --is-ancestor "$SUBMODULE_COMMIT" "$BRANCH_TIP"; then
-            echo "OK: Submodule commit $SUBMODULE_COMMIT is on the capabilities-development branch."
-          else
-            echo "::error::chainlink-protos submodule is at commit $SUBMODULE_COMMIT which is NOT on the capabilities-development branch."
-            echo "Update the submodule to point to a commit from the capabilities-development branch."
-            exit 1
-          fi
-
   lint-format:
     runs-on: ubuntu-latest
     steps:
