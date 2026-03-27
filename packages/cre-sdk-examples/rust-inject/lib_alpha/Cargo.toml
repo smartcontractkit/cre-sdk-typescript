@@ -9,4 +9,3 @@ crate-type = ["lib"]
 [dependencies]
 cre_wasm_exports = { path = "../.packaged/cre-sdk-javy-plugin/src/cre_wasm_exports" }
 javy-plugin-api = "6.0.0"
-javy = "7.0.0"
