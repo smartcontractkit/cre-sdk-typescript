@@ -13,7 +13,7 @@ import { file_tools_generator_v1alpha_cre_metadata } from '../../../../tools/gen
 export const file_capabilities_compute_confidentialworkflow_v1alpha_client: GenFile =
 	/*@__PURE__*/
 	fileDesc(
-		'Cj5jYXBhYmlsaXRpZXMvY29tcHV0ZS9jb25maWRlbnRpYWx3b3JrZmxvdy92MWFscGhhL2NsaWVudC5wcm90bxIxY2FwYWJpbGl0aWVzLmNvbXB1dGUuY29uZmlkZW50aWFsd29ya2Zsb3cudjFhbHBoYSJFChBTZWNyZXRJZGVudGlmaWVyEgsKA2tleRgBIAEoCRIWCgluYW1lc3BhY2UYAiABKAlIAIgBAUIMCgpfbmFtZXNwYWNlImoKEVdvcmtmbG93RXhlY3V0aW9uEhMKC3dvcmtmbG93X2lkGAEgASgJEhIKCmJpbmFyeV91cmwYAiABKAkSEwoLYmluYXJ5X2hhc2gYAyABKAwSFwoPZXhlY3V0ZV9yZXF1ZXN0GAQgASgMItYBChtDb25maWRlbnRpYWxXb3JrZmxvd1JlcXVlc3QSXgoRdmF1bHRfZG9uX3NlY3JldHMYASADKAsyQy5jYXBhYmlsaXRpZXMuY29tcHV0ZS5jb25maWRlbnRpYWx3b3JrZmxvdy52MWFscGhhLlNlY3JldElkZW50aWZpZXISVwoJZXhlY3V0aW9uGAIgASgLMkQuY2FwYWJpbGl0aWVzLmNvbXB1dGUuY29uZmlkZW50aWFsd29ya2Zsb3cudjFhbHBoYS5Xb3JrZmxvd0V4ZWN1dGlvbiI4ChxDb25maWRlbnRpYWxXb3JrZmxvd1Jlc3BvbnNlEhgKEGV4ZWN1dGlvbl9yZXN1bHQYASABKAwy4QEKBkNsaWVudBKqAQoHRXhlY3V0ZRJOLmNhcGFiaWxpdGllcy5jb21wdXRlLmNvbmZpZGVudGlhbHdvcmtmbG93LnYxYWxwaGEuQ29uZmlkZW50aWFsV29ya2Zsb3dSZXF1ZXN0Gk8uY2FwYWJpbGl0aWVzLmNvbXB1dGUuY29uZmlkZW50aWFsd29ya2Zsb3cudjFhbHBoYS5Db25maWRlbnRpYWxXb3JrZmxvd1Jlc3BvbnNlGiqCtRgmCAESImNvbmZpZGVudGlhbC13b3JrZmxvd3NAMS4wLjAtYWxwaGFCqwIKNWNvbS5jYXBhYmlsaXRpZXMuY29tcHV0ZS5jb25maWRlbnRpYWx3b3JrZmxvdy52MWFscGhhQgtDbGllbnRQcm90b1ABogIDQ0NDqgIxQ2FwYWJpbGl0aWVzLkNvbXB1dGUuQ29uZmlkZW50aWFsd29ya2Zsb3cuVjFhbHBoYcoCMUNhcGFiaWxpdGllc1xDb21wdXRlXENvbmZpZGVudGlhbHdvcmtmbG93XFYxYWxwaGHiAj1DYXBhYmlsaXRpZXNcQ29tcHV0ZVxDb25maWRlbnRpYWx3b3JrZmxvd1xWMWFscGhhXEdQQk1ldGFkYXRh6gI0Q2FwYWJpbGl0aWVzOjpDb21wdXRlOjpDb25maWRlbnRpYWx3b3JrZmxvdzo6VjFhbHBoYWIGcHJvdG8z',
+		'Cj5jYXBhYmlsaXRpZXMvY29tcHV0ZS9jb25maWRlbnRpYWx3b3JrZmxvdy92MWFscGhhL2NsaWVudC5wcm90bxIxY2FwYWJpbGl0aWVzLmNvbXB1dGUuY29uZmlkZW50aWFsd29ya2Zsb3cudjFhbHBoYSJFChBTZWNyZXRJZGVudGlmaWVyEgsKA2tleRgBIAEoCRIWCgluYW1lc3BhY2UYAiABKAlIAIgBAUIMCgpfbmFtZXNwYWNlIo8BChFXb3JrZmxvd0V4ZWN1dGlvbhITCgt3b3JrZmxvd19pZBgBIAEoCRISCgpiaW5hcnlfdXJsGAIgASgJEhMKC2JpbmFyeV9oYXNoGAMgASgMEhcKD2V4ZWN1dGVfcmVxdWVzdBgEIAEoDBINCgVvd25lchgFIAEoCRIUCgxleGVjdXRpb25faWQYBiABKAki1gEKG0NvbmZpZGVudGlhbFdvcmtmbG93UmVxdWVzdBJeChF2YXVsdF9kb25fc2VjcmV0cxgBIAMoCzJDLmNhcGFiaWxpdGllcy5jb21wdXRlLmNvbmZpZGVudGlhbHdvcmtmbG93LnYxYWxwaGEuU2VjcmV0SWRlbnRpZmllchJXCglleGVjdXRpb24YAiABKAsyRC5jYXBhYmlsaXRpZXMuY29tcHV0ZS5jb25maWRlbnRpYWx3b3JrZmxvdy52MWFscGhhLldvcmtmbG93RXhlY3V0aW9uIjgKHENvbmZpZGVudGlhbFdvcmtmbG93UmVzcG9uc2USGAoQZXhlY3V0aW9uX3Jlc3VsdBgBIAEoDDLhAQoGQ2xpZW50EqoBCgdFeGVjdXRlEk4uY2FwYWJpbGl0aWVzLmNvbXB1dGUuY29uZmlkZW50aWFsd29ya2Zsb3cudjFhbHBoYS5Db25maWRlbnRpYWxXb3JrZmxvd1JlcXVlc3QaTy5jYXBhYmlsaXRpZXMuY29tcHV0ZS5jb25maWRlbnRpYWx3b3JrZmxvdy52MWFscGhhLkNvbmZpZGVudGlhbFdvcmtmbG93UmVzcG9uc2UaKoK1GCYIARIiY29uZmlkZW50aWFsLXdvcmtmbG93c0AxLjAuMC1hbHBoYUKrAgo1Y29tLmNhcGFiaWxpdGllcy5jb21wdXRlLmNvbmZpZGVudGlhbHdvcmtmbG93LnYxYWxwaGFCC0NsaWVudFByb3RvUAGiAgNDQ0OqAjFDYXBhYmlsaXRpZXMuQ29tcHV0ZS5Db25maWRlbnRpYWx3b3JrZmxvdy5WMWFscGhhygIxQ2FwYWJpbGl0aWVzXENvbXB1dGVcQ29uZmlkZW50aWFsd29ya2Zsb3dcVjFhbHBoYeICPUNhcGFiaWxpdGllc1xDb21wdXRlXENvbmZpZGVudGlhbHdvcmtmbG93XFYxYWxwaGFcR1BCTWV0YWRhdGHqAjRDYXBhYmlsaXRpZXM6OkNvbXB1dGU6OkNvbmZpZGVudGlhbHdvcmtmbG93OjpWMWFscGhhYgZwcm90bzM',
 		[file_tools_generator_v1alpha_cre_metadata],
 	)
 
@@ -97,6 +97,22 @@ export type WorkflowExecution =
 		 * @generated from field: bytes execute_request = 4;
 		 */
 		executeRequest: Uint8Array
+
+		/**
+		 * owner is the on-chain owner address of the workflow (hex, 0x-prefixed).
+		 * Used by the enclave for runtime secret fetching from VaultDON.
+		 *
+		 * @generated from field: string owner = 5;
+		 */
+		owner: string
+
+		/**
+		 * execution_id is the unique execution identifier (64 hex chars, 32 bytes).
+		 * Used by the enclave for runtime secret fetching from VaultDON.
+		 *
+		 * @generated from field: string execution_id = 6;
+		 */
+		executionId: string
 	}
 
 /**
@@ -134,6 +150,22 @@ export type WorkflowExecutionJson = {
 	 * @generated from field: bytes execute_request = 4;
 	 */
 	executeRequest?: string
+
+	/**
+	 * owner is the on-chain owner address of the workflow (hex, 0x-prefixed).
+	 * Used by the enclave for runtime secret fetching from VaultDON.
+	 *
+	 * @generated from field: string owner = 5;
+	 */
+	owner?: string
+
+	/**
+	 * execution_id is the unique execution identifier (64 hex chars, 32 bytes).
+	 * Used by the enclave for runtime secret fetching from VaultDON.
+	 *
+	 * @generated from field: string execution_id = 6;
+	 */
+	executionId?: string
 }
 
 /**

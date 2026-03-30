@@ -26,7 +26,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ github.event.inputs.tag || 'main' }}
           fetch-depth: 0
@@ -39,7 +39,7 @@ jobs:
           echo "Current commit short: $(git rev-parse --short HEAD)"
 
       - name: Setup Bun
-        uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: ${{ env.BUN_VERSION }}
 
@@ -63,15 +63,24 @@ jobs:
           echo "JAVY_PLUGIN_VERSION=$CURRENT_VERSION" >> $GITHUB_ENV
           echo "Using javy plugin version from package.json: $CURRENT_VERSION"
 
+          # Detect pre-release tag from version (e.g. 1.2.0-alpha.1 → alpha)
+          if [[ "$CURRENT_VERSION" =~ -([a-zA-Z]+) ]]; then
+            NPM_TAG="${BASH_REMATCH[1]}"
+          else
+            NPM_TAG="latest"
+          fi
+          echo "NPM_DIST_TAG=$NPM_TAG" >> $GITHUB_ENV
+          echo "npm dist-tag: $NPM_TAG"
+
       - name: Publish CRE SDK Javy plugin package
         working-directory: packages/cre-sdk-javy-plugin
         run: |
-          echo "Publishing @chainlink/cre-sdk-javy-plugin..."
+          echo "Publishing @chainlink/cre-sdk-javy-plugin with dist-tag: $NPM_DIST_TAG..."
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
             echo "DRY RUN: Would publish @chainlink/cre-sdk-javy-plugin"
-            npm publish --dry-run --access public --verbose
+            npm publish --dry-run --access public --tag "$NPM_DIST_TAG" --verbose
           else
-            npm publish --access public --verbose
+            npm publish --access public --tag "$NPM_DIST_TAG" --verbose
           fi
 
       - name: Create release summary
@@ -106,7 +115,7 @@ jobs:
 
     steps:
       - name: Setup Bun
-        uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: ${{ env.BUN_VERSION }}
 

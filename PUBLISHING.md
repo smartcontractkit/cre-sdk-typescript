@@ -57,3 +57,29 @@ This would mean we're releasing a new version of the `@chainlink/cre-sdk` withou
    _Note: In `Use workflow from` field keep `main` selected. In the `git tag` field put the name of tag you created (should start with `v`, following our example it would be: `v1.0.8`)._
 9. Once the SDK is published cleanup the `relase-candidate-vx.y.z` branch (following our example we would need to delete the branch `release-candidate-v1.0.8`).
 10. **🎉 Congratulations, you have released the new version of the CRE SDK!**
+
+## Pre-release (Alpha / Beta / RC)
+
+The npm dist-tag is determined automatically from the version in `package.json`. Pre-release versions never overwrite the `latest` tag, so `bun add @chainlink/cre-sdk` always installs the last stable release.
+
+| Version in `package.json` | npm dist-tag | Install command |
+|---------------------------|-------------|-----------------|
+| `1.1.3`                   | `latest`    | `bun add @chainlink/cre-sdk` |
+| `1.1.3-alpha.1`           | `alpha`     | `bun add @chainlink/cre-sdk@alpha` |
+| `1.1.3-beta.1`            | `beta`      | `bun add @chainlink/cre-sdk@beta` |
+| `1.1.3-rc.1`              | `rc`        | `bun add @chainlink/cre-sdk@rc` |
+
+### Publishing a pre-release
+
+Follow the same steps as scenario 1 or 2 above, but use a pre-release version string:
+
+1. Set version in `packages/cre-sdk/package.json` to e.g. `1.1.3-alpha.1`
+2. Create the release branch, tag (e.g. `v1.1.3-alpha.1`), and trigger the publish workflow as usual
+3. The workflow automatically detects the pre-release suffix and publishes with the correct dist-tag
+
+### Promoting to stable
+
+Once the pre-release has been validated:
+
+1. Update `packages/cre-sdk/package.json` version to `1.1.3` (remove the pre-release suffix)
+2. Follow the normal release process — the workflow will publish with `--tag latest`
