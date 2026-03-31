@@ -7,45 +7,43 @@ import { ensureJavy } from '../scripts/ensure-javy.ts'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
-const [, , jsFile, wasmFile] = process.argv
+const [jsFile, wasmFile] = process.argv.slice(2)
 
 if (!jsFile || !wasmFile) {
-	console.error('Usage: compile.js <input.js> <output.wasm>')
+	console.error('Usage: compile-workflow <input.js> <output.wasm>')
 	process.exit(1)
 }
 
-const javyPath = await ensureJavy({ version: 'v5.0.4' })
+const javyPath = await ensureJavy({ version: 'v8.1.0' })
 const witPath = resolve(__dirname, '../dist/workflow.wit')
 const pluginPath = resolve(__dirname, '../dist/javy-chainlink-sdk.plugin.wasm')
 
 if (!existsSync(pluginPath)) {
 	console.error(
 		`❌ CRE SDK Javy plugin not found at: ${pluginPath}\n\n` +
-			'It looks like the one-time setup has not been run yet.\n' +
-			'Please run:\n\n' +
-			'  bun x cre-setup\n\n' +
-			'This downloads the Javy binary for your platform and compiles the CRE plugin.\n' +
+			'The pre-built plugin WASM should be included in the package.\n' +
+			'Try reinstalling @chainlink/cre-sdk-javy-plugin.\n' +
 			'See: https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-javy-plugin/README.md#quick-start',
 	)
 	process.exit(1)
 }
 
-const child = spawn(
-	javyPath,
-	[
-		'build',
-		'-C',
-		`wit=${witPath}`,
-		'-C',
-		'wit-world=workflow',
-		'-C',
-		`plugin=${pluginPath}`,
-		jsFile,
-		'-o',
-		wasmFile,
-	],
-	{ stdio: 'inherit' },
-)
+const javyArgs = [
+	'build',
+	'-C',
+	`wit=${witPath}`,
+	'-C',
+	'wit-world=workflow',
+	'-C',
+	`plugin=${pluginPath}`,
+	'-C',
+	'deterministic=y',
+	jsFile,
+	'-o',
+	wasmFile,
+]
+
+const child = spawn(javyPath, javyArgs, { stdio: 'inherit' })
 
 child.on('exit', (code, signal) => {
 	if (signal) process.kill(process.pid, signal)

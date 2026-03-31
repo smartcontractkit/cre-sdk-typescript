@@ -13,13 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           submodules: recursive
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Bun
-        uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: latest
 
@@ -47,7 +47,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           submodules: recursive
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -67,30 +67,54 @@ jobs:
         # Use bash or sh for this step, because zsh isn't set yet
         shell: bash {0}
 
-      # Install Rust + add wasm32-wasip1 target
-      - name: Setup Rust (stable) with wasm target
-        uses: actions-rust-lang/setup-rust-toolchain@1780873c7b576612439a134613cc4cc74ce5538c
+      # Match packages/cre-sdk-javy-plugin/src/javy_chainlink_sdk/rust-toolchain.toml (host cargo build step).
+      - name: Setup Rust (1.85.0) with wasm target
+        uses: actions-rust-lang/setup-rust-toolchain@150fca883cd4034361b621bd4e6a9d34e5143606 # v1.15.4
         with:
-          toolchain: stable
+          toolchain: 1.85.0
           target: wasm32-wasip1
           override: true
 
       - name: Setup Bun
-        uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: latest
 
       - name: Cache Bun dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
         with:
           path: ~/.bun/install/cache
           key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
 
+      # Host cargo (compile-javy-sdk-plugin) + optional local plugin path; Docker build uses its own layers.
+      - name: Cache cargo + Javy release binary cache
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            ~/.cache/javy
+          key: ${{ runner.os }}-cre-plugin-v8.1.0-${{ hashFiles('packages/cre-sdk-javy-plugin/src/javy_chainlink_sdk/Cargo.lock', 'packages/cre-sdk-javy-plugin/src/javy_chainlink_sdk/rust-toolchain.toml', 'packages/cre-sdk-javy-plugin/scripts/build-plugin-local.sh', 'packages/cre-sdk-javy-plugin/scripts/print-javy-path-for-build.ts', 'packages/cre-sdk-javy-plugin/scripts/ensure-javy.ts', 'packages/cre-sdk-javy-plugin/Dockerfile') }}
+
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      # build:plugin-wasm uses Docker (same as default locally) so committed dist/*.wasm matches CI.
+      # SKIP_DOCKER_IMAGE=1 is for machines without Docker only; it produces different bytes than the image.
       - name: Full checks
         run: bun full-checks
+
+      - name: Verify no uncommitted changes
+        run: |
+          if ! git diff --exit-code; then
+            echo ""
+            echo "=========================================="
+            echo "Uncommitted file changes detected after full-checks!"
+            echo "Run 'bun full-checks' locally and commit the resulting changes."
+            echo "=========================================="
+            exit 1
+          fi
+        shell: bash {0}
 
       - name: Install CRE CLI
         run: |

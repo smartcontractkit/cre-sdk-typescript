@@ -34,5 +34,10 @@
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true
 	},
-	"include": ["src/**/*", "scripts/**/*.ts", "bin/**/*.ts"]
+	"include": ["src/**/*", "scripts/**/*.ts", "bin/**/*.ts"],
+	// restricted-node-modules.d.ts is excluded from the SDK's own compilation
+	// because the SDK's build scripts legitimately use Node.js modules. It is
+	// injected into dist/index.d.ts by build-types.ts so workflow consumers
+	// still receive the restrictions.
+	"exclude": ["src/sdk/types/restricted-node-modules.d.ts"]
 }

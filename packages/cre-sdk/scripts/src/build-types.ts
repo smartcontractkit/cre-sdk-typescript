@@ -1,5 +1,5 @@
 import { glob } from 'fast-glob'
-import { copyFile, mkdir } from 'fs/promises'
+import { copyFile, mkdir, readFile, writeFile } from 'fs/promises'
 import { join } from 'path'
 
 const buildTypes = async () => {
@@ -28,6 +28,36 @@ const buildTypes = async () => {
 	}
 
 	console.log(`✅ Copied ${typeFiles.length} type definition file(s) to dist/sdk/types`)
+
+	// Prepend triple-slash references to dist/index.d.ts so consumers pick up
+	// global type augmentations (e.g. restricted-apis.d.ts) automatically.
+	// tsc strips these from the emitted .d.ts, so we add them back here.
+	const indexDts = join(packageRoot, 'dist/index.d.ts')
+	const sourceIndex = join(packageRoot, 'src/index.ts')
+	const sourceContent = await readFile(sourceIndex, 'utf-8')
+
+	const refsFromSource = sourceContent
+		.split('\n')
+		.filter((line) => line.startsWith('/// <reference types='))
+
+	// Add references for consumer-only type declarations that cannot be in src/index.ts
+	// because they would break the SDK's own scripts/tests (which legitimately use Node.js APIs).
+	const consumerOnlyRefs = ['/// <reference types="./sdk/types/restricted-node-modules" />']
+
+	const tripleSlashRefs = [...refsFromSource, ...consumerOnlyRefs].join('\n')
+
+	if (tripleSlashRefs) {
+		const indexContent = await readFile(indexDts, 'utf-8')
+		// Strip any existing triple-slash references from the top of the file
+		// so that re-running build-types is idempotent.
+		const withoutExistingRefs = indexContent
+			.split('\n')
+			.filter((line) => !line.trim().startsWith('/// <reference types='))
+			.join('\n')
+			.replace(/^\n+/, '') // trim leading blank lines left after stripping
+		await writeFile(indexDts, `${tripleSlashRefs}\n${withoutExistingRefs}`)
+		console.log('✅ Added triple-slash references to dist/index.d.ts')
+	}
 }
 
 export const main = buildTypes

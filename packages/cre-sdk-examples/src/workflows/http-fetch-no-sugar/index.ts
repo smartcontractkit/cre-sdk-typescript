@@ -6,6 +6,7 @@ import {
 	type NodeRuntime,
 	Runner,
 	type Runtime,
+	text,
 } from '@chainlink/cre-sdk'
 import { z } from 'zod'
 
@@ -38,8 +39,8 @@ const fetchMathResult = (nodeRuntime: NodeRuntime<Config>): bigint => {
 	const resp = httpClient.sendRequest(nodeRuntime, req).result()
 	// The mathjs.org API returns the result as a raw string in the body.
 	// We need to parse it into a bigint.
-	const bodyText = new TextDecoder().decode(resp.body)
-	const val = BigInt(bodyText.trim())
+	const bodyText = text(resp)
+	const val = BigInt(bodyText)
 	return val
 }
 
