@@ -16,7 +16,7 @@ import { file_values_v1_values } from '../../values/v1/values_pb'
 export const file_sdk_v1alpha_sdk: GenFile =
 	/*@__PURE__*/
 	fileDesc(
-		'ChVzZGsvdjFhbHBoYS9zZGsucHJvdG8SC3Nkay52MWFscGhhIrQBChVTaW1wbGVDb25zZW5zdXNJbnB1dHMSIQoFdmFsdWUYASABKAsyEC52YWx1ZXMudjEuVmFsdWVIABIPCgVlcnJvchgCIAEoCUgAEjUKC2Rlc2NyaXB0b3JzGAMgASgLMiAuc2RrLnYxYWxwaGEuQ29uc2Vuc3VzRGVzY3JpcHRvchIhCgdkZWZhdWx0GAQgASgLMhAudmFsdWVzLnYxLlZhbHVlQg0KC29ic2VydmF0aW9uIpABCglGaWVsZHNNYXASMgoGZmllbGRzGAEgAygLMiIuc2RrLnYxYWxwaGEuRmllbGRzTWFwLkZpZWxkc0VudHJ5Gk8KC0ZpZWxkc0VudHJ5EgsKA2tleRgBIAEoCRIvCgV2YWx1ZRgCIAEoCzIgLnNkay52MWFscGhhLkNvbnNlbnN1c0Rlc2NyaXB0b3I6AjgBIoYBChNDb25zZW5zdXNEZXNjcmlwdG9yEjMKC2FnZ3JlZ2F0aW9uGAEgASgOMhwuc2RrLnYxYWxwaGEuQWdncmVnYXRpb25UeXBlSAASLAoKZmllbGRzX21hcBgCIAEoCzIWLnNkay52MWFscGhhLkZpZWxkc01hcEgAQgwKCmRlc2NyaXB0b3IiagoNUmVwb3J0UmVxdWVzdBIXCg9lbmNvZGVkX3BheWxvYWQYASABKAwSFAoMZW5jb2Rlcl9uYW1lGAIgASgJEhQKDHNpZ25pbmdfYWxnbxgDIAEoCRIUCgxoYXNoaW5nX2FsZ28YBCABKAkilwEKDlJlcG9ydFJlc3BvbnNlEhUKDWNvbmZpZ19kaWdlc3QYASABKAwSEgoGc2VxX25yGAIgASgEQgIwABIWCg5yZXBvcnRfY29udGV4dBgDIAEoDBISCgpyYXdfcmVwb3J0GAQgASgMEi4KBHNpZ3MYBSADKAsyIC5zZGsudjFhbHBoYS5BdHRyaWJ1dGVkU2lnbmF0dXJlIjsKE0F0dHJpYnV0ZWRTaWduYXR1cmUSEQoJc2lnbmF0dXJlGAEgASgMEhEKCXNpZ25lcl9pZBgCIAEoDSJrChFDYXBhYmlsaXR5UmVxdWVzdBIKCgJpZBgBIAEoCRIlCgdwYXlsb2FkGAIgASgLMhQuZ29vZ2xlLnByb3RvYnVmLkFueRIOCgZtZXRob2QYAyABKAkSEwoLY2FsbGJhY2tfaWQYBCABKAUiWgoSQ2FwYWJpbGl0eVJlc3BvbnNlEicKB3BheWxvYWQYASABKAsyFC5nb29nbGUucHJvdG9idWYuQW55SAASDwoFZXJyb3IYAiABKAlIAEIKCghyZXNwb25zZSKbAQoTVHJpZ2dlclN1YnNjcmlwdGlvbhIKCgJpZBgBIAEoCRIlCgdwYXlsb2FkGAIgASgLMhQuZ29vZ2xlLnByb3RvYnVmLkFueRIOCgZtZXRob2QYAyABKAkSLwoMcmVxdWlyZW1lbnRzGAQgASgLMhkuc2RrLnYxYWxwaGEuUmVxdWlyZW1lbnRzEhAKCHByZV9ob29rGAUgASgIIkgKEVRlZVR5cGVBbmRSZWdpb25zEiIKBHR5cGUYASABKA4yFC5zZGsudjFhbHBoYS5UZWVUeXBlEg8KB3JlZ2lvbnMYAyADKAkiVQoaVHJpZ2dlclN1YnNjcmlwdGlvblJlcXVlc3QSNwoNc3Vic2NyaXB0aW9ucxgBIAMoCzIgLnNkay52MWFscGhhLlRyaWdnZXJTdWJzY3JpcHRpb24iQAoHVHJpZ2dlchIOCgJpZBgBIAEoBEICMAASJQoHcGF5bG9hZBgCIAEoCzIULmdvb2dsZS5wcm90b2J1Zi5BbnkiGgoHUmVnaW9ucxIPCgdyZWdpb25zGAEgAygJIlIKElRlZVR5cGVzQW5kUmVnaW9ucxI8ChR0ZWVfdHlwZV9hbmRfcmVnaW9ucxgBIAMoCzIeLnNkay52MWFscGhhLlRlZVR5cGVBbmRSZWdpb25zInwKA1RlZRIrCgthbnlfcmVnaW9ucxgBIAEoCzIULnNkay52MWFscGhhLlJlZ2lvbnNIABJAChV0ZWVfdHlwZXNfYW5kX3JlZ2lvbnMYAiABKAsyHy5zZGsudjFhbHBoYS5UZWVUeXBlc0FuZFJlZ2lvbnNIAEIGCgRpdGVtIi0KDFJlcXVpcmVtZW50cxIdCgN0ZWUYASABKAsyEC5zZGsudjFhbHBoYS5UZWUiJwoYQXdhaXRDYXBhYmlsaXRpZXNSZXF1ZXN0EgsKA2lkcxgBIAMoBSK4AQoZQXdhaXRDYXBhYmlsaXRpZXNSZXNwb25zZRJICglyZXNwb25zZXMYASADKAsyNS5zZGsudjFhbHBoYS5Bd2FpdENhcGFiaWxpdGllc1Jlc3BvbnNlLlJlc3BvbnNlc0VudHJ5GlEKDlJlc3BvbnNlc0VudHJ5EgsKA2tleRgBIAEoBRIuCgV2YWx1ZRgCIAEoCzIfLnNkay52MWFscGhhLkNhcGFiaWxpdHlSZXNwb25zZToCOAEi5AEKDkV4ZWN1dGVSZXF1ZXN0Eg4KBmNvbmZpZxgBIAEoDBIrCglzdWJzY3JpYmUYAiABKAsyFi5nb29nbGUucHJvdG9idWYuRW1wdHlIABInCgd0cmlnZ2VyGAMgASgLMhQuc2RrLnYxYWxwaGEuVHJpZ2dlckgAEigKCHByZV9ob29rGAUgASgLMhQuc2RrLnYxYWxwaGEuVHJpZ2dlckgAEh0KEW1heF9yZXNwb25zZV9zaXplGAQgASgEQgIwABIYChBzdXNwZW5kX29uX2F3YWl0GAYgASgIQgkKB3JlcXVlc3QizAEKD0V4ZWN1dGlvblJlc3VsdBIhCgV2YWx1ZRgBIAEoCzIQLnZhbHVlcy52MS5WYWx1ZUgAEg8KBWVycm9yGAIgASgJSAASSAoVdHJpZ2dlcl9zdWJzY3JpcHRpb25zGAMgASgLMicuc2RrLnYxYWxwaGEuVHJpZ2dlclN1YnNjcmlwdGlvblJlcXVlc3RIABIxCgxyZXN0cmljdGlvbnMYBCABKAsyGS5zZGsudjFhbHBoYS5SZXN0cmljdGlvbnNIAEIICgZyZXN1bHQiVgoRR2V0U2VjcmV0c1JlcXVlc3QSLAoIcmVxdWVzdHMYASADKAsyGi5zZGsudjFhbHBoYS5TZWNyZXRSZXF1ZXN0EhMKC2NhbGxiYWNrX2lkGAIgASgFIiIKE0F3YWl0U2VjcmV0c1JlcXVlc3QSCwoDaWRzGAEgAygFIqsBChRBd2FpdFNlY3JldHNSZXNwb25zZRJDCglyZXNwb25zZXMYASADKAsyMC5zZGsudjFhbHBoYS5Bd2FpdFNlY3JldHNSZXNwb25zZS5SZXNwb25zZXNFbnRyeRpOCg5SZXNwb25zZXNFbnRyeRILCgNrZXkYASABKAUSKwoFdmFsdWUYAiABKAsyHC5zZGsudjFhbHBoYS5TZWNyZXRSZXNwb25zZXM6AjgBIi4KDVNlY3JldFJlcXVlc3QSCgoCaWQYASABKAkSEQoJbmFtZXNwYWNlGAIgASgJIkUKBlNlY3JldBIKCgJpZBgBIAEoCRIRCgluYW1lc3BhY2UYAiABKAkSDQoFb3duZXIYAyABKAkSDQoFdmFsdWUYBCABKAkiSgoLU2VjcmV0RXJyb3ISCgoCaWQYASABKAkSEQoJbmFtZXNwYWNlGAIgASgJEg0KBW93bmVyGAMgASgJEg0KBWVycm9yGAQgASgJIm4KDlNlY3JldFJlc3BvbnNlEiUKBnNlY3JldBgBIAEoCzITLnNkay52MWFscGhhLlNlY3JldEgAEikKBWVycm9yGAIgASgLMhguc2RrLnYxYWxwaGEuU2VjcmV0RXJyb3JIAEIKCghyZXNwb25zZSJBCg9TZWNyZXRSZXNwb25zZXMSLgoJcmVzcG9uc2VzGAEgAygLMhsuc2RrLnYxYWxwaGEuU2VjcmV0UmVzcG9uc2UiQgoRTWV0aG9kUmVzdHJpY3Rpb24SCgoCaWQYASABKAkSDgoGbWV0aG9kGAIgASgJEhEKCW1heF9jYWxscxgDIAEoBSJYChVDYXBhYmlsaXR5UmVzdHJpY3Rpb24SMAoGbWV0aG9kGAEgASgLMh4uc2RrLnYxYWxwaGEuTWV0aG9kUmVzdHJpY3Rpb25IAEINCgtyZXN0cmljdGlvbiKhAQoWQ2FwYWJpbGl0eVJlc3RyaWN0aW9ucxI4CgxyZXN0cmljdGlvbnMYASADKAsyIi5zZGsudjFhbHBoYS5DYXBhYmlsaXR5UmVzdHJpY3Rpb24SFwoPbWF4X3RvdGFsX2NhbGxzGAIgASgFEjQKBHR5cGUYAyABKA4yJi5zZGsudjFhbHBoYS5DYXBhYmlsaXR5UmVzdHJpY3Rpb25UeXBlIlEKF1NlY3JldFByZWZpeFJlc3RyaWN0aW9uEg4KBnByZWZpeBgBIAEoCRIRCgluYW1lc3BhY2UYAiABKAkSEwoLbWF4X3NlY3JldHMYAyABKAUikAEKEVNlY3JldFJlc3RyaWN0aW9uEisKDGV4YWN0X3NlY3JldBgBIAEoCzITLnNkay52MWFscGhhLlNlY3JldEgAEj8KD3ByZWZpeGVkX3NlY3JldBgCIAEoCzIkLnNkay52MWFscGhhLlNlY3JldFByZWZpeFJlc3RyaWN0aW9uSABCDQoLcmVzdHJpY3Rpb24iXwoSU2VjcmV0c1Jlc3RyaXRpb25zEjQKDHJlc3RyaWN0aW9ucxgBIAMoCzIeLnNkay52MWFscGhhLlNlY3JldFJlc3RyaWN0aW9uEhMKC21heF9zZWNyZXRzGAIgASgFInsKDFJlc3RyaWN0aW9ucxIwCgdzZWNyZXRzGAEgASgLMh8uc2RrLnYxYWxwaGEuU2VjcmV0c1Jlc3RyaXRpb25zEjkKDGNhcGFiaWxpdGllcxgCIAEoCzIjLnNkay52MWFscGhhLkNhcGFiaWxpdHlSZXN0cmljdGlvbnMq3QEKD0FnZ3JlZ2F0aW9uVHlwZRIgChxBR0dSRUdBVElPTl9UWVBFX1VOU1BFQ0lGSUVEEAASGwoXQUdHUkVHQVRJT05fVFlQRV9NRURJQU4QARIeChpBR0dSRUdBVElPTl9UWVBFX0lERU5USUNBTBACEiIKHkFHR1JFR0FUSU9OX1RZUEVfQ09NTU9OX1BSRUZJWBADEiIKHkFHR1JFR0FUSU9OX1RZUEVfQ09NTU9OX1NVRkZJWBAEEiMKH0FHR1JFR0FUSU9OX1RZUEVfRlJFUVVFTkNZX0xJU1QQBSo5CgRNb2RlEhQKEE1PREVfVU5TUEVDSUZJRUQQABIMCghNT0RFX0RPThABEg0KCU1PREVfTk9ERRACKjsKB1RlZVR5cGUSGAoUVEVFX1RZUEVfVU5TUEVDSUZJRUQQABIWChJURUVfVFlQRV9BV1NfTklUUk8QASppChlDYXBhYmlsaXR5UmVzdHJpY3Rpb25UeXBlEiYKIkNBUEFCSUxJVFlfUkVTVFJJQ1RJT05fVFlQRV9DTE9TRUQQABIkCiBDQVBBQklMSVRZX1JFU1RSSUNUSU9OX1RZUEVfT1BFThABQmgKD2NvbS5zZGsudjFhbHBoYUIIU2RrUHJvdG9QAaICA1NYWKoCC1Nkay5WMWFscGhhygILU2RrXFYxYWxwaGHiAhdTZGtcVjFhbHBoYVxHUEJNZXRhZGF0YeoCDFNkazo6VjFhbHBoYWIGcHJvdG8z',
+		'ChVzZGsvdjFhbHBoYS9zZGsucHJvdG8SC3Nkay52MWFscGhhIrQBChVTaW1wbGVDb25zZW5zdXNJbnB1dHMSIQoFdmFsdWUYASABKAsyEC52YWx1ZXMudjEuVmFsdWVIABIPCgVlcnJvchgCIAEoCUgAEjUKC2Rlc2NyaXB0b3JzGAMgASgLMiAuc2RrLnYxYWxwaGEuQ29uc2Vuc3VzRGVzY3JpcHRvchIhCgdkZWZhdWx0GAQgASgLMhAudmFsdWVzLnYxLlZhbHVlQg0KC29ic2VydmF0aW9uIpABCglGaWVsZHNNYXASMgoGZmllbGRzGAEgAygLMiIuc2RrLnYxYWxwaGEuRmllbGRzTWFwLkZpZWxkc0VudHJ5Gk8KC0ZpZWxkc0VudHJ5EgsKA2tleRgBIAEoCRIvCgV2YWx1ZRgCIAEoCzIgLnNkay52MWFscGhhLkNvbnNlbnN1c0Rlc2NyaXB0b3I6AjgBIoYBChNDb25zZW5zdXNEZXNjcmlwdG9yEjMKC2FnZ3JlZ2F0aW9uGAEgASgOMhwuc2RrLnYxYWxwaGEuQWdncmVnYXRpb25UeXBlSAASLAoKZmllbGRzX21hcBgCIAEoCzIWLnNkay52MWFscGhhLkZpZWxkc01hcEgAQgwKCmRlc2NyaXB0b3IiagoNUmVwb3J0UmVxdWVzdBIXCg9lbmNvZGVkX3BheWxvYWQYASABKAwSFAoMZW5jb2Rlcl9uYW1lGAIgASgJEhQKDHNpZ25pbmdfYWxnbxgDIAEoCRIUCgxoYXNoaW5nX2FsZ28YBCABKAkilwEKDlJlcG9ydFJlc3BvbnNlEhUKDWNvbmZpZ19kaWdlc3QYASABKAwSEgoGc2VxX25yGAIgASgEQgIwABIWCg5yZXBvcnRfY29udGV4dBgDIAEoDBISCgpyYXdfcmVwb3J0GAQgASgMEi4KBHNpZ3MYBSADKAsyIC5zZGsudjFhbHBoYS5BdHRyaWJ1dGVkU2lnbmF0dXJlIjsKE0F0dHJpYnV0ZWRTaWduYXR1cmUSEQoJc2lnbmF0dXJlGAEgASgMEhEKCXNpZ25lcl9pZBgCIAEoDSJrChFDYXBhYmlsaXR5UmVxdWVzdBIKCgJpZBgBIAEoCRIlCgdwYXlsb2FkGAIgASgLMhQuZ29vZ2xlLnByb3RvYnVmLkFueRIOCgZtZXRob2QYAyABKAkSEwoLY2FsbGJhY2tfaWQYBCABKAUiWgoSQ2FwYWJpbGl0eVJlc3BvbnNlEicKB3BheWxvYWQYASABKAsyFC5nb29nbGUucHJvdG9idWYuQW55SAASDwoFZXJyb3IYAiABKAlIAEIKCghyZXNwb25zZSJYChNUcmlnZ2VyU3Vic2NyaXB0aW9uEgoKAmlkGAEgASgJEiUKB3BheWxvYWQYAiABKAsyFC5nb29nbGUucHJvdG9idWYuQW55Eg4KBm1ldGhvZBgDIAEoCSI3ChBUZWVUeXBlU2VsZWN0aW9uEiMKBXR5cGVzGAEgAygOMhQuc2RrLnYxYWxwaGEuVGVlVHlwZSJtCgNUZWUSJQoDYW55GAEgASgLMhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5SAASNwoOdHlwZV9zZWxlY3Rpb24YAiABKAsyHS5zZGsudjFhbHBoYS5UZWVUeXBlU2VsZWN0aW9uSABCBgoEdHlwZSJVChpUcmlnZ2VyU3Vic2NyaXB0aW9uUmVxdWVzdBI3Cg1zdWJzY3JpcHRpb25zGAEgAygLMiAuc2RrLnYxYWxwaGEuVHJpZ2dlclN1YnNjcmlwdGlvbiJACgdUcmlnZ2VyEg4KAmlkGAEgASgEQgIwABIlCgdwYXlsb2FkGAIgASgLMhQuZ29vZ2xlLnByb3RvYnVmLkFueSItCgxSZXF1aXJlbWVudHMSHQoDdGVlGAEgASgLMhAuc2RrLnYxYWxwaGEuVGVlIicKGEF3YWl0Q2FwYWJpbGl0aWVzUmVxdWVzdBILCgNpZHMYASADKAUiuAEKGUF3YWl0Q2FwYWJpbGl0aWVzUmVzcG9uc2USSAoJcmVzcG9uc2VzGAEgAygLMjUuc2RrLnYxYWxwaGEuQXdhaXRDYXBhYmlsaXRpZXNSZXNwb25zZS5SZXNwb25zZXNFbnRyeRpRCg5SZXNwb25zZXNFbnRyeRILCgNrZXkYASABKAUSLgoFdmFsdWUYAiABKAsyHy5zZGsudjFhbHBoYS5DYXBhYmlsaXR5UmVzcG9uc2U6AjgBIqABCg5FeGVjdXRlUmVxdWVzdBIOCgZjb25maWcYASABKAwSKwoJc3Vic2NyaWJlGAIgASgLMhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5SAASJwoHdHJpZ2dlchgDIAEoCzIULnNkay52MWFscGhhLlRyaWdnZXJIABIdChFtYXhfcmVzcG9uc2Vfc2l6ZRgEIAEoBEICMABCCQoHcmVxdWVzdCKZAQoPRXhlY3V0aW9uUmVzdWx0EiEKBXZhbHVlGAEgASgLMhAudmFsdWVzLnYxLlZhbHVlSAASDwoFZXJyb3IYAiABKAlIABJIChV0cmlnZ2VyX3N1YnNjcmlwdGlvbnMYAyABKAsyJy5zZGsudjFhbHBoYS5UcmlnZ2VyU3Vic2NyaXB0aW9uUmVxdWVzdEgAQggKBnJlc3VsdCJWChFHZXRTZWNyZXRzUmVxdWVzdBIsCghyZXF1ZXN0cxgBIAMoCzIaLnNkay52MWFscGhhLlNlY3JldFJlcXVlc3QSEwoLY2FsbGJhY2tfaWQYAiABKAUiIgoTQXdhaXRTZWNyZXRzUmVxdWVzdBILCgNpZHMYASADKAUiqwEKFEF3YWl0U2VjcmV0c1Jlc3BvbnNlEkMKCXJlc3BvbnNlcxgBIAMoCzIwLnNkay52MWFscGhhLkF3YWl0U2VjcmV0c1Jlc3BvbnNlLlJlc3BvbnNlc0VudHJ5Gk4KDlJlc3BvbnNlc0VudHJ5EgsKA2tleRgBIAEoBRIrCgV2YWx1ZRgCIAEoCzIcLnNkay52MWFscGhhLlNlY3JldFJlc3BvbnNlczoCOAEiLgoNU2VjcmV0UmVxdWVzdBIKCgJpZBgBIAEoCRIRCgluYW1lc3BhY2UYAiABKAkiRQoGU2VjcmV0EgoKAmlkGAEgASgJEhEKCW5hbWVzcGFjZRgCIAEoCRINCgVvd25lchgDIAEoCRINCgV2YWx1ZRgEIAEoCSJKCgtTZWNyZXRFcnJvchIKCgJpZBgBIAEoCRIRCgluYW1lc3BhY2UYAiABKAkSDQoFb3duZXIYAyABKAkSDQoFZXJyb3IYBCABKAkibgoOU2VjcmV0UmVzcG9uc2USJQoGc2VjcmV0GAEgASgLMhMuc2RrLnYxYWxwaGEuU2VjcmV0SAASKQoFZXJyb3IYAiABKAsyGC5zZGsudjFhbHBoYS5TZWNyZXRFcnJvckgAQgoKCHJlc3BvbnNlIkEKD1NlY3JldFJlc3BvbnNlcxIuCglyZXNwb25zZXMYASADKAsyGy5zZGsudjFhbHBoYS5TZWNyZXRSZXNwb25zZSq4AQoPQWdncmVnYXRpb25UeXBlEiAKHEFHR1JFR0FUSU9OX1RZUEVfVU5TUEVDSUZJRUQQABIbChdBR0dSRUdBVElPTl9UWVBFX01FRElBThABEh4KGkFHR1JFR0FUSU9OX1RZUEVfSURFTlRJQ0FMEAISIgoeQUdHUkVHQVRJT05fVFlQRV9DT01NT05fUFJFRklYEAMSIgoeQUdHUkVHQVRJT05fVFlQRV9DT01NT05fU1VGRklYEAQqOQoETW9kZRIUChBNT0RFX1VOU1BFQ0lGSUVEEAASDAoITU9ERV9ET04QARINCglNT0RFX05PREUQAiohCgdUZWVUeXBlEhYKElRFRV9UWVBFX0FXU19OSVRSTxAAQmgKD2NvbS5zZGsudjFhbHBoYUIIU2RrUHJvdG9QAaICA1NYWKoCC1Nkay5WMWFscGhhygILU2RrXFYxYWxwaGHiAhdTZGtcVjFhbHBoYVxHUEJNZXRhZGF0YeoCDFNkazo6VjFhbHBoYWIGcHJvdG8z',
 		[file_google_protobuf_any, file_google_protobuf_empty, file_values_v1_values],
 	)
 
@@ -461,16 +461,6 @@ export type TriggerSubscription = Message<'sdk.v1alpha.TriggerSubscription'> & {
 	 * @generated from field: string method = 3;
 	 */
 	method: string
-
-	/**
-	 * @generated from field: sdk.v1alpha.Requirements requirements = 4;
-	 */
-	requirements?: Requirements
-
-	/**
-	 * @generated from field: bool pre_hook = 5;
-	 */
-	preHook: boolean
 }
 
 /**
@@ -491,16 +481,6 @@ export type TriggerSubscriptionJson = {
 	 * @generated from field: string method = 3;
 	 */
 	method?: string
-
-	/**
-	 * @generated from field: sdk.v1alpha.Requirements requirements = 4;
-	 */
-	requirements?: RequirementsJson
-
-	/**
-	 * @generated from field: bool pre_hook = 5;
-	 */
-	preHook?: boolean
 }
 
 /**
@@ -513,43 +493,81 @@ export const TriggerSubscriptionSchema: GenMessage<
 > = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 8)
 
 /**
- * @generated from message sdk.v1alpha.TeeTypeAndRegions
+ * @generated from message sdk.v1alpha.TeeTypeSelection
  */
-export type TeeTypeAndRegions = Message<'sdk.v1alpha.TeeTypeAndRegions'> & {
+export type TeeTypeSelection = Message<'sdk.v1alpha.TeeTypeSelection'> & {
 	/**
-	 * @generated from field: sdk.v1alpha.TeeType type = 1;
+	 * @generated from field: repeated sdk.v1alpha.TeeType types = 1;
 	 */
-	type: TeeType
-
-	/**
-	 * @generated from field: repeated string regions = 3;
-	 */
-	regions: string[]
+	types: TeeType[]
 }
 
 /**
- * @generated from message sdk.v1alpha.TeeTypeAndRegions
+ * @generated from message sdk.v1alpha.TeeTypeSelection
  */
-export type TeeTypeAndRegionsJson = {
+export type TeeTypeSelectionJson = {
 	/**
-	 * @generated from field: sdk.v1alpha.TeeType type = 1;
+	 * @generated from field: repeated sdk.v1alpha.TeeType types = 1;
 	 */
-	type?: TeeTypeJson
-
-	/**
-	 * @generated from field: repeated string regions = 3;
-	 */
-	regions?: string[]
+	types?: TeeTypeJson[]
 }
 
 /**
- * Describes the message sdk.v1alpha.TeeTypeAndRegions.
- * Use `create(TeeTypeAndRegionsSchema)` to create a new message.
+ * Describes the message sdk.v1alpha.TeeTypeSelection.
+ * Use `create(TeeTypeSelectionSchema)` to create a new message.
  */
-export const TeeTypeAndRegionsSchema: GenMessage<
-	TeeTypeAndRegions,
-	{ jsonType: TeeTypeAndRegionsJson }
+export const TeeTypeSelectionSchema: GenMessage<
+	TeeTypeSelection,
+	{ jsonType: TeeTypeSelectionJson }
 > = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 9)
+
+/**
+ * @generated from message sdk.v1alpha.Tee
+ */
+export type Tee = Message<'sdk.v1alpha.Tee'> & {
+	/**
+	 * @generated from oneof sdk.v1alpha.Tee.type
+	 */
+	type:
+		| {
+				/**
+				 * @generated from field: google.protobuf.Empty any = 1;
+				 */
+				value: Empty
+				case: 'any'
+		  }
+		| {
+				/**
+				 * @generated from field: sdk.v1alpha.TeeTypeSelection type_selection = 2;
+				 */
+				value: TeeTypeSelection
+				case: 'typeSelection'
+		  }
+		| { case: undefined; value?: undefined }
+}
+
+/**
+ * @generated from message sdk.v1alpha.Tee
+ */
+export type TeeJson = {
+	/**
+	 * @generated from field: google.protobuf.Empty any = 1;
+	 */
+	any?: EmptyJson
+
+	/**
+	 * @generated from field: sdk.v1alpha.TeeTypeSelection type_selection = 2;
+	 */
+	typeSelection?: TeeTypeSelectionJson
+}
+
+/**
+ * Describes the message sdk.v1alpha.Tee.
+ * Use `create(TeeSchema)` to create a new message.
+ */
+export const TeeSchema: GenMessage<Tee, { jsonType: TeeJson }> =
+	/*@__PURE__*/
+	messageDesc(file_sdk_v1alpha_sdk, 10)
 
 /**
  * @generated from message sdk.v1alpha.TriggerSubscriptionRequest
@@ -578,7 +596,7 @@ export type TriggerSubscriptionRequestJson = {
 export const TriggerSubscriptionRequestSchema: GenMessage<
 	TriggerSubscriptionRequest,
 	{ jsonType: TriggerSubscriptionRequestJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 10)
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 11)
 
 /**
  * @generated from message sdk.v1alpha.Trigger
@@ -616,112 +634,7 @@ export type TriggerJson = {
  */
 export const TriggerSchema: GenMessage<Trigger, { jsonType: TriggerJson }> =
 	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 11)
-
-/**
- * @generated from message sdk.v1alpha.Regions
- */
-export type Regions = Message<'sdk.v1alpha.Regions'> & {
-	/**
-	 * @generated from field: repeated string regions = 1;
-	 */
-	regions: string[]
-}
-
-/**
- * @generated from message sdk.v1alpha.Regions
- */
-export type RegionsJson = {
-	/**
-	 * @generated from field: repeated string regions = 1;
-	 */
-	regions?: string[]
-}
-
-/**
- * Describes the message sdk.v1alpha.Regions.
- * Use `create(RegionsSchema)` to create a new message.
- */
-export const RegionsSchema: GenMessage<Regions, { jsonType: RegionsJson }> =
-	/*@__PURE__*/
 	messageDesc(file_sdk_v1alpha_sdk, 12)
-
-/**
- * @generated from message sdk.v1alpha.TeeTypesAndRegions
- */
-export type TeeTypesAndRegions = Message<'sdk.v1alpha.TeeTypesAndRegions'> & {
-	/**
-	 * @generated from field: repeated sdk.v1alpha.TeeTypeAndRegions tee_type_and_regions = 1;
-	 */
-	teeTypeAndRegions: TeeTypeAndRegions[]
-}
-
-/**
- * @generated from message sdk.v1alpha.TeeTypesAndRegions
- */
-export type TeeTypesAndRegionsJson = {
-	/**
-	 * @generated from field: repeated sdk.v1alpha.TeeTypeAndRegions tee_type_and_regions = 1;
-	 */
-	teeTypeAndRegions?: TeeTypeAndRegionsJson[]
-}
-
-/**
- * Describes the message sdk.v1alpha.TeeTypesAndRegions.
- * Use `create(TeeTypesAndRegionsSchema)` to create a new message.
- */
-export const TeeTypesAndRegionsSchema: GenMessage<
-	TeeTypesAndRegions,
-	{ jsonType: TeeTypesAndRegionsJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 13)
-
-/**
- * @generated from message sdk.v1alpha.Tee
- */
-export type Tee = Message<'sdk.v1alpha.Tee'> & {
-	/**
-	 * @generated from oneof sdk.v1alpha.Tee.item
-	 */
-	item:
-		| {
-				/**
-				 * @generated from field: sdk.v1alpha.Regions any_regions = 1;
-				 */
-				value: Regions
-				case: 'anyRegions'
-		  }
-		| {
-				/**
-				 * @generated from field: sdk.v1alpha.TeeTypesAndRegions tee_types_and_regions = 2;
-				 */
-				value: TeeTypesAndRegions
-				case: 'teeTypesAndRegions'
-		  }
-		| { case: undefined; value?: undefined }
-}
-
-/**
- * @generated from message sdk.v1alpha.Tee
- */
-export type TeeJson = {
-	/**
-	 * @generated from field: sdk.v1alpha.Regions any_regions = 1;
-	 */
-	anyRegions?: RegionsJson
-
-	/**
-	 * @generated from field: sdk.v1alpha.TeeTypesAndRegions tee_types_and_regions = 2;
-	 */
-	teeTypesAndRegions?: TeeTypesAndRegionsJson
-}
-
-/**
- * Describes the message sdk.v1alpha.Tee.
- * Use `create(TeeSchema)` to create a new message.
- */
-export const TeeSchema: GenMessage<Tee, { jsonType: TeeJson }> =
-	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 14)
 
 /**
  * @generated from message sdk.v1alpha.Requirements
@@ -749,7 +662,7 @@ export type RequirementsJson = {
  */
 export const RequirementsSchema: GenMessage<Requirements, { jsonType: RequirementsJson }> =
 	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 15)
+	messageDesc(file_sdk_v1alpha_sdk, 13)
 
 /**
  * @generated from message sdk.v1alpha.AwaitCapabilitiesRequest
@@ -778,7 +691,7 @@ export type AwaitCapabilitiesRequestJson = {
 export const AwaitCapabilitiesRequestSchema: GenMessage<
 	AwaitCapabilitiesRequest,
 	{ jsonType: AwaitCapabilitiesRequestJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 16)
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 14)
 
 /**
  * @generated from message sdk.v1alpha.AwaitCapabilitiesResponse
@@ -807,7 +720,7 @@ export type AwaitCapabilitiesResponseJson = {
 export const AwaitCapabilitiesResponseSchema: GenMessage<
 	AwaitCapabilitiesResponse,
 	{ jsonType: AwaitCapabilitiesResponseJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 17)
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 15)
 
 /**
  * @generated from message sdk.v1alpha.ExecuteRequest
@@ -836,24 +749,12 @@ export type ExecuteRequest = Message<'sdk.v1alpha.ExecuteRequest'> & {
 				value: Trigger
 				case: 'trigger'
 		  }
-		| {
-				/**
-				 * @generated from field: sdk.v1alpha.Trigger pre_hook = 5;
-				 */
-				value: Trigger
-				case: 'preHook'
-		  }
 		| { case: undefined; value?: undefined }
 
 	/**
 	 * @generated from field: uint64 max_response_size = 4 [jstype = JS_NORMAL];
 	 */
 	maxResponseSize: bigint
-
-	/**
-	 * @generated from field: bool suspend_on_await = 6;
-	 */
-	suspendOnAwait: boolean
 }
 
 /**
@@ -876,19 +777,9 @@ export type ExecuteRequestJson = {
 	trigger?: TriggerJson
 
 	/**
-	 * @generated from field: sdk.v1alpha.Trigger pre_hook = 5;
-	 */
-	preHook?: TriggerJson
-
-	/**
 	 * @generated from field: uint64 max_response_size = 4 [jstype = JS_NORMAL];
 	 */
 	maxResponseSize?: string
-
-	/**
-	 * @generated from field: bool suspend_on_await = 6;
-	 */
-	suspendOnAwait?: boolean
 }
 
 /**
@@ -897,7 +788,7 @@ export type ExecuteRequestJson = {
  */
 export const ExecuteRequestSchema: GenMessage<ExecuteRequest, { jsonType: ExecuteRequestJson }> =
 	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 18)
+	messageDesc(file_sdk_v1alpha_sdk, 16)
 
 /**
  * @generated from message sdk.v1alpha.ExecutionResult
@@ -928,13 +819,6 @@ export type ExecutionResult = Message<'sdk.v1alpha.ExecutionResult'> & {
 				value: TriggerSubscriptionRequest
 				case: 'triggerSubscriptions'
 		  }
-		| {
-				/**
-				 * @generated from field: sdk.v1alpha.Restrictions restrictions = 4;
-				 */
-				value: Restrictions
-				case: 'restrictions'
-		  }
 		| { case: undefined; value?: undefined }
 }
 
@@ -956,11 +840,6 @@ export type ExecutionResultJson = {
 	 * @generated from field: sdk.v1alpha.TriggerSubscriptionRequest trigger_subscriptions = 3;
 	 */
 	triggerSubscriptions?: TriggerSubscriptionRequestJson
-
-	/**
-	 * @generated from field: sdk.v1alpha.Restrictions restrictions = 4;
-	 */
-	restrictions?: RestrictionsJson
 }
 
 /**
@@ -969,7 +848,7 @@ export type ExecutionResultJson = {
  */
 export const ExecutionResultSchema: GenMessage<ExecutionResult, { jsonType: ExecutionResultJson }> =
 	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 19)
+	messageDesc(file_sdk_v1alpha_sdk, 17)
 
 /**
  * @generated from message sdk.v1alpha.GetSecretsRequest
@@ -1008,7 +887,7 @@ export type GetSecretsRequestJson = {
 export const GetSecretsRequestSchema: GenMessage<
 	GetSecretsRequest,
 	{ jsonType: GetSecretsRequestJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 20)
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 18)
 
 /**
  * @generated from message sdk.v1alpha.AwaitSecretsRequest
@@ -1037,7 +916,7 @@ export type AwaitSecretsRequestJson = {
 export const AwaitSecretsRequestSchema: GenMessage<
 	AwaitSecretsRequest,
 	{ jsonType: AwaitSecretsRequestJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 21)
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 19)
 
 /**
  * @generated from message sdk.v1alpha.AwaitSecretsResponse
@@ -1066,7 +945,7 @@ export type AwaitSecretsResponseJson = {
 export const AwaitSecretsResponseSchema: GenMessage<
 	AwaitSecretsResponse,
 	{ jsonType: AwaitSecretsResponseJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 22)
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 20)
 
 /**
  * @generated from message sdk.v1alpha.SecretRequest
@@ -1104,7 +983,7 @@ export type SecretRequestJson = {
  */
 export const SecretRequestSchema: GenMessage<SecretRequest, { jsonType: SecretRequestJson }> =
 	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 23)
+	messageDesc(file_sdk_v1alpha_sdk, 21)
 
 /**
  * @generated from message sdk.v1alpha.Secret
@@ -1162,7 +1041,7 @@ export type SecretJson = {
  */
 export const SecretSchema: GenMessage<Secret, { jsonType: SecretJson }> =
 	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 24)
+	messageDesc(file_sdk_v1alpha_sdk, 22)
 
 /**
  * @generated from message sdk.v1alpha.SecretError
@@ -1220,7 +1099,7 @@ export type SecretErrorJson = {
  */
 export const SecretErrorSchema: GenMessage<SecretError, { jsonType: SecretErrorJson }> =
 	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 25)
+	messageDesc(file_sdk_v1alpha_sdk, 23)
 
 /**
  * @generated from message sdk.v1alpha.SecretResponse
@@ -1268,7 +1147,7 @@ export type SecretResponseJson = {
  */
 export const SecretResponseSchema: GenMessage<SecretResponse, { jsonType: SecretResponseJson }> =
 	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 26)
+	messageDesc(file_sdk_v1alpha_sdk, 24)
 
 /**
  * @generated from message sdk.v1alpha.SecretResponses
@@ -1296,317 +1175,7 @@ export type SecretResponsesJson = {
  */
 export const SecretResponsesSchema: GenMessage<SecretResponses, { jsonType: SecretResponsesJson }> =
 	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 27)
-
-/**
- * @generated from message sdk.v1alpha.MethodRestriction
- */
-export type MethodRestriction = Message<'sdk.v1alpha.MethodRestriction'> & {
-	/**
-	 * @generated from field: string id = 1;
-	 */
-	id: string
-
-	/**
-	 * @generated from field: string method = 2;
-	 */
-	method: string
-
-	/**
-	 * @generated from field: int32 max_calls = 3;
-	 */
-	maxCalls: number
-}
-
-/**
- * @generated from message sdk.v1alpha.MethodRestriction
- */
-export type MethodRestrictionJson = {
-	/**
-	 * @generated from field: string id = 1;
-	 */
-	id?: string
-
-	/**
-	 * @generated from field: string method = 2;
-	 */
-	method?: string
-
-	/**
-	 * @generated from field: int32 max_calls = 3;
-	 */
-	maxCalls?: number
-}
-
-/**
- * Describes the message sdk.v1alpha.MethodRestriction.
- * Use `create(MethodRestrictionSchema)` to create a new message.
- */
-export const MethodRestrictionSchema: GenMessage<
-	MethodRestriction,
-	{ jsonType: MethodRestrictionJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 28)
-
-/**
- * @generated from message sdk.v1alpha.CapabilityRestriction
- */
-export type CapabilityRestriction = Message<'sdk.v1alpha.CapabilityRestriction'> & {
-	/**
-	 * @generated from oneof sdk.v1alpha.CapabilityRestriction.restriction
-	 */
-	restriction:
-		| {
-				/**
-				 * @generated from field: sdk.v1alpha.MethodRestriction method = 1;
-				 */
-				value: MethodRestriction
-				case: 'method'
-		  }
-		| { case: undefined; value?: undefined }
-}
-
-/**
- * @generated from message sdk.v1alpha.CapabilityRestriction
- */
-export type CapabilityRestrictionJson = {
-	/**
-	 * @generated from field: sdk.v1alpha.MethodRestriction method = 1;
-	 */
-	method?: MethodRestrictionJson
-}
-
-/**
- * Describes the message sdk.v1alpha.CapabilityRestriction.
- * Use `create(CapabilityRestrictionSchema)` to create a new message.
- */
-export const CapabilityRestrictionSchema: GenMessage<
-	CapabilityRestriction,
-	{ jsonType: CapabilityRestrictionJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 29)
-
-/**
- * @generated from message sdk.v1alpha.CapabilityRestrictions
- */
-export type CapabilityRestrictions = Message<'sdk.v1alpha.CapabilityRestrictions'> & {
-	/**
-	 * @generated from field: repeated sdk.v1alpha.CapabilityRestriction restrictions = 1;
-	 */
-	restrictions: CapabilityRestriction[]
-
-	/**
-	 * @generated from field: int32 max_total_calls = 2;
-	 */
-	maxTotalCalls: number
-
-	/**
-	 * @generated from field: sdk.v1alpha.CapabilityRestrictionType type = 3;
-	 */
-	type: CapabilityRestrictionType
-}
-
-/**
- * @generated from message sdk.v1alpha.CapabilityRestrictions
- */
-export type CapabilityRestrictionsJson = {
-	/**
-	 * @generated from field: repeated sdk.v1alpha.CapabilityRestriction restrictions = 1;
-	 */
-	restrictions?: CapabilityRestrictionJson[]
-
-	/**
-	 * @generated from field: int32 max_total_calls = 2;
-	 */
-	maxTotalCalls?: number
-
-	/**
-	 * @generated from field: sdk.v1alpha.CapabilityRestrictionType type = 3;
-	 */
-	type?: CapabilityRestrictionTypeJson
-}
-
-/**
- * Describes the message sdk.v1alpha.CapabilityRestrictions.
- * Use `create(CapabilityRestrictionsSchema)` to create a new message.
- */
-export const CapabilityRestrictionsSchema: GenMessage<
-	CapabilityRestrictions,
-	{ jsonType: CapabilityRestrictionsJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 30)
-
-/**
- * @generated from message sdk.v1alpha.SecretPrefixRestriction
- */
-export type SecretPrefixRestriction = Message<'sdk.v1alpha.SecretPrefixRestriction'> & {
-	/**
-	 * @generated from field: string prefix = 1;
-	 */
-	prefix: string
-
-	/**
-	 * @generated from field: string namespace = 2;
-	 */
-	namespace: string
-
-	/**
-	 * @generated from field: int32 max_secrets = 3;
-	 */
-	maxSecrets: number
-}
-
-/**
- * @generated from message sdk.v1alpha.SecretPrefixRestriction
- */
-export type SecretPrefixRestrictionJson = {
-	/**
-	 * @generated from field: string prefix = 1;
-	 */
-	prefix?: string
-
-	/**
-	 * @generated from field: string namespace = 2;
-	 */
-	namespace?: string
-
-	/**
-	 * @generated from field: int32 max_secrets = 3;
-	 */
-	maxSecrets?: number
-}
-
-/**
- * Describes the message sdk.v1alpha.SecretPrefixRestriction.
- * Use `create(SecretPrefixRestrictionSchema)` to create a new message.
- */
-export const SecretPrefixRestrictionSchema: GenMessage<
-	SecretPrefixRestriction,
-	{ jsonType: SecretPrefixRestrictionJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 31)
-
-/**
- * @generated from message sdk.v1alpha.SecretRestriction
- */
-export type SecretRestriction = Message<'sdk.v1alpha.SecretRestriction'> & {
-	/**
-	 * @generated from oneof sdk.v1alpha.SecretRestriction.restriction
-	 */
-	restriction:
-		| {
-				/**
-				 * @generated from field: sdk.v1alpha.Secret exact_secret = 1;
-				 */
-				value: Secret
-				case: 'exactSecret'
-		  }
-		| {
-				/**
-				 * @generated from field: sdk.v1alpha.SecretPrefixRestriction prefixed_secret = 2;
-				 */
-				value: SecretPrefixRestriction
-				case: 'prefixedSecret'
-		  }
-		| { case: undefined; value?: undefined }
-}
-
-/**
- * @generated from message sdk.v1alpha.SecretRestriction
- */
-export type SecretRestrictionJson = {
-	/**
-	 * @generated from field: sdk.v1alpha.Secret exact_secret = 1;
-	 */
-	exactSecret?: SecretJson
-
-	/**
-	 * @generated from field: sdk.v1alpha.SecretPrefixRestriction prefixed_secret = 2;
-	 */
-	prefixedSecret?: SecretPrefixRestrictionJson
-}
-
-/**
- * Describes the message sdk.v1alpha.SecretRestriction.
- * Use `create(SecretRestrictionSchema)` to create a new message.
- */
-export const SecretRestrictionSchema: GenMessage<
-	SecretRestriction,
-	{ jsonType: SecretRestrictionJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 32)
-
-/**
- * @generated from message sdk.v1alpha.SecretsRestritions
- */
-export type SecretsRestritions = Message<'sdk.v1alpha.SecretsRestritions'> & {
-	/**
-	 * @generated from field: repeated sdk.v1alpha.SecretRestriction restrictions = 1;
-	 */
-	restrictions: SecretRestriction[]
-
-	/**
-	 * @generated from field: int32 max_secrets = 2;
-	 */
-	maxSecrets: number
-}
-
-/**
- * @generated from message sdk.v1alpha.SecretsRestritions
- */
-export type SecretsRestritionsJson = {
-	/**
-	 * @generated from field: repeated sdk.v1alpha.SecretRestriction restrictions = 1;
-	 */
-	restrictions?: SecretRestrictionJson[]
-
-	/**
-	 * @generated from field: int32 max_secrets = 2;
-	 */
-	maxSecrets?: number
-}
-
-/**
- * Describes the message sdk.v1alpha.SecretsRestritions.
- * Use `create(SecretsRestritionsSchema)` to create a new message.
- */
-export const SecretsRestritionsSchema: GenMessage<
-	SecretsRestritions,
-	{ jsonType: SecretsRestritionsJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 33)
-
-/**
- * @generated from message sdk.v1alpha.Restrictions
- */
-export type Restrictions = Message<'sdk.v1alpha.Restrictions'> & {
-	/**
-	 * @generated from field: sdk.v1alpha.SecretsRestritions secrets = 1;
-	 */
-	secrets?: SecretsRestritions
-
-	/**
-	 * @generated from field: sdk.v1alpha.CapabilityRestrictions capabilities = 2;
-	 */
-	capabilities?: CapabilityRestrictions
-}
-
-/**
- * @generated from message sdk.v1alpha.Restrictions
- */
-export type RestrictionsJson = {
-	/**
-	 * @generated from field: sdk.v1alpha.SecretsRestritions secrets = 1;
-	 */
-	secrets?: SecretsRestritionsJson
-
-	/**
-	 * @generated from field: sdk.v1alpha.CapabilityRestrictions capabilities = 2;
-	 */
-	capabilities?: CapabilityRestrictionsJson
-}
-
-/**
- * Describes the message sdk.v1alpha.Restrictions.
- * Use `create(RestrictionsSchema)` to create a new message.
- */
-export const RestrictionsSchema: GenMessage<Restrictions, { jsonType: RestrictionsJson }> =
-	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 34)
+	messageDesc(file_sdk_v1alpha_sdk, 25)
 
 /**
  * @generated from enum sdk.v1alpha.AggregationType
@@ -1636,11 +1205,6 @@ export enum AggregationType {
 	 * @generated from enum value: AGGREGATION_TYPE_COMMON_SUFFIX = 4;
 	 */
 	COMMON_SUFFIX = 4,
-
-	/**
-	 * @generated from enum value: AGGREGATION_TYPE_FREQUENCY_LIST = 5;
-	 */
-	FREQUENCY_LIST = 5,
 }
 
 /**
@@ -1652,7 +1216,6 @@ export type AggregationTypeJson =
 	| 'AGGREGATION_TYPE_IDENTICAL'
 	| 'AGGREGATION_TYPE_COMMON_PREFIX'
 	| 'AGGREGATION_TYPE_COMMON_SUFFIX'
-	| 'AGGREGATION_TYPE_FREQUENCY_LIST'
 
 /**
  * Describes the enum sdk.v1alpha.AggregationType.
@@ -1696,20 +1259,15 @@ export const ModeSchema: GenEnum<Mode, ModeJson> = /*@__PURE__*/ enumDesc(file_s
  */
 export enum TeeType {
 	/**
-	 * @generated from enum value: TEE_TYPE_UNSPECIFIED = 0;
+	 * @generated from enum value: TEE_TYPE_AWS_NITRO = 0;
 	 */
-	UNSPECIFIED = 0,
-
-	/**
-	 * @generated from enum value: TEE_TYPE_AWS_NITRO = 1;
-	 */
-	AWS_NITRO = 1,
+	AWS_NITRO = 0,
 }
 
 /**
  * @generated from enum sdk.v1alpha.TeeType
  */
-export type TeeTypeJson = 'TEE_TYPE_UNSPECIFIED' | 'TEE_TYPE_AWS_NITRO'
+export type TeeTypeJson = 'TEE_TYPE_AWS_NITRO'
 
 /**
  * Describes the enum sdk.v1alpha.TeeType.
@@ -1717,33 +1275,3 @@ export type TeeTypeJson = 'TEE_TYPE_UNSPECIFIED' | 'TEE_TYPE_AWS_NITRO'
 export const TeeTypeSchema: GenEnum<TeeType, TeeTypeJson> =
 	/*@__PURE__*/
 	enumDesc(file_sdk_v1alpha_sdk, 2)
-
-/**
- * @generated from enum sdk.v1alpha.CapabilityRestrictionType
- */
-export enum CapabilityRestrictionType {
-	/**
-	 * @generated from enum value: CAPABILITY_RESTRICTION_TYPE_CLOSED = 0;
-	 */
-	CLOSED = 0,
-
-	/**
-	 * @generated from enum value: CAPABILITY_RESTRICTION_TYPE_OPEN = 1;
-	 */
-	OPEN = 1,
-}
-
-/**
- * @generated from enum sdk.v1alpha.CapabilityRestrictionType
- */
-export type CapabilityRestrictionTypeJson =
-	| 'CAPABILITY_RESTRICTION_TYPE_CLOSED'
-	| 'CAPABILITY_RESTRICTION_TYPE_OPEN'
-
-/**
- * Describes the enum sdk.v1alpha.CapabilityRestrictionType.
- */
-export const CapabilityRestrictionTypeSchema: GenEnum<
-	CapabilityRestrictionType,
-	CapabilityRestrictionTypeJson
-> = /*@__PURE__*/ enumDesc(file_sdk_v1alpha_sdk, 3)
