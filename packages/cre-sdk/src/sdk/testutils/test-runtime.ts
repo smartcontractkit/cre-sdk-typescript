@@ -36,7 +36,7 @@ import {
 import type { Value as ProtoValue } from '@cre/generated/values/v1/values_pb'
 import { ValueSchema } from '@cre/generated/values/v1/values_pb'
 import type { RuntimeHelpers } from '../impl/runtime-impl'
-import { RuntimeImpl } from '../impl/runtime-impl'
+import { RuntimeImpl, TeeRuntimeImpl } from '../impl/runtime-impl'
 import { TestWriter } from './test-writer'
 
 /** Error message when response exceeds max size. Used by the harness when its await implements the size check. */
@@ -337,10 +337,11 @@ export function test(title: string, fn: () => void | Promise<void>): void {
 /**
  * Creates a test runtime. This must be called from within a test in this package.
  */
-export function newTestRuntime(
+export function newTestRuntime<T = unknown>(
 	secrets?: Secrets | null,
 	options: NewTestRuntimeOptions = {},
-): TestRuntime {
+	config: T | undefined = undefined,
+): TestRuntime<T> {
 	const secretsMap = secrets ?? new Map<string, Map<string, string>>()
 	const testWriter = new TestWriter()
 	const registry = registryStorage.getStore() ?? new Registry()
@@ -378,21 +379,46 @@ export function newTestRuntime(
 	const maxResponseSize = BigInt(options.maxResponseSize ?? DEFAULT_MAX_RESPONSE_SIZE_BYTES)
 	const helpers = createTestRuntimeHelpers(registry, secretsMap, testWriter, state, maxResponseSize)
 
-	return new TestRuntime(helpers, maxResponseSize, testWriter, state)
+	return new TestRuntime(helpers, maxResponseSize, testWriter, state, config)
 }
 
 /**
  * TestRuntime is a Runtime implementation for unit tests. Extends RuntimeImpl; construct via newTestRuntime.
  * Adds getLogs() and setTimeProvider(). Registry is accessed via getTestCapabilityHandler when inside testWithRuntime.
  */
-export class TestRuntime extends RuntimeImpl<unknown> {
+export class TestRuntime<T> extends RuntimeImpl<T> {
 	constructor(
 		helpers: RuntimeHelpers,
 		maxResponseSize: bigint,
 		private readonly testWriter: TestWriter,
 		private readonly state: TestRuntimeState,
+		config: T | undefined = undefined,
 	) {
-		super({}, 0, helpers, maxResponseSize)
+		super(config ?? ({} as T), 0, helpers, maxResponseSize)
+	}
+
+	getLogs(): string[] {
+		return this.testWriter.getLogs()
+	}
+
+	setTimeProvider(timeProvider: () => number): void {
+		this.state.timeProvider = timeProvider
+	}
+}
+
+/**
+ * TestTeeRuntime is a TeeRuntime implementation for unit tests. Extends TeeRuntimeImpl; construct via newTestTEERuntime.
+ * Adds getLogs() and setTimeProvider(). Registry is accessed via getTestCapabilityHandler when inside testWithRuntime.
+ */
+export class TestTeeRuntime<T> extends TeeRuntimeImpl<T> {
+	constructor(
+		helpers: RuntimeHelpers,
+		maxResponseSize: bigint,
+		private readonly testWriter: TestWriter,
+		private readonly state: TestRuntimeState,
+		config: T,
+	) {
+		super(config, 0, helpers, maxResponseSize)
 	}
 
 	getLogs(): string[] {

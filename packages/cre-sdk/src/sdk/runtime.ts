@@ -40,6 +40,28 @@ export interface NodeRuntime<C> extends BaseRuntime<C> {
 }
 
 /**
+ * Runtime for Tee mode execution.
+ */
+export interface TeeRuntime<C> extends BaseRuntime<C>, SecretsProvider {
+	/**
+	 * Generates a report from the DON.
+	 * Data requestsed throught this method will be routed outside of the TEE.
+	 *
+	 * @param input - Report request to generate a report from the DON
+	 * @returns Report generated from the DON
+	 */
+	reportFromDon(input: ReportRequest | ReportRequestJson): {
+		result: () => Report
+	}
+
+	/**
+	 * Returns the runtime that makes requests to the CRE DONs.
+	 * Requests made through this runtime will therefore be routed outside of the TEE
+	 */
+	usingTheDons(): Runtime<C>
+}
+
+/**
  * Runtime for DON mode execution.
  */
 export interface Runtime<C> extends BaseRuntime<C>, SecretsProvider {

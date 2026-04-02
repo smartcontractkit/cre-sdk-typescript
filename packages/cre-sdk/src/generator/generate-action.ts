@@ -17,6 +17,7 @@ export function generateActionMethod(
 	capabilityClassName: string,
 	labels: ProcessedLabel[],
 	modePrefix: string,
+	teeEnabled: boolean,
 ): string {
 	const capabilityIdLogic = generateCapabilityIdLogic(labels, capabilityClassName)
 
@@ -40,7 +41,21 @@ export function generateActionMethod(
 			? 'Report'
 			: method.output.name
 
-	const callSig = `(runtime: ${modePrefix}Runtime<unknown>, input: ${inputTypes.join(' | ')}): {result: () => ${outputType}}`
+	const basicSig = `(runtime: ${modePrefix}Runtime<unknown>, input: ${inputTypes.join(' | ')}): {result: () => ${outputType}}`
+
+	const callSig = teeEnabled
+		? basicSig.replace(
+				`${modePrefix}Runtime<unknown>`,
+				`${modePrefix}Runtime<unknown> | TeeRuntime<unknown>`,
+			)
+		: basicSig
+
+	const teeSig = basicSig.replace(`${modePrefix}Runtime<unknown>`, `TeeRuntime<unknown>`)
+
+	var nameAndPublicSigs = teeEnabled
+		? `${methodName}${teeSig}\n${methodName}${basicSig};\n${methodName}${callSig};`
+		: `${methodName}${callSig};`
+
 	const callSigAndBody = `${callSig} {
     // Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
     let payload: ${method.input.name}
@@ -104,7 +119,7 @@ export function generateActionMethod(
       : UnwrapOptions<TOutput>,
   ): (...args: TArgs) => { result: () => TOutput }`
 		return `
-  ${methodName}${callSig}
+  ${nameAndPublicSigs}
   ${methodName}${sugarSig}
   ${methodName}(...args: unknown[]): unknown {
     // Check if this is the sugar syntax overload (has function parameter)
@@ -113,7 +128,7 @@ export function generateActionMethod(
       return this.${methodName}SugarHelper(runtime, fn, consensusAggregation, unwrapOptions)
     }
     // Otherwise, this is the basic call overload
-    const [runtime, input] = args as [${modePrefix}Runtime<unknown>, ${inputTypes.join(' | ')}]
+    const [runtime, input] = args as [${teeEnabled ? `${modePrefix}Runtime<unknown> | TeeRuntime<unknown>` : `${modePrefix}Runtime<unknown>`}, ${inputTypes.join(' | ')}]
     return this.${methodName}CallHelper(runtime, input)
   }
   private ${methodName}CallHelper${callSigAndBody}
@@ -125,6 +140,11 @@ export function generateActionMethod(
       return runtime.runInNodeMode(wrappedFn, consensusAggregation, unwrapOptions)
     }`
 	}
+
+	// For DON mode: emit tee + basic overload declarations, then the implementation with its name.
+	// nameAndPublicSigs is designed for Node mode's dispatcher pattern and must not be reused here.
+	const donOverloads = teeEnabled ? `${methodName}${teeSig}\n  ${methodName}${basicSig}\n  ` : ''
+
 	return `
-  ${methodName}${callSigAndBody}`
+  ${donOverloads}${methodName}${callSigAndBody}`
 }

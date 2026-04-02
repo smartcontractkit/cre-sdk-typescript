@@ -40,7 +40,7 @@ export { HTTPCapability } from '@cre/generated-sdk/capabilities/networking/http/
 export { CronCapability } from '@cre/generated-sdk/capabilities/scheduler/cron/v1/cron_sdk_gen'
 
 // Runtime
-export type { NodeRuntime, Runtime } from '@cre/sdk/runtime'
+export type { NodeRuntime, Runtime, TeeRuntime } from '@cre/sdk/runtime'
 export { handler } from '@cre/sdk/workflow'
 
 prepareRuntime()

@@ -13,9 +13,14 @@ import {
 	type ExecutionResult,
 	ExecutionResultSchema,
 	GetSecretsRequestSchema,
+	RequirementsSchema,
 	SecretResponseSchema,
 	SecretResponsesSchema,
 	SecretSchema,
+	type Tee,
+	type TeeJson,
+	TeeSchema,
+	TeeType,
 	type Trigger,
 	TriggerSchema,
 	type TriggerSubscriptionRequest,
@@ -25,7 +30,7 @@ import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/ca
 import { cre } from '@cre/sdk/cre'
 import { Value } from '../utils'
 import type { SecretsProvider } from '../workflow'
-import { Runner } from './runner'
+import { Runner, TeeRunner } from './runner'
 
 const anyConfig = Buffer.from('config')
 const anyMaxResponseSize = 2048n
@@ -49,6 +54,7 @@ const anyExecuteRequest = create(ExecuteRequestSchema, {
 })
 
 type TestRunnerBindings = {
+	requirements: (data: Uint8Array) => void
 	versionV2: () => void
 	sendResponse: (data: Uint8Array) => number
 	getWasiArgs: () => string
@@ -60,6 +66,7 @@ type TestRunnerBindings = {
 }
 
 const mockHostBindings: TestRunnerBindings = {
+	requirements: mock(() => {}),
 	sendResponse: mock(() => {
 		return 0
 	}),
@@ -76,6 +83,9 @@ const mockHostBindings: TestRunnerBindings = {
 }
 
 const proxyHostBindings = {
+	requirements: (data: Uint8Array) => {
+		return mockHostBindings.requirements(data)
+	},
 	sendResponse: (data: Uint8Array) => {
 		return mockHostBindings.sendResponse(data)
 	},
@@ -306,13 +316,19 @@ describe('runner', () => {
 	})
 })
 
-function getTestRunner(request: ExecuteRequest): Promise<Runner<string>> {
+function setupArgs(request: ExecuteRequest, preCheck?: () => void) {
 	const serialized = toBinary(ExecuteRequestSchema, request)
 	const encoded = Buffer.from(serialized).toString('base64')
 
 	// Update the mock to return the specific request
-	mockHostBindings.getWasiArgs = mock(() => JSON.stringify(['program', encoded]))
+	mockHostBindings.getWasiArgs = mock(() => {
+		preCheck?.()
+		return JSON.stringify(['program', encoded])
+	})
+}
 
+function getTestRunner(request: ExecuteRequest): Promise<Runner<string>> {
+	setupArgs(request)
 	return Runner.newRunner<string>({
 		configParser: (b) => {
 			const stringConfig = Buffer.from(b).toString()
@@ -321,3 +337,56 @@ function getTestRunner(request: ExecuteRequest): Promise<Runner<string>> {
 		},
 	})
 }
+
+describe('TeeRunner', () => {
+	test('newRunner call requirements for any tee', async () => {
+		const requirements = create(RequirementsSchema, {
+			tee: { type: { case: 'any', value: create(EmptySchema, {}) } },
+		})
+		let called = false
+		setupArgs(anyExecuteRequest, () => expect(called).toBe(true))
+		mockHostBindings.requirements = mock((data) => {
+			called = true
+			expect(data).toEqual(toBinary(RequirementsSchema, requirements))
+		})
+
+		TeeRunner.newRunner<string>({
+			tees: 'any',
+			configHandlerParams: {
+				configParser: (b) => {
+					const stringConfig = Buffer.from(b).toString()
+					expect(stringConfig).toBe(anyConfig.toString())
+					return stringConfig
+				},
+			},
+		})
+
+		expect(called).toBe(true)
+	})
+
+	test('newRunner call requirements for TEE list', async () => {
+		const requirements = create(RequirementsSchema, {
+			tee: { type: { case: 'typeSelection', value: { types: [TeeType.AWS_NITRO] } } },
+		})
+
+		let called = false
+		setupArgs(anyExecuteRequest, () => expect(called).toBe(true))
+		mockHostBindings.requirements = mock((data) => {
+			called = true
+			expect(data).toEqual(toBinary(RequirementsSchema, requirements))
+		})
+
+		TeeRunner.newRunner<string>({
+			tees: [TeeType.AWS_NITRO],
+			configHandlerParams: {
+				configParser: (b) => {
+					const stringConfig = Buffer.from(b).toString()
+					expect(stringConfig).toBe(anyConfig.toString())
+					return stringConfig
+				},
+			},
+		})
+
+		expect(called).toBe(true)
+	})
+})

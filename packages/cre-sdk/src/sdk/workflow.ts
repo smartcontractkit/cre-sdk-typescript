@@ -7,11 +7,10 @@ import type {
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { type Runtime } from '@cre/sdk/runtime'
 import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
-import type { SecretsError } from './errors'
 import type { CreSerializable } from './utils'
 
-export type HandlerFn<TConfig, TTriggerOutput, TResult> = (
-	runtime: Runtime<TConfig>,
+export type HandlerFn<TConfig, TTriggerOutput, TResult, TRuntime = Runtime<TConfig>> = (
+	runtime: TRuntime,
 	triggerOutput: TTriggerOutput,
 ) => Promise<CreSerializable<TResult>> | CreSerializable<TResult>
 
@@ -20,22 +19,26 @@ export interface HandlerEntry<
 	TRawTriggerOutput extends Message<string>,
 	TTriggerOutput,
 	TResult,
+	TRuntime = Runtime<TConfig>,
 > {
 	trigger: Trigger<TRawTriggerOutput, TTriggerOutput>
-	fn: HandlerFn<TConfig, TTriggerOutput, TResult>
+	fn: HandlerFn<TConfig, TTriggerOutput, TResult, TRuntime>
 }
 
-export type Workflow<TConfig> = ReadonlyArray<HandlerEntry<TConfig, any, any, any>>
+export type Workflow<TConfig, TRuntime = Runtime<TConfig>> = ReadonlyArray<
+	HandlerEntry<TConfig, any, any, any, TRuntime>
+>
 
 export const handler = <
 	TRawTriggerOutput extends Message<string>,
 	TTriggerOutput,
 	TConfig,
 	TResult,
+	TRuntime = Runtime<TConfig>,
 >(
 	trigger: Trigger<TRawTriggerOutput, TTriggerOutput>,
-	fn: HandlerFn<TConfig, TTriggerOutput, TResult>,
-): HandlerEntry<TConfig, TRawTriggerOutput, TTriggerOutput, TResult> => ({
+	fn: HandlerFn<TConfig, TTriggerOutput, TResult, TRuntime>,
+): HandlerEntry<TConfig, TRawTriggerOutput, TTriggerOutput, TResult, TRuntime> => ({
 	trigger,
 	fn,
 })

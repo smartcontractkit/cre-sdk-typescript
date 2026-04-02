@@ -12,12 +12,7 @@ import { generateActionMethod } from './generate-action'
 import { generateReportWrapper } from './generate-report-wrapper'
 import { generateActionSugarClass } from './generate-sugar'
 import { generateTriggerClass, generateTriggerMethod } from './generate-trigger'
-import {
-	generateCapabilityIdLogic,
-	generateConstructorParams,
-	generateLabelSupport,
-	processLabels,
-} from './label-utils'
+import { generateConstructorParams, generateLabelSupport, processLabels } from './label-utils'
 import { getImportPathForFile, lowerCaseFirstLetter } from './utils'
 
 const getCapabilityServiceOptions = (service: DescService): CapabilityMetadata | false => {
@@ -96,6 +91,7 @@ export function generateSdk(file: GenFile, outputDir: string) {
 		})
 
 		const modePrefix = capOption.mode === Mode.NODE ? 'Node' : ''
+		const teeEnabled = capOption.teeEnabled
 
 		// Build import statements
 		// Note: protobuf imports are deferred until after report wrappers are processed,
@@ -110,10 +106,12 @@ export function generateSdk(file: GenFile, outputDir: string) {
 
 		if (hasActions) {
 			if (modePrefix !== '') {
-				imports.add(`import type { Runtime, ${modePrefix}Runtime } from "@cre/sdk"`)
+				imports.add(
+					`import type { Runtime, ${modePrefix}Runtime${teeEnabled ? ', TeeRuntime' : ''} } from "@cre/sdk"`,
+				)
 				imports.add(`import { Report } from "@cre/sdk/report"`)
 			} else {
-				imports.add(`import type { Runtime } from "@cre/sdk"`)
+				imports.add(`import type { Runtime ${teeEnabled ? ', TeeRuntime' : ''} } from "@cre/sdk"`)
 				imports.add(`import { Report } from "@cre/sdk/report"`)
 				imports.add(`import { hexToBytes } from "@cre/sdk/utils/hex-utils";`)
 			}
@@ -222,7 +220,14 @@ export function generateSdk(file: GenFile, outputDir: string) {
 				}
 
 				// Generate action method
-				return generateActionMethod(method, methodName, capabilityClassName, labels, modePrefix)
+				return generateActionMethod(
+					method,
+					methodName,
+					capabilityClassName,
+					labels,
+					modePrefix,
+					teeEnabled,
+				)
 			})
 			.join('\n')
 

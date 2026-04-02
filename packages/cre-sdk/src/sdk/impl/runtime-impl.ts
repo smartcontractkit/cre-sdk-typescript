@@ -29,6 +29,7 @@ import type {
 	ReportRequest,
 	ReportRequestJson,
 	Runtime,
+	TeeRuntime,
 } from '@cre/sdk'
 import type { Report } from '@cre/sdk/report'
 import {
@@ -423,6 +424,54 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 		return {
 			result: () => call.result(),
 		}
+	}
+}
+
+export class TeeRuntimeImpl<C> implements TeeRuntime<C> {
+	private readonly runtime: RuntimeImpl<C>
+	constructor(
+		public config: C,
+		public nextCallId: number,
+		helpers: RuntimeHelpers,
+		maxResponseSize: bigint,
+	) {
+		this.runtime = new RuntimeImpl(config, nextCallId, helpers, maxResponseSize)
+	}
+	getSecret(request: SecretRequest | SecretRequestJson): { result: () => Secret } {
+		return this.runtime.getSecret(request)
+	}
+	now(): Date {
+		return this.runtime.now()
+	}
+
+	log(message: string): void {
+		this.runtime.log(message)
+	}
+
+	callCapability<I extends Message, O extends Message>({
+		capabilityId,
+		method,
+		payload,
+		inputSchema,
+		outputSchema,
+	}: CallCapabilityParams<I, O>): { result: () => O } {
+		return this.runtime.callCapability({
+			capabilityId,
+			method,
+			payload,
+			inputSchema,
+			outputSchema,
+		})
+	}
+
+	reportFromDon(input: ReportRequest | ReportRequestJson): {
+		result: () => Report
+	} {
+		return this.runtime.report(input)
+	}
+
+	usingTheDons(): Runtime<C> {
+		return this.runtime
 	}
 }
 

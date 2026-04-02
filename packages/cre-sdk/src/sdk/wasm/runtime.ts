@@ -14,7 +14,12 @@ import {
 	GetSecretsRequestSchema,
 	type Mode,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import { NodeRuntimeImpl, type RuntimeHelpers, RuntimeImpl } from '../impl/runtime-impl'
+import {
+	NodeRuntimeImpl,
+	type RuntimeHelpers,
+	RuntimeImpl,
+	TeeRuntimeImpl,
+} from '../impl/runtime-impl'
 import { hostBindings } from './host-bindings'
 
 export class Runtime<C> extends RuntimeImpl<C> {
@@ -24,6 +29,12 @@ export class Runtime<C> extends RuntimeImpl<C> {
 }
 
 export class NodeRuntime<C> extends NodeRuntimeImpl<C> {
+	constructor(config: C, nextCallId: number, maxResponseSize: bigint) {
+		super(config, nextCallId, WasmRuntimeHelpers.getInstance(), maxResponseSize)
+	}
+}
+
+export class TeeRuntime<C> extends TeeRuntimeImpl<C> {
 	constructor(config: C, nextCallId: number, maxResponseSize: bigint) {
 		super(config, nextCallId, WasmRuntimeHelpers.getInstance(), maxResponseSize)
 	}

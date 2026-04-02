@@ -6,7 +6,7 @@ import {
 	type HTTPResponse,
 	HTTPResponseSchema,
 } from '@cre/generated/capabilities/networking/confidentialhttp/v1alpha/client_pb'
-import type { Runtime } from '@cre/sdk'
+import type { Runtime, TeeRuntime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import { hexToBytes } from '@cre/sdk/utils/hex-utils'
 
@@ -25,7 +25,15 @@ export class ClientCapability {
 	static readonly CAPABILITY_VERSION = '1.0.0-alpha'
 
 	sendRequest(
+		runtime: TeeRuntime<unknown>,
+		input: ConfidentialHTTPRequest | ConfidentialHTTPRequestJson,
+	): { result: () => HTTPResponse }
+	sendRequest(
 		runtime: Runtime<unknown>,
+		input: ConfidentialHTTPRequest | ConfidentialHTTPRequestJson,
+	): { result: () => HTTPResponse }
+	sendRequest(
+		runtime: Runtime<unknown> | TeeRuntime<unknown>,
 		input: ConfidentialHTTPRequest | ConfidentialHTTPRequestJson,
 	): { result: () => HTTPResponse } {
 		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
