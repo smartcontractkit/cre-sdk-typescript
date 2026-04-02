@@ -9,6 +9,7 @@ import { create, toBinary } from '@bufbuild/protobuf'
 import type { Any } from '@bufbuild/protobuf/wkt'
 import { anyPack, anyUnpack } from '@bufbuild/protobuf/wkt'
 import type {
+	AwaitCapabilitiesRequest,
 	AwaitCapabilitiesResponse,
 	AwaitSecretsResponse,
 	CapabilityResponse,
@@ -237,7 +238,12 @@ function createTestRuntimeHelpers(
 			return true
 		},
 
-		await(request: { ids: number[] }, maxResponseSizeBytes: bigint): AwaitCapabilitiesResponse {
+		await(request: AwaitCapabilitiesRequest, maxResponseSizeBytes: bigint): AwaitCapabilitiesResponse {
+			if ((request as unknown as { $typeName?: string }).$typeName !== 'sdk.v1alpha.AwaitCapabilitiesRequest') {
+				throw new Error(
+					'await: expected a typed AwaitCapabilitiesRequest (created via create(AwaitCapabilitiesRequestSchema, ...)); got a plain object. The real WASM bridge serializes this to binary and will fail with a plain object.',
+				)
+			}
 			const responses: Record<number, CapabilityResponse> = {}
 			for (const id of request.ids) {
 				const resp = pendingCalls.get(id)
