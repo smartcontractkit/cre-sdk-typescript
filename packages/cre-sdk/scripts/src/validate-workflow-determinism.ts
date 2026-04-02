@@ -283,6 +283,27 @@ const getGlobalObjectReference = (
 	return null
 }
 
+/**
+ * Determines whether an expression resolves to a true global object (e.g.
+ * `Date`, `Promise`, `Object`) rather than a user-defined local with the
+ * same name.
+ *
+ * Uses a two-layer approach:
+ * 1. **Type-checker** (`hasLocalDeclarationViaChecker`) — the authoritative
+ *    source when the checker can resolve the symbol. This handles most TS
+ *    files with full type information.
+ * 2. **AST scope walk** (`hasLocalDeclarationInScope`) — a syntactic fallback
+ *    for cases where the type-checker cannot resolve the symbol (e.g. loose
+ *    JS files, files outside the compilation root, or declaration-less
+ *    globals). This mirrors the scoping rules manually so we still suppress
+ *    warnings for locally-shadowed names.
+ *
+ * The runtime compat validator only needs the type-checker layer because it
+ * checks simple identifier names (`fetch`, `setTimeout`). This validator
+ * additionally needs the AST fallback because it checks property-access
+ * patterns on globals (`Date.now()`, `Promise.race()`) where the root
+ * identifier may not have a resolvable symbol.
+ */
 const resolvesToGlobalObject = (
 	expression: ts.LeftHandSideExpression,
 	objectName: string,
@@ -349,11 +370,15 @@ const getGlobalMethodCall = (
  * Note: this check is syntactic — it does not verify that the array returned
  * by `Object.keys/values/entries()` is the same one eventually sorted.
  * Patterns such as assigning to a variable and sorting later are not detected.
+ *
+ * The chain walk is capped at {@link MAX_CHAIN_DEPTH} iterations to guard
+ * against degenerate or malformed ASTs.
  */
+const MAX_CHAIN_DEPTH = 50
 const isFollowedBySort = (callNode: ts.CallExpression): boolean => {
 	let current: ts.Node = callNode
 
-	while (true) {
+	for (let depth = 0; depth < MAX_CHAIN_DEPTH; depth++) {
 		const parent = current.parent
 		if (!ts.isPropertyAccessExpression(parent)) return false
 		// The PropertyAccessExpression must be the callee of a CallExpression
@@ -364,6 +389,8 @@ const isFollowedBySort = (callNode: ts.CallExpression): boolean => {
 		// Some other chained method call — keep walking up the chain
 		current = parent.parent
 	}
+
+	return false
 }
 
 /**
