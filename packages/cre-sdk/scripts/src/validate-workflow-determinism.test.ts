@@ -178,6 +178,14 @@ describe('Date.now() and new Date()', () => {
 		)
 		expectNoWarnings(entry)
 	})
+
+	test('warns when Date.now() appears before the local Date declaration in the same scope', () => {
+		const entry = writeTemp(
+			'workflow.ts',
+			`const ts = Date.now();\nconst Date = { now: () => 42 };\n`,
+		)
+		expectWarnings(entry, ['Date.now() uses the system clock'])
+	})
 })
 
 // ---------------------------------------------------------------------------
@@ -250,10 +258,34 @@ describe('Object.keys/values/entries() without .sort()', () => {
 		expectNoWarnings(entry)
 	})
 
+	test('does NOT flag Object.keys().filter().sort()', () => {
+		const entry = writeTemp(
+			'workflow.ts',
+			`const keys = Object.keys({ a: 1, b: 2 }).filter(k => k !== 'a').sort();\n`,
+		)
+		expectNoWarnings(entry)
+	})
+
+	test('does NOT flag Object.keys().map().filter().sort()', () => {
+		const entry = writeTemp(
+			'workflow.ts',
+			`const keys = Object.keys({ a: 1, b: 2 }).map(k => k.toUpperCase()).filter(k => k !== 'A').sort();\n`,
+		)
+		expectNoWarnings(entry)
+	})
+
 	test('detects Object.keys().map() (no sort)', () => {
 		const entry = writeTemp(
 			'workflow.ts',
 			`const mapped = Object.keys({ a: 1, b: 2 }).map(k => k.toUpperCase());\n`,
+		)
+		expectWarnings(entry, ['Object.keys() returns items in an order that may vary'])
+	})
+
+	test('detects Object.keys().filter() without sort', () => {
+		const entry = writeTemp(
+			'workflow.ts',
+			`const filtered = Object.keys({ a: 1, b: 2 }).filter(k => k !== 'a');\n`,
 		)
 		expectWarnings(entry, ['Object.keys() returns items in an order that may vary'])
 	})
@@ -272,6 +304,14 @@ describe('Object.keys/values/entries() without .sort()', () => {
 			`const frozen = Object.freeze({ a: 1, b: 2 });\nconst assigned = Object.assign({}, { a: 1 });\n`,
 		)
 		expectNoWarnings(entry)
+	})
+
+	test('warns when Object.keys() appears before the local Object declaration in the same scope', () => {
+		const entry = writeTemp(
+			'workflow.ts',
+			`const keys = Object.keys({ a: 1 });\nconst Object = { keys: (x: any) => [] as string[] };\n`,
+		)
+		expectWarnings(entry, ['Object.keys() returns items in an order that may vary'])
 	})
 })
 

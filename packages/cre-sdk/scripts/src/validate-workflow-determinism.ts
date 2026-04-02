@@ -181,15 +181,42 @@ const hasLocalDeclarationInScope = (
 		}
 
 		if (ts.isSourceFile(current) || ts.isBlock(current) || ts.isModuleBlock(current)) {
-			if (current.statements.some((statement) => statementDeclaresRuntimeName(statement, name))) {
+			const refPos = referenceNode.pos
+			if (
+				current.statements.some((statement) => {
+					if (!statementDeclaresRuntimeName(statement, name)) return false
+					// Function declarations and imports are hoisted / always visible in scope.
+					if (
+						ts.isFunctionDeclaration(statement) ||
+						ts.isImportDeclaration(statement) ||
+						ts.isImportEqualsDeclaration(statement)
+					) {
+						return true
+					}
+					// Other declarations (const, let, var, class) are only a shadow once
+					// they have been fully declared — i.e. the statement ends before the usage.
+					return statement.end <= refPos
+				})
+			) {
 				return true
 			}
 		}
 
 		if (ts.isSwitchStatement(current)) {
+			const refPos = referenceNode.pos
 			if (
 				current.caseBlock.clauses.some((clause) =>
-					clause.statements.some((statement) => statementDeclaresRuntimeName(statement, name)),
+					clause.statements.some((statement) => {
+						if (!statementDeclaresRuntimeName(statement, name)) return false
+						if (
+							ts.isFunctionDeclaration(statement) ||
+							ts.isImportDeclaration(statement) ||
+							ts.isImportEqualsDeclaration(statement)
+						) {
+							return true
+						}
+						return statement.end <= refPos
+					}),
 				)
 			) {
 				return true
@@ -213,9 +240,26 @@ const hasLocalDeclarationViaChecker = (
 ): boolean => {
 	const symbol = checker.getSymbolAtLocation(identifier)
 	return (
-		symbol?.declarations?.some((declaration) =>
-			localSourceFiles.has(toAbsolutePath(declaration.getSourceFile().fileName)),
-		) ?? false
+		symbol?.declarations?.some((declaration) => {
+			if (!localSourceFiles.has(toAbsolutePath(declaration.getSourceFile().fileName))) {
+				return false
+			}
+			// Function declarations and import bindings are hoisted / available throughout
+			// their scope — always count as a shadow regardless of position.
+			if (
+				ts.isFunctionDeclaration(declaration) ||
+				ts.isImportClause(declaration) ||
+				ts.isImportSpecifier(declaration) ||
+				ts.isNamespaceImport(declaration) ||
+				ts.isImportEqualsDeclaration(declaration)
+			) {
+				return true
+			}
+			// const / let / var / class are only visible once their declaration is complete.
+			// A usage that appears before the declaration (e.g. due to TDZ) still refers
+			// to the global, so do not suppress the warning.
+			return declaration.end <= identifier.pos
+		}) ?? false
 	)
 }
 
@@ -293,19 +337,33 @@ const getGlobalMethodCall = (
 }
 
 /**
- * Checks whether a call to `Object.keys/values/entries()` is immediately
- * followed by `.sort()` or `.toSorted()`, which makes the iteration order
- * deterministic.
+ * Checks whether a call to `Object.keys/values/entries()` is followed anywhere
+ * in the method chain by `.sort()` or `.toSorted()`, which makes the iteration
+ * order deterministic.
+ *
+ * Handles both direct chaining (`Object.keys(obj).sort()`) and intermediate
+ * calls (`Object.keys(obj).filter(...).sort()`). A `.sort()` that appears after
+ * any number of intermediate method calls still produces a deterministically
+ * ordered result.
+ *
+ * Note: this check is syntactic — it does not verify that the array returned
+ * by `Object.keys/values/entries()` is the same one eventually sorted.
+ * Patterns such as assigning to a variable and sorting later are not detected.
  */
 const isFollowedBySort = (callNode: ts.CallExpression): boolean => {
-	const parent = callNode.parent
-	if (!ts.isPropertyAccessExpression(parent)) return false
+	let current: ts.Node = callNode
 
-	const methodName = parent.name.text
-	if (methodName !== 'sort' && methodName !== 'toSorted') return false
+	while (true) {
+		const parent = current.parent
+		if (!ts.isPropertyAccessExpression(parent)) return false
+		// The PropertyAccessExpression must be the callee of a CallExpression
+		if (!ts.isCallExpression(parent.parent)) return false
 
-	// The PropertyAccessExpression should be the callee of another CallExpression
-	return ts.isCallExpression(parent.parent)
+		if (parent.name.text === 'sort' || parent.name.text === 'toSorted') return true
+
+		// Some other chained method call — keep walking up the chain
+		current = parent.parent
+	}
 }
 
 /**
@@ -319,6 +377,7 @@ const collectDeterminismWarnings = (
 	const checker = program.getTypeChecker()
 
 	const promiseMethods = new Set(['race', 'any'])
+	const dateMethods = new Set(['now'])
 	const objectIterationMethods = new Set(['keys', 'values', 'entries'])
 
 	for (const sourceFile of program.getSourceFiles()) {
@@ -351,7 +410,7 @@ const collectDeterminismWarnings = (
 				const dateMethod = getGlobalMethodCall(
 					node,
 					'Date',
-					new Set(['now']),
+					dateMethods,
 					checker,
 					localSourceFiles,
 					sourceFile,
