@@ -1,7 +1,7 @@
 {
 	"name": "@chainlink/cre-sdk-examples",
 	"private": true,
-	"version": "1.4.0",
+	"version": "1.6.0-alpha.2",
 	"type": "module",
 	"author": "Ernest Nowacki",
 	"license": "BUSL-1.1",
@@ -16,8 +16,8 @@
 	},
 	"dependencies": {
 		"@bufbuild/protobuf": "2.6.3",
-		"@chainlink/cre-sdk": "workspace:*",
-		"@chainlink/cre-sdk-javy-plugin": "workspace:*",
+		"@chainlink/cre-sdk": "1.6.0-alpha.2",
+		"@chainlink/cre-sdk-javy-plugin": "1.6.0-alpha.2",
 		"viem": "2.34.0",
 		"zod": "3.25.76"
 	},

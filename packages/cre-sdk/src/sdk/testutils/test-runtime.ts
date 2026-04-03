@@ -238,8 +238,14 @@ function createTestRuntimeHelpers(
 			return true
 		},
 
-		await(request: AwaitCapabilitiesRequest, maxResponseSizeBytes: bigint): AwaitCapabilitiesResponse {
-			if ((request as unknown as { $typeName?: string }).$typeName !== 'sdk.v1alpha.AwaitCapabilitiesRequest') {
+		await(
+			request: AwaitCapabilitiesRequest,
+			maxResponseSizeBytes: bigint,
+		): AwaitCapabilitiesResponse {
+			if (
+				(request as unknown as { $typeName?: string }).$typeName !==
+				'sdk.v1alpha.AwaitCapabilitiesRequest'
+			) {
 				throw new Error(
 					'await: expected a typed AwaitCapabilitiesRequest (created via create(AwaitCapabilitiesRequestSchema, ...)); got a plain object. The real WASM bridge serializes this to binary and will fail with a plain object.',
 				)
