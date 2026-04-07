@@ -195,14 +195,14 @@ These are declared in `global.d.ts` and automatically available when you import 
 
 ### The `--skip-type-checks` Flag
 
-If you need to compile a workflow that has TypeScript errors you're willing to accept, pass `--skip-type-checks`:
+The CRE CLI exposes a `--skip-type-checks` flag on the `compile` command. Use it when you need to compile a workflow that has TypeScript errors you're willing to accept:
 
 ```bash
 # Normal compilation — type check + runtime validation + build
-bun compile:workflow src/workflow.ts dist/workflow.wasm
+cre compile src/workflow.ts
 
 # Skip TypeScript type checking only
-bun compile:workflow src/workflow.ts dist/workflow.wasm --skip-type-checks
+cre compile src/workflow.ts --skip-type-checks
 ```
 
 **What `--skip-type-checks` does:**
@@ -215,13 +215,17 @@ bun compile:workflow src/workflow.ts dist/workflow.wasm --skip-type-checks
 
 ```bash
 # This workflow imports node:crypto — compilation fails regardless of the flag:
-$ bun compile:workflow src/bad-workflow.ts dist/bad-workflow.wasm --skip-type-checks
+$ cre compile src/bad-workflow.ts --skip-type-checks
 
 # ⚠️  Skipping TypeScript checks (--skip-type-checks)
 # ❌ Unsupported API usage found in workflow source.
 # CRE workflows run on Javy (QuickJS), not full Node.js.
 # - src/bad-workflow.ts:1:25 'node:crypto' is not available in CRE workflow runtime.
 ```
+
+#### SDK internals
+
+Under the hood, the SDK's `cre-compile` binary (`bin/cre-compile.ts`) parses the flag and passes it through the compilation pipeline. The flag controls whether `assertWorkflowTypecheck()` runs, while `assertWorkflowRuntimeCompatibility()` always executes regardless. The CRE CLI invokes this binary, so the flag semantics are identical whether you run `cre compile --skip-type-checks` or call the SDK's compilation API directly.
 
 ## Contributing & Development
 
