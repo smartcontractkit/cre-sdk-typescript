@@ -37,7 +37,7 @@ cron.trigger({ schedule: "0 */5 * * * *" });
 // Fetch with built-in consensus across nodes
 const price = await cre.runInNodeMode(
   fetchPriceData,
-  consensusMedianAggregation()
+  consensusMedianAggregation(),
 )(config);
 ```
 
@@ -47,7 +47,7 @@ const price = await cre.runInNodeMode(
 // Read/write to any EVM chain
 const evmClient = new cre.capabilities.EVMClient(
   undefined,
-  BigInt("5009297550715157269") // Ethereum Sepolia
+  BigInt("5009297550715157269"), // Ethereum Sepolia
 );
 ```
 
@@ -121,7 +121,7 @@ Every new workflow project ships with a recommended `tsconfig.json`:
     "types": [],
     // ...
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
 }
 ```
 
@@ -136,7 +136,7 @@ The SDK blocks imports from Node.js built-in modules that cannot run in the WASM
 All exports from these modules are typed as `never`, so your IDE shows errors immediately:
 
 ```typescript
-import { createHash } from 'node:crypto'
+import { createHash } from "node:crypto";
 //       ^^^^^^^^^^ Type 'never' is not assignable to ...
 
 // The import itself also triggers a build-time error:
@@ -152,30 +152,30 @@ These restrictions are enforced at **two levels**:
 
 Some global APIs that exist in browsers or Node.js are not available in the QuickJS runtime. The SDK overrides their type definitions with `never` types and `@deprecated` markers that point you to the correct CRE alternative:
 
-| Restricted API | CRE Alternative |
-|---|---|
-| `fetch()` | `cre.capabilities.HTTPClient` |
-| `setTimeout()` | `cre.capabilities.CronCapability` |
-| `setInterval()` | `cre.capabilities.CronCapability` |
-| `window`, `document` | Not applicable (no DOM) |
-| `XMLHttpRequest` | `cre.capabilities.HTTPClient` |
+| Restricted API                   | CRE Alternative                        |
+| -------------------------------- | -------------------------------------- |
+| `fetch()`                        | `cre.capabilities.HTTPClient`          |
+| `setTimeout()`                   | `cre.capabilities.CronCapability`      |
+| `setInterval()`                  | `cre.capabilities.CronCapability`      |
+| `window`, `document`             | Not applicable (no DOM)                |
+| `XMLHttpRequest`                 | `cre.capabilities.HTTPClient`          |
 | `localStorage`, `sessionStorage` | Not applicable (no persistent storage) |
 
 ```typescript
 // ❌ IDE shows strikethrough + deprecation warning:
 // "@deprecated fetch is not available in CRE WASM workflows.
 //  Use cre.capabilities.HTTPClient instead."
-const response = await fetch('https://api.example.com')
+const response = await fetch("https://api.example.com");
 //                     ~~~~~ Error: Argument of type 'string' is not assignable to parameter of type 'never'
 
 // ✅ Correct approach — use HTTPClient:
-import { HTTPClient } from '@chainlink/cre-sdk'
+import { HTTPClient } from "@chainlink/cre-sdk";
 
-const client = new HTTPClient()
+const client = new HTTPClient();
 const response = client.sendRequest({
-  url: 'https://api.example.com',
-  method: 'GET',
-})
+  url: "https://api.example.com",
+  method: "GET",
+});
 ```
 
 The build-time validator also catches these via TypeScript's type-checker, including `globalThis.fetch`-style access. If you shadow a restricted name with your own variable (e.g. `const fetch = myCustomFunction`), the validator correctly ignores it.
@@ -184,7 +184,6 @@ The build-time validator also catches these via TypeScript's type-checker, inclu
 
 The SDK provides type definitions for all APIs that **are** available in the QuickJS/WASM runtime:
 
-- **Host functions:** `callCapability()`, `awaitCapabilities()`, `getSecrets()`, `sendResponse()`, `switchModes()`, `log()`
 - **Text encoding:** `TextEncoder`, `TextDecoder`
 - **Binary data:** `Buffer` (with `alloc`, `from`, `concat`, etc.)
 - **Base64:** `atob()`, `btoa()`
@@ -207,9 +206,11 @@ bun compile:workflow src/workflow.ts dist/workflow.wasm --skip-type-checks
 ```
 
 **What `--skip-type-checks` does:**
+
 - Skips the TypeScript type checker (`tsc`) — your tsconfig errors won't block compilation.
 
 **What `--skip-type-checks` does NOT do:**
+
 - It does **not** skip the runtime compatibility validation. Imports of restricted Node.js modules (`node:crypto`, `node:fs`, etc.) and usage of unavailable globals (`fetch`, `setTimeout`, etc.) will **always** block compilation, because these would cause runtime failures in the WASM sandbox.
 
 ```bash
