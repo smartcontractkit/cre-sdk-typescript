@@ -2,6 +2,7 @@
  * Public API for the CRE SDK.
  */
 
+import { ClientCapability as AptosClient } from '@cre/generated-sdk/capabilities/blockchain/aptos/v1alpha/client_sdk_gen'
 import { ClientCapability as EVMClient } from '@cre/generated-sdk/capabilities/blockchain/evm/v1alpha/client_sdk_gen'
 import { ClientCapability as ConfidentialHTTPClient } from '@cre/generated-sdk/capabilities/networking/confidentialhttp/v1alpha/client_sdk_gen'
 import { ClientCapability as HTTPClient } from '@cre/generated-sdk/capabilities/networking/http/v1alpha/client_sdk_gen'
@@ -14,6 +15,12 @@ import { handler } from '@cre/sdk/workflow'
  * Public exports for the CRE SDK.
  */
 
+export { TxStatus as AptosTxStatus } from '@cre/generated/capabilities/blockchain/aptos/v1alpha/client_pb'
+export {
+	ClientCapability as AptosClient,
+	type WriteCreReportRequest as AptosWriteCreReportRequest,
+	type WriteCreReportRequestJson as AptosWriteCreReportRequestJson,
+} from '@cre/generated-sdk/capabilities/blockchain/aptos/v1alpha/client_sdk_gen'
 export {
 	type Log as EVMLog,
 	TxStatus,
@@ -47,6 +54,7 @@ prepareRuntime()
 
 export const cre = {
 	capabilities: {
+		AptosClient,
 		CronCapability,
 		HTTPCapability,
 		ConfidentialHTTPClient,
