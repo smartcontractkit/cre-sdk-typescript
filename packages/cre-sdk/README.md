@@ -58,9 +58,15 @@ CRE workflows are compiled to WASM and executed through Javy (QuickJS). This is 
 
 - Node built-ins like `node:fs`, `node:crypto`, `node:http`, `node:net`, etc. are not supported in workflows.
 - Browser globals like `fetch`, `window`, and `setTimeout` are also not available in workflow runtime.
-- `cre compile:workflow` / `cre-compile` now validates workflow source and fails fast when unsupported APIs are used.
+- `cre compile:workflow` / `cre-compile` now typechecks your workflow project first (using your nearest `tsconfig.json`), then validates workflow source and fails fast when unsupported APIs are used.
 
 Use CRE capabilities (for example, `cre.capabilities.HTTPClient`) instead of direct Node/browser APIs.
+
+If you need to compile despite TypeScript errors, pass `--skip-type-checks`:
+
+```bash
+bun x cre-compile src/workflow.ts dist/workflow.wasm --skip-type-checks
+```
 
 ## Getting Started
 

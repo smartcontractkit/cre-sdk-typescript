@@ -2,18 +2,30 @@
 
 import { main as compileWorkflow } from "../scripts/src/compile-workflow";
 import { parseCompileFlags } from "../../cre-sdk-javy-plugin/scripts/parse-compile-flags";
+import {
+  parseCompileCliArgs,
+  skipTypeChecksFlag,
+} from "../scripts/src/compile-cli-args";
+import { WorkflowTypecheckError } from "../scripts/src/typecheck-workflow";
 import { WorkflowRuntimeCompatibilityError } from "../scripts/src/validate-workflow-runtime-compat";
 
 const main = async () => {
   const cliArgs = process.argv.slice(2);
   const { creExports, plugin, rest } = parseCompileFlags(cliArgs);
 
-  const inputPath = rest[0];
-  const outputPathArg = rest[1];
+  let inputPath: string | undefined;
+  let outputPathArg: string | undefined;
+  let skipTypeChecks = false;
 
-  if (!inputPath) {
+  try {
+    const parsed = parseCompileCliArgs(rest);
+    inputPath = parsed.inputPath;
+    outputPathArg = parsed.outputPath;
+    skipTypeChecks = parsed.skipTypeChecks;
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : error);
     console.error(
-      "Usage: cre-compile [--plugin <path>] [--cre-exports <crate-dir>]... <path/to/workflow.ts> [path/to/output.wasm]"
+      `Usage: cre-compile [--plugin <path>] [--cre-exports <crate-dir>]... <path/to/workflow.ts> [path/to/output.wasm] [${skipTypeChecksFlag}]`,
     );
     process.exit(1);
   }
@@ -23,16 +35,33 @@ const main = async () => {
     process.exit(1);
   }
 
-  await compileWorkflow(
-    inputPath,
-    outputPathArg,
-    creExports.length > 0 ? creExports : undefined,
-    plugin ?? undefined,
-  );
+  if (!inputPath) {
+    console.error(
+      `Usage: cre-compile [--plugin <path>] [--cre-exports <crate-dir>]... <path/to/workflow.ts> [path/to/output.wasm] [${skipTypeChecksFlag}]`,
+    );
+    console.error("Examples:");
+    console.error("  cre-compile src/standard_tests/secrets/test.ts");
+    console.error(
+      "  cre-compile src/standard_tests/secrets/test.ts .temp/standard_tests/secrets/test.wasm",
+    );
+    console.error(
+      `  cre-compile src/standard_tests/secrets/test.ts .temp/standard_tests/secrets/test.wasm ${skipTypeChecksFlag}`,
+    );
+    process.exit(1);
+  }
+
+  await compileWorkflow(inputPath, outputPathArg, {
+    skipTypeChecks,
+    creExports: creExports.length > 0 ? creExports : undefined,
+    plugin,
+  });
 };
 
 main().catch((e) => {
-  if (e instanceof WorkflowRuntimeCompatibilityError) {
+  if (
+    e instanceof WorkflowRuntimeCompatibilityError ||
+    e instanceof WorkflowTypecheckError
+  ) {
     console.error(`\n❌ ${e.message}`);
   } else {
     console.error(e);
