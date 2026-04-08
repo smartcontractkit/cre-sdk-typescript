@@ -17,16 +17,16 @@ import { handler } from '@cre/sdk/workflow'
 
 export { TxStatus as AptosTxStatus } from '@cre/generated/capabilities/blockchain/aptos/v1alpha/client_pb'
 export {
-	ClientCapability as AptosClient,
-	type WriteCreReportRequest as AptosWriteCreReportRequest,
-	type WriteCreReportRequestJson as AptosWriteCreReportRequestJson,
-} from '@cre/generated-sdk/capabilities/blockchain/aptos/v1alpha/client_sdk_gen'
-export {
 	type Log as EVMLog,
 	TxStatus,
 } from '@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb'
 export type { Payload as HTTPPayload } from '@cre/generated/capabilities/networking/http/v1alpha/trigger_pb'
 export type { Payload as CronPayload } from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
+export {
+	ClientCapability as AptosClient,
+	type WriteCreReportRequest as AptosWriteCreReportRequest,
+	type WriteCreReportRequestJson as AptosWriteCreReportRequestJson,
+} from '@cre/generated-sdk/capabilities/blockchain/aptos/v1alpha/client_sdk_gen'
 
 // EVM Capability
 export {

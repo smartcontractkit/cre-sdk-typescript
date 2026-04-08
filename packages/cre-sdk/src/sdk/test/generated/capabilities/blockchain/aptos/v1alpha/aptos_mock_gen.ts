@@ -1,11 +1,6 @@
 import { fromJson } from '@bufbuild/protobuf'
 import { anyPack, anyUnpack } from '@bufbuild/protobuf/wkt'
 import {
-	registerTestCapability,
-	__getTestMockInstance,
-	__setTestMockInstance,
-} from '@cre/sdk/testutils/test-runtime'
-import {
 	type AccountAPTBalanceReply,
 	type AccountAPTBalanceReplyJson,
 	AccountAPTBalanceReplySchema,
@@ -32,6 +27,11 @@ import {
 	type WriteReportRequest,
 	WriteReportRequestSchema,
 } from '@cre/generated/capabilities/blockchain/aptos/v1alpha/client_pb'
+import {
+	__getTestMockInstance,
+	__setTestMockInstance,
+	registerTestCapability,
+} from '@cre/sdk/testutils/test-runtime'
 
 /**
  * Mock for ClientCapability. Use testInstance() to obtain an instance; do not construct directly.
