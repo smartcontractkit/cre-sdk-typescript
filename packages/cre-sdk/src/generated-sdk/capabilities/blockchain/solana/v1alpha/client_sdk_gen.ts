@@ -1,6 +1,9 @@
 import { create, fromJson } from '@bufbuild/protobuf'
 import { type Any, AnySchema, anyPack } from '@bufbuild/protobuf/wkt'
 import {
+	type AccountMeta,
+	type AccountMetaJson,
+	AccountMetaSchema,
 	type ComputeConfig,
 	type ComputeConfigJson,
 	ComputeConfigSchema,
@@ -66,7 +69,7 @@ import { hexToBytes } from '@cre/sdk/utils/hex-utils'
 import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 
 export type WriteCreReportRequest = {
-	remainingAccounts: unknown
+	remainingAccounts: AccountMeta[]
 	receiver: Uint8Array
 	computeConfig?: ComputeConfig
 	report?: Report
@@ -74,7 +77,7 @@ export type WriteCreReportRequest = {
 }
 
 export type WriteCreReportRequestJson = {
-	remainingAccounts: unknown
+	remainingAccounts: AccountMetaJson[]
 	receiver: string
 	computeConfig?: ComputeConfigJson
 	report?: Report
@@ -96,7 +99,7 @@ export function createWriteCreReportRequest(
 	input: WriteCreReportRequestJson,
 ): WriteCreReportRequest {
 	return {
-		remainingAccounts: input.remainingAccounts,
+		remainingAccounts: (input.remainingAccounts ?? []).map((v) => fromJson(AccountMetaSchema, v)),
 		receiver: hexToBytes(input.receiver),
 		computeConfig:
 			input.computeConfig !== undefined
