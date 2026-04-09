@@ -2,7 +2,9 @@
  * Public API for the CRE SDK.
  */
 
+import { ClientCapability as AptosClient } from '@cre/generated-sdk/capabilities/blockchain/aptos/v1alpha/client_sdk_gen'
 import { ClientCapability as EVMClient } from '@cre/generated-sdk/capabilities/blockchain/evm/v1alpha/client_sdk_gen'
+import { ClientCapability as SolanaClient } from '@cre/generated-sdk/capabilities/blockchain/solana/v1alpha/client_sdk_gen'
 import { ClientCapability as ConfidentialHTTPClient } from '@cre/generated-sdk/capabilities/networking/confidentialhttp/v1alpha/client_sdk_gen'
 import { ClientCapability as HTTPClient } from '@cre/generated-sdk/capabilities/networking/http/v1alpha/client_sdk_gen'
 import { HTTPCapability } from '@cre/generated-sdk/capabilities/networking/http/v1alpha/http_sdk_gen'
@@ -20,13 +22,24 @@ export {
 } from '@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb'
 export type { Payload as HTTPPayload } from '@cre/generated/capabilities/networking/http/v1alpha/trigger_pb'
 export type { Payload as CronPayload } from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
-
+// Aptos Capability
+export {
+	ClientCapability as AptosClient,
+	type WriteCreReportRequest as AptosWriteCreReportRequest,
+	type WriteCreReportRequestJson as AptosWriteCreReportRequestJson,
+} from '@cre/generated-sdk/capabilities/blockchain/aptos/v1alpha/client_sdk_gen'
 // EVM Capability
 export {
 	ClientCapability as EVMClient,
 	type WriteCreReportRequest,
 	type WriteCreReportRequestJson,
 } from '@cre/generated-sdk/capabilities/blockchain/evm/v1alpha/client_sdk_gen'
+// Solana Capability
+export {
+	ClientCapability as SolanaClient,
+	type WriteCreReportRequest as SolanaWriteCreReportRequest,
+	type WriteCreReportRequestJson as SolanaWriteCreReportRequestJson,
+} from '@cre/generated-sdk/capabilities/blockchain/solana/v1alpha/client_sdk_gen'
 // Confidential HTTP Capability
 export { ClientCapability as ConfidentialHTTPClient } from '@cre/generated-sdk/capabilities/networking/confidentialhttp/v1alpha/client_sdk_gen'
 // HTTP Capability
@@ -52,6 +65,8 @@ export const cre = {
 		ConfidentialHTTPClient,
 		HTTPClient,
 		EVMClient,
+		AptosClient,
+		SolanaClient,
 	},
 	handler,
 }
