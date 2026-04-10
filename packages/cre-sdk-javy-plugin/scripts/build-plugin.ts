@@ -3,31 +3,24 @@
  * Builds a Javy plugin .plugin.wasm from extension crates.
  * Used by examples that need a pre-built plugin (e.g. lib_alpha).
  */
-import { spawn } from 'node:child_process'
 import { existsSync, mkdirSync, rmSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import path, { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { ensureJavy } from './ensure-javy.ts'
 import { generateHostCrate, resolveExtensions } from './generate-host-crate.ts'
+import { JAVY_VERSION, run } from './shared.ts'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const pluginDir = resolve(__dirname, '..')
 
-function run(
-	cmd: string,
-	args: string[],
-	cwd: string,
-	env?: Record<string, string>,
-): Promise<void> {
-	return new Promise((res, rej) => {
-		const p = spawn(cmd, args, {
-			cwd,
-			stdio: 'inherit',
-			env: env ? { ...process.env, ...env } : process.env,
-		})
-		p.on('exit', (code) => (code === 0 ? res() : rej(new Error(`${cmd} exited ${code}`))))
-		p.on('error', rej)
-	})
+function findBuiltWasm(targetDir: string): string {
+	const releaseDir = resolve(targetDir, 'wasm32-wasip1', 'release')
+	for (const name of ['cre_generated_host.wasm', 'libcre_generated_host.wasm']) {
+		const candidate = resolve(releaseDir, name)
+		if (existsSync(candidate)) return candidate
+	}
+	throw new Error(`Build succeeded but WASM not found in ${releaseDir}`)
 }
 
 async function main() {
@@ -48,30 +41,21 @@ async function main() {
 		process.exit(1)
 	}
 
-	const tmpDir = resolve(pluginDir, '.tmp-plugin-' + Date.now())
+	const tmpDir = resolve(tmpdir(), `cre-plugin-${process.pid}-${Date.now()}`)
+	const sharedTargetDir = resolve(pluginDir, '.cargo-target')
 	mkdirSync(tmpDir, { recursive: true })
 	try {
 		const extensions = resolveExtensions(creExports)
 		generateHostCrate(tmpDir, pluginDir, extensions)
 
-		await run('cargo', ['build', '--target', 'wasm32-wasip1', '--release'], tmpDir)
+		const [, javyPath] = await Promise.all([
+			run('cargo', ['build', '--target', 'wasm32-wasip1', '--release'], tmpDir, {
+				CARGO_TARGET_DIR: sharedTargetDir,
+			}),
+			ensureJavy({ version: JAVY_VERSION }),
+		])
 
-		let builtWasm = resolve(
-			tmpDir,
-			'target',
-			'wasm32-wasip1',
-			'release',
-			'libcre_generated_host.wasm',
-		)
-		if (!existsSync(builtWasm)) {
-			const alt = resolve(tmpDir, 'target', 'wasm32-wasip1', 'release', 'cre_generated_host.wasm')
-			builtWasm = existsSync(alt) ? alt : builtWasm
-		}
-		if (!existsSync(builtWasm)) {
-			throw new Error(`WASM not found`)
-		}
-
-		const javyPath = await ensureJavy({ version: 'v8.1.0' })
+		const builtWasm = findBuiltWasm(sharedTargetDir)
 		const outAbs = resolve(process.cwd(), outputPath)
 		mkdirSync(path.dirname(outAbs), { recursive: true })
 		await run(javyPath, ['init-plugin', '--deterministic', builtWasm, '-o', outAbs], tmpDir)

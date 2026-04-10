@@ -60,43 +60,58 @@ echo "=== Step 4: Installing deps for source-extensions ==="
 cd "$EXAMPLES_DIR"
 cp -n .env.example .env 2>/dev/null || true
 
-# ── Step 5a: prebuilt-plugin ──────────────────────────────────────────────────
+# ── Steps 5a + 5b: build in parallel, then validate ─────────────────────────
 echo ""
-echo "=== Step 5a: prebuilt-plugin (pre-built alpha.plugin.wasm from npm package) ==="
-make -C "$RUST_INJECT/prebuilt-plugin" build
+echo "=== Step 5a+5b: Building prebuilt-plugin and source-extensions in parallel ==="
+make -C "$RUST_INJECT/prebuilt-plugin" build &
+PID_5A=$!
+make -C "$RUST_INJECT/source-extensions" build &
+PID_5B=$!
 
+FAIL=0
+wait $PID_5A || FAIL=1
+wait $PID_5B || FAIL=1
+if [ $FAIL -ne 0 ]; then
+  echo "❌ One or more builds failed"
+  exit 1
+fi
+
+OUTPUT_5A="$(mktemp)"
+OUTPUT_5B="$(mktemp)"
+cleanup_outputs() { rm -f "$OUTPUT_5A" "$OUTPUT_5B"; }
+trap 'cleanup; cleanup_outputs' EXIT
+
+echo ""
+echo "=== Step 5a: Simulating prebuilt-plugin ==="
 cre workflow simulate ./rust-inject/prebuilt-plugin \
   --non-interactive \
   --trigger-index 0 \
-  > "$OUTPUT_FILE" 2>&1 || true
-cat "$OUTPUT_FILE"
+  > "$OUTPUT_5A" 2>&1 || true
+cat "$OUTPUT_5A"
 
 echo ""
 echo "Validating prebuilt-plugin output..."
-if ! grep -q "Hello from alpha" "$OUTPUT_FILE"; then
+if ! grep -q "Hello from alpha" "$OUTPUT_5A"; then
   echo "❌ ERROR: Expected 'Hello from alpha' not found"
   exit 1
 fi
 echo "✓ Found: Hello from alpha"
 
-# ── Step 5b: source-extensions ───────────────────────────────────────────────
 echo ""
-echo "=== Step 5b: source-extensions (lib_alpha from npm + lib_beta local) ==="
-make -C "$RUST_INJECT/source-extensions" build
-
+echo "=== Step 5b: Simulating source-extensions ==="
 cre workflow simulate ./rust-inject/source-extensions \
   --non-interactive \
   --trigger-index 0 \
-  > "$OUTPUT_FILE" 2>&1 || true
-cat "$OUTPUT_FILE"
+  > "$OUTPUT_5B" 2>&1 || true
+cat "$OUTPUT_5B"
 
 echo ""
 echo "Validating source-extensions output..."
-if ! grep -q "Hello from alpha" "$OUTPUT_FILE"; then
+if ! grep -q "Hello from alpha" "$OUTPUT_5B"; then
   echo "❌ ERROR: Expected 'Hello from alpha' not found"
   exit 1
 fi
-if ! grep -q "Hello from beta" "$OUTPUT_FILE"; then
+if ! grep -q "Hello from beta" "$OUTPUT_5B"; then
   echo "❌ ERROR: Expected 'Hello from beta' not found"
   exit 1
 fi

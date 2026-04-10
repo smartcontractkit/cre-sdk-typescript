@@ -2,9 +2,8 @@ use cre_wasm_exports::{check_duplicates, extend_wasm_exports, reset_registry};
 use javy_plugin_api::{
     import_namespace,
     javy::{Runtime, quickjs::prelude::*},
+    Config,
 };
-#[cfg(feature = "standalone")]
-use javy_plugin_api::Config;
 
 use javy_plugin_api::javy::quickjs::{
     ArrayBuffer, Ctx, Error, Exception, FromJs, TypedArray, Value,
@@ -91,17 +90,18 @@ impl<'js> FromJs<'js> for ArgBytes {
     }
 }
 
-#[cfg(feature = "standalone")]
-fn config() -> Config {
+pub fn config() -> Config {
     let mut config = Config::default();
     config.event_loop(true).text_encoding(true).promise(true);
     config
 }
 
 /// Applies CRE plugin globals and host bindings. Used by the default plugin build and by generated host crates that add `--cre-exports` extensions.
+///
+/// Callers must own the reset_registry()/check_duplicates() lifecycle so that the
+/// registry spans both core exports (registered here) and any extension exports.
 pub fn modify_runtime(runtime: Runtime) -> Runtime {
     runtime.context().with(|ctx| {
-        reset_registry();
         RANDOM_GENERATORS.get_or_init(|| Mutex::new(HashMap::new()));
 
         extend_wasm_exports(
@@ -326,8 +326,6 @@ pub fn modify_runtime(runtime: Runtime) -> Runtime {
                 Ok(milliseconds as f64)
             }),
         );
-
-        check_duplicates();
     });
 
     runtime
@@ -339,5 +337,14 @@ pub fn modify_runtime(runtime: Runtime) -> Runtime {
 #[cfg(feature = "standalone")]
 #[unsafe(export_name = "initialize-runtime")]
 fn initialize_runtime() {
-    javy_plugin_api::initialize_runtime(config, modify_runtime).unwrap();
+    javy_plugin_api::initialize_runtime(
+        config,
+        |runtime| {
+            reset_registry();
+            let runtime = modify_runtime(runtime);
+            check_duplicates();
+            runtime
+        },
+    )
+    .unwrap();
 }

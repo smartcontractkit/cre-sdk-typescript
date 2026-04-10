@@ -8,7 +8,6 @@ const rustBetaSchema = z.object({
 export type RustBeta = z.infer<typeof rustBetaSchema>
 
 declare global {
-	// eslint-disable-next-line no-var
 	var rustBeta: RustBeta
 }
 

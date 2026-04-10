@@ -28,8 +28,31 @@
 		"url": "https://github.com/smartcontractkit/cre-sdk-typescript",
 		"directory": "packages/cre-sdk-javy-plugin"
 	},
-	"dependencies": {
-		"zod": "3.25.76"
+	"exports": {
+		".": {
+			"types": "./index.d.ts",
+			"default": "./index.ts"
+		},
+		"./scripts/parse-compile-flags": {
+			"types": "./scripts/parse-compile-flags.d.ts",
+			"default": "./scripts/parse-compile-flags.ts"
+		},
+		"./scripts/shared": {
+			"types": "./scripts/shared.d.ts",
+			"default": "./scripts/shared.ts"
+		},
+		"./runtime/validate-extension": {
+			"types": "./runtime/validate-extension.d.ts",
+			"default": "./runtime/validate-extension.ts"
+		}
+	},
+	"peerDependencies": {
+		"zod": ">=3.0.0"
+	},
+	"peerDependenciesMeta": {
+		"zod": {
+			"optional": true
+		}
 	},
 	"files": [
 		"bin/",

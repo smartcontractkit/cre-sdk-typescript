@@ -5,8 +5,13 @@
  * Used by compile-workflow.ts when `--cre-exports` is set.
  */
 
-import { mkdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
+
+/** Normalizes a path for use in TOML strings (backslashes → forward slashes). */
+function toTomlPath(p: string): string {
+	return p.replace(/\\/g, '/')
+}
 
 export interface ExtensionInfo {
 	crateName: string
@@ -62,14 +67,31 @@ export function generateHostCrate(
 		throw new Error('generateHostCrate requires at least one --cre-exports extension')
 	}
 
+	for (const ext of extensions) {
+		const libRsPath = join(ext.path, 'src', 'lib.rs')
+		if (!existsSync(libRsPath)) {
+			throw new Error(
+				`Extension "${ext.crateName}" is missing src/lib.rs at ${ext.path}. ` +
+					'Each --cre-exports crate must have a src/lib.rs file.',
+			)
+		}
+		const src = readFileSync(libRsPath, 'utf8')
+		if (!/pub\s+fn\s+register\s*\(/.test(src)) {
+			throw new Error(
+				`Extension "${ext.crateName}" does not export \`pub fn register(ctx: &Ctx<'_>)\` in ${libRsPath}. ` +
+					'Each --cre-exports crate must expose this function for the generated host crate to call.',
+			)
+		}
+	}
+
 	mkdirSync(join(outDir, 'src'), { recursive: true })
 
 	// Resolve pluginDir symlinks so all Cargo path deps use canonical real paths.
 	// Without this, a node_modules symlink path and the real .packaged/ path would appear as
 	// two different cre_wasm_exports packages to Cargo and cause a lockfile collision.
 	const realPluginDir = realpathSync(resolve(pluginDir))
-	const javySdkPath = resolve(realPluginDir, 'src', 'javy_chainlink_sdk')
-	const creExportsPath = resolve(realPluginDir, 'src', 'cre_wasm_exports')
+	const javySdkPath = toTomlPath(resolve(realPluginDir, 'src', 'javy_chainlink_sdk'))
+	const creExportsPath = toTomlPath(resolve(realPluginDir, 'src', 'cre_wasm_exports'))
 
 	const depLines = [
 		`javy-plugin-api = "6.0.0"`,
@@ -80,7 +102,7 @@ export function generateHostCrate(
 		`cre_wasm_exports = { path = "${creExportsPath}" }`,
 	]
 	for (const ext of extensions) {
-		depLines.push(`${ext.crateName} = { path = "${ext.path}" }`)
+		depLines.push(`${ext.crateName} = { path = "${toTomlPath(ext.path)}" }`)
 	}
 
 	const cargoToml = `[package]
@@ -99,9 +121,7 @@ ${depLines.join('\n')}
 		.map((e) => `${e.crateName}::register(&ctx);`)
 		.join('\n            ')
 
-	const libRs = `use javy_plugin_api::Config;
-
-// import_namespace!("javy_chainlink_sdk") is already emitted by the javy_chainlink_sdk path dep.
+	const libRs = `// import_namespace!("javy_chainlink_sdk") is already emitted by the javy_chainlink_sdk path dep.
 // Repeating it here would cause duplicate WIT namespace exports that break plugin initialisation.
 
 // Must use export_name = "initialize-runtime" (hyphen, WIT style) so javy init-plugin calls this
@@ -110,18 +130,14 @@ ${depLines.join('\n')}
 #[unsafe(export_name = "initialize-runtime")]
 pub unsafe extern "C" fn initialize_runtime() {
     javy_plugin_api::initialize_runtime(
-        || {
-            let mut config = Config::default();
-            config.event_loop(true).text_encoding(true).promise(true);
-            config
-        },
+        javy_chainlink_sdk::config,
         |runtime| {
+            cre_wasm_exports::reset_registry();
             let runtime = javy_chainlink_sdk::modify_runtime(runtime);
             runtime.context().with(|ctx| {
-                cre_wasm_exports::reset_registry();
                 ${extensionRegisterLines}
-                cre_wasm_exports::check_duplicates();
             });
+            cre_wasm_exports::check_duplicates();
             runtime
         },
     )
