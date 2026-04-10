@@ -47,7 +47,7 @@ const expectNoWarnings = (entryPath: string) => {
 // Promise.race() / Promise.any()
 // ---------------------------------------------------------------------------
 
-describe('Promise.race() and Promise.any()', () => {
+describe('Promise.race(), Promise.any(), and Promise.all()', () => {
 	test('detects Promise.race()', () => {
 		const entry = writeTemp(
 			'workflow.ts',
@@ -72,12 +72,20 @@ describe('Promise.race() and Promise.any()', () => {
 		expectWarnings(entry, ['Promise.any() is non-deterministic'])
 	})
 
-	test('does NOT flag Promise.all()', () => {
+	test('detects Promise.all()', () => {
 		const entry = writeTemp(
 			'workflow.ts',
 			`const results = await Promise.all([Promise.resolve(1), Promise.resolve(2)]);\n`,
 		)
-		expectNoWarnings(entry)
+		expectWarnings(entry, ['Promise.all() executes promises concurrently'])
+	})
+
+	test('detects globalThis.Promise.all()', () => {
+		const entry = writeTemp(
+			'workflow.ts',
+			`const results = await globalThis.Promise.all([Promise.resolve(1), Promise.resolve(2)]);\n`,
+		)
+		expectWarnings(entry, ['Promise.all() executes promises concurrently'])
 	})
 
 	test('does NOT flag Promise.allSettled()', () => {
@@ -334,7 +342,7 @@ const sortedKeys = Object.keys(data).sort();
 for (const key of sortedKeys) {
   console.log(key);
 }
-const results = await Promise.all([Promise.resolve(1), Promise.resolve(2)]);
+const results = await Promise.resolve([1, 2]);
 const d = new Date(1700000000000);
 `,
 		)

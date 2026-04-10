@@ -12,7 +12,7 @@
  *
  * ## Detected patterns
  *
- * - `Promise.race()` / `Promise.any()` — timing-dependent, first-settled wins
+ * - `Promise.race()` / `Promise.any()` / `Promise.all()` — concurrent execution, timing-dependent
  * - `Date.now()` / `new Date()` — system clock varies across nodes
  * - `for...in` loops — iteration order is not guaranteed by the spec
  * - `Object.keys()` / `Object.values()` / `Object.entries()` without `.sort()`
@@ -403,7 +403,7 @@ const collectDeterminismWarnings = (
 ) => {
 	const checker = program.getTypeChecker()
 
-	const promiseMethods = new Set(['race', 'any'])
+	const promiseMethods = new Set(['race', 'any', 'all'])
 	const dateMethods = new Set(['now'])
 	const objectIterationMethods = new Set(['keys', 'values', 'entries'])
 
@@ -423,12 +423,16 @@ const collectDeterminismWarnings = (
 					sourceFile,
 				)
 				if (promiseMethod) {
+					const promiseWarning =
+						promiseMethod === 'all'
+							? `Promise.all() executes promises concurrently — side effects may occur in different orders across nodes.`
+							: `Promise.${promiseMethod}() is non-deterministic — the first ${promiseMethod === 'race' ? 'settled' : 'fulfilled'} promise wins, and timing varies across nodes.`
 					warnings.push(
 						createViolation(
 							resolvedSourcePath,
 							node.expression.getStart(sourceFile),
 							sourceFile,
-							`Promise.${promiseMethod}() is non-deterministic — the first ${promiseMethod === 'race' ? 'settled' : 'fulfilled'} promise wins, and timing varies across nodes.`,
+							promiseWarning,
 						),
 					)
 				}
