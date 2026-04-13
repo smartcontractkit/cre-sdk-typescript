@@ -2,7 +2,7 @@ import { spawn } from 'node:child_process'
 import { existsSync } from 'node:fs'
 import { mkdir } from 'node:fs/promises'
 import path from 'node:path'
-import { parseCompileFlags } from '../../../cre-sdk-javy-plugin/scripts/parse-compile-flags'
+import { parseCompileFlags } from '@chainlink/cre-sdk-javy-plugin/scripts/parse-compile-flags'
 
 function runBun(args: string[]): Promise<void> {
 	return new Promise((resolve, reject) => {
@@ -77,10 +77,16 @@ export const main = async (
 	}
 	compileArgs.push(resolvedInput, resolvedOutput)
 
-	const scriptDir = import.meta.dir
-	const javyPluginRoot = process.env.CRE_SDK_JAVY_PLUGIN_HOME
-		? path.resolve(process.env.CRE_SDK_JAVY_PLUGIN_HOME)
-		: path.resolve(scriptDir, '../../../cre-sdk-javy-plugin')
+	let javyPluginRoot: string
+	if (process.env.CRE_SDK_JAVY_PLUGIN_HOME) {
+		javyPluginRoot = path.resolve(process.env.CRE_SDK_JAVY_PLUGIN_HOME)
+	} else {
+		try {
+			javyPluginRoot = path.dirname(require.resolve('@chainlink/cre-sdk-javy-plugin/package.json'))
+		} catch {
+			javyPluginRoot = path.resolve(import.meta.dir, '../../../cre-sdk-javy-plugin')
+		}
+	}
 	const compilerPath = path.join(javyPluginRoot, 'bin/compile-workflow.ts')
 	if (existsSync(compilerPath)) {
 		await runBun(['--bun', compilerPath, ...compileArgs])

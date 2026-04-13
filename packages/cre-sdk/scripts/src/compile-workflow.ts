@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs'
 import { mkdir } from 'node:fs/promises'
 import path from 'node:path'
-import { parseCompileFlags } from '../../../cre-sdk-javy-plugin/scripts/parse-compile-flags'
+import { parseCompileFlags } from '@chainlink/cre-sdk-javy-plugin/scripts/parse-compile-flags'
 import { parseCompileCliArgs, skipTypeChecksFlag } from './compile-cli-args'
 import { main as compileToJs } from './compile-to-js'
 import { main as compileToWasm } from './compile-to-wasm'

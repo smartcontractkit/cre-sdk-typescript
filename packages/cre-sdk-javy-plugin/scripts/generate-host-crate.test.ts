@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { generateHostCrate, readCrateName, resolveExtensions } from './generate-host-crate'
@@ -60,6 +60,40 @@ describe('generate-host-crate', () => {
 			}
 		})
 
+		test('throws when extension is missing src/lib.rs', () => {
+			const outDir = mkdtempSync(join(tmpdir(), 'cre-host-'))
+			const extDir = mkdtempSync(join(tmpdir(), 'cre-ext-'))
+			const pluginDir = join(import.meta.dir, '..')
+			try {
+				writeFileSync(join(extDir, 'Cargo.toml'), '[package]\nname = "bad_ext"\nversion = "0.1.0"')
+				const extensions = [{ crateName: 'bad_ext', path: extDir }]
+				expect(() => generateHostCrate(outDir, pluginDir, extensions)).toThrow(
+					/missing src\/lib\.rs/,
+				)
+			} finally {
+				rmSync(outDir, { recursive: true })
+				rmSync(extDir, { recursive: true })
+			}
+		})
+
+		test('throws when extension lacks pub fn register', () => {
+			const outDir = mkdtempSync(join(tmpdir(), 'cre-host-'))
+			const extDir = mkdtempSync(join(tmpdir(), 'cre-ext-'))
+			const pluginDir = join(import.meta.dir, '..')
+			try {
+				writeFileSync(join(extDir, 'Cargo.toml'), '[package]\nname = "no_reg"\nversion = "0.1.0"')
+				mkdirSync(join(extDir, 'src'))
+				writeFileSync(join(extDir, 'src', 'lib.rs'), 'pub fn init() {}')
+				const extensions = [{ crateName: 'no_reg', path: extDir }]
+				expect(() => generateHostCrate(outDir, pluginDir, extensions)).toThrow(
+					/does not export.*pub fn register/,
+				)
+			} finally {
+				rmSync(outDir, { recursive: true })
+				rmSync(extDir, { recursive: true })
+			}
+		})
+
 		test('Cargo.toml uses path deps for javy_chainlink_sdk, cre_wasm_exports, and extensions', () => {
 			const outDir = mkdtempSync(join(tmpdir(), 'cre-host-'))
 			const pluginDir = join(import.meta.dir, '..')
@@ -84,6 +118,22 @@ describe('generate-host-crate', () => {
 				expect(libRs).toContain('lib_beta::register')
 				expect(libRs).toContain('cre_wasm_exports::reset_registry')
 				expect(libRs).toContain('cre_wasm_exports::check_duplicates')
+				expect(libRs).toContain('javy_chainlink_sdk::config')
+				expect(libRs).toContain('javy_chainlink_sdk::modify_runtime')
+			} finally {
+				rmSync(outDir, { recursive: true })
+			}
+		})
+
+		test('generated Cargo.toml paths use forward slashes', () => {
+			const outDir = mkdtempSync(join(tmpdir(), 'cre-host-'))
+			const pluginDir = join(import.meta.dir, '..')
+			const examplesDir = join(pluginDir, '..', 'cre-sdk-examples', 'rust-inject')
+			const extensions = resolveExtensions([join(examplesDir, 'lib_alpha')])
+			try {
+				generateHostCrate(outDir, pluginDir, extensions)
+				const cargo = readFileSync(join(outDir, 'Cargo.toml'), 'utf8')
+				expect(cargo).not.toMatch(/path = "[^"]*\\/)
 			} finally {
 				rmSync(outDir, { recursive: true })
 			}

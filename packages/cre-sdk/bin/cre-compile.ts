@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 
 import { main as compileWorkflow } from "../scripts/src/compile-workflow";
-import { parseCompileFlags } from "../../cre-sdk-javy-plugin/scripts/parse-compile-flags";
+import { parseCompileFlags } from "@chainlink/cre-sdk-javy-plugin/scripts/parse-compile-flags";
 import {
   parseCompileCliArgs,
   skipTypeChecksFlag,

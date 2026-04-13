@@ -8,7 +8,6 @@ const rustAlphaSchema = z.object({
 export type RustAlpha = z.infer<typeof rustAlphaSchema>
 
 declare global {
-	// eslint-disable-next-line no-var
 	var rustAlpha: RustAlpha
 }
 
