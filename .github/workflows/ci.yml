@@ -139,7 +139,7 @@ jobs:
           CRE_API_KEY: ${{ secrets.CRE_CLI_API_KEY }}
         run: ./scripts/e2e/simulate-log-trigger.sh
 
-      # Rust extension examples: build crate alpha (under rust-inject/lib_alpha), compile workflows, simulate.
+      # Rust extension examples: build cre-rust-inject-alpha, compile workflows, simulate.
       - name: E2E - Simulate rust-inject workflows
         env:
           CRE_API_KEY: ${{ secrets.CRE_CLI_API_KEY }}

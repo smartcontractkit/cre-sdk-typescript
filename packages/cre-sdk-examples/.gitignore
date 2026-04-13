@@ -3,14 +3,3 @@ dist
 .turbo
 tmp.js
 tmp.wasm
-
-# rust-inject workflow build artifacts
-rust-inject/source-extensions/wasm/
-rust-inject/prebuilt-plugin/wasm/
-
-# lib_alpha distribution artifacts
-rust-inject/lib_alpha/dist/
-
-# Rust build artifacts
-rust-inject/**/target/
-rust-inject/**/Cargo.lock

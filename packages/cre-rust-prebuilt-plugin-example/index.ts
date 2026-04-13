@@ -1,6 +1,6 @@
+import { rustAlpha } from '@chainlink/cre-rust-inject-alpha'
 import { CronCapability, handler, Runner, type Runtime } from '@chainlink/cre-sdk'
 import { z } from 'zod'
-import { rustAlpha } from '../lib_alpha'
 
 const configSchema = z.object({
 	schedule: z.string(),
