@@ -51,6 +51,8 @@ unsafe extern "C" {
     fn random_seed(mode: i32) -> i64;
 
     fn now(result_timestamp: *mut u8) -> i32;
+
+    fn emit_metric(data_ptr: *const u8, data_len: i32) -> i32;
 }
 
 import_namespace!("javy_chainlink_sdk");
