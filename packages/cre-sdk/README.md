@@ -1,6 +1,6 @@
 # @chainlink/cre-sdk
 
-The Chainlink Runtime Environment (CRE) SDK for TypeScript enables developers to write decentralized [Chainlink Runtime Environment Workflows](https://docs.chain.link/cre/) in Typescript..
+The Chainlink Runtime Environment (CRE) SDK for TypeScript enables developers to write decentralized [Chainlink Runtime Environment Workflows](https://docs.chain.link/cre/) in Typescript.
 
 ## Table of Contents
 
