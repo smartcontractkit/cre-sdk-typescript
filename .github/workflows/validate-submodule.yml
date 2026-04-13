@@ -4,12 +4,12 @@ permissions: {}
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    branches: [capabilities-development]
   push:
     branches: [capabilities-development]
 
 jobs:
   validate-submodule:
+    if: github.event_name == 'push' || github.base_ref == 'capabilities-development'
     permissions:
       contents: read
     runs-on: ubuntu-latest
