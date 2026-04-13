@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { generateHostCrate, readCrateName, resolveExtensions } from './generate-host-crate'
@@ -122,6 +122,29 @@ describe('generate-host-crate', () => {
 				expect(libRs).toContain('javy_chainlink_sdk::modify_runtime')
 			} finally {
 				rmSync(outDir, { recursive: true })
+			}
+		})
+
+		test('copies rust-toolchain.toml into generated crate', () => {
+			const outDir = mkdtempSync(join(tmpdir(), 'cre-host-'))
+			const extDir = mkdtempSync(join(tmpdir(), 'cre-ext-'))
+			const pluginDir = join(import.meta.dir, '..')
+			try {
+				writeFileSync(
+					join(extDir, 'Cargo.toml'),
+					'[package]\nname = "toolchain_ext"\nversion = "0.1.0"',
+				)
+				mkdirSync(join(extDir, 'src'))
+				writeFileSync(join(extDir, 'src', 'lib.rs'), 'pub fn register(_ctx: &()) {}')
+				const extensions = [{ crateName: 'toolchain_ext', path: extDir }]
+				generateHostCrate(outDir, pluginDir, extensions)
+				const toolchainPath = join(outDir, 'rust-toolchain.toml')
+				expect(existsSync(toolchainPath)).toBe(true)
+				const content = readFileSync(toolchainPath, 'utf8')
+				expect(content).toContain('wasm32-wasip1')
+			} finally {
+				rmSync(outDir, { recursive: true })
+				rmSync(extDir, { recursive: true })
 			}
 		})
 

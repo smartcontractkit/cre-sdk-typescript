@@ -3,9 +3,9 @@
  * Builds a Javy plugin .plugin.wasm from extension crates.
  * Used by examples that need a pre-built plugin (e.g. lib_alpha).
  */
-import { existsSync, mkdirSync, rmSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import path, { dirname, resolve } from 'node:path'
+import path, { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { ensureJavy } from './ensure-javy.ts'
 import { generateHostCrate, resolveExtensions } from './generate-host-crate.ts'
@@ -41,9 +41,8 @@ async function main() {
 		process.exit(1)
 	}
 
-	const tmpDir = resolve(tmpdir(), `cre-plugin-${process.pid}-${Date.now()}`)
+	const tmpDir = mkdtempSync(join(tmpdir(), 'cre-plugin-'))
 	const sharedTargetDir = resolve(pluginDir, '.cargo-target')
-	mkdirSync(tmpDir, { recursive: true })
 	try {
 		const extensions = resolveExtensions(creExports)
 		generateHostCrate(tmpDir, pluginDir, extensions)

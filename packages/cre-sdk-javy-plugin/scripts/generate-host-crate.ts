@@ -147,4 +147,11 @@ pub unsafe extern "C" fn initialize_runtime() {
 
 	writeFileSync(join(outDir, 'Cargo.toml'), cargoToml)
 	writeFileSync(join(outDir, 'src', 'lib.rs'), libRs)
+
+	// Copy rust-toolchain.toml so cargo uses the correct toolchain + wasm32-wasip1 target
+	// even when the generated crate lives outside the repo (e.g. /tmp on CI).
+	const toolchainSrc = resolve(realPluginDir, 'src', 'javy_chainlink_sdk', 'rust-toolchain.toml')
+	if (existsSync(toolchainSrc)) {
+		writeFileSync(join(outDir, 'rust-toolchain.toml'), readFileSync(toolchainSrc))
+	}
 }
