@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
-import { existsSync, mkdirSync, rmSync } from 'node:fs'
+import { existsSync, mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { dirname, resolve } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { ensureJavy } from '../scripts/ensure-javy.ts'
 import { generateHostCrate, resolveExtensions } from '../scripts/generate-host-crate.ts'
@@ -61,9 +61,8 @@ async function main() {
 			process.exit(1)
 		}
 	} else if (creExports.length > 0) {
-		const tmpDir = resolve(tmpdir(), `cre-host-${process.pid}-${Date.now()}`)
+		const tmpDir = mkdtempSync(join(tmpdir(), 'cre-host-'))
 		const sharedTargetDir = resolve(pluginDir, '.cargo-target')
-		mkdirSync(tmpDir, { recursive: true })
 		try {
 			const extensions = resolveExtensions(creExports)
 			generateHostCrate(tmpDir, pluginDir, extensions)
