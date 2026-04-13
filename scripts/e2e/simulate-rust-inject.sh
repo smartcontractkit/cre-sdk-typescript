@@ -1,71 +1,42 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# E2E test for rust-inject examples — simulates the customer npm-package workflow:
+# E2E test for rust-inject examples — builds and validates using workspace packages:
 #
-# Step 1: Pack @chainlink/cre-sdk-javy-plugin → .packaged/cre-sdk-javy-plugin/
-#         (simulates "npm publish" of the SDK)
-#
-# Step 2: Build lib_alpha with the packed SDK → dist/alpha.plugin.wasm
-#         (lib_alpha's Cargo.toml references .packaged/cre-sdk-javy-plugin for path deps)
-#
-# Step 3: Pack lib_alpha (includes pre-built plugin + Rust source) → .packaged/lib-alpha/
-#         (simulates "npm publish @chainlink/cre-rust-inject-alpha")
-#
-# Step 4: Install deps for each example (file: deps from .packaged/ simulate npm install)
-#
-# Step 5a: prebuilt-plugin — customer installs the alpha package and uses its .plugin.wasm via --plugin
-# Step 5b: source-extensions — customer installs alpha (Rust source) + adds local lib_beta via --cre-exports
+# Step 1: Build lib_alpha → dist/alpha.plugin.wasm
+# Step 2: Build prebuilt-plugin (uses alpha's pre-built .plugin.wasm via --plugin)
+# Step 3: Build source-extensions (compiles alpha + beta from source via --cre-exports)
+# Step 4: Simulate and validate outputs
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
-EXAMPLES_DIR="$ROOT_DIR/packages/cre-sdk-examples"
-RUST_INJECT="$EXAMPLES_DIR/rust-inject"
-PACKAGED="$RUST_INJECT/.packaged"
+PACKAGES_DIR="$ROOT_DIR/packages"
 OUTPUT_FILE="$(mktemp)"
 
 cleanup() { rm -f "$OUTPUT_FILE"; }
 trap cleanup EXIT
 
-# ── Step 1: Pack cre-sdk-javy-plugin ─────────────────────────────────────────
-echo "=== Step 1: Packing @chainlink/cre-sdk-javy-plugin ==="
-JAVY_PLUGIN_SRC="$ROOT_DIR/packages/cre-sdk-javy-plugin"
-rm -rf "$PACKAGED"
-mkdir -p "$PACKAGED"
-TARBALL=$(cd "$JAVY_PLUGIN_SRC" && npm pack --pack-destination "$PACKAGED")
-tar xzf "$PACKAGED/$TARBALL" -C "$PACKAGED"
-mv "$PACKAGED/package" "$PACKAGED/cre-sdk-javy-plugin"
-rm -f "$PACKAGED/$TARBALL"
-echo "✓ Packed → $PACKAGED/cre-sdk-javy-plugin"
+# ── Step 1: Build lib_alpha ──────────────────────────────────────────────────
+echo "=== Step 1: Building cre-rust-inject-alpha ==="
+make -C "$PACKAGES_DIR/cre-rust-inject-alpha" build
 
-# ── Step 2: Build lib_alpha with the packed SDK ───────────────────────────────
+# ── Step 2: Build prebuilt-plugin ────────────────────────────────────────────
 echo ""
-echo "=== Step 2: Building lib_alpha with packed SDK ==="
-make -C "$RUST_INJECT/lib_alpha" build
+echo "=== Step 2: Building prebuilt-plugin (pre-built alpha.plugin.wasm via --plugin) ==="
+make -C "$PACKAGES_DIR/cre-rust-prebuilt-plugin-example" build
 
-# ── Step 3: Pack lib_alpha ────────────────────────────────────────────────────
+# ── Step 3: Build source-extensions ──────────────────────────────────────────
 echo ""
-echo "=== Step 3: Packing lib_alpha → .packaged/lib-alpha ==="
-make -C "$RUST_INJECT/lib_alpha" pack-lib-alpha
+echo "=== Step 3: Building source-extensions (alpha + beta via --cre-exports) ==="
+make -C "$PACKAGES_DIR/cre-rust-source-extensions-example" build
 
-# ── Step 4: Install deps for each example ────────────────────────────────────
+# ── Step 4a: Simulate prebuilt-plugin ────────────────────────────────────────
 echo ""
-echo "=== Step 4: Installing deps for prebuilt-plugin ==="
-(cd "$RUST_INJECT/prebuilt-plugin" && bun install)
+echo "=== Step 4a: Simulating prebuilt-plugin ==="
+cd "$PACKAGES_DIR/cre-rust-prebuilt-plugin-example"
+cp -n "$PACKAGES_DIR/cre-sdk-examples/.env.example" .env 2>/dev/null || true
 
-echo ""
-echo "=== Step 4: Installing deps for source-extensions ==="
-(cd "$RUST_INJECT/source-extensions" && bun install)
-
-cd "$EXAMPLES_DIR"
-cp -n .env.example .env 2>/dev/null || true
-
-# ── Step 5a: prebuilt-plugin ──────────────────────────────────────────────────
-echo ""
-echo "=== Step 5a: prebuilt-plugin (pre-built alpha.plugin.wasm from npm package) ==="
-make -C "$RUST_INJECT/prebuilt-plugin" build
-
-cre workflow simulate ./rust-inject/prebuilt-plugin \
+cre workflow simulate . \
   --non-interactive \
   --trigger-index 0 \
   > "$OUTPUT_FILE" 2>&1 || true
@@ -79,12 +50,13 @@ if ! grep -q "Hello from alpha" "$OUTPUT_FILE"; then
 fi
 echo "✓ Found: Hello from alpha"
 
-# ── Step 5b: source-extensions ───────────────────────────────────────────────
+# ── Step 4b: Simulate source-extensions ──────────────────────────────────────
 echo ""
-echo "=== Step 5b: source-extensions (lib_alpha from npm + lib_beta local) ==="
-make -C "$RUST_INJECT/source-extensions" build
+echo "=== Step 4b: Simulating source-extensions ==="
+cd "$PACKAGES_DIR/cre-rust-source-extensions-example"
+cp -n "$PACKAGES_DIR/cre-sdk-examples/.env.example" .env 2>/dev/null || true
 
-cre workflow simulate ./rust-inject/source-extensions \
+cre workflow simulate . \
   --non-interactive \
   --trigger-index 0 \
   > "$OUTPUT_FILE" 2>&1 || true

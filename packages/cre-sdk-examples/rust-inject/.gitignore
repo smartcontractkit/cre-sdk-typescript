@@ -1,5 +1,0 @@
-# npm pack extract staging (reproducible “consumer” layout)
-.packaged/
-
-# pack-lib-alpha.sh temporary backup (normally removed)
-lib_alpha/Cargo.toml.orig

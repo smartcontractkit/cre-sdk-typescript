@@ -4,6 +4,11 @@
 	"private": true,
 	"type": "module",
 	"description": "Example Rust extension (alpha) for CRE rust-inject demos — packaged plugin wasm + crate source.",
+	"scripts": {
+		"check": "biome check --write ${BIOME_PATHS:-.}",
+		"check:ci": "biome ci .",
+		"typecheck": "tsc"
+	},
 	"files": [
 		"dist",
 		"src",
