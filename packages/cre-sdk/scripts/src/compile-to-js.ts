@@ -4,6 +4,7 @@ import path from 'node:path'
 import { $ } from 'bun'
 import { parseCompileCliArgs, skipTypeChecksFlag } from './compile-cli-args'
 import { assertWorkflowTypecheck } from './typecheck-workflow'
+import { checkWorkflowDeterminism, printDeterminismWarnings } from './validate-workflow-determinism'
 import { assertWorkflowRuntimeCompatibility } from './validate-workflow-runtime-compat'
 import { wrapWorkflowCode } from './workflow-wrapper'
 
@@ -60,6 +61,15 @@ export const main = async (
 		assertWorkflowTypecheck(resolvedInput)
 	}
 	assertWorkflowRuntimeCompatibility(resolvedInput)
+<<<<<<< HEAD
+=======
+	if (!parsedSkipTypeChecks) {
+		const warnings = checkWorkflowDeterminism(resolvedInput)
+		if (warnings.length > 0) {
+			printDeterminismWarnings(warnings)
+		}
+	}
+>>>>>>> b6b7ea276a9f913c8a3386bc14bf376beff418d8
 	console.info(`📁 Using input file: ${resolvedInput}`)
 
 	// If no explicit output path → same dir, swap extension to .js
