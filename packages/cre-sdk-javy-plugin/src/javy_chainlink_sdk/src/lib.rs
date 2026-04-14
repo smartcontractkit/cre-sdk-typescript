@@ -1,4 +1,4 @@
-use cre_wasm_exports::{check_duplicates, extend_wasm_exports, reset_registry};
+use cre_wasm_exports::{__clear_registry, extend_wasm_exports};
 use javy_plugin_api::{
     import_namespace,
     javy::{Runtime, quickjs::prelude::*},
@@ -98,9 +98,9 @@ pub fn config() -> Config {
 
 /// Applies CRE plugin globals and host bindings. Used by the default plugin build and by generated host crates that add `--cre-exports` extensions.
 ///
-/// Callers must own the reset_registry()/check_duplicates() lifecycle so that the
-/// registry spans both core exports (registered here) and any extension exports.
+/// Duplicate export names are caught eagerly by `extend_wasm_exports`.
 pub fn modify_runtime(runtime: Runtime) -> Runtime {
+    __clear_registry();
     runtime.context().with(|ctx| {
         RANDOM_GENERATORS.get_or_init(|| Mutex::new(HashMap::new()));
 
@@ -331,20 +331,3 @@ pub fn modify_runtime(runtime: Runtime) -> Runtime {
     runtime
 }
 
-// Only export initialize-runtime in standalone mode (default plugin build).
-// When javy_chainlink_sdk is a dep inside a generated host crate the host
-// exports its own initialize-runtime, so we must NOT duplicate the symbol.
-#[cfg(feature = "standalone")]
-#[unsafe(export_name = "initialize-runtime")]
-fn initialize_runtime() {
-    javy_plugin_api::initialize_runtime(
-        config,
-        |runtime| {
-            reset_registry();
-            let runtime = modify_runtime(runtime);
-            check_duplicates();
-            runtime
-        },
-    )
-    .unwrap();
-}

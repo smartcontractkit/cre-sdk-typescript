@@ -4,14 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [lib]
-# cdylib: plugin .wasm (--plugin / init-plugin). rlib is still emitted for normal Cargo dependency linking.
-crate-type = ["cdylib", "rlib"]
-
-# standalone: export initialize-runtime (used by the default standalone plugin build).
-# Disable when used as a dep in a generated host crate so the host can export its own initialize-runtime.
-[features]
-default = ["standalone"]
-standalone = []
+crate-type = ["rlib"]
 
 [dependencies]
 cre_wasm_exports = { path = "../cre_wasm_exports" }
