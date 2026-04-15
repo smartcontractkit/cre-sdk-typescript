@@ -1,4 +1,4 @@
-COMMON_VERSION ?= cre-std-tests@0.6.0
+COMMON_VERSION ?= 54aedc8127f2cf95192907873ed4286d422a7053
 MODULE := github.com/smartcontractkit/chainlink-common
 TEST_PATTERN ?= ^TestStandard
 

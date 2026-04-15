@@ -6,6 +6,7 @@ import {
 	type HTTPResponse,
 	HTTPResponseSchema,
 } from '@cre/generated/capabilities/networking/confidentialhttp/v1alpha/client_pb'
+import type { CapabilityRestrictionJson } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import type { Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import { hexToBytes } from '@cre/sdk/utils/hex-utils'
@@ -54,6 +55,20 @@ export class ClientCapability {
 				const result = capabilityResponse.result()
 
 				return result
+			},
+		}
+	}
+}
+
+export class ClientRestrictor {
+	limitSendRequest(maxCalls: number): CapabilityRestrictionJson {
+		const capabilityId = ClientCapability.CAPABILITY_ID
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'SendRequest',
+				maxCalls,
 			},
 		}
 	}

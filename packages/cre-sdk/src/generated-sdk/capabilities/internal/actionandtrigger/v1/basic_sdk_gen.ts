@@ -12,6 +12,7 @@ import {
 	type TriggerEvent,
 	TriggerEventSchema,
 } from '@cre/generated/capabilities/internal/actionandtrigger/v1/action_and_trigger_pb'
+import type { CapabilityRestrictionJson } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import type { Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import { hexToBytes } from '@cre/sdk/utils/hex-utils'
@@ -106,5 +107,18 @@ class BasicTrigger implements Trigger<TriggerEvent, TriggerEvent> {
 	 */
 	adapt(rawOutput: TriggerEvent): TriggerEvent {
 		return rawOutput
+	}
+}
+export class BasicRestrictor {
+	limitAction(maxCalls: number): CapabilityRestrictionJson {
+		const capabilityId = BasicCapability.CAPABILITY_ID
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'Action',
+				maxCalls,
+			},
+		}
 	}
 }

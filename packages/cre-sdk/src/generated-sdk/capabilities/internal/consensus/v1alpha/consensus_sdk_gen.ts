@@ -1,5 +1,6 @@
 import { fromJson } from '@bufbuild/protobuf'
 import {
+	type CapabilityRestrictionJson,
 	type ReportRequest,
 	type ReportRequestJson,
 	ReportRequestSchema,
@@ -92,6 +93,32 @@ export class ConsensusCapability {
 				const result = capabilityResponse.result()
 
 				return new Report(result)
+			},
+		}
+	}
+}
+
+export class ConsensusRestrictor {
+	limitSimple(maxCalls: number): CapabilityRestrictionJson {
+		const capabilityId = ConsensusCapability.CAPABILITY_ID
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'Simple',
+				maxCalls,
+			},
+		}
+	}
+
+	limitReport(maxCalls: number): CapabilityRestrictionJson {
+		const capabilityId = ConsensusCapability.CAPABILITY_ID
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'Report',
+				maxCalls,
 			},
 		}
 	}

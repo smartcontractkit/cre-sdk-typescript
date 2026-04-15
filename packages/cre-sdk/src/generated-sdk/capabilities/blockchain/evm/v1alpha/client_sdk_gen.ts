@@ -51,6 +51,7 @@ import {
 	WriteReportRequestSchema,
 } from '@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb'
 import {
+	type CapabilityRestrictionJson,
 	type ReportResponse,
 	type ReportResponseJson,
 	ReportResponseSchema,
@@ -517,5 +518,112 @@ class ClientLogTrigger implements Trigger<Log, Log> {
 	 */
 	adapt(rawOutput: Log): Log {
 		return rawOutput
+	}
+}
+export class ClientRestrictor {
+	constructor(private readonly ChainSelector: bigint) {}
+
+	limitCallContract(maxCalls: number): CapabilityRestrictionJson {
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'CallContract',
+				maxCalls,
+			},
+		}
+	}
+
+	limitFilterLogs(maxCalls: number): CapabilityRestrictionJson {
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'FilterLogs',
+				maxCalls,
+			},
+		}
+	}
+
+	limitBalanceAt(maxCalls: number): CapabilityRestrictionJson {
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'BalanceAt',
+				maxCalls,
+			},
+		}
+	}
+
+	limitEstimateGas(maxCalls: number): CapabilityRestrictionJson {
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'EstimateGas',
+				maxCalls,
+			},
+		}
+	}
+
+	limitGetTransactionByHash(maxCalls: number): CapabilityRestrictionJson {
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'GetTransactionByHash',
+				maxCalls,
+			},
+		}
+	}
+
+	limitGetTransactionReceipt(maxCalls: number): CapabilityRestrictionJson {
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'GetTransactionReceipt',
+				maxCalls,
+			},
+		}
+	}
+
+	limitHeaderByNumber(maxCalls: number): CapabilityRestrictionJson {
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'HeaderByNumber',
+				maxCalls,
+			},
+		}
+	}
+
+	limitWriteReport(maxCalls: number): CapabilityRestrictionJson {
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'WriteReport',
+				maxCalls,
+			},
+		}
 	}
 }

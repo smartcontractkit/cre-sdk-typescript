@@ -6,6 +6,7 @@ import {
 	type Response,
 	ResponseSchema,
 } from '@cre/generated/capabilities/networking/http/v1alpha/client_pb'
+import type { CapabilityRestrictionJson } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import type { NodeRuntime, Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import type { ConsensusAggregation, PrimitiveTypes, UnwrapOptions } from '@cre/sdk/utils'
@@ -103,5 +104,19 @@ export class ClientCapability {
 			return fn(sendRequester, ...args)
 		}
 		return runtime.runInNodeMode(wrappedFn, consensusAggregation, unwrapOptions)
+	}
+}
+
+export class ClientRestrictor {
+	limitSendRequest(maxCalls: number): CapabilityRestrictionJson {
+		const capabilityId = ClientCapability.CAPABILITY_ID
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'SendRequest',
+				maxCalls,
+			},
+		}
 	}
 }

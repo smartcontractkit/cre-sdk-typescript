@@ -1,6 +1,7 @@
 import type { Message } from '@bufbuild/protobuf'
 import type {
 	CapabilityResponse,
+	RestrictionsJson,
 	Secret,
 	SecretRequest,
 	SecretRequestJson,
@@ -15,6 +16,10 @@ export type HandlerFn<TConfig, TTriggerOutput, TResult> = (
 	triggerOutput: TTriggerOutput,
 ) => Promise<CreSerializable<TResult>> | CreSerializable<TResult>
 
+export interface Hooks<TConfig, TTriggerOutput> {
+	preHook?: (config: TConfig, triggerOutput: TTriggerOutput) => RestrictionsJson
+}
+
 export interface HandlerEntry<
 	TConfig,
 	TRawTriggerOutput extends Message<string>,
@@ -23,6 +28,7 @@ export interface HandlerEntry<
 > {
 	trigger: Trigger<TRawTriggerOutput, TTriggerOutput>
 	fn: HandlerFn<TConfig, TTriggerOutput, TResult>
+	hooks?: Hooks<TConfig, TTriggerOutput>
 }
 
 export type Workflow<TConfig> = ReadonlyArray<HandlerEntry<TConfig, any, any, any>>
@@ -35,9 +41,11 @@ export const handler = <
 >(
 	trigger: Trigger<TRawTriggerOutput, TTriggerOutput>,
 	fn: HandlerFn<TConfig, TTriggerOutput, TResult>,
+	hooks?: Hooks<TConfig, TTriggerOutput>,
 ): HandlerEntry<TConfig, TRawTriggerOutput, TTriggerOutput, TResult> => ({
 	trigger,
 	fn,
+	hooks,
 })
 
 export type SecretsProvider = {

@@ -10,6 +10,7 @@ import {
 } from '@cre/generated/tools/generator/v1alpha/cre_metadata_pb'
 import { generateActionMethod } from './generate-action'
 import { generateReportWrapper } from './generate-report-wrapper'
+import { generateRestrictorMethod } from './generate-restrictor'
 import { generateActionSugarClass } from './generate-sugar'
 import { generateTriggerClass, generateTriggerMethod } from './generate-trigger'
 import {
@@ -178,6 +179,26 @@ export function generateSdk(file: GenFile, outputDir: string) {
 			.filter((wrapper) => wrapper !== '')
 			.join('\n')
 
+		// Generate restrictor methods for non-trigger service methods
+		const restrictorMethods = serviceMethods
+			.filter((method) => method.methodKind !== 'server_streaming')
+			.map((method) => {
+				const methodName = lowerCaseFirstLetter(method.name)
+				return generateRestrictorMethod(method, methodName, capabilityClassName, labels)
+			})
+			.join('\n')
+
+		const hasRestrictors = restrictorMethods.length > 0
+
+		if (hasRestrictors) {
+			const sdkPbPath = '@cre/generated/sdk/v1alpha/sdk_pb'
+			if (!typeImports.has(sdkPbPath)) {
+				typeImports.set(sdkPbPath, new Set())
+			}
+			const sdkPbTypes = typeImports.get(sdkPbPath)!
+			sdkPbTypes.add('type CapabilityRestrictionJson')
+		}
+
 		// Add protobuf imports - 'create' is needed by triggers and report wrappers
 		const hasReportWrappers = reportWrappers.length > 0
 		if (hasTriggers || hasReportWrappers) {
@@ -259,6 +280,8 @@ export function generateSdk(file: GenFile, outputDir: string) {
  * Capability Version: ${capabilityVersion}
  */`
 
+		const restrictorClassName = `${service.name}Restrictor`
+
 		// Generate the complete file
 		const output = `${Array.from(imports).join('\n')}
 ${sugarClasses}
@@ -274,7 +297,11 @@ ${labelSupport}
 ${constructorCode}
 ${methods}
 }
-${triggerClasses}`
+${triggerClasses}
+export class ${restrictorClassName} {
+${constructorCode}
+${restrictorMethods}
+}`
 
 		// Determine output path
 		const serviceNameLowerCased: Lowercase<string> = service.name.toLowerCase() as Lowercase<string>

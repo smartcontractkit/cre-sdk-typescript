@@ -71,3 +71,4 @@ class CronTrigger implements Trigger<Payload, Payload> {
 		return rawOutput
 	}
 }
+export class CronRestrictor {}
