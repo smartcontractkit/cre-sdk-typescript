@@ -7,6 +7,7 @@ import {
 	ExecutionResultSchema,
 	type Requirements,
 	RequirementsSchema,
+	RestrictionsSchema,
 	type SecretRequest,
 	type SecretRequestJson,
 	type Tee,
@@ -90,9 +91,12 @@ class RunnerBase<TConfig, TRuntime extends SecretsProvider> {
 				case 'trigger':
 					result = this.handleExecutionPhase(this.request, workflow, runtime)
 					break
+				case 'preHook':
+					result = this.handlePreHookPhase(this.request, workflow)
+					break
 				default:
 					throw new Error(
-						`Unknown request type '${this.request.request.case}': expected 'subscribe' or 'trigger'. This may indicate a version mismatch between the SDK and the CRE runtime`,
+						`Unknown request type '${this.request.request.case}': expected 'subscribe', 'trigger', or 'preHook'. This may indicate a version mismatch between the SDK and the CRE runtime`,
 					)
 			}
 		} catch (e) {
@@ -175,6 +179,73 @@ class RunnerBase<TConfig, TRuntime extends SecretsProvider> {
 		})
 	}
 
+	handlePreHookPhase(
+		req: ExecuteRequest,
+		workflow: Workflow<TConfig, TRuntime>,
+	): ExecutionResult {
+		if (req.request.case !== 'preHook') {
+			return create(ExecutionResultSchema, {
+				result: {
+					case: 'error',
+					value: `preHook request expected but received '${req.request.case}' in handlePreHookPhase. This is an internal SDK error`,
+				},
+			})
+		}
+
+		const triggerMsg = req.request.value
+
+		const id = BigInt(triggerMsg.id)
+		if (id > BigInt(Number.MAX_SAFE_INTEGER)) {
+			return create(ExecutionResultSchema, {
+				result: {
+					case: 'error',
+					value: `Trigger ID ${id} exceeds JavaScript safe integer range (Number.MAX_SAFE_INTEGER = ${Number.MAX_SAFE_INTEGER}). This trigger ID cannot be safely represented as a number`,
+				},
+			})
+		}
+
+		const index = Number(triggerMsg.id)
+		if (!Number.isFinite(index) || index < 0 || index >= workflow.length) {
+			return create(ExecutionResultSchema, {
+				result: {
+					case: 'error',
+					value: `trigger not found: no workflow handler registered at index ${index} (trigger ID ${triggerMsg.id}). The workflow has ${workflow.length} handler(s) registered. Verify the trigger subscription matches a registered handler`,
+				},
+			})
+		}
+
+		const entry = workflow[index]
+
+		if (!entry.hooks?.preHook) {
+			return create(ExecutionResultSchema, {
+				result: {
+					case: 'error',
+					value: `no preHook registered for handler at index ${index} (trigger ID ${triggerMsg.id}). The handler was subscribed with preHook enabled but no preHook function was provided`,
+				},
+			})
+		}
+
+		if (!triggerMsg.payload) {
+			return create(ExecutionResultSchema, {
+				result: {
+					case: 'error',
+					value: `trigger payload is missing for preHook at index ${index} (trigger ID ${triggerMsg.id}). The trigger event must include a payload`,
+				},
+			})
+		}
+
+		const schema = entry.trigger.outputSchema()
+		const decoded = fromBinary(schema, triggerMsg.payload.value)
+		const adapted = entry.trigger.adapt(decoded)
+
+		const restrictionsJson = entry.hooks.preHook(this.config, adapted)
+		const restrictions = fromJson(RestrictionsSchema, restrictionsJson)
+
+		return create(ExecutionResultSchema, {
+			result: { case: 'restrictions', value: restrictions },
+		})
+	}
+
 	handleSubscribePhase(
 		req: ExecuteRequest,
 		workflow: Workflow<TConfig, TRuntime>,
@@ -193,6 +264,7 @@ class RunnerBase<TConfig, TRuntime extends SecretsProvider> {
 			id: entry.trigger.capabilityId(),
 			method: entry.trigger.method(),
 			payload: entry.trigger.configAsAny(),
+			preHook: !!entry.hooks?.preHook,
 		}))
 
 		const subscriptionRequest = create(TriggerSubscriptionRequestSchema, {

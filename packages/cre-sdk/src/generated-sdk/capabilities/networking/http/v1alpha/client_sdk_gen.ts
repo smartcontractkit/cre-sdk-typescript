@@ -6,7 +6,8 @@ import {
 	type Response,
 	ResponseSchema,
 } from '@cre/generated/capabilities/networking/http/v1alpha/client_pb'
-import type { NodeRuntime, Runtime, TeeRuntime } from '@cre/sdk'
+import type { CapabilityRestrictionJson } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import type { NodeRuntime, Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import type { ConsensusAggregation, PrimitiveTypes, UnwrapOptions } from '@cre/sdk/utils'
 
@@ -35,15 +36,7 @@ export class ClientCapability {
 	static readonly CAPABILITY_VERSION = '1.0.0-alpha'
 
 	sendRequest(
-		runtime: TeeRuntime<unknown>,
-		input: Request | RequestJson,
-	): { result: () => Response }
-	sendRequest(
 		runtime: NodeRuntime<unknown>,
-		input: Request | RequestJson,
-	): { result: () => Response }
-	sendRequest(
-		runtime: NodeRuntime<unknown> | TeeRuntime<unknown>,
 		input: Request | RequestJson,
 	): { result: () => Response }
 	sendRequest<TArgs extends unknown[], TOutput>(
@@ -64,14 +57,11 @@ export class ClientCapability {
 			return this.sendRequestSugarHelper(runtime, fn, consensusAggregation, unwrapOptions)
 		}
 		// Otherwise, this is the basic call overload
-		const [runtime, input] = args as [
-			NodeRuntime<unknown> | TeeRuntime<unknown>,
-			Request | RequestJson,
-		]
+		const [runtime, input] = args as [NodeRuntime<unknown>, Request | RequestJson]
 		return this.sendRequestCallHelper(runtime, input)
 	}
 	private sendRequestCallHelper(
-		runtime: NodeRuntime<unknown> | TeeRuntime<unknown>,
+		runtime: NodeRuntime<unknown>,
 		input: Request | RequestJson,
 	): { result: () => Response } {
 		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
@@ -114,5 +104,19 @@ export class ClientCapability {
 			return fn(sendRequester, ...args)
 		}
 		return runtime.runInNodeMode(wrappedFn, consensusAggregation, unwrapOptions)
+	}
+}
+
+export class ClientRestrictor {
+	limitSendRequest(maxCalls: number): CapabilityRestrictionJson {
+		const capabilityId = ClientCapability.CAPABILITY_ID
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'SendRequest',
+				maxCalls,
+			},
+		}
 	}
 }
