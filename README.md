@@ -288,7 +288,7 @@ git submodule update --remote
 
 **Current submodules:**
 
-- `chainlink-protos` - Protocol buffer definitions
+- `chainlink-protos` - Protocol buffer definition
 
 ## License
 
