@@ -516,6 +516,15 @@ This SDK uses [@bufbuild/protobuf](https://www.npmjs.com/package/@bufbuild/proto
 - `buf.gen.yaml` - Code generation configuration using ts-proto
 - Generated files are placed in `src/generated/`
 
+**Opt-in proto allowlist:**
+
+[`buf.gen.yaml`](./buf.gen.yaml) uses an explicit `paths:` allowlist under its `inputs`. Protos added to the `chainlink-protos` submodule are **not** picked up automatically — a new capability must be added to both:
+
+1. [`packages/cre-sdk/buf.gen.yaml`](./buf.gen.yaml) — to generate the raw `*_pb.ts` types.
+2. [`packages/cre-sdk/scripts/src/generate-sdks.ts`](./scripts/src/generate-sdks.ts) — to generate the SDK wrapper classes and mocks.
+
+This prevents leaking in-progress or internal capabilities into the public SDK surface before they are ready.
+
 ### Chain Selectors Generation
 
 Auto-generated TypeScript files for 200+ blockchain networks from the official [Chainlink chain-selectors repository](https://github.com/smartcontractkit/chain-selectors).
