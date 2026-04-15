@@ -70,3 +70,4 @@ class HTTPTrigger implements Trigger<Payload, Payload> {
 		return rawOutput
 	}
 }
+export class HTTPRestrictor {}
