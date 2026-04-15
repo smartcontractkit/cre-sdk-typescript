@@ -32,7 +32,7 @@ describe('generate-host-crate', () => {
 	describe('resolveExtensions', () => {
 		test('resolves directory path to crate name and path', () => {
 			const pluginDir = join(import.meta.dir, '..')
-			const libAlphaDir = join(pluginDir, '..', 'cre-sdk-examples', 'rust-inject', 'lib_alpha')
+			const libAlphaDir = join(pluginDir, '..', 'cre-rust-inject-alpha')
 			const resolved = resolveExtensions([libAlphaDir])
 			expect(resolved).toHaveLength(1)
 			expect(resolved[0].crateName).toBe('alpha')
@@ -41,14 +41,7 @@ describe('generate-host-crate', () => {
 
 		test('resolves Cargo.toml path', () => {
 			const pluginDir = join(import.meta.dir, '..')
-			const cargoPath = join(
-				pluginDir,
-				'..',
-				'cre-sdk-examples',
-				'rust-inject',
-				'lib_alpha',
-				'Cargo.toml',
-			)
+			const cargoPath = join(pluginDir, '..', 'cre-rust-inject-alpha', 'Cargo.toml')
 			const resolved = resolveExtensions([cargoPath])
 			expect(resolved).toHaveLength(1)
 			expect(resolved[0].crateName).toBe('alpha')
@@ -210,10 +203,10 @@ describe('generate-host-crate', () => {
 		test('Cargo.toml uses path deps for javy_chainlink_sdk and extensions', () => {
 			const outDir = mkdtempSync(join(tmpdir(), 'cre-host-'))
 			const pluginDir = join(import.meta.dir, '..')
-			const examplesDir = join(pluginDir, '..', 'cre-sdk-examples', 'rust-inject')
+			const packagesDir = join(pluginDir, '..')
 			const extensions = resolveExtensions([
-				join(examplesDir, 'lib_alpha'),
-				join(examplesDir, 'lib_beta'),
+				join(packagesDir, 'cre-rust-inject-alpha'),
+				join(packagesDir, 'cre-rust-inject-beta'),
 			])
 			try {
 				generateHostCrate(outDir, pluginDir, extensions)
@@ -293,8 +286,7 @@ describe('generate-host-crate', () => {
 		test('generated Cargo.toml paths use forward slashes', () => {
 			const outDir = mkdtempSync(join(tmpdir(), 'cre-host-'))
 			const pluginDir = join(import.meta.dir, '..')
-			const examplesDir = join(pluginDir, '..', 'cre-sdk-examples', 'rust-inject')
-			const extensions = resolveExtensions([join(examplesDir, 'lib_alpha')])
+			const extensions = resolveExtensions([join(pluginDir, '..', 'cre-rust-inject-alpha')])
 			try {
 				generateHostCrate(outDir, pluginDir, extensions)
 				const cargo = readFileSync(join(outDir, 'Cargo.toml'), 'utf8')

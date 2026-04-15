@@ -28,7 +28,9 @@ COPY src/javy_chainlink_sdk/rust-toolchain.toml /build/src/javy_chainlink_sdk/ru
 RUN bun -e "import{generateHostCrate}from'./scripts/generate-host-crate.ts';generateHostCrate('/build/cre_generated_host','/build',[])"
 
 # --- Chainlink plugin (Rust) via generated host crate + init-plugin ---
-FROM rust:1.85.0-slim-bookworm AS plugin-builder
+# Keep in sync with src/javy_chainlink_sdk/rust-toolchain.toml channel.
+# Mismatch = rustup silently downloads the pinned channel on every build (non-deterministic, slow).
+FROM rust:1.87.0-slim-bookworm AS plugin-builder
 
 COPY --from=javy-cli /w/javy /usr/local/bin/javy
 
