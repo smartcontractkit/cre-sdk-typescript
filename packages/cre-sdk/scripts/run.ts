@@ -5,6 +5,7 @@ import { WorkflowRuntimeCompatibilityError } from './src/validate-workflow-runti
 
 const availableScripts = [
 	'build-types',
+	'check-determinism', // Check for non-deterministic patterns in workflow source
 	'compile-to-js',
 	'compile-to-wasm',
 	'compile-workflow', // TS -> JS -> WASM compilation in single script
