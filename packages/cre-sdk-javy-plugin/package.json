@@ -7,7 +7,7 @@
 		"cre-compile-workflow": "bin/compile-workflow.ts"
 	},
 	"scripts": {
-		"build": "bun run clean && bun scripts/compile-javy-sdk-plugin.ts",
+		"build": "bun run clean && bun scripts/compile-javy-sdk-plugin.ts --lockfile src/cre_generated_host.Cargo.lock",
 		"build:plugin-wasm": "./scripts/build-plugin-docker.sh",
 		"clean": "rm -rf dist",
 		"check": "biome check --write ${BIOME_PATHS:-.}",

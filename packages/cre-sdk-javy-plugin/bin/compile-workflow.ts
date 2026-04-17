@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-import { existsSync, mkdtempSync, rmSync } from 'node:fs'
+import { copyFileSync, existsSync, mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -23,14 +23,15 @@ function findBuiltWasm(targetDir: string): string {
 
 async function main() {
 	const argv = process.argv.slice(2)
-	const { creExports, plugin: pluginArg, rest } = parseCompileFlags(argv)
+	const { creExports, plugin: pluginArg, lockfile: lockfileArg, rest } = parseCompileFlags(argv)
 
 	if (rest.length < 2) {
 		console.error(
-			'Usage: compile-workflow.ts [--plugin <path>] [--cre-exports <crate-dir>]... <input.js> <output.wasm>',
+			'Usage: compile-workflow.ts [--plugin <path>] [--cre-exports <crate-dir>]... [--lockfile <path>] <input.js> <output.wasm>',
 		)
 		console.error('  --plugin: use pre-built .plugin.wasm (mutually exclusive with --cre-exports)')
 		console.error('  --cre-exports: path to a Rust extension crate directory (repeat for multiple)')
+		console.error('  --lockfile: Cargo.lock to use for reproducible builds')
 		console.error('  If neither given, uses default pre-built plugin from dist/')
 		process.exit(1)
 	}
@@ -67,8 +68,14 @@ async function main() {
 			const extensions = resolveExtensions(creExports)
 			generateHostCrate(tmpDir, pluginDir, extensions)
 
+			const cargoArgs = ['build', '--target', 'wasm32-wasip1', '--release']
+			if (lockfileArg) {
+				copyFileSync(resolve(lockfileArg), join(tmpDir, 'Cargo.lock'))
+				cargoArgs.splice(1, 0, '--locked')
+			}
+
 			const [, javyPath] = await Promise.all([
-				run('cargo', ['build', '--target', 'wasm32-wasip1', '--release'], tmpDir, {
+				run('cargo', cargoArgs, tmpDir, {
 					CARGO_TARGET_DIR: sharedTargetDir,
 				}),
 				ensureJavy({ version: JAVY_VERSION }),

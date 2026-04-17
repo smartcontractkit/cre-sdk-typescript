@@ -6,7 +6,7 @@
 #   ./scripts/build-plugin-docker.sh
 
 # --- Javy CLI + host crate generation (same code path as user builds) ---
-FROM oven/bun:slim AS javy-cli
+FROM oven/bun:slim@sha256:1848dc9f700b93aa7b47f496355f4edd9015ad54db5f5ca03661c56b7ddcb72a AS javy-cli
 
 ARG CRE_JAVY_VERSION=v8.1.0
 ENV CRE_JAVY_VERSION=${CRE_JAVY_VERSION}
@@ -46,10 +46,11 @@ COPY src/javy_chainlink_sdk/rust-toolchain.toml src/javy_chainlink_sdk/Cargo.tom
 RUN mkdir -p /build/src/javy_chainlink_sdk/src && echo '' > /build/src/javy_chainlink_sdk/src/lib.rs
 
 COPY --from=javy-cli /build/cre_generated_host /build/cre_generated_host
+COPY src/cre_generated_host.Cargo.lock /build/cre_generated_host/Cargo.lock
 
 WORKDIR /build/cre_generated_host
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
-	cargo build --target wasm32-wasip1 --release 2>/dev/null || true
+	cargo build --locked --target wasm32-wasip1 --release 2>/dev/null || true
 
 COPY src/cre_wasm_exports/src /build/src/cre_wasm_exports/src
 RUN touch /build/src/cre_wasm_exports/src/lib.rs
@@ -58,7 +59,7 @@ COPY src/javy_chainlink_sdk/src /build/src/javy_chainlink_sdk/src
 RUN touch /build/src/javy_chainlink_sdk/src/lib.rs
 
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
-	cargo build --target wasm32-wasip1 --release
+	cargo build --locked --target wasm32-wasip1 --release
 
 RUN javy init-plugin --deterministic \
 	target/wasm32-wasip1/release/cre_generated_host.wasm \

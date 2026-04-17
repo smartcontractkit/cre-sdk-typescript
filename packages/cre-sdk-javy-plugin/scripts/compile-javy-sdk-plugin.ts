@@ -21,17 +21,34 @@ function findBuiltWasm(targetDir: string): string {
 	throw new Error(`Build succeeded but WASM not found in ${releaseDir}`)
 }
 
+function parseLockfileArg(): string | null {
+	const argv = process.argv.slice(2)
+	for (let i = 0; i < argv.length; i++) {
+		if (argv[i] === '--lockfile' && i + 1 < argv.length) {
+			return resolve(argv[i + 1])
+		}
+	}
+	return null
+}
+
 export const main = async () => {
 	console.info('\n\n---> Compiling Chainlink SDK Javy plugin (Rust) \n\n')
 
+	const lockfilePath = parseLockfileArg()
 	const tmpDir = mkdtempSync(join(tmpdir(), 'cre-plugin-'))
 	const sharedTargetDir = resolve(pluginDir, '.cargo-target')
 
 	try {
 		generateHostCrate(tmpDir, pluginDir, [])
 
+		const cargoArgs = ['build', '--target', 'wasm32-wasip1', '--release']
+		if (lockfilePath) {
+			copyFileSync(lockfilePath, join(tmpDir, 'Cargo.lock'))
+			cargoArgs.splice(1, 0, '--locked')
+		}
+
 		const [, javyPath] = await Promise.all([
-			run('cargo', ['build', '--target', 'wasm32-wasip1', '--release'], tmpDir, {
+			run('cargo', cargoArgs, tmpDir, {
 				CARGO_TARGET_DIR: sharedTargetDir,
 			}),
 			ensureJavy({ version: JAVY_VERSION }),
