@@ -1,71 +1,75 @@
-import { create, fromJson } from '@bufbuild/protobuf'
-import { type Any, AnySchema, anyPack } from '@bufbuild/protobuf/wkt'
+import type { Trigger } from "@cre/sdk/utils/triggers/trigger-interface"
+import { type Any, AnySchema, anyPack } from "@bufbuild/protobuf/wkt"
+import { fromJson, create } from "@bufbuild/protobuf"
 import {
-	type Config,
-	type ConfigJson,
-	ConfigSchema,
-	type Outputs,
-	OutputsSchema,
-} from '@cre/generated/capabilities/internal/basictrigger/v1/basic_trigger_pb'
-import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
+  ConfigSchema,
+  OutputsSchema,
+  type Config,
+  type ConfigJson,
+  type Outputs,
+} from "@cre/generated/capabilities/internal/basictrigger/v1/basic_trigger_pb"
+
+
 
 /**
  * Basic Capability
- *
+ * 
  * Capability ID: basic-test-trigger@1.0.0
  * Capability Name: basic-test-trigger
  * Capability Version: 1.0.0
  */
 export class BasicCapability {
-	/** The capability ID for this service */
-	static readonly CAPABILITY_ID = 'basic-test-trigger@1.0.0'
+  /** The capability ID for this service */
+  static readonly CAPABILITY_ID = "basic-test-trigger@1.0.0";
 
-	static readonly CAPABILITY_NAME = 'basic-test-trigger'
-	static readonly CAPABILITY_VERSION = '1.0.0'
+  static readonly CAPABILITY_NAME = "basic-test-trigger";
+  static readonly CAPABILITY_VERSION = "1.0.0";
 
-	trigger(config: ConfigJson): BasicTrigger {
-		const capabilityId = BasicCapability.CAPABILITY_ID
-		return new BasicTrigger(config, capabilityId, 'Trigger')
-	}
+
+
+  trigger(config: ConfigJson): BasicTrigger {
+    
+    const capabilityId = BasicCapability.CAPABILITY_ID;
+    return new BasicTrigger(config, capabilityId, "Trigger");
+  }
 }
 
 /**
  * Trigger implementation for Trigger
  */
 class BasicTrigger implements Trigger<Outputs, Outputs> {
-	public readonly config: Config
-	constructor(
-		config: Config | ConfigJson,
-		private readonly _capabilityId: string,
-		private readonly _method: string,
-	) {
-		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-		this.config = (config as any).$typeName
-			? (config as Config)
-			: fromJson(ConfigSchema, config as ConfigJson)
-	}
+  public readonly config: Config
+  constructor(
+    config: Config | ConfigJson,
+    private readonly _capabilityId: string,
+    private readonly _method: string,
 
-	capabilityId(): string {
-		return this._capabilityId
-	}
+  ) {
+    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+    this.config = (config as any).$typeName ? config as Config : fromJson(ConfigSchema, config as ConfigJson)
+  }
 
-	method(): string {
-		return this._method
-	}
+  capabilityId(): string {
+    return this._capabilityId;
+  }
 
-	outputSchema() {
-		return OutputsSchema
-	}
+  method(): string {
+    return this._method;
+  }
 
-	configAsAny(): Any {
-		return anyPack(ConfigSchema, this.config)
-	}
+  outputSchema() {
+    return OutputsSchema;
+  }
 
-	/**
-	 * Transform the raw trigger output - override this method if needed
-	 * Default implementation returns the raw output unchanged
-	 */
-	adapt(rawOutput: Outputs): Outputs {
-		return rawOutput
-	}
+  configAsAny(): Any {
+    return anyPack(ConfigSchema, this.config);
+  }
+
+  /**
+   * Transform the raw trigger output - override this method if needed
+   * Default implementation returns the raw output unchanged
+   */
+  adapt(rawOutput: Outputs): Outputs {
+    return rawOutput;
+  }
 }
