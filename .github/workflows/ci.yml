@@ -129,10 +129,13 @@ jobs:
           CRE_API_KEY: ${{ secrets.CRE_CLI_API_KEY }}
         run: ./scripts/e2e/simulate-hello-world.sh
 
-      - name: E2E - Simulate star-wars workflow
-        env:
-          CRE_API_KEY: ${{ secrets.CRE_CLI_API_KEY }}
-        run: ./scripts/e2e/simulate-star-wars.sh
+      # Disabled: depends on external swapi.info which causes consensus
+      # aggregator failures. Re-enable once we set up an HTTP service we
+      # control for this workflow.
+      # - name: E2E - Simulate star-wars workflow
+      #   env:
+      #     CRE_API_KEY: ${{ secrets.CRE_CLI_API_KEY }}
+      #   run: ./scripts/e2e/simulate-star-wars.sh
 
       - name: E2E - Simulate log-trigger workflow
         env:
