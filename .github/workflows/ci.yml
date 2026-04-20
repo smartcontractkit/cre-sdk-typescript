@@ -21,7 +21,7 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: latest
+          bun-version: 1.3.12
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
@@ -78,7 +78,7 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: latest
+          bun-version: 1.3.12
 
       - name: Cache Bun dependencies
         uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
@@ -94,7 +94,7 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             ~/.cache/javy
-          key: ${{ runner.os }}-cre-plugin-v8.1.0-${{ hashFiles('packages/cre-sdk-javy-plugin/src/javy_chainlink_sdk/Cargo.lock', 'packages/cre-sdk-javy-plugin/src/javy_chainlink_sdk/rust-toolchain.toml', 'packages/cre-sdk-javy-plugin/scripts/build-plugin-local.sh', 'packages/cre-sdk-javy-plugin/scripts/print-javy-path-for-build.ts', 'packages/cre-sdk-javy-plugin/scripts/ensure-javy.ts', 'packages/cre-sdk-javy-plugin/Dockerfile') }}
+          key: ${{ runner.os }}-cre-plugin-v8.1.0-${{ hashFiles('packages/cre-sdk-javy-plugin/src/javy_chainlink_sdk/Cargo.lock', 'packages/cre-sdk-javy-plugin/src/cre_generated_host.Cargo.lock', 'packages/cre-sdk-javy-plugin/src/javy_chainlink_sdk/rust-toolchain.toml', 'packages/cre-sdk-javy-plugin/scripts/build-plugin-local.sh', 'packages/cre-sdk-javy-plugin/scripts/print-javy-path-for-build.ts', 'packages/cre-sdk-javy-plugin/scripts/ensure-javy.ts', 'packages/cre-sdk-javy-plugin/Dockerfile') }}
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
@@ -141,3 +141,9 @@ jobs:
         env:
           CRE_API_KEY: ${{ secrets.CRE_CLI_API_KEY }}
         run: ./scripts/e2e/simulate-log-trigger.sh
+
+      # Rust extension examples: build cre-rust-inject-alpha, compile workflows, simulate.
+      - name: E2E - Simulate rust-inject workflows
+        env:
+          CRE_API_KEY: ${{ secrets.CRE_CLI_API_KEY }}
+        run: ./scripts/e2e/simulate-rust-inject.sh

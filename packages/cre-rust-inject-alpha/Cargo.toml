@@ -1,0 +1,11 @@
+[package]
+name = "alpha"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ["lib"]
+
+[dependencies]
+cre_wasm_exports = { path = "../cre-sdk-javy-plugin/src/cre_wasm_exports" }
+javy-plugin-api = "6.0.0"
