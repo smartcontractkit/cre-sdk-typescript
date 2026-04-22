@@ -364,9 +364,14 @@ describe('TeeRunner', () => {
 		expect(called).toBe(true)
 	})
 
-	test('newRunner call requirements for TEE list', async () => {
+	test('newRunner call requirements for TEE list no regions', async () => {
 		const requirements = create(RequirementsSchema, {
-			tee: { type: { case: 'typeSelection', value: { types: [TeeType.AWS_NITRO] } } },
+			tee: {
+				type: {
+					case: 'typeSelection',
+					value: { types: [{ type: TeeType.AWS_NITRO, regions: [] }] },
+				},
+			},
 		})
 
 		let called = false
@@ -378,6 +383,37 @@ describe('TeeRunner', () => {
 
 		TeeRunner.newRunner<string>({
 			tees: [TeeType.AWS_NITRO],
+			configHandlerParams: {
+				configParser: (b) => {
+					const stringConfig = Buffer.from(b).toString()
+					expect(stringConfig).toBe(anyConfig.toString())
+					return stringConfig
+				},
+			},
+		})
+
+		expect(called).toBe(true)
+	})
+
+	test('newRunner call requirements for TEE list with regions', async () => {
+		const requirements = create(RequirementsSchema, {
+			tee: {
+				type: {
+					case: 'typeSelection',
+					value: { types: [{ type: TeeType.AWS_NITRO, regions: ['us-west-2'] }] },
+				},
+			},
+		})
+
+		let called = false
+		setupArgs(anyExecuteRequest, () => expect(called).toBe(true))
+		mockHostBindings.requirements = mock((data) => {
+			called = true
+			expect(data).toEqual(toBinary(RequirementsSchema, requirements))
+		})
+
+		TeeRunner.newRunner<string>({
+			tees: [{ type: TeeType.AWS_NITRO, regions: ['us-west-2'] }],
 			configHandlerParams: {
 				configParser: (b) => {
 					const stringConfig = Buffer.from(b).toString()

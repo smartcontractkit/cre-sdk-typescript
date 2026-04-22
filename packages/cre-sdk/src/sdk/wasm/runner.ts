@@ -13,6 +13,7 @@ import {
 	type TeeJson,
 	TeeSchema,
 	type TeeType,
+	TeeTypeAndRegionsSchema,
 	TriggerSubscriptionRequestSchema,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { type ConfigHandlerParams, configHandler } from '@cre/sdk/utils/config'
@@ -238,15 +239,21 @@ export class TeeRunner<TConfig> extends RunnerBase<TConfig, TeeRuntime<TConfig>>
 	}
 
 	static async newRunner<TConfig, TIntermediateConfig = TConfig>(params: {
-		tees: TeeType[] | 'any'
+		tees: (TeeType | { type: TeeType; regions: string[] })[] | 'any'
 		configHandlerParams?: ConfigHandlerParams<TConfig, TIntermediateConfig>
 	}): Promise<TeeRunner<TConfig>> {
 		let teeMessage: Tee
 		if (params.tees === 'any') {
 			teeMessage = create(TeeSchema, { type: { case: 'any', value: create(EmptySchema, {}) } })
 		} else {
+			const teeTypes = params.tees.map((tee) => {
+				if (typeof tee === 'object') {
+					return { type: tee.type, regions: tee.regions }
+				}
+				return { type: tee, regions: [] }
+			})
 			teeMessage = create(TeeSchema, {
-				type: { case: 'typeSelection', value: { types: params.tees } },
+				type: { case: 'typeSelection', value: { types: teeTypes } },
 			})
 		}
 

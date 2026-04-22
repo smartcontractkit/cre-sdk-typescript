@@ -1,4 +1,4 @@
-COMMON_VERSION ?= b5d368d299ff18c05a9591eb14491f0918f15968
+COMMON_VERSION ?= 660e58a08c23698a5115b5c95ae6f64f97957932
 MODULE := github.com/smartcontractkit/chainlink-common
 TEST_PATTERN ?= ^TestStandard
 

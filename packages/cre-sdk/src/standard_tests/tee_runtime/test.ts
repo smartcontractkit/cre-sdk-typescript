@@ -15,7 +15,7 @@ export async function main() {
 	console.log(`TS workflow: standard test: config [${new Date().toISOString()}]`)
 
 	const runner = await TeeRunner.newRunner<Uint8Array>({
-		tees: [TeeType.AWS_NITRO],
+		tees: [{ type: TeeType.AWS_NITRO, regions: ['us-west-2'] }],
 		configHandlerParams: {
 			configParser: (c: Uint8Array) => c,
 		},
