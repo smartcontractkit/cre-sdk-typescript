@@ -230,6 +230,16 @@ pub fn modify_runtime(runtime: Runtime) -> Runtime {
 
         extend_wasm_exports(
             &ctx,
+            "emitMetric",
+            Func::from(|_ctx: Ctx<'_>, data: ArgBytes| {
+                let bytes = data.0;
+                let rc = unsafe { emit_metric(bytes.as_ptr(), bytes.len() as i32) };
+                Ok::<i32, Error>(rc)
+            }),
+        );
+
+        extend_wasm_exports(
+            &ctx,
             "sendResponse",
             Func::from(|_ctx: Ctx<'_>, data: ArgBytes| {
                 let bytes = data.0;

@@ -30,6 +30,12 @@ inputs:
       - ../../submodules/chainlink-protos/cre/sdk/v1alpha
       - ../../submodules/chainlink-protos/cre/tools/generator/v1alpha
       - ../../submodules/chainlink-protos/cre/values/v1
+  - directory: ../../submodules/chainlink-protos/workflows
+    # Allowlist of workflow protos exposed in the SDK (e.g. user metrics).
+    paths:
+      - ../../submodules/chainlink-protos/workflows/workflows/v2/workflow_user_metric.proto
+      - ../../submodules/chainlink-protos/workflows/workflows/v2/cre_info.proto
+      - ../../submodules/chainlink-protos/workflows/workflows/v2/workflow_key.proto
 
 plugins:
   # Modern @bufbuild/protoc-gen-es plugin
