@@ -26,7 +26,6 @@ import { cre } from '@cre/sdk/cre'
 import { Value } from '../utils'
 import type { SecretsProvider } from '../workflow'
 import { Runner } from './runner'
-import { MAX_WASM_RESPONSE_SIZE_BYTES } from './runtime'
 
 const anyConfig = Buffer.from('config')
 const anyMaxResponseSize = 2048n
@@ -304,34 +303,6 @@ describe('runner', () => {
 			return [cre.handler(basicTrigger.trigger({}), () => 10)]
 		})
 		expect(true).toBe(true)
-	})
-
-	test('rejects max response size above the WASM allocation cap', async () => {
-		let sentResponse: ExecutionResult | null = null
-		mockHostBindings.sendResponse = mock((input) => {
-			sentResponse = fromBinary(ExecutionResultSchema, input)
-			return 0
-		})
-		mockHostBindings.getSecrets = mock(() => {
-			throw new Error('getSecrets should not be called')
-		})
-
-		const oversizedRequest = create(ExecuteRequestSchema, {
-			request: { case: 'subscribe', value: create(EmptySchema) },
-			maxResponseSize: BigInt(MAX_WASM_RESPONSE_SIZE_BYTES) + 1n,
-			config: anyConfig,
-		})
-
-		const runner = await getTestRunner(oversizedRequest)
-		await runner.run(async (_: string, secretsProvider: SecretsProvider) => {
-			secretsProvider.getSecret({ id: 'oversized' }).result()
-			return [cre.handler(basicTrigger.trigger({}), () => 10)]
-		})
-
-		expect(mockHostBindings.getSecrets).not.toHaveBeenCalled()
-		expect(sentResponse).toBeDefined()
-		expect(sentResponse!.result.case).toBe('error')
-		expect(sentResponse!.result.value).toContain('exceeds maximum allowed response size')
 	})
 })
 

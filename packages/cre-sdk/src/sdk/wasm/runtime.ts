@@ -29,22 +29,14 @@ export class NodeRuntime<C> extends NodeRuntimeImpl<C> {
 	}
 }
 
-export const MAX_WASM_RESPONSE_SIZE_BYTES = 64 * 1024 * 1024
-const MAX_WASM_RESPONSE_SIZE_BYTES_BIGINT = BigInt(MAX_WASM_RESPONSE_SIZE_BYTES)
-
 /** Convert bigint maxResponseSize to i32 for WASM host binding, with range validation. */
 function toI32ResponseSize(maxResponseSize: bigint): number {
-	if (maxResponseSize < 0n) {
-		throw new Error(`maxResponseSize ${maxResponseSize} cannot be negative`)
-	}
-
-	if (maxResponseSize > MAX_WASM_RESPONSE_SIZE_BYTES_BIGINT) {
+	if (maxResponseSize > 2147483647n || maxResponseSize < -2147483648n) {
 		throw new Error(
-			`maxResponseSize ${maxResponseSize} exceeds maximum allowed response size of ${MAX_WASM_RESPONSE_SIZE_BYTES} bytes`,
+			`maxResponseSize ${maxResponseSize} exceeds i32 range. Expected a value between -2147483648 and 2147483647`,
 		)
 	}
-
-	return Number(maxResponseSize)
+	return Math.trunc(Number(maxResponseSize))
 }
 
 class WasmRuntimeHelpers implements RuntimeHelpers {
