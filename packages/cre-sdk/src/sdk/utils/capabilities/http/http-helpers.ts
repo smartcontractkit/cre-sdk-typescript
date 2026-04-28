@@ -13,6 +13,8 @@ import type { NodeRuntime } from '@cre/sdk'
 import type { Report } from '@cre/sdk/report'
 import { decodeJson } from '@cre/sdk/utils/decode-json'
 
+type HeaderCapableResponse = Response | ConfidentialHTTPResponse
+
 /**
  * HTTP Response Helper Functions
  *
@@ -119,36 +121,85 @@ export function json(
 }
 
 /**
- * Gets a specific header value
+ * Gets all values for a specific header.
+ * Reads `multiHeaders` first and falls back to the deprecated single-value `headers` map.
+ *
+ * @param response - The Response object
+ * @param name - The header name (case-insensitive)
+ * @returns Header values or an empty array if not found
+ */
+export function getHeaders(response: HeaderCapableResponse, name: string): string[]
+/**
+ * Gets all values for a specific header.
+ * Reads `multiHeaders` first and falls back to the deprecated single-value `headers` map.
+ *
+ * @param responseFn - Function that returns an object with result function that returns Response
+ * @param name - The header name (case-insensitive)
+ * @returns Object with result function that returns header values or an empty array if not found
+ */
+export function getHeaders(
+	responseFn: () => { result: HeaderCapableResponse },
+	name: string,
+): { result: () => string[] }
+export function getHeaders(
+	responseOrFn: HeaderCapableResponse | (() => { result: HeaderCapableResponse }),
+	name: string,
+): string[] | { result: () => string[] } {
+	if (typeof responseOrFn === 'function') {
+		return {
+			result: () => getHeaders(responseOrFn().result, name),
+		}
+	}
+
+	const lowerName = name.toLowerCase()
+	const multiHeader = Object.entries(responseOrFn.multiHeaders ?? {}).find(
+		([key]) => key.toLowerCase() === lowerName,
+	)?.[1]
+	if (multiHeader) {
+		return [...multiHeader.values]
+	}
+
+	const singleHeader = Object.entries('headers' in responseOrFn ? responseOrFn.headers : {}).find(
+		([key]) => key.toLowerCase() === lowerName,
+	)?.[1]
+	return singleHeader === undefined ? [] : [singleHeader]
+}
+
+/**
+ * Gets a specific header value.
+ * Multiple values are returned as a comma-separated string. Use `getHeaders`
+ * when header boundaries must be preserved.
+ *
  * @param response - The Response object
  * @param name - The header name (case-insensitive)
  * @returns The header value or undefined if not found
  */
-export function getHeader(response: Response, name: string): string | undefined
+export function getHeader(response: HeaderCapableResponse, name: string): string | undefined
 /**
- * Gets a specific header value
+ * Gets a specific header value.
+ * Multiple values are returned as a comma-separated string. Use `getHeaders`
+ * when header boundaries must be preserved.
+ *
  * @param responseFn - Function that returns an object with result function that returns Response
  * @param name - The header name (case-insensitive)
  * @returns Object with result function that returns the header value or undefined if not found
  */
 export function getHeader(
-	responseFn: () => { result: Response },
+	responseFn: () => { result: HeaderCapableResponse },
 	name: string,
 ): { result: () => string | undefined }
 export function getHeader(
-	responseOrFn: Response | (() => { result: Response }),
+	responseOrFn: HeaderCapableResponse | (() => { result: HeaderCapableResponse }),
 	name: string,
 ): string | undefined | { result: () => string | undefined } {
 	if (typeof responseOrFn === 'function') {
 		return {
 			result: () => getHeader(responseOrFn().result, name),
 		}
-	} else {
-		const lowerName = name.toLowerCase()
-		return Object.entries(responseOrFn.headers).find(
-			([key]) => key.toLowerCase() === lowerName,
-		)?.[1]
 	}
+
+	const values = getHeaders(responseOrFn, name)
+	return values.length === 0 ? undefined : values.join(', ')
 }
 
 /**
