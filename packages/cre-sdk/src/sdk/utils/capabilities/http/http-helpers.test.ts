@@ -1,5 +1,9 @@
 import { describe, expect, it, mock } from 'bun:test'
 import { create } from '@bufbuild/protobuf'
+import {
+	HeaderValuesSchema as ConfidentialHeaderValuesSchema,
+	type HTTPResponse as ConfidentialHTTPResponse,
+} from '@cre/generated/capabilities/networking/confidentialhttp/v1alpha/client_pb'
 import type {
 	RequestJson,
 	Response,
@@ -15,19 +19,21 @@ import {
 } from '@cre/generated-sdk/capabilities/networking/http/v1alpha/client_sdk_gen'
 import type { NodeRuntime } from '@cre/index'
 import { Report } from '@cre/sdk'
-import { getHeader, json, ok, text } from './http-helpers'
+import { getHeader, getHeaders, json, ok, text } from './http-helpers'
 
 // Mock Response object for testing
 const createMockResponse = (
 	statusCode: number,
 	body: Uint8Array,
 	headers: Record<string, string> = {},
+	multiHeaders: Record<string, { values: string[] }> = {},
 ): Response =>
 	({
 		$typeName: 'capabilities.networking.http.v1alpha.Response' as const,
 		statusCode,
 		body,
 		headers,
+		multiHeaders,
 	}) as Response
 
 describe('HTTP Helpers', () => {
@@ -96,6 +102,54 @@ describe('HTTP Helpers', () => {
 		it('should return undefined for missing header', () => {
 			const response = createMockResponse(200, new Uint8Array(), {})
 			expect(getHeader(response, 'missing-header')).toBeUndefined()
+		})
+
+		it('should join multi-header values without dropping later values', () => {
+			const response = createMockResponse(
+				200,
+				new Uint8Array(),
+				{ 'Set-Cookie': 'legacy=1' },
+				{ 'Set-Cookie': { values: ['a=1', 'b=2'] } },
+			)
+
+			expect(getHeader(response, 'set-cookie')).toBe('a=1, b=2')
+		})
+	})
+
+	describe('getHeaders', () => {
+		it('should preserve multi-header value boundaries', () => {
+			const response = createMockResponse(
+				200,
+				new Uint8Array(),
+				{},
+				{ 'X-Test': { values: ['one', 'two'] } },
+			)
+
+			expect(getHeaders(response, 'x-test')).toEqual(['one', 'two'])
+		})
+
+		it('should fall back to deprecated single-value headers', () => {
+			const response = createMockResponse(200, new Uint8Array(), {
+				'Content-Type': 'application/json',
+			})
+
+			expect(getHeaders(response, 'content-type')).toEqual(['application/json'])
+		})
+
+		it('should support confidential HTTP responses with multiHeaders only', () => {
+			const response = {
+				$typeName: 'capabilities.networking.confidentialhttp.v1alpha.HTTPResponse',
+				statusCode: 200,
+				body: new Uint8Array(),
+				multiHeaders: {
+					'X-Test': create(ConfidentialHeaderValuesSchema, {
+						values: ['secret-one', 'secret-two'],
+					}),
+				},
+			} as ConfidentialHTTPResponse
+
+			expect(getHeaders(response, 'x-test')).toEqual(['secret-one', 'secret-two'])
+			expect(getHeader(response, 'x-test')).toBe('secret-one, secret-two')
 		})
 	})
 

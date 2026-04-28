@@ -33,6 +33,11 @@ export const bigintToProtoBigInt = (n: number | bigint | string) => {
 	if (typeof n === 'number' && (!Number.isFinite(n) || !Number.isInteger(n))) {
 		throw new Error(`bigintToProtoBigInt requires an integer number, received ${n}`)
 	}
+	if (typeof n === 'number' && !Number.isSafeInteger(n)) {
+		throw new Error(
+			`bigintToProtoBigInt requires a safe integer number, received ${n}. Pass a bigint or string for larger values`,
+		)
+	}
 	const val = BigInt(n)
 	const abs = val < 0n ? -val : val
 	const sign = val === 0n ? 0n : val < 0n ? -1n : 1n

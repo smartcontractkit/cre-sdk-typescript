@@ -443,7 +443,46 @@ describe('test getSecret', () => {
 		expect(result.value).toEqual('value-456')
 	})
 
-	test('getSecrets returns false', () => {
+	test('normalizes missing secret namespace to default for JSON and protobuf requests', () => {
+		const observedNamespaces: string[] = []
+		const helpers = createRuntimeHelpersMock({
+			getSecrets: mock((request) => {
+				expect(request.requests.length).toEqual(1)
+				observedNamespaces.push(request.requests[0].namespace)
+				return true
+			}),
+			awaitSecrets: mock((request) => {
+				const id = request.ids[0]
+				return create(AwaitSecretsResponseSchema, {
+					responses: {
+						[id]: create(SecretResponsesSchema, {
+							responses: [
+								create(SecretResponseSchema, {
+									response: {
+										case: 'secret',
+										value: {
+											id: 'secret',
+											namespace: 'default',
+											owner: 'owner',
+											value: 'value',
+										},
+									},
+								}),
+							],
+						}),
+					},
+				})
+			}),
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		runtime.getSecret({ id: 'json-secret' }).result()
+		runtime.getSecret(create(SecretRequestSchema, { id: 'proto-secret' })).result()
+
+		expect(observedNamespaces).toEqual(['default', 'default'])
+	})
+
+	test('getSecrets throws → wrapped as SecretsError', () => {
 		const secretRequest = create(SecretRequestSchema, {
 			id: 'test-secret',
 			namespace: 'test-ns',

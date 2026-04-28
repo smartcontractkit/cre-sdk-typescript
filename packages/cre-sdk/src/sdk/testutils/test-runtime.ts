@@ -260,7 +260,7 @@ function createTestRuntimeHelpers(
 			}
 			const response = create(AwaitCapabilitiesResponseSchema, { responses })
 			const bytes = toBinary(AwaitCapabilitiesResponseSchema, response)
-			if (bytes.length > Number(maxResponseSizeBytes)) {
+			if (BigInt(bytes.length) > maxResponseSizeBytes) {
 				throw new Error(RESPONSE_BUFFER_TOO_SMALL)
 			}
 			return response
@@ -387,7 +387,16 @@ export function newTestRuntime(
 	const state: TestRuntimeState = {
 		timeProvider: options.timeProvider,
 	}
-	const maxResponseSize = BigInt(options.maxResponseSize ?? DEFAULT_MAX_RESPONSE_SIZE_BYTES)
+	const configuredMaxResponseSize = options.maxResponseSize ?? DEFAULT_MAX_RESPONSE_SIZE_BYTES
+	if (
+		!Number.isFinite(configuredMaxResponseSize) ||
+		!Number.isInteger(configuredMaxResponseSize) ||
+		!Number.isSafeInteger(configuredMaxResponseSize) ||
+		configuredMaxResponseSize < 0
+	) {
+		throw new Error('newTestRuntime maxResponseSize must be a non-negative safe integer number')
+	}
+	const maxResponseSize = BigInt(configuredMaxResponseSize)
 	const helpers = createTestRuntimeHelpers(registry, secretsMap, testWriter, state, maxResponseSize)
 
 	return new TestRuntime(helpers, maxResponseSize, testWriter, state)

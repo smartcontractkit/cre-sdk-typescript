@@ -55,6 +55,8 @@ export class Int64 {
 
 		if (!Number.isFinite(v) || !Number.isInteger(v))
 			throw new Error('int64 requires an integer number')
+		if (!Number.isSafeInteger(v))
+			throw new Error('int64 requires a safe integer number; pass a bigint or string')
 
 		const bi = BigInt(v)
 		if (bi > Int64.INT64_MAX) throw new Error('int64 overflow')
@@ -108,6 +110,8 @@ export class UInt64 {
 
 		if (!Number.isFinite(v) || !Number.isInteger(v))
 			throw new Error('uint64 requires an integer number')
+		if (!Number.isSafeInteger(v))
+			throw new Error('uint64 requires a safe integer number; pass a bigint or string')
 		const bi = BigInt(v)
 		if (bi > UInt64.UINT64_MAX) throw new Error('uint64 overflow')
 		else if (bi < 0n) throw new Error('uint64 underflow')
