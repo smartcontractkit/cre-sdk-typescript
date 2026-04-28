@@ -69,9 +69,9 @@ class WasmRuntimeHelpers implements RuntimeHelpers {
 		return fromBinary(AwaitCapabilitiesResponseSchema, responseBytes)
 	}
 
-	getSecrets(request: GetSecretsRequest, maxResponseSize: bigint): boolean {
+	getSecrets(request: GetSecretsRequest, maxResponseSize: bigint): void {
 		const responseSize = toI32ResponseSize(maxResponseSize)
-		return hostBindings.getSecrets(toBinary(GetSecretsRequestSchema, request), responseSize) >= 0
+		hostBindings.getSecrets(toBinary(GetSecretsRequestSchema, request), responseSize)
 	}
 
 	awaitSecrets(request: AwaitSecretsRequest, maxResponseSize: bigint): AwaitSecretsResponse {
