@@ -17,9 +17,6 @@ import {
 	SecretResponseSchema,
 	SecretResponsesSchema,
 	SecretSchema,
-	type Tee,
-	type TeeJson,
-	TeeSchema,
 	TeeType,
 	type Trigger,
 	TriggerSchema,
@@ -28,9 +25,10 @@ import {
 import type { Value as ProtoValue } from '@cre/generated/values/v1/values_pb'
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
 import { cre } from '@cre/sdk/cre'
+import { handlerInTee } from '@cre/sdk/workflow'
 import { Value } from '../utils'
 import type { SecretsProvider } from '../workflow'
-import { Runner, TeeRunner } from './runner'
+import { Runner } from './runner'
 
 const anyConfig = Buffer.from('config')
 const anyMaxResponseSize = 2048n
@@ -54,7 +52,6 @@ const anyExecuteRequest = create(ExecuteRequestSchema, {
 })
 
 type TestRunnerBindings = {
-	requirements: (data: Uint8Array) => void
 	versionV2: () => void
 	sendResponse: (data: Uint8Array) => number
 	getWasiArgs: () => string
@@ -66,7 +63,6 @@ type TestRunnerBindings = {
 }
 
 const mockHostBindings: TestRunnerBindings = {
-	requirements: mock(() => {}),
 	sendResponse: mock(() => {
 		return 0
 	}),
@@ -83,9 +79,6 @@ const mockHostBindings: TestRunnerBindings = {
 }
 
 const proxyHostBindings = {
-	requirements: (data: Uint8Array) => {
-		return mockHostBindings.requirements(data)
-	},
 	sendResponse: (data: Uint8Array) => {
 		return mockHostBindings.sendResponse(data)
 	},
@@ -316,6 +309,110 @@ describe('runner', () => {
 	})
 })
 
+describe('handlerInTee', () => {
+	test('specified list sets requirements on subscription', async () => {
+		var sentResponse: ExecutionResult | null = null
+		mockHostBindings.sendResponse = mock((input) => {
+			sentResponse = fromBinary(ExecutionResultSchema, input)
+			return 0
+		})
+		const runner = await getTestRunner(subscribeRequest)
+		await runner.run(async (_: string, secretsProvider: SecretsProvider) => {
+			return [
+				handlerInTee(basicTrigger.trigger({ name: 'foo', number: 10 }), (runtime, trigger) => 0, [
+					{ type: TeeType.AWS_NITRO, regions: ['us-west-2'] },
+				]),
+			]
+		})
+		expect(sentResponse).toBeDefined()
+		expect(sentResponse!.result.case).toBe('triggerSubscriptions')
+		const subs = (sentResponse!.result.value as TriggerSubscriptionRequest).subscriptions
+		expect(subs.length).toBe(1)
+		const expected = create(RequirementsSchema, {
+			tee: {
+				type: {
+					case: 'typeSelection',
+					value: { types: [{ type: TeeType.AWS_NITRO, regions: ['us-west-2'] }] },
+				},
+			},
+		})
+		expect(toBinary(RequirementsSchema, subs[0].requirements!)).toEqual(
+			toBinary(RequirementsSchema, expected),
+		)
+	})
+
+	test('any tee sets requirements on subscription', async () => {
+		var sentResponse: ExecutionResult | null = null
+		mockHostBindings.sendResponse = mock((input) => {
+			sentResponse = fromBinary(ExecutionResultSchema, input)
+			return 0
+		})
+		const runner = await getTestRunner(subscribeRequest)
+		await runner.run(async (_: string, secretsProvider: SecretsProvider) => {
+			return [
+				handlerInTee(
+					basicTrigger.trigger({ name: 'foo', number: 10 }),
+					(runtime, trigger) => 0,
+					'any',
+				),
+			]
+		})
+		expect(sentResponse).toBeDefined()
+		expect(sentResponse!.result.case).toBe('triggerSubscriptions')
+		const subs = (sentResponse!.result.value as TriggerSubscriptionRequest).subscriptions
+		expect(subs.length).toBe(1)
+		const expected = create(RequirementsSchema, {
+			tee: { type: { case: 'any', value: create(EmptySchema, {}) } },
+		})
+		expect(toBinary(RequirementsSchema, subs[0].requirements!)).toEqual(
+			toBinary(RequirementsSchema, expected),
+		)
+	})
+
+	test('regular handler has no requirements on subscription', async () => {
+		var sentResponse: ExecutionResult | null = null
+		mockHostBindings.sendResponse = mock((input) => {
+			sentResponse = fromBinary(ExecutionResultSchema, input)
+			return 0
+		})
+		const runner = await getTestRunner(subscribeRequest)
+		await runner.run(async (_: string, secretsProvider: SecretsProvider) => {
+			return [cre.handler(basicTrigger.trigger({ name: 'foo', number: 10 }), () => 0)]
+		})
+		expect(sentResponse).toBeDefined()
+		expect(sentResponse!.result.case).toBe('triggerSubscriptions')
+		const subs = (sentResponse!.result.value as TriggerSubscriptionRequest).subscriptions
+		expect(subs.length).toBe(1)
+		expect(subs[0].requirements).toBeUndefined()
+	})
+
+	test('tee handler callback receives TeeRuntime', async () => {
+		var sentResponse: ExecutionResult | null = null
+		mockHostBindings.sendResponse = mock((input) => {
+			sentResponse = fromBinary(ExecutionResultSchema, input)
+			return 0
+		})
+		const runner = await getTestRunner(anyExecuteRequest)
+		let callbackInvoked = false
+		await runner.run(async (_: string, secretsProvider: SecretsProvider) => {
+			return [
+				handlerInTee(
+					basicTrigger.trigger({ name: 'foo', number: 10 }),
+					(runtime, trigger) => {
+						callbackInvoked = true
+						expect(runtime).toBeDefined()
+						// TeeRuntime has reportFromDon and usingTheDons; Runtime does not
+						expect(typeof (runtime as any).reportFromDon).toBe('function')
+						return 0
+					},
+					[{ type: TeeType.AWS_NITRO, regions: ['us-west-2'] }],
+				),
+			]
+		})
+		expect(callbackInvoked).toBe(true)
+	})
+})
+
 function setupArgs(request: ExecuteRequest, preCheck?: () => void) {
 	const serialized = toBinary(ExecuteRequestSchema, request)
 	const encoded = Buffer.from(serialized).toString('base64')
@@ -337,92 +434,3 @@ function getTestRunner(request: ExecuteRequest): Promise<Runner<string>> {
 		},
 	})
 }
-
-describe('TeeRunner', () => {
-	test('newRunner call requirements for any tee', async () => {
-		const requirements = create(RequirementsSchema, {
-			tee: { type: { case: 'any', value: create(EmptySchema, {}) } },
-		})
-		let called = false
-		setupArgs(anyExecuteRequest, () => expect(called).toBe(true))
-		mockHostBindings.requirements = mock((data) => {
-			called = true
-			expect(data).toEqual(toBinary(RequirementsSchema, requirements))
-		})
-
-		TeeRunner.newRunner<string>({
-			tees: 'any',
-			configHandlerParams: {
-				configParser: (b) => {
-					const stringConfig = Buffer.from(b).toString()
-					expect(stringConfig).toBe(anyConfig.toString())
-					return stringConfig
-				},
-			},
-		})
-
-		expect(called).toBe(true)
-	})
-
-	test('newRunner call requirements for TEE list no regions', async () => {
-		const requirements = create(RequirementsSchema, {
-			tee: {
-				type: {
-					case: 'typeSelection',
-					value: { types: [{ type: TeeType.AWS_NITRO, regions: [] }] },
-				},
-			},
-		})
-
-		let called = false
-		setupArgs(anyExecuteRequest, () => expect(called).toBe(true))
-		mockHostBindings.requirements = mock((data) => {
-			called = true
-			expect(data).toEqual(toBinary(RequirementsSchema, requirements))
-		})
-
-		TeeRunner.newRunner<string>({
-			tees: [TeeType.AWS_NITRO],
-			configHandlerParams: {
-				configParser: (b) => {
-					const stringConfig = Buffer.from(b).toString()
-					expect(stringConfig).toBe(anyConfig.toString())
-					return stringConfig
-				},
-			},
-		})
-
-		expect(called).toBe(true)
-	})
-
-	test('newRunner call requirements for TEE list with regions', async () => {
-		const requirements = create(RequirementsSchema, {
-			tee: {
-				type: {
-					case: 'typeSelection',
-					value: { types: [{ type: TeeType.AWS_NITRO, regions: ['us-west-2'] }] },
-				},
-			},
-		})
-
-		let called = false
-		setupArgs(anyExecuteRequest, () => expect(called).toBe(true))
-		mockHostBindings.requirements = mock((data) => {
-			called = true
-			expect(data).toEqual(toBinary(RequirementsSchema, requirements))
-		})
-
-		TeeRunner.newRunner<string>({
-			tees: [{ type: TeeType.AWS_NITRO, regions: ['us-west-2'] }],
-			configHandlerParams: {
-				configParser: (b) => {
-					const stringConfig = Buffer.from(b).toString()
-					expect(stringConfig).toBe(anyConfig.toString())
-					return stringConfig
-				},
-			},
-		})
-
-		expect(called).toBe(true)
-	})
-})

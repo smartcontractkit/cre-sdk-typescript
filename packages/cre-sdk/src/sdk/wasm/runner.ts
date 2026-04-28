@@ -1,19 +1,11 @@
-import { create, fromBinary, fromJson, toBinary } from '@bufbuild/protobuf'
-import { EmptySchema } from '@bufbuild/protobuf/wkt'
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf'
 import {
 	type ExecuteRequest,
 	ExecuteRequestSchema,
 	type ExecutionResult,
 	ExecutionResultSchema,
-	type Requirements,
-	RequirementsSchema,
 	type SecretRequest,
 	type SecretRequestJson,
-	type Tee,
-	type TeeJson,
-	TeeSchema,
-	type TeeType,
-	TeeTypeAndRegionsSchema,
 	TriggerSubscriptionRequestSchema,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { type ConfigHandlerParams, configHandler } from '@cre/sdk/utils/config'
@@ -22,15 +14,10 @@ import { Value } from '../utils'
 import { hostBindings } from './host-bindings'
 import { Runtime, TeeRuntime } from './runtime'
 
-class RunnerBase<TConfig, TRuntime extends SecretsProvider> {
+class RunnerBase<TConfig> {
 	protected constructor(
 		private readonly config: TConfig,
 		private readonly request: ExecuteRequest,
-		private readonly runtimeFactory: (
-			config: TConfig,
-			nextCallId: number,
-			maxResponseSize: bigint,
-		) => TRuntime,
 	) {}
 
 	protected static async newRunnerHelper<TConfig, TIntermediateConfig, TRunner>(
@@ -73,9 +60,9 @@ class RunnerBase<TConfig, TRuntime extends SecretsProvider> {
 		initFn: (
 			config: TConfig,
 			secretsProvider: SecretsProvider,
-		) => Promise<Workflow<TConfig, TRuntime>> | Workflow<TConfig, TRuntime>,
+		) => Promise<Workflow<TConfig>> | Workflow<TConfig>,
 	) {
-		const runtime = this.runtimeFactory(this.config, 0, this.request.maxResponseSize)
+		const runtime = new Runtime(this.config, 0, this.request.maxResponseSize)
 
 		// wrap runtime's getSecret so other methods cannot be used
 		const sp = {
@@ -113,8 +100,8 @@ class RunnerBase<TConfig, TRuntime extends SecretsProvider> {
 
 	async handleExecutionPhase(
 		req: ExecuteRequest,
-		workflow: Workflow<TConfig, TRuntime>,
-		runtime: TRuntime,
+		workflow: Workflow<TConfig>,
+		runtime: Runtime<TConfig>,
 	): Promise<ExecutionResult> {
 		if (req.request.case !== 'trigger') {
 			throw new Error(
@@ -158,8 +145,12 @@ class RunnerBase<TConfig, TRuntime extends SecretsProvider> {
 			const decoded = fromBinary(schema, payloadAny.value)
 			const adapted = entry.trigger.adapt(decoded)
 
+			// If the handler has requirements (e.g. TEE), use TeeRuntime; otherwise use the default runtime.
+			const handlerRuntime =
+				entry.requirements != null ? new TeeRuntime(this.config, 0, req.maxResponseSize) : runtime
+
 			try {
-				const result = await entry.fn(runtime, adapted)
+				const result = await entry.fn(handlerRuntime as any, adapted)
 				const wrapped = Value.wrap(result)
 				return create(ExecutionResultSchema, {
 					result: { case: 'value', value: wrapped.proto() },
@@ -180,10 +171,7 @@ class RunnerBase<TConfig, TRuntime extends SecretsProvider> {
 		})
 	}
 
-	handleSubscribePhase(
-		req: ExecuteRequest,
-		workflow: Workflow<TConfig, TRuntime>,
-	): ExecutionResult {
+	handleSubscribePhase(req: ExecuteRequest, workflow: Workflow<TConfig>): ExecutionResult {
 		if (req.request.case !== 'subscribe') {
 			return create(ExecutionResultSchema, {
 				result: {
@@ -193,11 +181,12 @@ class RunnerBase<TConfig, TRuntime extends SecretsProvider> {
 			})
 		}
 
-		// Build TriggerSubscriptionRequest from the workflow entries
+		// Build TriggerSubscriptionRequest from the workflow entries, including any per-handler requirements.
 		const subscriptions = workflow.map((entry) => ({
 			id: entry.trigger.capabilityId(),
 			method: entry.trigger.method(),
 			payload: entry.trigger.configAsAny(),
+			requirements: entry.requirements,
 		}))
 
 		const subscriptionRequest = create(TriggerSubscriptionRequestSchema, {
@@ -210,13 +199,9 @@ class RunnerBase<TConfig, TRuntime extends SecretsProvider> {
 	}
 }
 
-export class Runner<TConfig> extends RunnerBase<TConfig, Runtime<TConfig>> {
+export class Runner<TConfig> extends RunnerBase<TConfig> {
 	private constructor(config: TConfig, request: ExecuteRequest) {
-		super(
-			config,
-			request,
-			(config, nextCallId, maxResponseSize) => new Runtime(config, nextCallId, maxResponseSize),
-		)
+		super(config, request)
 	}
 
 	static async newRunner<TConfig, TIntermediateConfig = TConfig>(
@@ -225,44 +210,6 @@ export class Runner<TConfig> extends RunnerBase<TConfig, Runtime<TConfig>> {
 		return RunnerBase.newRunnerHelper(
 			(config, request) => new Runner(config, request),
 			configHandlerParams,
-		)
-	}
-}
-
-export class TeeRunner<TConfig> extends RunnerBase<TConfig, TeeRuntime<TConfig>> {
-	private constructor(config: TConfig, request: ExecuteRequest) {
-		super(
-			config,
-			request,
-			(config, nextCallId, maxResponseSize) => new TeeRuntime(config, nextCallId, maxResponseSize),
-		)
-	}
-
-	static async newRunner<TConfig, TIntermediateConfig = TConfig>(params: {
-		tees: (TeeType | { type: TeeType; regions: string[] })[] | 'any'
-		configHandlerParams?: ConfigHandlerParams<TConfig, TIntermediateConfig>
-	}): Promise<TeeRunner<TConfig>> {
-		let teeMessage: Tee
-		if (params.tees === 'any') {
-			teeMessage = create(TeeSchema, { type: { case: 'any', value: create(EmptySchema, {}) } })
-		} else {
-			const teeTypes = params.tees.map((tee) => {
-				if (typeof tee === 'object') {
-					return { type: tee.type, regions: tee.regions }
-				}
-				return { type: tee, regions: [] }
-			})
-			teeMessage = create(TeeSchema, {
-				type: { case: 'typeSelection', value: { types: teeTypes } },
-			})
-		}
-
-		const requirements = create(RequirementsSchema, { tee: teeMessage })
-		hostBindings.requirements(toBinary(RequirementsSchema, requirements))
-
-		return RunnerBase.newRunnerHelper(
-			(config, request) => new TeeRunner(config, request),
-			params.configHandlerParams,
 		)
 	}
 }

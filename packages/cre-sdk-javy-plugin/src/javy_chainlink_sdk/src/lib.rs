@@ -50,8 +50,6 @@ unsafe extern "C" {
     fn random_seed(mode: i32) -> i64;
 
     fn now(result_timestamp: *mut u8) -> i32;
-
-    fn requirements(requirements_ptr: *const u8, requirements_len: i32);
 }
 
 import_namespace!("javy_chainlink_sdk");
@@ -259,17 +257,6 @@ fn modify_runtime(runtime: Runtime) -> Runtime {
             )
             .expect("failed to set global function 'switchModes'");
 
-
-        // requirements(requirements: Uint8Array | ArrayBuffer | Base64 string) -> void
-        ctx.globals()
-            .set(
-                "requirements",
-                Func::from(|_ctx: Ctx<'_>, data: ArgBytes| {
-                    let requirements_bytes = data.0;
-                    unsafe { requirements(requirements_bytes.as_ptr(), requirements_bytes.len() as i32) };
-                }),
-            )
-            .expect("failed to set global function 'requirements'");
 
         // versionV2(): void
         ctx.globals()
