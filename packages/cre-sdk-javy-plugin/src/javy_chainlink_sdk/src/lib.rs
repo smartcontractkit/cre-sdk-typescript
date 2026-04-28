@@ -178,8 +178,7 @@ pub fn modify_runtime(runtime: Runtime) -> Runtime {
                     } else {
                         error_msg
                     };
-                    let error_msg_static: &'static str = Box::leak(error_msg.into_boxed_str());
-                    return Err(Error::new_into_js("Error", error_msg_static));
+                    return Err(Exception::throw_message(&ctx, &error_msg));
                 }
                 if n > max_len as i64 {
                     return Err(Error::new_into_js(
@@ -220,8 +219,7 @@ pub fn modify_runtime(runtime: Runtime) -> Runtime {
                     } else {
                         error_msg
                     };
-                    let error_msg_static: &'static str = Box::leak(error_msg.into_boxed_str());
-                    return Err(Error::new_into_js("Error", error_msg_static));
+                    return Err(Exception::throw_message(&ctx, &error_msg));
                 }
                 if n > max_len as i64 {
                     return Err(Error::new_into_js(
@@ -348,4 +346,3 @@ pub fn modify_runtime(runtime: Runtime) -> Runtime {
 
     runtime
 }
-
