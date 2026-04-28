@@ -1,3 +1,4 @@
+use cre_wasm_exports::{__clear_registry, extend_wasm_exports};
 use javy_plugin_api::{
     import_namespace,
     javy::{Runtime, quickjs::prelude::*},
@@ -89,185 +90,174 @@ impl<'js> FromJs<'js> for ArgBytes {
     }
 }
 
-fn config() -> Config {
+pub fn config() -> Config {
     let mut config = Config::default();
     config.event_loop(true).text_encoding(true).promise(true);
     config
 }
 
-fn modify_runtime(runtime: Runtime) -> Runtime {
+/// Applies CRE plugin globals and host bindings. Used by the default plugin build and by generated host crates that add `--cre-exports` extensions.
+///
+/// Duplicate export names are caught eagerly by `extend_wasm_exports`.
+pub fn modify_runtime(runtime: Runtime) -> Runtime {
+    __clear_registry();
     runtime.context().with(|ctx| {
         RANDOM_GENERATORS.get_or_init(|| Mutex::new(HashMap::new()));
 
-        // callCapability(data: Uint8Array | ArrayBuffer | Base64 string) -> i64
-        ctx.globals()
-            .set(
-                "callCapability",
-                Func::from(|_ctx: Ctx<'_>, data: ArgBytes| {
-                    let req = data.0;
-                    let rc = unsafe { call_capability(req.as_ptr(), req.len() as i32) };
-                    Ok::<i64, Error>(rc)
-                }),
-            )
-            .expect("failed to set global function 'callCapability'");
+        extend_wasm_exports(
+            &ctx,
+            "callCapability",
+            Func::from(|_ctx: Ctx<'_>, data: ArgBytes| {
+                let req = data.0;
+                let rc = unsafe { call_capability(req.as_ptr(), req.len() as i32) };
+                Ok::<i64, Error>(rc)
+            }),
+        );
 
-        ctx.globals()
-            .set(
-                "awaitCapabilities",
-                Func::from(|ctx: Ctx<'_>, req: ArgBytes, max_len: i32| {
-                    if max_len < 0 {
-                        return Err(Exception::throw_range(&ctx, "maxLen < 0"));
-                    }
-                    let req_bytes = req.0;
-                    let mut buf = vec![0u8; max_len as usize];
+        extend_wasm_exports(
+            &ctx,
+            "awaitCapabilities",
+            Func::from(|ctx: Ctx<'_>, req: ArgBytes, max_len: i32| {
+                if max_len < 0 {
+                    return Err(Exception::throw_range(&ctx, "maxLen < 0"));
+                }
+                let req_bytes = req.0;
+                let mut buf = vec![0u8; max_len as usize];
 
-                    let n = unsafe {
-                        await_capabilities(
-                            req_bytes.as_ptr(),
-                            req_bytes.len() as i32,
-                            buf.as_mut_ptr(),
-                            max_len,
-                        )
-                    };
-                    if n < 0 {
-                        let error_len = (-n) as usize;
-                        let error_msg =
-                            String::from_utf8_lossy(&buf[..error_len.min(max_len as usize)])
-                                .into_owned();
-                        let error_msg_static: &'static str = Box::leak(error_msg.into_boxed_str());
-                        return Err(Error::new_into_js("Error", error_msg_static));
-                    }
-                    if n > max_len as i64 {
-                        return Err(Error::new_into_js(
-                            "Error",
-                            "await_capabilities: host returned length exceeding buffer capacity",
-                        ));
-                    }
+                let n = unsafe {
+                    await_capabilities(
+                        req_bytes.as_ptr(),
+                        req_bytes.len() as i32,
+                        buf.as_mut_ptr(),
+                        max_len,
+                    )
+                };
+                if n < 0 {
+                    let error_len = (-n) as usize;
+                    let error_msg =
+                        String::from_utf8_lossy(&buf[..error_len.min(max_len as usize)]).into_owned();
+                    let error_msg_static: &'static str = Box::leak(error_msg.into_boxed_str());
+                    return Err(Error::new_into_js("Error", error_msg_static));
+                }
+                if n > max_len as i64 {
+                    return Err(Error::new_into_js(
+                        "Error",
+                        "await_capabilities: host returned length exceeding buffer capacity",
+                    ));
+                }
 
-                    let out = &buf[..n as usize];
-                    Ok::<Vec<u8>, Error>(out.to_vec())
-                }),
-            )
-            .expect("failed to set global function 'awaitCapabilities'");
+                let out = &buf[..n as usize];
+                Ok::<Vec<u8>, Error>(out.to_vec())
+            }),
+        );
 
-        ctx.globals()
-            .set(
-                "getSecrets",
-                Func::from(|ctx: Ctx<'_>, req: ArgBytes, max_len: i32| {
-                    if max_len < 0 {
-                        return Err(Exception::throw_range(&ctx, "maxLen < 0"));
-                    }
-                    let req_bytes = req.0;
-                    let mut buf = vec![0u8; max_len as usize];
+        extend_wasm_exports(
+            &ctx,
+            "getSecrets",
+            Func::from(|ctx: Ctx<'_>, req: ArgBytes, max_len: i32| {
+                if max_len < 0 {
+                    return Err(Exception::throw_range(&ctx, "maxLen < 0"));
+                }
+                let req_bytes = req.0;
+                let mut buf = vec![0u8; max_len as usize];
 
-                    let n = unsafe {
-                        get_secrets(
-                            req_bytes.as_ptr(),
-                            req_bytes.len() as i32,
-                            buf.as_mut_ptr(),
-                            max_len,
-                        )
-                    };
-                    if n < 0 {
-                        return Err(Error::new_into_js("Error", "get_secrets failed"));
-                    }
-                    if n > max_len as i64 {
-                        return Err(Error::new_into_js(
-                            "Error",
-                            "get_secrets: host returned length exceeding buffer capacity",
-                        ));
-                    }
+                let n = unsafe {
+                    get_secrets(
+                        req_bytes.as_ptr(),
+                        req_bytes.len() as i32,
+                        buf.as_mut_ptr(),
+                        max_len,
+                    )
+                };
+                if n < 0 {
+                    return Err(Error::new_into_js("Error", "get_secrets failed"));
+                }
+                if n > max_len as i64 {
+                    return Err(Error::new_into_js(
+                        "Error",
+                        "get_secrets: host returned length exceeding buffer capacity",
+                    ));
+                }
 
-                    let out = &buf[..n as usize];
-                    Ok::<Vec<u8>, Error>(out.to_vec())
-                }),
-            )
-            .expect("failed to set global function 'getSecrets'");
+                let out = &buf[..n as usize];
+                Ok::<Vec<u8>, Error>(out.to_vec())
+            }),
+        );
 
-        ctx.globals()
-            .set(
-                "awaitSecrets",
-                Func::from(|ctx: Ctx<'_>, req: ArgBytes, max_len: i32| {
-                    if max_len < 0 {
-                        return Err(Exception::throw_range(&ctx, "maxLen < 0"));
-                    }
-                    let req_bytes = req.0;
-                    let mut buf = vec![0u8; max_len as usize];
+        extend_wasm_exports(
+            &ctx,
+            "awaitSecrets",
+            Func::from(|ctx: Ctx<'_>, req: ArgBytes, max_len: i32| {
+                if max_len < 0 {
+                    return Err(Exception::throw_range(&ctx, "maxLen < 0"));
+                }
+                let req_bytes = req.0;
+                let mut buf = vec![0u8; max_len as usize];
 
-                    let n = unsafe {
-                        await_secrets(
-                            req_bytes.as_ptr(),
-                            req_bytes.len() as i32,
-                            buf.as_mut_ptr(),
-                            max_len,
-                        )
-                    };
-                    if n < 0 {
-                        return Err(Error::new_into_js("Error", "await_secrets failed"));
-                    }
-                    if n > max_len as i64 {
-                        return Err(Error::new_into_js(
-                            "Error",
-                            "await_secrets: host returned length exceeding buffer capacity",
-                        ));
-                    }
+                let n = unsafe {
+                    await_secrets(
+                        req_bytes.as_ptr(),
+                        req_bytes.len() as i32,
+                        buf.as_mut_ptr(),
+                        max_len,
+                    )
+                };
+                if n < 0 {
+                    return Err(Error::new_into_js("Error", "await_secrets failed"));
+                }
+                if n > max_len as i64 {
+                    return Err(Error::new_into_js(
+                        "Error",
+                        "await_secrets: host returned length exceeding buffer capacity",
+                    ));
+                }
 
-                    let out = &buf[..n as usize];
-                    Ok::<Vec<u8>, Error>(out.to_vec())
-                }),
-            )
-            .expect("failed to set global function 'awaitSecrets'");
+                let out = &buf[..n as usize];
+                Ok::<Vec<u8>, Error>(out.to_vec())
+            }),
+        );
 
-        // log(message: string)
-        ctx.globals()
-            .set(
-                "log",
-                Func::from(|message: String| {
-                    let bytes = message.as_bytes();
-                    unsafe { log(bytes.as_ptr(), bytes.len() as i32) };
-                }),
-            )
-            .expect("failed to set global function 'log'");
+        extend_wasm_exports(
+            &ctx,
+            "log",
+            Func::from(|message: String| {
+                let bytes = message.as_bytes();
+                unsafe { log(bytes.as_ptr(), bytes.len() as i32) };
+            }),
+        );
 
-        // sendResponse(data: Uint8Array | ArrayBuffer | Base64 string) -> i32 (exits on rc==0)
-        ctx.globals()
-            .set(
-                "sendResponse",
-                Func::from(|_ctx: Ctx<'_>, data: ArgBytes| {
-                    let bytes = data.0;
-                    let rc = unsafe { send_response(bytes.as_ptr(), bytes.len() as i32) };
-                    if rc == 0 {
-                        std::process::exit(0);
-                    }
-                    Ok::<i32, Error>(rc)
-                }),
-            )
-            .expect("failed to set global function 'sendResponse'");
+        extend_wasm_exports(
+            &ctx,
+            "sendResponse",
+            Func::from(|_ctx: Ctx<'_>, data: ArgBytes| {
+                let bytes = data.0;
+                let rc = unsafe { send_response(bytes.as_ptr(), bytes.len() as i32) };
+                if rc == 0 {
+                    std::process::exit(0);
+                }
+                Ok::<i32, Error>(rc)
+            }),
+        );
 
-        // switchModes(mode: number)
-        ctx.globals()
-            .set(
-                "switchModes",
-                Func::from(|mode: i32| {
-                    *CURRENT_MODE
-                        .lock()
-                        .expect("failed to lock CURRENT_MODE mutex in switchModes") = mode;
-                    unsafe { switch_modes(mode) };
-                }),
-            )
-            .expect("failed to set global function 'switchModes'");
+        extend_wasm_exports(
+            &ctx,
+            "switchModes",
+            Func::from(|mode: i32| {
+                *CURRENT_MODE
+                    .lock()
+                    .expect("failed to lock CURRENT_MODE mutex in switchModes") = mode;
+                unsafe { switch_modes(mode) };
+            }),
+        );
 
-        // versionV2(): void
-        ctx.globals()
-            .set(
-                "versionV2",
-                Func::from(|| {
-                    unsafe { version_v2_typescript() };
-                }),
-            )
-            .expect("failed to set global function 'versionV2'");
+        extend_wasm_exports(
+            &ctx,
+            "versionV2",
+            Func::from(|| {
+                unsafe { version_v2_typescript() };
+            }),
+        );
 
-        // Override Math.random to use mode-based seeded generators
         let math_value = ctx
             .globals()
             .get::<_, Value>("Math")
@@ -301,51 +291,43 @@ fn modify_runtime(runtime: Runtime) -> Runtime {
             )
             .expect("failed to set 'Math.random' override");
 
-        // getWasiArgs(): string (JSON array)
-        ctx.globals()
-            .set(
-                "getWasiArgs",
-                Func::from(|_ctx: Ctx<'_>| -> Result<String, Error> {
-                    let args: Vec<String> = env::args().collect();
-                    let args_json = serde_json::to_string(&args).map_err(|_| {
-                        Error::new_into_js("Error", "Failed to serialize args to JSON")
-                    })?;
-                    Ok(args_json)
-                }),
-            )
-            .expect("failed to set global function 'getWasiArgs'");
+        extend_wasm_exports(
+            &ctx,
+            "getWasiArgs",
+            Func::from(|_ctx: Ctx<'_>| -> Result<String, Error> {
+                let args: Vec<String> = env::args().collect();
+                let args_json = serde_json::to_string(&args).map_err(|_| {
+                    Error::new_into_js("Error", "Failed to serialize args to JSON")
+                })?;
+                Ok(args_json)
+            }),
+        );
 
-        // now(): number (Unix timestamp in milliseconds)
-        ctx.globals()
-            .set(
-                "now",
-                Func::from(|_ctx: Ctx<'_>| -> Result<f64, Error> {
-                    let mut buffer = vec![0u8; 8];
-                    let rc = unsafe { now(buffer.as_mut_ptr()) };
+        extend_wasm_exports(
+            &ctx,
+            "now",
+            Func::from(|_ctx: Ctx<'_>| -> Result<f64, Error> {
+                let mut buffer = vec![0u8; 8];
+                let rc = unsafe { now(buffer.as_mut_ptr()) };
 
-                    if rc != 0 {
-                        return Err(Error::new_into_js(
-                            "Error",
-                            "now() returned non-zero status",
-                        ));
-                    }
+                if rc != 0 {
+                    return Err(Error::new_into_js(
+                        "Error",
+                        "now() returned non-zero status",
+                    ));
+                }
 
-                    let nanoseconds = u64::from_le_bytes([
-                        buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5],
-                        buffer[6], buffer[7],
-                    ]);
+                let nanoseconds = u64::from_le_bytes([
+                    buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], buffer[6],
+                    buffer[7],
+                ]);
 
-                    let milliseconds = nanoseconds / 1_000_000;
-                    Ok(milliseconds as f64)
-                }),
-            )
-            .expect("failed to set global function 'now'");
+                let milliseconds = nanoseconds / 1_000_000;
+                Ok(milliseconds as f64)
+            }),
+        );
     });
 
     runtime
 }
 
-#[unsafe(export_name = "initialize-runtime")]
-fn initialize_runtime() {
-    javy_plugin_api::initialize_runtime(config, modify_runtime).unwrap();
-}
