@@ -53,8 +53,6 @@ unsafe extern "C" {
     fn random_seed(mode: i32) -> i64;
 
     fn now(result_timestamp: *mut u8) -> i32;
-
-    fn requirements(requirements_ptr: *const u8, requirements_len: i32);
 }
 
 import_namespace!("javy_chainlink_sdk");
@@ -248,20 +246,6 @@ pub fn modify_runtime(runtime: Runtime) -> Runtime {
                     .lock()
                     .expect("failed to lock CURRENT_MODE mutex in switchModes") = mode;
                 unsafe { switch_modes(mode) };
-            }),
-        );
-
-        extend_wasm_exports(
-            &ctx,
-            "requirements",
-            Func::from(|_ctx: Ctx<'_>, data: ArgBytes| {
-                let requirements_bytes = data.0;
-                unsafe {
-                    requirements(
-                        requirements_bytes.as_ptr(),
-                        requirements_bytes.len() as i32,
-                    )
-                };
             }),
         );
 
