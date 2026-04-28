@@ -368,7 +368,6 @@ describe('test getSecret', () => {
 			getSecrets: mock((request) => {
 				expect(request.callbackId).toEqual(1)
 				expect(request.requests.length).toEqual(1)
-				return true
 			}),
 			awaitSecrets: mock((request) => {
 				expect(request.ids.length).toEqual(1)
@@ -409,7 +408,6 @@ describe('test getSecret', () => {
 			getSecrets: mock((request) => {
 				expect(request.callbackId).toEqual(1)
 				expect(request.requests.length).toEqual(1)
-				return true
 			}),
 			awaitSecrets: mock((request) => {
 				expect(request.ids.length).toEqual(1)
@@ -449,7 +447,6 @@ describe('test getSecret', () => {
 			getSecrets: mock((request) => {
 				expect(request.requests.length).toEqual(1)
 				observedNamespaces.push(request.requests[0].namespace)
-				return true
 			}),
 			awaitSecrets: mock((request) => {
 				const id = request.ids[0]
@@ -489,12 +486,33 @@ describe('test getSecret', () => {
 		})
 
 		const helpers = createRuntimeHelpersMock({
-			getSecrets: mock(() => false),
+			getSecrets: mock(() => {
+				throw new Error('vault: signer unreachable')
+			}),
 		})
 
 		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
 		expect(() => runtime.getSecret(secretRequest).result()).toThrow(
-			new SecretsError(secretRequest, 'host is not making the secrets request'),
+			new SecretsError(secretRequest, 'vault: signer unreachable'),
+		)
+	})
+
+	test('awaitSecrets throws → wrapped as SecretsError', () => {
+		const secretRequest = create(SecretRequestSchema, {
+			id: 'test-secret',
+			namespace: 'test-ns',
+		})
+
+		const helpers = createRuntimeHelpersMock({
+			getSecrets: mock(() => undefined),
+			awaitSecrets: mock(() => {
+				throw new Error('vault: timeout fetching secret')
+			}),
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		expect(() => runtime.getSecret(secretRequest).result()).toThrow(
+			new SecretsError(secretRequest, 'vault: timeout fetching secret'),
 		)
 	})
 
@@ -505,7 +523,7 @@ describe('test getSecret', () => {
 		})
 
 		const helpers = createRuntimeHelpersMock({
-			getSecrets: mock(() => true),
+			getSecrets: mock(() => undefined),
 			awaitSecrets: mock(() => {
 				return create(AwaitSecretsResponseSchema, {
 					responses: {},
@@ -526,7 +544,7 @@ describe('test getSecret', () => {
 		})
 
 		const helpers = createRuntimeHelpersMock({
-			getSecrets: mock(() => true),
+			getSecrets: mock(() => undefined),
 			awaitSecrets: mock(() => {
 				return create(AwaitSecretsResponseSchema, {
 					responses: {
@@ -557,7 +575,7 @@ describe('test getSecret', () => {
 		}
 
 		const helpers = createRuntimeHelpersMock({
-			getSecrets: mock(() => true),
+			getSecrets: mock(() => undefined),
 			awaitSecrets: mock(() => {
 				return create(AwaitSecretsResponseSchema, {
 					responses: {
@@ -590,7 +608,7 @@ describe('test getSecret', () => {
 		const errorMessage = 'secret not found'
 
 		const helpers = createRuntimeHelpersMock({
-			getSecrets: mock(() => true),
+			getSecrets: mock(() => undefined),
 			awaitSecrets: mock(() => {
 				return create(AwaitSecretsResponseSchema, {
 					responses: {
@@ -619,7 +637,7 @@ describe('test getSecret', () => {
 		})
 
 		const helpers = createRuntimeHelpersMock({
-			getSecrets: mock(() => true),
+			getSecrets: mock(() => undefined),
 			awaitSecrets: mock(() => {
 				return create(AwaitSecretsResponseSchema, {
 					responses: {
@@ -653,7 +671,6 @@ describe('test getSecret', () => {
 		const helpers = createRuntimeHelpersMock({
 			getSecrets: mock((request) => {
 				callbackIds.push(request.callbackId)
-				return true
 			}),
 			awaitSecrets: mock((request) => {
 				const id = request.ids[0]

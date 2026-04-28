@@ -266,7 +266,7 @@ function createTestRuntimeHelpers(
 			return response
 		},
 
-		getSecrets(req: GetSecretsRequest, _maxResponseSize: bigint): boolean {
+		getSecrets(req: GetSecretsRequest, _maxResponseSize: bigint): void {
 			const resp: SecretResponse[] = []
 			for (const secretReq of req.requests) {
 				const ns = secrets.get(secretReq.namespace || 'default')
@@ -301,7 +301,6 @@ function createTestRuntimeHelpers(
 				}
 			}
 			pendingSecrets.set(req.callbackId, resp)
-			return true
 		},
 
 		awaitSecrets(request: { ids: number[] }, _maxResponseSize: bigint): AwaitSecretsResponse {

@@ -380,10 +380,13 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 			requests: [secretRequest],
 		})
 
-		if (!this.helpers.getSecrets(secretsReq, this.maxResponseSize)) {
+		try {
+			this.helpers.getSecrets(secretsReq, this.maxResponseSize)
+		} catch (err) {
+			const message = err instanceof Error ? err.message : String(err)
 			return {
 				result: () => {
-					throw new SecretsError(secretRequest, 'host is not making the secrets request')
+					throw new SecretsError(secretRequest, message)
 				},
 			}
 		}
@@ -396,7 +399,13 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 
 	private awaitAndUnwrapSecret(id: number, secretRequest: SecretRequest): Secret {
 		const awaitRequest = create(AwaitSecretsRequestSchema, { ids: [id] })
-		const awaitResponse = this.helpers.awaitSecrets(awaitRequest, this.maxResponseSize)
+		let awaitResponse: AwaitSecretsResponse
+		try {
+			awaitResponse = this.helpers.awaitSecrets(awaitRequest, this.maxResponseSize)
+		} catch (err) {
+			const message = err instanceof Error ? err.message : String(err)
+			throw new SecretsError(secretRequest, message)
+		}
 		const secretsResponse = awaitResponse.responses[id]
 
 		if (!secretsResponse) {
@@ -442,8 +451,8 @@ export interface RuntimeHelpers {
 	/** Awaits capability responses. Blocks until responses are ready. */
 	await(request: AwaitCapabilitiesRequest, maxResponseSize: bigint): AwaitCapabilitiesResponse
 
-	/** Requests secrets from host. Returns false if host rejects request. */
-	getSecrets(request: GetSecretsRequest, maxResponseSize: bigint): boolean
+	/** Requests secrets from host. Throws if host rejects the request. */
+	getSecrets(request: GetSecretsRequest, maxResponseSize: bigint): void
 
 	/** Awaits secret responses. Blocks until secrets are ready. */
 	awaitSecrets(request: AwaitSecretsRequest, maxResponseSize: bigint): AwaitSecretsResponse
