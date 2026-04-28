@@ -24,7 +24,7 @@ import {
 	CronRestrictor,
 } from '@cre/generated-sdk/capabilities/scheduler/cron/v1/cron_sdk_gen'
 import { prepareRuntime } from '@cre/sdk/utils/prepare-runtime'
-import { handler } from '@cre/sdk/workflow'
+import { handler, handlerInTee } from '@cre/sdk/workflow'
 
 /**
  * Public exports for the CRE SDK.
@@ -40,6 +40,7 @@ export {
 } from '@cre/generated/capabilities/blockchain/solana/v1alpha/client_pb'
 export type { Payload as HTTPPayload } from '@cre/generated/capabilities/networking/http/v1alpha/trigger_pb'
 export type { Payload as CronPayload } from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
+export { TeeType } from '@cre/generated/sdk/v1alpha/sdk_pb'
 // EVM Capability
 export {
 	ClientCapability as EVMClient,
@@ -75,9 +76,10 @@ export {
 	CronRestrictor,
 } from '@cre/generated-sdk/capabilities/scheduler/cron/v1/cron_sdk_gen'
 
+
 // Runtime
 export type { NodeRuntime, Runtime, TeeRuntime } from '@cre/sdk/runtime'
-export { handler } from '@cre/sdk/workflow'
+export { handler, handlerInTee } from '@cre/sdk/workflow'
 
 prepareRuntime()
 
@@ -98,4 +100,5 @@ export const cre = {
 		EVMRestrictor,
 	},
 	handler,
+	handlerInTee,
 }
