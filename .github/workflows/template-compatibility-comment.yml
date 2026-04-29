@@ -1,0 +1,126 @@
+name: Template Compatibility Comment
+
+# Triggered when the unprivileged "Template Compatibility Check" workflow
+# completes. This workflow has pull-requests: write so it can post PR comments,
+# but it never checks out or executes any external code — it only reads the
+# artifact produced by the check workflow.
+#
+# SECURITY: workflow_run always runs on the default branch, so this workflow
+# definition itself cannot be tampered with by a PR contributor. Artifact
+# contents are treated as untrusted strings and sanitized before use.
+
+on:
+  workflow_run:
+    workflows: ["Template Compatibility Check"]
+    types: [completed]
+
+permissions:
+  pull-requests: write
+  actions: read # required to download artifacts from another workflow run
+
+jobs:
+  post-comment:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download results artifact
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: template-compat-results
+          path: /tmp/compat-results
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Post or remove PR comment
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        with:
+          script: |
+            const fs = require('fs');
+
+            const read = (filename) => {
+              try { return fs.readFileSync(`/tmp/compat-results/${filename}`, 'utf8').trim(); }
+              catch { return ''; }
+            };
+
+            // Validate PR number — must be a positive integer.
+            const prNumber = parseInt(read('pr-number.txt'), 10);
+            if (!Number.isInteger(prNumber) || prNumber <= 0) {
+              console.log('Invalid or missing PR number in artifact; skipping comment.');
+              return;
+            }
+
+            const exitCode    = read('exit-code.txt');
+            const fullOutput  = read('output.txt');
+            // Sanitize values read from the artifact before embedding in markdown
+            // to prevent injection (e.g. a malicious branch name or script output
+            // containing markdown syntax that escapes a code fence).
+            const templatesRef = read('templates-ref.txt').replace(/[^a-zA-Z0-9._\/-]/g, '');
+            const headRef      = read('head-ref.txt').replace(/[^a-zA-Z0-9._\/-]/g, '');
+
+            const marker = '<!-- template-compat-comment -->';
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+            });
+            const existing = comments.find(c => c.body.includes(marker));
+
+            if (exitCode === '0') {
+              // Templates pass — remove any stale failure comment.
+              if (existing) {
+                await github.rest.issues.deleteComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: existing.id,
+                });
+              }
+              return;
+            }
+
+            // Extract just the "Results" and "Failure Details" sections from output.
+            const resultsMatch = fullOutput.match(/={8,}\nResults:.*\n={8,}[\s\S]*/);
+            const failureSummary = resultsMatch ? resultsMatch[0].trim() : fullOutput.trim();
+
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.payload.workflow_run.id}`;
+            const refNote = templatesRef === 'main'
+              ? 'tested against `cre-templates:main`'
+              : `tested against \`cre-templates:${templatesRef}\` (compat branch)`;
+
+            const body = [
+              '## ⚠️ Template Compatibility Failures',
+              '',
+              `This PR breaks one or more templates in [cre-templates](https://github.com/smartcontractkit/cre-templates) (${refNote}).`,
+              '',
+              '```',
+              failureSummary,
+              '```',
+              '',
+              `[View full output →](${runUrl})`,
+              '',
+              '<details>',
+              '<summary>What should I do?</summary>',
+              '',
+              '- **Accidental break:** Fix the SDK change so existing templates continue to compile.',
+              `- **Intentional breaking change:** Create a branch in \`cre-templates\` named \`compat/${headRef}\` with the template fixes applied. This job will automatically retest against that branch.`,
+              '',
+              '</details>',
+            ].join('\n');
+
+            const commentBody = `${marker}\n${body}`;
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body: commentBody,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: commentBody,
+              });
+            }

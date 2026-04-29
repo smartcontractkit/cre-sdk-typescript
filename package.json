@@ -14,6 +14,7 @@
     "check:ci": "turbo run check:ci",
     "format": "turbo run format",
     "full-checks": "./scripts/full-checks.sh",
+    "test:templates": "./scripts/test-templates.sh",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck"
   },
