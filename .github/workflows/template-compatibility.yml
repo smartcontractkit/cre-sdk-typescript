@@ -1,0 +1,217 @@
+name: Template Compatibility
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+# This job is informational — it is intentionally NOT a required status check
+# so that breaking SDK changes (major version bumps) can still be merged.
+# When templates break, a comment is posted on the PR with details.
+# For intentional breaking changes, create a matching branch in cre-templates
+# named compat/<your-sdk-branch-name> with the template fixes applied.
+# The job will automatically detect and test against that branch.
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  template-compatibility:
+    runs-on: ubuntu-latest
+    # Only run on PRs (not push to main)
+    if: github.event_name == 'pull_request'
+
+    defaults:
+      run:
+        shell: bash {0}
+
+    env:
+      TEMPLATES_REPO: smartcontractkit/cre-templates
+      # Convention: a matching branch in cre-templates named compat/<sdk-branch>
+      # allows coordinated breaking changes without blocking the SDK PR.
+      COMPAT_BRANCH: compat/${{ github.head_ref }}
+
+    steps:
+      - name: Checkout SDK
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          submodules: recursive
+
+      - name: Setup Rust (1.85.0) with wasm target
+        uses: actions-rust-lang/setup-rust-toolchain@150fca883cd4034361b621bd4e6a9d34e5143606 # v1.15.4
+        with:
+          toolchain: 1.85.0
+          target: wasm32-wasip1
+          override: true
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.3.12
+
+      - name: Cache Bun dependencies
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+
+      - name: Cache cargo + Javy
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            ~/.cache/javy
+          key: ${{ runner.os }}-cre-plugin-v8.1.0-${{ hashFiles('packages/cre-sdk-javy-plugin/src/javy_chainlink_sdk/Cargo.lock', 'packages/cre-sdk-javy-plugin/src/cre_generated_host.Cargo.lock') }}
+
+      - name: Install SDK dependencies
+        run: bun install --frozen-lockfile
+
+      # Detect whether a matching compat branch exists in cre-templates.
+      # If it does, we test against it (coordinated breaking change).
+      # If not, we fall back to main.
+      - name: Detect cre-templates ref to test against
+        id: detect-ref
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh api "repos/$TEMPLATES_REPO/branches/$COMPAT_BRANCH" &>/dev/null; then
+            echo "ref=$COMPAT_BRANCH" >> "$GITHUB_OUTPUT"
+            echo "Using compat branch: $COMPAT_BRANCH"
+          else
+            echo "ref=main" >> "$GITHUB_OUTPUT"
+            echo "No compat branch found, using: main"
+          fi
+
+      - name: Checkout cre-templates (${{ steps.detect-ref.outputs.ref }})
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          repository: ${{ env.TEMPLATES_REPO }}
+          ref: ${{ steps.detect-ref.outputs.ref }}
+          path: cre-templates
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node (for npm)
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+
+      - name: Run template compatibility check
+        id: template-check
+        env:
+          TEMPLATES_DIR: cre-templates
+        run: |
+          set +e
+          OUTPUT=$(./scripts/test-templates.sh 2>&1)
+          EXIT_CODE=$?
+          set -e
+
+          # Save output to a file for the comment step
+          echo "$OUTPUT" > /tmp/template-check-output.txt
+
+          # Surface it in the action log regardless
+          echo "$OUTPUT"
+
+          echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
+
+      # Only post a comment when templates are broken.
+      # The comment is updated (not duplicated) on subsequent pushes.
+      - name: Post failure comment on PR
+        if: steps.template-check.outputs.exit_code != '0'
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        with:
+          script: |
+            const fs = require('fs');
+            const fullOutput = fs.readFileSync('/tmp/template-check-output.txt', 'utf8');
+
+            // Extract just the "Results" and "Failure Details" sections
+            const resultsMatch = fullOutput.match(/={8,}\nResults:.*\n={8,}[\s\S]*/);
+            const failureSummary = resultsMatch ? resultsMatch[0].trim() : fullOutput.trim();
+
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const templatesRef = '${{ steps.detect-ref.outputs.ref }}';
+            const refNote = templatesRef === 'main'
+              ? 'tested against `cre-templates:main`'
+              : `tested against \`cre-templates:${templatesRef}\` (compat branch)`;
+
+            const body = [
+              '## ⚠️ Template Compatibility Failures',
+              '',
+              `This PR breaks one or more templates in [cre-templates](https://github.com/${{ env.TEMPLATES_REPO }}) (${refNote}).`,
+              '',
+              '```',
+              failureSummary,
+              '```',
+              '',
+              `[View full output →](${runUrl})`,
+              '',
+              '<details>',
+              '<summary>What should I do?</summary>',
+              '',
+              '- **Accidental break:** Fix the SDK change so existing templates continue to compile.',
+              '- **Intentional breaking change:** Create a branch in `cre-templates` named `compat/${{ github.head_ref }}` with the template fixes applied. This job will automatically retest against that branch.',
+              '',
+              '</details>',
+            ].join('\n');
+
+            const marker = '<!-- template-compat-comment -->';
+            const commentBody = `${marker}\n${body}`;
+
+            // Update existing comment if present, otherwise create a new one
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existing = comments.find(c => c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body: commentBody,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: commentBody,
+              });
+            }
+
+      # If a prior push had failures but this push fixes them, remove the stale comment
+      - name: Remove stale failure comment (if now passing)
+        if: steps.template-check.outputs.exit_code == '0'
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        with:
+          script: |
+            const marker = '<!-- template-compat-comment -->';
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existing = comments.find(c => c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.deleteComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+              });
+            }
+
+      # Always exit 0 — this job is informational, not a merge gate
+      - name: Report result (non-blocking)
+        if: always()
+        run: |
+          EXIT_CODE="${{ steps.template-check.outputs.exit_code }}"
+          if [ "$EXIT_CODE" = "0" ]; then
+            echo "✅ All templates are compatible with this SDK change."
+          else
+            echo "⚠️  Some templates failed — see PR comment for details."
+            echo "This check is informational and does not block merging."
+          fi
+          exit 0
