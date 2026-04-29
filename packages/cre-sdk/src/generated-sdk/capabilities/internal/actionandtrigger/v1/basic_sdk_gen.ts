@@ -1,115 +1,110 @@
-import type { Trigger } from "@cre/sdk/utils/triggers/trigger-interface"
-import { type Any, AnySchema, anyPack } from "@bufbuild/protobuf/wkt"
-import type { Runtime } from "@cre/sdk"
-import { Report } from "@cre/sdk/report"
-import { hexToBytes } from "@cre/sdk/utils/hex-utils";
-import { fromJson, create } from "@bufbuild/protobuf"
+import { create, fromJson } from '@bufbuild/protobuf'
+import { type Any, AnySchema, anyPack } from '@bufbuild/protobuf/wkt'
 import {
-  ConfigSchema,
-  InputSchema,
-  OutputSchema,
-  TriggerEventSchema,
-  type Config,
-  type ConfigJson,
-  type Input,
-  type InputJson,
-  type Output,
-  type TriggerEvent,
-} from "@cre/generated/capabilities/internal/actionandtrigger/v1/action_and_trigger_pb"
-
-
+	type Config,
+	type ConfigJson,
+	ConfigSchema,
+	type Input,
+	type InputJson,
+	InputSchema,
+	type Output,
+	OutputSchema,
+	type TriggerEvent,
+	TriggerEventSchema,
+} from '@cre/generated/capabilities/internal/actionandtrigger/v1/action_and_trigger_pb'
+import type { Runtime } from '@cre/sdk'
+import { Report } from '@cre/sdk/report'
+import { hexToBytes } from '@cre/sdk/utils/hex-utils'
+import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 
 /**
  * Basic Capability
- * 
+ *
  * Capability ID: basic-test-action-trigger@1.0.0
  * Capability Name: basic-test-action-trigger
  * Capability Version: 1.0.0
  */
 export class BasicCapability {
-  /** The capability ID for this service */
-  static readonly CAPABILITY_ID = "basic-test-action-trigger@1.0.0";
+	/** The capability ID for this service */
+	static readonly CAPABILITY_ID = 'basic-test-action-trigger@1.0.0'
 
-  static readonly CAPABILITY_NAME = "basic-test-action-trigger";
-  static readonly CAPABILITY_VERSION = "1.0.0";
+	static readonly CAPABILITY_NAME = 'basic-test-action-trigger'
+	static readonly CAPABILITY_VERSION = '1.0.0'
 
+	action(runtime: Runtime<unknown>, input: Input | InputJson): { result: () => Output } {
+		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
+		let payload: Input
 
+		if ((input as unknown as { $typeName?: string }).$typeName) {
+			// It's the original protobuf type
+			payload = input as Input
+		} else {
+			// It's regular JSON, convert using fromJson
+			payload = fromJson(InputSchema, input as InputJson)
+		}
 
-  action(runtime: Runtime<unknown>, input: Input | InputJson): {result: () => Output} {
-    // Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
-    let payload: Input
-    
-    if ((input as unknown as { $typeName?: string }).$typeName) {
-      // It's the original protobuf type
-      payload = input as Input
-    } else {
-      // It's regular JSON, convert using fromJson
-      payload = fromJson(InputSchema, input as InputJson)
-    }
-    
-    
-    const capabilityId = BasicCapability.CAPABILITY_ID;
-    
-    const capabilityResponse = runtime.callCapability<Input, Output>({
-      capabilityId,
-      method: "Action",
-      payload,
-      inputSchema: InputSchema,
-      outputSchema: OutputSchema
-    })
+		const capabilityId = BasicCapability.CAPABILITY_ID
 
-    return {
-      result: () => {
-        const result = capabilityResponse.result()
-        
-        return result
-      }
-    }
-  }
+		const capabilityResponse = runtime.callCapability<Input, Output>({
+			capabilityId,
+			method: 'Action',
+			payload,
+			inputSchema: InputSchema,
+			outputSchema: OutputSchema,
+		})
 
-  trigger(config: ConfigJson): BasicTrigger {
-    
-    const capabilityId = BasicCapability.CAPABILITY_ID;
-    return new BasicTrigger(config, capabilityId, "Trigger");
-  }
+		return {
+			result: () => {
+				const result = capabilityResponse.result()
+
+				return result
+			},
+		}
+	}
+
+	trigger(config: ConfigJson): BasicTrigger {
+		const capabilityId = BasicCapability.CAPABILITY_ID
+		return new BasicTrigger(config, capabilityId, 'Trigger')
+	}
 }
 
 /**
  * Trigger implementation for Trigger
  */
 class BasicTrigger implements Trigger<TriggerEvent, TriggerEvent> {
-  public readonly config: Config
-  constructor(
-    config: Config | ConfigJson,
-    private readonly _capabilityId: string,
-    private readonly _method: string,
+	public readonly config: Config
+	constructor(
+		config: Config | ConfigJson,
+		private readonly _capabilityId: string,
+		private readonly _method: string,
+	) {
+		// biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
+		this.config = (config as any).$typeName
+			? (config as Config)
+			: fromJson(ConfigSchema, config as ConfigJson)
+	}
 
-  ) {
-    // biome-ignore lint/suspicious/noExplicitAny: Needed for runtime type checking of protocol buffer messages
-    this.config = (config as any).$typeName ? config as Config : fromJson(ConfigSchema, config as ConfigJson)
-  }
+	capabilityId(): string {
+		return this._capabilityId
+	}
 
-  capabilityId(): string {
-    return this._capabilityId;
-  }
+	method(): string {
+		return this._method
+	}
 
-  method(): string {
-    return this._method;
-  }
+	outputSchema() {
+		return TriggerEventSchema
+	}
 
-  outputSchema() {
-    return TriggerEventSchema;
-  }
+	configAsAny(): Any {
+		return anyPack(ConfigSchema, this.config)
+	}
 
-  configAsAny(): Any {
-    return anyPack(ConfigSchema, this.config);
-  }
-
-  /**
-   * Transform the raw trigger output - override this method if needed
-   * Default implementation returns the raw output unchanged
-   */
-  adapt(rawOutput: TriggerEvent): TriggerEvent {
-    return rawOutput;
-  }
+	/**
+	 * Transform the raw trigger output - override this method if needed
+	 * Default implementation returns the raw output unchanged
+	 */
+	adapt(rawOutput: TriggerEvent): TriggerEvent {
+		return rawOutput
+	}
 }

@@ -1,101 +1,98 @@
-import type { Runtime } from "@cre/sdk"
-import { Report } from "@cre/sdk/report"
-import { hexToBytes } from "@cre/sdk/utils/hex-utils";
-import { fromJson } from "@bufbuild/protobuf"
+import { fromJson } from '@bufbuild/protobuf'
 import {
-  ReportRequestSchema,
-  ReportResponseSchema,
-  SimpleConsensusInputsSchema,
-  type ReportRequest,
-  type ReportRequestJson,
-  type ReportResponse,
-  type SimpleConsensusInputs,
-  type SimpleConsensusInputsJson,
-} from "@cre/generated/sdk/v1alpha/sdk_pb"
-import {
-  ValueSchema,
-  type Value,
-} from "@cre/generated/values/v1/values_pb"
-
-
+	type ReportRequest,
+	type ReportRequestJson,
+	ReportRequestSchema,
+	type ReportResponse,
+	ReportResponseSchema,
+	type SimpleConsensusInputs,
+	type SimpleConsensusInputsJson,
+	SimpleConsensusInputsSchema,
+} from '@cre/generated/sdk/v1alpha/sdk_pb'
+import { type Value, ValueSchema } from '@cre/generated/values/v1/values_pb'
+import type { Runtime } from '@cre/sdk'
+import { Report } from '@cre/sdk/report'
+import { hexToBytes } from '@cre/sdk/utils/hex-utils'
 
 /**
  * Consensus Capability
- * 
+ *
  * Capability ID: consensus@1.0.0-alpha
  * Capability Name: consensus
  * Capability Version: 1.0.0-alpha
  */
 export class ConsensusCapability {
-  /** The capability ID for this service */
-  static readonly CAPABILITY_ID = "consensus@1.0.0-alpha";
+	/** The capability ID for this service */
+	static readonly CAPABILITY_ID = 'consensus@1.0.0-alpha'
 
-  static readonly CAPABILITY_NAME = "consensus";
-  static readonly CAPABILITY_VERSION = "1.0.0-alpha";
+	static readonly CAPABILITY_NAME = 'consensus'
+	static readonly CAPABILITY_VERSION = '1.0.0-alpha'
 
+	simple(
+		runtime: Runtime<unknown>,
+		input: SimpleConsensusInputs | SimpleConsensusInputsJson,
+	): { result: () => Value } {
+		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
+		let payload: SimpleConsensusInputs
 
+		if ((input as unknown as { $typeName?: string }).$typeName) {
+			// It's the original protobuf type
+			payload = input as SimpleConsensusInputs
+		} else {
+			// It's regular JSON, convert using fromJson
+			payload = fromJson(SimpleConsensusInputsSchema, input as SimpleConsensusInputsJson)
+		}
 
-  simple(runtime: Runtime<unknown>, input: SimpleConsensusInputs | SimpleConsensusInputsJson): {result: () => Value} {
-    // Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
-    let payload: SimpleConsensusInputs
-    
-    if ((input as unknown as { $typeName?: string }).$typeName) {
-      // It's the original protobuf type
-      payload = input as SimpleConsensusInputs
-    } else {
-      // It's regular JSON, convert using fromJson
-      payload = fromJson(SimpleConsensusInputsSchema, input as SimpleConsensusInputsJson)
-    }
-    
-    
-    const capabilityId = ConsensusCapability.CAPABILITY_ID;
-    
-    const capabilityResponse = runtime.callCapability<SimpleConsensusInputs, Value>({
-      capabilityId,
-      method: "Simple",
-      payload,
-      inputSchema: SimpleConsensusInputsSchema,
-      outputSchema: ValueSchema
-    })
+		const capabilityId = ConsensusCapability.CAPABILITY_ID
 
-    return {
-      result: () => {
-        const result = capabilityResponse.result()
-        
-        return result
-      }
-    }
-  }
+		const capabilityResponse = runtime.callCapability<SimpleConsensusInputs, Value>({
+			capabilityId,
+			method: 'Simple',
+			payload,
+			inputSchema: SimpleConsensusInputsSchema,
+			outputSchema: ValueSchema,
+		})
 
-  report(runtime: Runtime<unknown>, input: ReportRequest | ReportRequestJson): {result: () => Report} {
-    // Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
-    let payload: ReportRequest
-    
-    if ((input as unknown as { $typeName?: string }).$typeName) {
-      // It's the original protobuf type
-      payload = input as ReportRequest
-    } else {
-      // It's regular JSON, convert using fromJson
-      payload = fromJson(ReportRequestSchema, input as ReportRequestJson)
-    }
-    
-    
-    const capabilityId = ConsensusCapability.CAPABILITY_ID;
-    
-    const capabilityResponse = runtime.callCapability<ReportRequest, ReportResponse>({
-      capabilityId,
-      method: "Report",
-      payload,
-      inputSchema: ReportRequestSchema,
-      outputSchema: ReportResponseSchema
-    })
+		return {
+			result: () => {
+				const result = capabilityResponse.result()
 
-    return {
-      result: () => {
-        const result = capabilityResponse.result()
-        
-        return new Report(result)
-      }
-    }
-  }
+				return result
+			},
+		}
+	}
+
+	report(
+		runtime: Runtime<unknown>,
+		input: ReportRequest | ReportRequestJson,
+	): { result: () => Report } {
+		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
+		let payload: ReportRequest
+
+		if ((input as unknown as { $typeName?: string }).$typeName) {
+			// It's the original protobuf type
+			payload = input as ReportRequest
+		} else {
+			// It's regular JSON, convert using fromJson
+			payload = fromJson(ReportRequestSchema, input as ReportRequestJson)
+		}
+
+		const capabilityId = ConsensusCapability.CAPABILITY_ID
+
+		const capabilityResponse = runtime.callCapability<ReportRequest, ReportResponse>({
+			capabilityId,
+			method: 'Report',
+			payload,
+			inputSchema: ReportRequestSchema,
+			outputSchema: ReportResponseSchema,
+		})
+
+		return {
+			result: () => {
+				const result = capabilityResponse.result()
+
+				return new Report(result)
+			},
+		}
+	}
 }

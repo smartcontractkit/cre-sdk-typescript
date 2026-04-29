@@ -15,7 +15,7 @@ import { file_tools_generator_v1alpha_cre_metadata } from '../../../../tools/gen
 export const file_capabilities_networking_confidentialhttp_v1alpha_client: GenFile =
 	/*@__PURE__*/
 	fileDesc(
-		'Cj1jYXBhYmlsaXRpZXMvbmV0d29ya2luZy9jb25maWRlbnRpYWxodHRwL3YxYWxwaGEvY2xpZW50LnByb3RvEjBjYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEiUAoQU2VjcmV0SWRlbnRpZmllchILCgNrZXkYASABKAkSEQoJbmFtZXNwYWNlGAIgASgJEhIKBW93bmVyGAMgASgJSACIAQFCCAoGX293bmVyIh4KDEhlYWRlclZhbHVlcxIOCgZ2YWx1ZXMYASADKAki1wQKC0hUVFBSZXF1ZXN0EgsKA3VybBgBIAEoCRIOCgZtZXRob2QYAiABKAkSFQoLYm9keV9zdHJpbmcYAyABKAlIABIUCgpib2R5X2J5dGVzGAggASgMSAASZgoNbXVsdGlfaGVhZGVycxgEIAMoCzJPLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IVFRQUmVxdWVzdC5NdWx0aUhlYWRlcnNFbnRyeRJ3ChZ0ZW1wbGF0ZV9wdWJsaWNfdmFsdWVzGAUgAygLMlcuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLkhUVFBSZXF1ZXN0LlRlbXBsYXRlUHVibGljVmFsdWVzRW50cnkSHwoXY3VzdG9tX3Jvb3RfY2FfY2VydF9wZW0YBiABKAwSKgoHdGltZW91dBgHIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhIWCg5lbmNyeXB0X291dHB1dBgJIAEoCBpzChFNdWx0aUhlYWRlcnNFbnRyeRILCgNrZXkYASABKAkSTQoFdmFsdWUYAiABKAsyPi5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuSGVhZGVyVmFsdWVzOgI4ARo7ChlUZW1wbGF0ZVB1YmxpY1ZhbHVlc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAFCBgoEYm9keSKPAgoMSFRUUFJlc3BvbnNlEhMKC3N0YXR1c19jb2RlGAEgASgNEgwKBGJvZHkYAiABKAwSZwoNbXVsdGlfaGVhZGVycxgDIAMoCzJQLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IVFRQUmVzcG9uc2UuTXVsdGlIZWFkZXJzRW50cnkacwoRTXVsdGlIZWFkZXJzRW50cnkSCwoDa2V5GAEgASgJEk0KBXZhbHVlGAIgASgLMj4uY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLkhlYWRlclZhbHVlczoCOAEiogIKF0NvbmZpZGVudGlhbEhUVFBSZXF1ZXN0El0KEXZhdWx0X2Rvbl9zZWNyZXRzGAEgAygLMkIuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLlNlY3JldElkZW50aWZpZXISTgoHcmVxdWVzdBgCIAEoCzI9LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IVFRQUmVxdWVzdBJPCgRhdXRoGAMgASgLMjwuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLkF1dGhDb25maWdIAIgBAUIHCgVfYXV0aCKhAwoKQXV0aENvbmZpZxJPCgdhcGlfa2V5GAEgASgLMjwuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLkFwaUtleUF1dGhIABJMCgViYXNpYxgCIAEoCzI7LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5CYXNpY0F1dGhIABJOCgZiZWFyZXIYAyABKAsyPC5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuQmVhcmVyQXV0aEgAEkoKBGhtYWMYBCABKAsyOi5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuSG1hY0F1dGhIABJOCgZvYXV0aDIYBSABKAsyPC5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuT0F1dGgyQXV0aEgAQggKBm1ldGhvZCJMCgpBcGlLZXlBdXRoEhMKC2hlYWRlcl9uYW1lGAEgASgJEhMKC3NlY3JldF9uYW1lGAIgASgJEhQKDHZhbHVlX3ByZWZpeBgDIAEoCSJHCglCYXNpY0F1dGgSHAoUdXNlcm5hbWVfc2VjcmV0X25hbWUYASABKAkSHAoUcGFzc3dvcmRfc2VjcmV0X25hbWUYAiABKAkiUgoKQmVhcmVyQXV0aBIZChF0b2tlbl9zZWNyZXRfbmFtZRgBIAEoCRITCgtoZWFkZXJfbmFtZRgCIAEoCRIUCgx2YWx1ZV9wcmVmaXgYAyABKAkihwIKCEhtYWNBdXRoEk4KBnNoYTI1NhgBIAEoCzI8LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IbWFjU2hhMjU2SAASUAoKYXdzX3NpZ192NBgCIAEoCzI6LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5Bd3NTaWdWNEgAEk4KBmN1c3RvbRgDIAEoCzI8LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IbWFjQ3VzdG9tSABCCQoHdmFyaWFudCJ+CgpIbWFjU2hhMjU2EhMKC3NlY3JldF9uYW1lGAEgASgJEhgKEHNpZ25hdHVyZV9oZWFkZXIYAiABKAkSGAoQdGltZXN0YW1wX2hlYWRlchgDIAEoCRIVCg1pbmNsdWRlX3F1ZXJ5GAQgASgIEhAKCGVuY29kaW5nGAUgASgJIsoBCghBd3NTaWdWNBIhChlhY2Nlc3Nfa2V5X2lkX3NlY3JldF9uYW1lGAEgASgJEiUKHXNlY3JldF9hY2Nlc3Nfa2V5X3NlY3JldF9uYW1lGAIgASgJEiEKGXNlc3Npb25fdG9rZW5fc2VjcmV0X25hbWUYAyABKAkSDgoGcmVnaW9uGAQgASgJEg8KB3NlcnZpY2UYBSABKAkSFgoOc2lnbmVkX2hlYWRlcnMYBiADKAkSGAoQdW5zaWduZWRfcGF5bG9hZBgHIAEoCCKuAgoKSG1hY0N1c3RvbRITCgtzZWNyZXRfbmFtZRgBIAEoCRIaChJjYW5vbmljYWxfdGVtcGxhdGUYAiABKAkSTwoEaGFzaBgDIAEoDjJBLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IbWFjQ3VzdG9tLkhhc2gSGAoQc2lnbmF0dXJlX2hlYWRlchgEIAEoCRIYChBzaWduYXR1cmVfcHJlZml4GAUgASgJEhgKEHRpbWVzdGFtcF9oZWFkZXIYBiABKAkSFAoMbm9uY2VfaGVhZGVyGAcgASgJEhAKCGVuY29kaW5nGAggASgJIigKBEhhc2gSDwoLSEFTSF9TSEEyNTYQABIPCgtIQVNIX1NIQTUxMhABIt8BCgpPQXV0aDJBdXRoEmcKEmNsaWVudF9jcmVkZW50aWFscxgBIAEoCzJJLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5PQXV0aDJDbGllbnRDcmVkZW50aWFsc0gAEl0KDXJlZnJlc2hfdG9rZW4YAiABKAsyRC5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuT0F1dGgyUmVmcmVzaFRva2VuSABCCQoHdmFyaWFudCLSAgoXT0F1dGgyQ2xpZW50Q3JlZGVudGlhbHMSEQoJdG9rZW5fdXJsGAEgASgJEh0KFWNsaWVudF9pZF9zZWNyZXRfbmFtZRgCIAEoCRIhChljbGllbnRfc2VjcmV0X3NlY3JldF9uYW1lGAMgASgJEg4KBnNjb3BlcxgEIAMoCRIQCghhdWRpZW5jZRgFIAEoCRIaChJjbGllbnRfYXV0aF9tZXRob2QYBiABKAkScAoMZXh0cmFfcGFyYW1zGAcgAygLMlouY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLk9BdXRoMkNsaWVudENyZWRlbnRpYWxzLkV4dHJhUGFyYW1zRW50cnkaMgoQRXh0cmFQYXJhbXNFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBIr0CChJPQXV0aDJSZWZyZXNoVG9rZW4SEQoJdG9rZW5fdXJsGAEgASgJEiEKGXJlZnJlc2hfdG9rZW5fc2VjcmV0X25hbWUYAiABKAkSHQoVY2xpZW50X2lkX3NlY3JldF9uYW1lGAMgASgJEiEKGWNsaWVudF9zZWNyZXRfc2VjcmV0X25hbWUYBCABKAkSDgoGc2NvcGVzGAUgAygJEmsKDGV4dHJhX3BhcmFtcxgGIAMoCzJVLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5PQXV0aDJSZWZyZXNoVG9rZW4uRXh0cmFQYXJhbXNFbnRyeRoyChBFeHRyYVBhcmFtc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEyygEKBkNsaWVudBKYAQoLU2VuZFJlcXVlc3QSSS5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuQ29uZmlkZW50aWFsSFRUUFJlcXVlc3QaPi5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuSFRUUFJlc3BvbnNlGiWCtRghCAESHWNvbmZpZGVudGlhbC1odHRwQDEuMC4wLWFscGhhQqYCCjRjb20uY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhQgtDbGllbnRQcm90b1ABogIDQ05DqgIwQ2FwYWJpbGl0aWVzLk5ldHdvcmtpbmcuQ29uZmlkZW50aWFsaHR0cC5WMWFscGhhygIwQ2FwYWJpbGl0aWVzXE5ldHdvcmtpbmdcQ29uZmlkZW50aWFsaHR0cFxWMWFscGhh4gI8Q2FwYWJpbGl0aWVzXE5ldHdvcmtpbmdcQ29uZmlkZW50aWFsaHR0cFxWMWFscGhhXEdQQk1ldGFkYXRh6gIzQ2FwYWJpbGl0aWVzOjpOZXR3b3JraW5nOjpDb25maWRlbnRpYWxodHRwOjpWMWFscGhhYgZwcm90bzM',
+		'Cj1jYXBhYmlsaXRpZXMvbmV0d29ya2luZy9jb25maWRlbnRpYWxodHRwL3YxYWxwaGEvY2xpZW50LnByb3RvEjBjYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEiUAoQU2VjcmV0SWRlbnRpZmllchILCgNrZXkYASABKAkSEQoJbmFtZXNwYWNlGAIgASgJEhIKBW93bmVyGAMgASgJSACIAQFCCAoGX293bmVyIoABCg5TdHJpbmdPclNlY3JldBIPCgVwbGFpbhgBIAEoCUgAElQKBnNlY3JldBgCIAEoCzJCLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5TZWNyZXRJZGVudGlmaWVySABCBwoFdmFsdWUiHgoMSGVhZGVyVmFsdWVzEg4KBnZhbHVlcxgBIAMoCSLXBAoLSFRUUFJlcXVlc3QSCwoDdXJsGAEgASgJEg4KBm1ldGhvZBgCIAEoCRIVCgtib2R5X3N0cmluZxgDIAEoCUgAEhQKCmJvZHlfYnl0ZXMYCCABKAxIABJmCg1tdWx0aV9oZWFkZXJzGAQgAygLMk8uY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLkhUVFBSZXF1ZXN0Lk11bHRpSGVhZGVyc0VudHJ5EncKFnRlbXBsYXRlX3B1YmxpY192YWx1ZXMYBSADKAsyVy5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuSFRUUFJlcXVlc3QuVGVtcGxhdGVQdWJsaWNWYWx1ZXNFbnRyeRIfChdjdXN0b21fcm9vdF9jYV9jZXJ0X3BlbRgGIAEoDBIqCgd0aW1lb3V0GAcgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEhYKDmVuY3J5cHRfb3V0cHV0GAkgASgIGnMKEU11bHRpSGVhZGVyc0VudHJ5EgsKA2tleRgBIAEoCRJNCgV2YWx1ZRgCIAEoCzI+LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IZWFkZXJWYWx1ZXM6AjgBGjsKGVRlbXBsYXRlUHVibGljVmFsdWVzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4AUIGCgRib2R5Io8CCgxIVFRQUmVzcG9uc2USEwoLc3RhdHVzX2NvZGUYASABKA0SDAoEYm9keRgCIAEoDBJnCg1tdWx0aV9oZWFkZXJzGAMgAygLMlAuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLkhUVFBSZXNwb25zZS5NdWx0aUhlYWRlcnNFbnRyeRpzChFNdWx0aUhlYWRlcnNFbnRyeRILCgNrZXkYASABKAkSTQoFdmFsdWUYAiABKAsyPi5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuSGVhZGVyVmFsdWVzOgI4ASKiAgoXQ29uZmlkZW50aWFsSFRUUFJlcXVlc3QSXQoRdmF1bHRfZG9uX3NlY3JldHMYASADKAsyQi5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuU2VjcmV0SWRlbnRpZmllchJOCgdyZXF1ZXN0GAIgASgLMj0uY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLkhUVFBSZXF1ZXN0Ek8KBGF1dGgYAyABKAsyPC5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuQXV0aENvbmZpZ0gAiAEBQgcKBV9hdXRoIqEDCgpBdXRoQ29uZmlnEk8KB2FwaV9rZXkYASABKAsyPC5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuQXBpS2V5QXV0aEgAEkwKBWJhc2ljGAIgASgLMjsuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLkJhc2ljQXV0aEgAEk4KBmJlYXJlchgDIAEoCzI8LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5CZWFyZXJBdXRoSAASSgoEaG1hYxgEIAEoCzI6LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IbWFjQXV0aEgAEk4KBm9hdXRoMhgFIAEoCzI8LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5PQXV0aDJBdXRoSABCCAoGbWV0aG9kIosBCgpBcGlLZXlBdXRoEhMKC2hlYWRlcl9uYW1lGAEgASgJElIKBnNlY3JldBgCIAEoCzJCLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5TZWNyZXRJZGVudGlmaWVyEhQKDHZhbHVlX3ByZWZpeBgDIAEoCSK1AQoJQmFzaWNBdXRoElIKCHVzZXJuYW1lGAEgASgLMkAuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLlN0cmluZ09yU2VjcmV0ElQKCHBhc3N3b3JkGAIgASgLMkIuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLlNlY3JldElkZW50aWZpZXIiigEKCkJlYXJlckF1dGgSUQoFdG9rZW4YASABKAsyQi5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuU2VjcmV0SWRlbnRpZmllchITCgtoZWFkZXJfbmFtZRgCIAEoCRIUCgx2YWx1ZV9wcmVmaXgYAyABKAkihwIKCEhtYWNBdXRoEk4KBnNoYTI1NhgBIAEoCzI8LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IbWFjU2hhMjU2SAASUAoKYXdzX3NpZ192NBgCIAEoCzI6LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5Bd3NTaWdWNEgAEk4KBmN1c3RvbRgDIAEoCzI8LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IbWFjQ3VzdG9tSABCCQoHdmFyaWFudCK9AQoKSG1hY1NoYTI1NhJSCgZzZWNyZXQYASABKAsyQi5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuU2VjcmV0SWRlbnRpZmllchIYChBzaWduYXR1cmVfaGVhZGVyGAIgASgJEhgKEHRpbWVzdGFtcF9oZWFkZXIYAyABKAkSFQoNaW5jbHVkZV9xdWVyeRgEIAEoCBIQCghlbmNvZGluZxgFIAEoCSLwAgoIQXdzU2lnVjQSVwoNYWNjZXNzX2tleV9pZBgBIAEoCzJALmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5TdHJpbmdPclNlY3JldBJdChFzZWNyZXRfYWNjZXNzX2tleRgCIAEoCzJCLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5TZWNyZXRJZGVudGlmaWVyElkKDXNlc3Npb25fdG9rZW4YAyABKAsyQi5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuU2VjcmV0SWRlbnRpZmllchIOCgZyZWdpb24YBCABKAkSDwoHc2VydmljZRgFIAEoCRIWCg5zaWduZWRfaGVhZGVycxgGIAMoCRIYChB1bnNpZ25lZF9wYXlsb2FkGAcgASgIIu0CCgpIbWFjQ3VzdG9tElIKBnNlY3JldBgBIAEoCzJCLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5TZWNyZXRJZGVudGlmaWVyEhoKEmNhbm9uaWNhbF90ZW1wbGF0ZRgCIAEoCRJPCgRoYXNoGAMgASgOMkEuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLkhtYWNDdXN0b20uSGFzaBIYChBzaWduYXR1cmVfaGVhZGVyGAQgASgJEhgKEHNpZ25hdHVyZV9wcmVmaXgYBSABKAkSGAoQdGltZXN0YW1wX2hlYWRlchgGIAEoCRIUCgxub25jZV9oZWFkZXIYByABKAkSEAoIZW5jb2RpbmcYCCABKAkiKAoESGFzaBIPCgtIQVNIX1NIQTI1NhAAEg8KC0hBU0hfU0hBNTEyEAEi3wEKCk9BdXRoMkF1dGgSZwoSY2xpZW50X2NyZWRlbnRpYWxzGAEgASgLMkkuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLk9BdXRoMkNsaWVudENyZWRlbnRpYWxzSAASXQoNcmVmcmVzaF90b2tlbhgCIAEoCzJELmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5PQXV0aDJSZWZyZXNoVG9rZW5IAEIJCgd2YXJpYW50IsADChdPQXV0aDJDbGllbnRDcmVkZW50aWFscxIRCgl0b2tlbl91cmwYASABKAkSUwoJY2xpZW50X2lkGAIgASgLMkAuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLlN0cmluZ09yU2VjcmV0ElkKDWNsaWVudF9zZWNyZXQYAyABKAsyQi5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuU2VjcmV0SWRlbnRpZmllchIOCgZzY29wZXMYBCADKAkSEAoIYXVkaWVuY2UYBSABKAkSGgoSY2xpZW50X2F1dGhfbWV0aG9kGAYgASgJEnAKDGV4dHJhX3BhcmFtcxgHIAMoCzJaLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5PQXV0aDJDbGllbnRDcmVkZW50aWFscy5FeHRyYVBhcmFtc0VudHJ5GjIKEEV4dHJhUGFyYW1zRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASLjAwoST0F1dGgyUmVmcmVzaFRva2VuEhEKCXRva2VuX3VybBgBIAEoCRJZCg1yZWZyZXNoX3Rva2VuGAIgASgLMkIuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLlNlY3JldElkZW50aWZpZXISUwoJY2xpZW50X2lkGAMgASgLMkAuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLlN0cmluZ09yU2VjcmV0ElkKDWNsaWVudF9zZWNyZXQYBCABKAsyQi5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuU2VjcmV0SWRlbnRpZmllchIOCgZzY29wZXMYBSADKAkSawoMZXh0cmFfcGFyYW1zGAYgAygLMlUuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLk9BdXRoMlJlZnJlc2hUb2tlbi5FeHRyYVBhcmFtc0VudHJ5GjIKEEV4dHJhUGFyYW1zRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ATLKAQoGQ2xpZW50EpgBCgtTZW5kUmVxdWVzdBJJLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5Db25maWRlbnRpYWxIVFRQUmVxdWVzdBo+LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IVFRQUmVzcG9uc2UaJYK1GCEIARIdY29uZmlkZW50aWFsLWh0dHBAMS4wLjAtYWxwaGFCpgIKNGNvbS5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGFCC0NsaWVudFByb3RvUAGiAgNDTkOqAjBDYXBhYmlsaXRpZXMuTmV0d29ya2luZy5Db25maWRlbnRpYWxodHRwLlYxYWxwaGHKAjBDYXBhYmlsaXRpZXNcTmV0d29ya2luZ1xDb25maWRlbnRpYWxodHRwXFYxYWxwaGHiAjxDYXBhYmlsaXRpZXNcTmV0d29ya2luZ1xDb25maWRlbnRpYWxodHRwXFYxYWxwaGFcR1BCTWV0YWRhdGHqAjNDYXBhYmlsaXRpZXM6Ok5ldHdvcmtpbmc6OkNvbmZpZGVudGlhbGh0dHA6OlYxYWxwaGFiBnByb3RvMw',
 		[file_google_protobuf_duration, file_tools_generator_v1alpha_cre_metadata],
 	)
 
@@ -70,6 +70,65 @@ export const SecretIdentifierSchema: GenMessage<
 > = /*@__PURE__*/ messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 0)
 
 /**
+ * StringOrSecret allows a field to carry either a plain string value
+ * (used directly) or a SecretIdentifier (resolved from the vault at
+ * signing time). Use this for fields that aren't necessarily secret,
+ * e.g. a username or client_id.
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.StringOrSecret
+ */
+export type StringOrSecret =
+	Message<'capabilities.networking.confidentialhttp.v1alpha.StringOrSecret'> & {
+		/**
+		 * @generated from oneof capabilities.networking.confidentialhttp.v1alpha.StringOrSecret.value
+		 */
+		value:
+			| {
+					/**
+					 * @generated from field: string plain = 1;
+					 */
+					value: string
+					case: 'plain'
+			  }
+			| {
+					/**
+					 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier secret = 2;
+					 */
+					value: SecretIdentifier
+					case: 'secret'
+			  }
+			| { case: undefined; value?: undefined }
+	}
+
+/**
+ * StringOrSecret allows a field to carry either a plain string value
+ * (used directly) or a SecretIdentifier (resolved from the vault at
+ * signing time). Use this for fields that aren't necessarily secret,
+ * e.g. a username or client_id.
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.StringOrSecret
+ */
+export type StringOrSecretJson = {
+	/**
+	 * @generated from field: string plain = 1;
+	 */
+	plain?: string
+
+	/**
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier secret = 2;
+	 */
+	secret?: SecretIdentifierJson
+}
+
+/**
+ * Describes the message capabilities.networking.confidentialhttp.v1alpha.StringOrSecret.
+ * Use `create(StringOrSecretSchema)` to create a new message.
+ */
+export const StringOrSecretSchema: GenMessage<StringOrSecret, { jsonType: StringOrSecretJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 1)
+
+/**
  * HeaderValues represents multiple values for a single header key.
  *
  * @generated from message capabilities.networking.confidentialhttp.v1alpha.HeaderValues
@@ -100,7 +159,7 @@ export type HeaderValuesJson = {
  */
 export const HeaderValuesSchema: GenMessage<HeaderValues, { jsonType: HeaderValuesJson }> =
 	/*@__PURE__*/
-	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 1)
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 2)
 
 /**
  * HTTPRequest contains the HTTP fields used to make a request from the enclave.
@@ -263,7 +322,7 @@ export type HTTPRequestJson = {
  */
 export const HTTPRequestSchema: GenMessage<HTTPRequest, { jsonType: HTTPRequestJson }> =
 	/*@__PURE__*/
-	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 2)
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 3)
 
 /**
  * HTTPResponse contains the HTTP response from the enclave.
@@ -330,7 +389,7 @@ export type HTTPResponseJson = {
  */
 export const HTTPResponseSchema: GenMessage<HTTPResponse, { jsonType: HTTPResponseJson }> =
 	/*@__PURE__*/
-	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 3)
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 4)
 
 /**
  * ConfidentialHTTPRequest is the input provided to the confidential HTTP capability.
@@ -352,8 +411,8 @@ export type ConfidentialHTTPRequest =
 
 		/**
 		 * auth, when set, instructs the enclave to sign the outbound request using
-		 * the specified method. Every secret_name referenced inside AuthConfig must
-		 * also appear in vault_don_secrets (enforced by the capability validator).
+		 * the specified method. Every SecretIdentifier referenced inside AuthConfig
+		 * must also appear in vault_don_secrets (enforced by the capability validator).
 		 * When auth is nil, the request is sent with only the headers/body the
 		 * caller provided — preserving the legacy "{{.SECRET_NAME}}" header-template
 		 * behavior.
@@ -382,8 +441,8 @@ export type ConfidentialHTTPRequestJson = {
 
 	/**
 	 * auth, when set, instructs the enclave to sign the outbound request using
-	 * the specified method. Every secret_name referenced inside AuthConfig must
-	 * also appear in vault_don_secrets (enforced by the capability validator).
+	 * the specified method. Every SecretIdentifier referenced inside AuthConfig
+	 * must also appear in vault_don_secrets (enforced by the capability validator).
 	 * When auth is nil, the request is sent with only the headers/body the
 	 * caller provided — preserving the legacy "{{.SECRET_NAME}}" header-template
 	 * behavior.
@@ -400,12 +459,12 @@ export type ConfidentialHTTPRequestJson = {
 export const ConfidentialHTTPRequestSchema: GenMessage<
 	ConfidentialHTTPRequest,
 	{ jsonType: ConfidentialHTTPRequestJson }
-> = /*@__PURE__*/ messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 4)
+> = /*@__PURE__*/ messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 5)
 
 /**
  * AuthConfig selects one of the supported request-signing methods.
  * Each variant carries the method-specific parameters and references
- * the names of the Vault-DON secrets it needs.
+ * the secrets it needs.
  *
  * @generated from message capabilities.networking.confidentialhttp.v1alpha.AuthConfig
  */
@@ -455,7 +514,7 @@ export type AuthConfig = Message<'capabilities.networking.confidentialhttp.v1alp
 /**
  * AuthConfig selects one of the supported request-signing methods.
  * Each variant carries the method-specific parameters and references
- * the names of the Vault-DON secrets it needs.
+ * the secrets it needs.
  *
  * @generated from message capabilities.networking.confidentialhttp.v1alpha.AuthConfig
  */
@@ -492,12 +551,12 @@ export type AuthConfigJson = {
  */
 export const AuthConfigSchema: GenMessage<AuthConfig, { jsonType: AuthConfigJson }> =
 	/*@__PURE__*/
-	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 5)
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 6)
 
 /**
  * ApiKeyAuth attaches a secret value to a chosen header.
  * Renders as:  <header_name>: <value_prefix><secret-value>
- * Example (header_name="x-api-key", secret_name="coingecko", value_prefix=""):
+ * Example (header_name="x-api-key"):
  *   x-api-key: <secret>
  *
  * @generated from message capabilities.networking.confidentialhttp.v1alpha.ApiKeyAuth
@@ -511,11 +570,11 @@ export type ApiKeyAuth = Message<'capabilities.networking.confidentialhttp.v1alp
 	headerName: string
 
 	/**
-	 * required; key into ConfidentialHTTPRequest.vault_don_secrets
+	 * required; the API key value
 	 *
-	 * @generated from field: string secret_name = 2;
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier secret = 2;
 	 */
-	secretName: string
+	secret?: SecretIdentifier
 
 	/**
 	 * optional, e.g. "ApiKey ", "Token "
@@ -528,7 +587,7 @@ export type ApiKeyAuth = Message<'capabilities.networking.confidentialhttp.v1alp
 /**
  * ApiKeyAuth attaches a secret value to a chosen header.
  * Renders as:  <header_name>: <value_prefix><secret-value>
- * Example (header_name="x-api-key", secret_name="coingecko", value_prefix=""):
+ * Example (header_name="x-api-key"):
  *   x-api-key: <secret>
  *
  * @generated from message capabilities.networking.confidentialhttp.v1alpha.ApiKeyAuth
@@ -542,11 +601,11 @@ export type ApiKeyAuthJson = {
 	headerName?: string
 
 	/**
-	 * required; key into ConfidentialHTTPRequest.vault_don_secrets
+	 * required; the API key value
 	 *
-	 * @generated from field: string secret_name = 2;
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier secret = 2;
 	 */
-	secretName?: string
+	secret?: SecretIdentifierJson
 
 	/**
 	 * optional, e.g. "ApiKey ", "Token "
@@ -562,7 +621,7 @@ export type ApiKeyAuthJson = {
  */
 export const ApiKeyAuthSchema: GenMessage<ApiKeyAuth, { jsonType: ApiKeyAuthJson }> =
 	/*@__PURE__*/
-	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 6)
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 7)
 
 /**
  * BasicAuth renders: Authorization: Basic base64(username ":" password).
@@ -573,16 +632,16 @@ export type BasicAuth = Message<'capabilities.networking.confidentialhttp.v1alph
 	/**
 	 * required
 	 *
-	 * @generated from field: string username_secret_name = 1;
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.StringOrSecret username = 1;
 	 */
-	usernameSecretName: string
+	username?: StringOrSecret
 
 	/**
 	 * required
 	 *
-	 * @generated from field: string password_secret_name = 2;
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier password = 2;
 	 */
-	passwordSecretName: string
+	password?: SecretIdentifier
 }
 
 /**
@@ -594,16 +653,16 @@ export type BasicAuthJson = {
 	/**
 	 * required
 	 *
-	 * @generated from field: string username_secret_name = 1;
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.StringOrSecret username = 1;
 	 */
-	usernameSecretName?: string
+	username?: StringOrSecretJson
 
 	/**
 	 * required
 	 *
-	 * @generated from field: string password_secret_name = 2;
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier password = 2;
 	 */
-	passwordSecretName?: string
+	password?: SecretIdentifierJson
 }
 
 /**
@@ -612,7 +671,7 @@ export type BasicAuthJson = {
  */
 export const BasicAuthSchema: GenMessage<BasicAuth, { jsonType: BasicAuthJson }> =
 	/*@__PURE__*/
-	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 7)
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 8)
 
 /**
  * BearerAuth attaches a pre-issued long-lived token.
@@ -626,9 +685,9 @@ export type BearerAuth = Message<'capabilities.networking.confidentialhttp.v1alp
 	/**
 	 * required
 	 *
-	 * @generated from field: string token_secret_name = 1;
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier token = 1;
 	 */
-	tokenSecretName: string
+	token?: SecretIdentifier
 
 	/**
 	 * optional override, default "Authorization"
@@ -657,9 +716,9 @@ export type BearerAuthJson = {
 	/**
 	 * required
 	 *
-	 * @generated from field: string token_secret_name = 1;
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier token = 1;
 	 */
-	tokenSecretName?: string
+	token?: SecretIdentifierJson
 
 	/**
 	 * optional override, default "Authorization"
@@ -682,7 +741,7 @@ export type BearerAuthJson = {
  */
 export const BearerAuthSchema: GenMessage<BearerAuth, { jsonType: BearerAuthJson }> =
 	/*@__PURE__*/
-	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 8)
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 9)
 
 /**
  * HmacAuth groups all HMAC-family signing variants.
@@ -746,7 +805,7 @@ export type HmacAuthJson = {
  */
 export const HmacAuthSchema: GenMessage<HmacAuth, { jsonType: HmacAuthJson }> =
 	/*@__PURE__*/
-	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 9)
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 10)
 
 /**
  * HmacSha256 implements a generic canonical-string HMAC-SHA256 signature.
@@ -757,11 +816,11 @@ export const HmacAuthSchema: GenMessage<HmacAuth, { jsonType: HmacAuthJson }> =
  */
 export type HmacSha256 = Message<'capabilities.networking.confidentialhttp.v1alpha.HmacSha256'> & {
 	/**
-	 * required shared secret
+	 * required; the shared signing secret
 	 *
-	 * @generated from field: string secret_name = 1;
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier secret = 1;
 	 */
-	secretName: string
+	secret?: SecretIdentifier
 
 	/**
 	 * default "X-Signature"
@@ -801,11 +860,11 @@ export type HmacSha256 = Message<'capabilities.networking.confidentialhttp.v1alp
  */
 export type HmacSha256Json = {
 	/**
-	 * required shared secret
+	 * required; the shared signing secret
 	 *
-	 * @generated from field: string secret_name = 1;
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier secret = 1;
 	 */
-	secretName?: string
+	secret?: SecretIdentifierJson
 
 	/**
 	 * default "X-Signature"
@@ -842,7 +901,7 @@ export type HmacSha256Json = {
  */
 export const HmacSha256Schema: GenMessage<HmacSha256, { jsonType: HmacSha256Json }> =
 	/*@__PURE__*/
-	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 10)
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 11)
 
 /**
  * AwsSigV4 implements AWS Signature Version 4.
@@ -854,23 +913,23 @@ export type AwsSigV4 = Message<'capabilities.networking.confidentialhttp.v1alpha
 	/**
 	 * required
 	 *
-	 * @generated from field: string access_key_id_secret_name = 1;
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.StringOrSecret access_key_id = 1;
 	 */
-	accessKeyIdSecretName: string
+	accessKeyId?: StringOrSecret
 
 	/**
 	 * required
 	 *
-	 * @generated from field: string secret_access_key_secret_name = 2;
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier secret_access_key = 2;
 	 */
-	secretAccessKeySecretName: string
+	secretAccessKey?: SecretIdentifier
 
 	/**
-	 * optional (for STS creds)
+	 * optional (for STS temporary credentials)
 	 *
-	 * @generated from field: string session_token_secret_name = 3;
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier session_token = 3;
 	 */
-	sessionTokenSecretName: string
+	sessionToken?: SecretIdentifier
 
 	/**
 	 * required, e.g. "us-east-1"
@@ -888,8 +947,7 @@ export type AwsSigV4 = Message<'capabilities.networking.confidentialhttp.v1alpha
 
 	/**
 	 * Signed headers (comma-separated lowercase). Optional; defaults to
-	 * "host;x-amz-date" plus "x-amz-security-token" if session_token_secret_name
-	 * is set.
+	 * "host;x-amz-date" plus "x-amz-security-token" if session_token is set.
 	 *
 	 * @generated from field: repeated string signed_headers = 6;
 	 */
@@ -914,23 +972,23 @@ export type AwsSigV4Json = {
 	/**
 	 * required
 	 *
-	 * @generated from field: string access_key_id_secret_name = 1;
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.StringOrSecret access_key_id = 1;
 	 */
-	accessKeyIdSecretName?: string
+	accessKeyId?: StringOrSecretJson
 
 	/**
 	 * required
 	 *
-	 * @generated from field: string secret_access_key_secret_name = 2;
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier secret_access_key = 2;
 	 */
-	secretAccessKeySecretName?: string
+	secretAccessKey?: SecretIdentifierJson
 
 	/**
-	 * optional (for STS creds)
+	 * optional (for STS temporary credentials)
 	 *
-	 * @generated from field: string session_token_secret_name = 3;
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier session_token = 3;
 	 */
-	sessionTokenSecretName?: string
+	sessionToken?: SecretIdentifierJson
 
 	/**
 	 * required, e.g. "us-east-1"
@@ -948,8 +1006,7 @@ export type AwsSigV4Json = {
 
 	/**
 	 * Signed headers (comma-separated lowercase). Optional; defaults to
-	 * "host;x-amz-date" plus "x-amz-security-token" if session_token_secret_name
-	 * is set.
+	 * "host;x-amz-date" plus "x-amz-security-token" if session_token is set.
 	 *
 	 * @generated from field: repeated string signed_headers = 6;
 	 */
@@ -970,7 +1027,7 @@ export type AwsSigV4Json = {
  */
 export const AwsSigV4Schema: GenMessage<AwsSigV4, { jsonType: AwsSigV4Json }> =
 	/*@__PURE__*/
-	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 11)
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 12)
 
 /**
  * HmacCustom lets workflow authors specify the canonical string via a
@@ -982,11 +1039,11 @@ export const AwsSigV4Schema: GenMessage<AwsSigV4, { jsonType: AwsSigV4Json }> =
  */
 export type HmacCustom = Message<'capabilities.networking.confidentialhttp.v1alpha.HmacCustom'> & {
 	/**
-	 * required
+	 * required; the signing secret
 	 *
-	 * @generated from field: string secret_name = 1;
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier secret = 1;
 	 */
-	secretName: string
+	secret?: SecretIdentifier
 
 	/**
 	 * required
@@ -1046,11 +1103,11 @@ export type HmacCustom = Message<'capabilities.networking.confidentialhttp.v1alp
  */
 export type HmacCustomJson = {
 	/**
-	 * required
+	 * required; the signing secret
 	 *
-	 * @generated from field: string secret_name = 1;
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier secret = 1;
 	 */
-	secretName?: string
+	secret?: SecretIdentifierJson
 
 	/**
 	 * required
@@ -1106,7 +1163,7 @@ export type HmacCustomJson = {
  */
 export const HmacCustomSchema: GenMessage<HmacCustom, { jsonType: HmacCustomJson }> =
 	/*@__PURE__*/
-	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 12)
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 13)
 
 /**
  * @generated from enum capabilities.networking.confidentialhttp.v1alpha.HmacCustom.Hash
@@ -1133,7 +1190,7 @@ export type HmacCustom_HashJson = 'HASH_SHA256' | 'HASH_SHA512'
  */
 export const HmacCustom_HashSchema: GenEnum<HmacCustom_Hash, HmacCustom_HashJson> =
 	/*@__PURE__*/
-	enumDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 12, 0)
+	enumDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 13, 0)
 
 /**
  * OAuth2Auth groups headless OAuth 2.0 flows.
@@ -1189,7 +1246,7 @@ export type OAuth2AuthJson = {
  */
 export const OAuth2AuthSchema: GenMessage<OAuth2Auth, { jsonType: OAuth2AuthJson }> =
 	/*@__PURE__*/
-	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 13)
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 14)
 
 /**
  * OAuth2ClientCredentials: machine-to-machine grant.
@@ -1211,16 +1268,16 @@ export type OAuth2ClientCredentials =
 		/**
 		 * required
 		 *
-		 * @generated from field: string client_id_secret_name = 2;
+		 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.StringOrSecret client_id = 2;
 		 */
-		clientIdSecretName: string
+		clientId?: StringOrSecret
 
 		/**
 		 * required
 		 *
-		 * @generated from field: string client_secret_secret_name = 3;
+		 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier client_secret = 3;
 		 */
-		clientSecretSecretName: string
+		clientSecret?: SecretIdentifier
 
 		/**
 		 * optional
@@ -1271,16 +1328,16 @@ export type OAuth2ClientCredentialsJson = {
 	/**
 	 * required
 	 *
-	 * @generated from field: string client_id_secret_name = 2;
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.StringOrSecret client_id = 2;
 	 */
-	clientIdSecretName?: string
+	clientId?: StringOrSecretJson
 
 	/**
 	 * required
 	 *
-	 * @generated from field: string client_secret_secret_name = 3;
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier client_secret = 3;
 	 */
-	clientSecretSecretName?: string
+	clientSecret?: SecretIdentifierJson
 
 	/**
 	 * optional
@@ -1319,7 +1376,7 @@ export type OAuth2ClientCredentialsJson = {
 export const OAuth2ClientCredentialsSchema: GenMessage<
 	OAuth2ClientCredentials,
 	{ jsonType: OAuth2ClientCredentialsJson }
-> = /*@__PURE__*/ messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 14)
+> = /*@__PURE__*/ messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 15)
 
 /**
  * OAuth2RefreshToken: the workflow stores a long-lived refresh_token in Vault
@@ -1344,23 +1401,23 @@ export type OAuth2RefreshToken =
 		/**
 		 * required
 		 *
-		 * @generated from field: string refresh_token_secret_name = 2;
+		 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier refresh_token = 2;
 		 */
-		refreshTokenSecretName: string
+		refreshToken?: SecretIdentifier
 
 		/**
-		 * optional (some IdPs require)
+		 * optional
 		 *
-		 * @generated from field: string client_id_secret_name = 3;
+		 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.StringOrSecret client_id = 3;
 		 */
-		clientIdSecretName: string
+		clientId?: StringOrSecret
 
 		/**
-		 * optional (some IdPs require)
+		 * optional when present
 		 *
-		 * @generated from field: string client_secret_secret_name = 4;
+		 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier client_secret = 4;
 		 */
-		clientSecretSecretName: string
+		clientSecret?: SecretIdentifier
 
 		/**
 		 * optional
@@ -1397,23 +1454,23 @@ export type OAuth2RefreshTokenJson = {
 	/**
 	 * required
 	 *
-	 * @generated from field: string refresh_token_secret_name = 2;
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier refresh_token = 2;
 	 */
-	refreshTokenSecretName?: string
+	refreshToken?: SecretIdentifierJson
 
 	/**
-	 * optional (some IdPs require)
+	 * optional
 	 *
-	 * @generated from field: string client_id_secret_name = 3;
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.StringOrSecret client_id = 3;
 	 */
-	clientIdSecretName?: string
+	clientId?: StringOrSecretJson
 
 	/**
-	 * optional (some IdPs require)
+	 * optional when present
 	 *
-	 * @generated from field: string client_secret_secret_name = 4;
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier client_secret = 4;
 	 */
-	clientSecretSecretName?: string
+	clientSecret?: SecretIdentifierJson
 
 	/**
 	 * optional
@@ -1435,7 +1492,7 @@ export type OAuth2RefreshTokenJson = {
 export const OAuth2RefreshTokenSchema: GenMessage<
 	OAuth2RefreshToken,
 	{ jsonType: OAuth2RefreshTokenJson }
-> = /*@__PURE__*/ messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 15)
+> = /*@__PURE__*/ messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 16)
 
 /**
  * @generated from service capabilities.networking.confidentialhttp.v1alpha.Client

@@ -1,35 +1,42 @@
-/**
- * Ergonomic helpers for the confidentialHTTP capability's AuthConfig.
- *
- * The generated SDK at `@cre/generated-sdk/.../confidentialhttp/.../client_sdk_gen.ts`
- * accepts a raw `ConfidentialHTTPRequest` / `ConfidentialHTTPRequestJson`.
- * Building the AuthConfig oneof variants by hand is verbose; these helpers
- * let workflow authors describe the signing method via a discriminated union
- * and produce the matching proto structure.
- *
- * All secret references are by string key; every name used inside an
- * `AuthConfigInput` must also appear in `vaultDonSecrets` (the capability
- * validator enforces this).
- */
+// Ergonomic helpers for the confidentialHTTP capability's AuthConfig.
+//
+// Building the AuthConfig oneof variants by hand is verbose; these helpers
+// let workflow authors describe the signing method via a discriminated union
+// and produce the matching proto-JSON structure that fits straight into a
+// ConfidentialHTTPRequestJson.auth field.
+//
+// Every SecretIdentifier referenced inside an AuthConfigInput must also
+// appear in vaultDonSecrets (the capability validator enforces this).
 
-import {
-	type ApiKeyAuth,
-	type AuthConfig,
-	type AwsSigV4,
-	type BasicAuth,
-	type BearerAuth,
-	HmacCustom_Hash,
-	type HmacAuth,
-	type HmacCustom,
-	type HmacSha256,
-	type OAuth2Auth,
-	type OAuth2ClientCredentials,
-	type OAuth2RefreshToken,
+import type {
+	ApiKeyAuthJson,
+	AuthConfigJson,
+	AwsSigV4Json,
+	BasicAuthJson,
+	BearerAuthJson,
+	HmacAuthJson,
+	HmacCustomJson,
+	HmacSha256Json,
+	OAuth2AuthJson,
+	OAuth2ClientCredentialsJson,
+	OAuth2RefreshTokenJson,
+	SecretIdentifierJson,
+	StringOrSecretJson,
 } from '@cre/generated/capabilities/networking/confidentialhttp/v1alpha/client_pb'
 
 // -----------------------------------------------------------------------------
-// Discriminated union — the ergonomic input type for workflow authors.
+// Input types
 // -----------------------------------------------------------------------------
+
+/** A reference to a Vault DON secret. */
+export type SecretRef = {
+	key: string
+	namespace?: string
+	owner?: string
+}
+
+/** A field that may carry either a plain string or a Vault secret. */
+export type StringOrSecretInput = string | SecretRef
 
 export type AuthConfigInput =
 	| ApiKeyAuthInput
@@ -45,21 +52,21 @@ export type ApiKeyAuthInput = {
 	kind: 'apiKey'
 	/** Header name, e.g. "x-api-key" or "Authorization". */
 	headerName: string
-	/** Name of a secret declared in vaultDonSecrets. */
-	secretName: string
+	/** Vault secret carrying the API key value. */
+	secret: SecretRef
 	/** Optional prefix, e.g. "ApiKey " or "Token ". Default: empty. */
 	valuePrefix?: string
 }
 
 export type BasicAuthInput = {
 	kind: 'basic'
-	usernameSecretName: string
-	passwordSecretName: string
+	username: StringOrSecretInput
+	password: SecretRef
 }
 
 export type BearerAuthInput = {
 	kind: 'bearer'
-	tokenSecretName: string
+	token: SecretRef
 	/** Default "Authorization". */
 	headerName?: string
 	/** Default "Bearer ". */
@@ -68,7 +75,7 @@ export type BearerAuthInput = {
 
 export type HmacSha256Input = {
 	kind: 'hmacSha256'
-	secretName: string
+	secret: SecretRef
 	/** Default "X-Signature". */
 	signatureHeader?: string
 	/** Default "X-Timestamp". */
@@ -80,25 +87,20 @@ export type HmacSha256Input = {
 
 export type AwsSigV4Input = {
 	kind: 'awsSigV4'
-	accessKeyIdSecretName: string
-	secretAccessKeySecretName: string
-	/** Optional STS session token. */
-	sessionTokenSecretName?: string
+	accessKeyId: StringOrSecretInput
+	secretAccessKey: SecretRef
+	sessionToken?: SecretRef
 	region: string
 	service: string
-	/** Override the set of signed headers. */
 	signedHeaders?: string[]
-	/** S3 streaming uploads — advertise UNSIGNED-PAYLOAD. */
 	unsignedPayload?: boolean
 }
 
 export type HmacCustomInput = {
 	kind: 'hmacCustom'
-	secretName: string
-	/** Go text/template canonical string. See docs for available vars. */
+	secret: SecretRef
 	canonicalTemplate: string
 	hash: 'sha256' | 'sha512'
-	/** "hex" (default) or "base64". */
 	encoding?: 'hex' | 'base64'
 	signatureHeader: string
 	signaturePrefix?: string
@@ -108,13 +110,11 @@ export type HmacCustomInput = {
 
 export type OAuth2ClientCredentialsInput = {
 	kind: 'oauth2ClientCredentials'
-	/** Must be https://. */
 	tokenUrl: string
-	clientIdSecretName: string
-	clientSecretSecretName: string
+	clientId: StringOrSecretInput
+	clientSecret: SecretRef
 	scopes?: string[]
 	audience?: string
-	/** How to send client creds to the token endpoint. Default 'basicAuth'. */
 	clientAuthMethod?: 'basicAuth' | 'requestBody'
 	extraParams?: Record<string, string>
 }
@@ -122,186 +122,156 @@ export type OAuth2ClientCredentialsInput = {
 export type OAuth2RefreshTokenInput = {
 	kind: 'oauth2RefreshToken'
 	tokenUrl: string
-	refreshTokenSecretName: string
-	clientIdSecretName?: string
-	clientSecretSecretName?: string
+	refreshToken: SecretRef
+	clientId?: StringOrSecretInput
+	clientSecret?: SecretRef
 	scopes?: string[]
 	extraParams?: Record<string, string>
 }
 
 // -----------------------------------------------------------------------------
-// buildAuthConfig — factory that converts the union into an AuthConfig proto.
+// Conversion helpers
+// -----------------------------------------------------------------------------
+
+function toSecretIdentifierJson(ref: SecretRef): SecretIdentifierJson {
+	const out: SecretIdentifierJson = { key: ref.key }
+	if (ref.namespace !== undefined) out.namespace = ref.namespace
+	if (ref.owner !== undefined) out.owner = ref.owner
+	return out
+}
+
+function toStringOrSecretJson(value: StringOrSecretInput): StringOrSecretJson {
+	if (typeof value === 'string') {
+		return { plain: value }
+	}
+	return { secret: toSecretIdentifierJson(value) }
+}
+
+// -----------------------------------------------------------------------------
+// buildAuthConfig — factory that converts the union into an AuthConfigJson.
 // -----------------------------------------------------------------------------
 
 /**
- * Convert a workflow-author-friendly AuthConfigInput into the proto
- * AuthConfig expected by the ConfidentialHTTPRequest.
+ * Convert a workflow-author-friendly AuthConfigInput into the proto-JSON
+ * AuthConfig expected by `ConfidentialHTTPRequestJson.auth`.
  *
  * @example
  *   const auth = buildAuthConfig({
  *     kind: 'apiKey',
  *     headerName: 'x-api-key',
- *     secretName: 'coingecko_api_key',
+ *     secret: { key: 'coingecko_api_key' },
  *   })
+ *   client.sendRequest(runtime, { request, vaultDonSecrets, auth })
  */
-export function buildAuthConfig(input: AuthConfigInput): AuthConfig {
+export function buildAuthConfig(input: AuthConfigInput): AuthConfigJson {
 	switch (input.kind) {
 		case 'apiKey':
-			return authFromApiKey(input)
+			return { apiKey: apiKeyJson(input) }
 		case 'basic':
-			return authFromBasic(input)
+			return { basic: basicJson(input) }
 		case 'bearer':
-			return authFromBearer(input)
+			return { bearer: bearerJson(input) }
 		case 'hmacSha256':
-			return authFromHmacSha256(input)
+			return { hmac: { sha256: hmacSha256Json(input) } satisfies HmacAuthJson }
 		case 'awsSigV4':
-			return authFromAwsSigV4(input)
+			return { hmac: { awsSigV4: awsSigV4Json(input) } satisfies HmacAuthJson }
 		case 'hmacCustom':
-			return authFromHmacCustom(input)
+			return { hmac: { custom: hmacCustomJson(input) } satisfies HmacAuthJson }
 		case 'oauth2ClientCredentials':
-			return authFromOAuth2ClientCredentials(input)
+			return {
+				oauth2: { clientCredentials: oauth2ClientCredentialsJson(input) } satisfies OAuth2AuthJson,
+			}
 		case 'oauth2RefreshToken':
-			return authFromOAuth2RefreshToken(input)
+			return { oauth2: { refreshToken: oauth2RefreshTokenJson(input) } satisfies OAuth2AuthJson }
 	}
 }
 
-function authFromApiKey(i: ApiKeyAuthInput): AuthConfig {
-	const a: ApiKeyAuth = {
-		$typeName: 'capabilities.networking.confidentialhttp.v1alpha.ApiKeyAuth',
+function apiKeyJson(i: ApiKeyAuthInput): ApiKeyAuthJson {
+	return {
 		headerName: i.headerName,
-		secretName: i.secretName,
+		secret: toSecretIdentifierJson(i.secret),
 		valuePrefix: i.valuePrefix ?? '',
 	}
+}
+
+function basicJson(i: BasicAuthInput): BasicAuthJson {
 	return {
-		$typeName: 'capabilities.networking.confidentialhttp.v1alpha.AuthConfig',
-		method: { case: 'apiKey', value: a },
+		username: toStringOrSecretJson(i.username),
+		password: toSecretIdentifierJson(i.password),
 	}
 }
 
-function authFromBasic(i: BasicAuthInput): AuthConfig {
-	const a: BasicAuth = {
-		$typeName: 'capabilities.networking.confidentialhttp.v1alpha.BasicAuth',
-		usernameSecretName: i.usernameSecretName,
-		passwordSecretName: i.passwordSecretName,
-	}
+function bearerJson(i: BearerAuthInput): BearerAuthJson {
 	return {
-		$typeName: 'capabilities.networking.confidentialhttp.v1alpha.AuthConfig',
-		method: { case: 'basic', value: a },
-	}
-}
-
-function authFromBearer(i: BearerAuthInput): AuthConfig {
-	const a: BearerAuth = {
-		$typeName: 'capabilities.networking.confidentialhttp.v1alpha.BearerAuth',
-		tokenSecretName: i.tokenSecretName,
+		token: toSecretIdentifierJson(i.token),
 		headerName: i.headerName ?? '',
 		valuePrefix: i.valuePrefix ?? '',
 	}
-	return {
-		$typeName: 'capabilities.networking.confidentialhttp.v1alpha.AuthConfig',
-		method: { case: 'bearer', value: a },
-	}
 }
 
-function authFromHmacSha256(i: HmacSha256Input): AuthConfig {
-	const v: HmacSha256 = {
-		$typeName: 'capabilities.networking.confidentialhttp.v1alpha.HmacSha256',
-		secretName: i.secretName,
+function hmacSha256Json(i: HmacSha256Input): HmacSha256Json {
+	return {
+		secret: toSecretIdentifierJson(i.secret),
 		signatureHeader: i.signatureHeader ?? '',
 		timestampHeader: i.timestampHeader ?? '',
 		includeQuery: i.includeQuery ?? false,
 		encoding: i.encoding ?? '',
 	}
-	const hmac: HmacAuth = {
-		$typeName: 'capabilities.networking.confidentialhttp.v1alpha.HmacAuth',
-		variant: { case: 'sha256', value: v },
-	}
-	return {
-		$typeName: 'capabilities.networking.confidentialhttp.v1alpha.AuthConfig',
-		method: { case: 'hmac', value: hmac },
-	}
 }
 
-function authFromAwsSigV4(i: AwsSigV4Input): AuthConfig {
-	const v: AwsSigV4 = {
-		$typeName: 'capabilities.networking.confidentialhttp.v1alpha.AwsSigV4',
-		accessKeyIdSecretName: i.accessKeyIdSecretName,
-		secretAccessKeySecretName: i.secretAccessKeySecretName,
-		sessionTokenSecretName: i.sessionTokenSecretName ?? '',
+function awsSigV4Json(i: AwsSigV4Input): AwsSigV4Json {
+	const out: AwsSigV4Json = {
+		accessKeyId: toStringOrSecretJson(i.accessKeyId),
+		secretAccessKey: toSecretIdentifierJson(i.secretAccessKey),
 		region: i.region,
 		service: i.service,
 		signedHeaders: i.signedHeaders ?? [],
 		unsignedPayload: i.unsignedPayload ?? false,
 	}
-	const hmac: HmacAuth = {
-		$typeName: 'capabilities.networking.confidentialhttp.v1alpha.HmacAuth',
-		variant: { case: 'awsSigV4', value: v },
-	}
-	return {
-		$typeName: 'capabilities.networking.confidentialhttp.v1alpha.AuthConfig',
-		method: { case: 'hmac', value: hmac },
-	}
+	if (i.sessionToken) out.sessionToken = toSecretIdentifierJson(i.sessionToken)
+	return out
 }
 
-function authFromHmacCustom(i: HmacCustomInput): AuthConfig {
-	const v: HmacCustom = {
-		$typeName: 'capabilities.networking.confidentialhttp.v1alpha.HmacCustom',
-		secretName: i.secretName,
+function hmacCustomJson(i: HmacCustomInput): HmacCustomJson {
+	return {
+		secret: toSecretIdentifierJson(i.secret),
 		canonicalTemplate: i.canonicalTemplate,
-		hash: i.hash === 'sha512' ? HmacCustom_Hash.SHA512 : HmacCustom_Hash.SHA256,
+		hash: i.hash === 'sha512' ? 'HASH_SHA512' : 'HASH_SHA256',
 		encoding: i.encoding ?? '',
 		signatureHeader: i.signatureHeader,
 		signaturePrefix: i.signaturePrefix ?? '',
 		timestampHeader: i.timestampHeader ?? '',
 		nonceHeader: i.nonceHeader ?? '',
 	}
-	const hmac: HmacAuth = {
-		$typeName: 'capabilities.networking.confidentialhttp.v1alpha.HmacAuth',
-		variant: { case: 'custom', value: v },
-	}
-	return {
-		$typeName: 'capabilities.networking.confidentialhttp.v1alpha.AuthConfig',
-		method: { case: 'hmac', value: hmac },
-	}
 }
 
-function authFromOAuth2ClientCredentials(i: OAuth2ClientCredentialsInput): AuthConfig {
-	const v: OAuth2ClientCredentials = {
-		$typeName: 'capabilities.networking.confidentialhttp.v1alpha.OAuth2ClientCredentials',
+function oauth2ClientCredentialsJson(
+	i: OAuth2ClientCredentialsInput,
+): OAuth2ClientCredentialsJson {
+	return {
 		tokenUrl: i.tokenUrl,
-		clientIdSecretName: i.clientIdSecretName,
-		clientSecretSecretName: i.clientSecretSecretName,
+		clientId: toStringOrSecretJson(i.clientId),
+		clientSecret: toSecretIdentifierJson(i.clientSecret),
 		scopes: i.scopes ?? [],
 		audience: i.audience ?? '',
-		clientAuthMethod: i.clientAuthMethod === 'requestBody' ? 'request_body' : i.clientAuthMethod === 'basicAuth' ? 'basic_auth' : '',
+		clientAuthMethod:
+			i.clientAuthMethod === 'requestBody'
+				? 'request_body'
+				: i.clientAuthMethod === 'basicAuth'
+					? 'basic_auth'
+					: '',
 		extraParams: i.extraParams ?? {},
-	}
-	const oauth: OAuth2Auth = {
-		$typeName: 'capabilities.networking.confidentialhttp.v1alpha.OAuth2Auth',
-		variant: { case: 'clientCredentials', value: v },
-	}
-	return {
-		$typeName: 'capabilities.networking.confidentialhttp.v1alpha.AuthConfig',
-		method: { case: 'oauth2', value: oauth },
 	}
 }
 
-function authFromOAuth2RefreshToken(i: OAuth2RefreshTokenInput): AuthConfig {
-	const v: OAuth2RefreshToken = {
-		$typeName: 'capabilities.networking.confidentialhttp.v1alpha.OAuth2RefreshToken',
+function oauth2RefreshTokenJson(i: OAuth2RefreshTokenInput): OAuth2RefreshTokenJson {
+	const out: OAuth2RefreshTokenJson = {
 		tokenUrl: i.tokenUrl,
-		refreshTokenSecretName: i.refreshTokenSecretName,
-		clientIdSecretName: i.clientIdSecretName ?? '',
-		clientSecretSecretName: i.clientSecretSecretName ?? '',
+		refreshToken: toSecretIdentifierJson(i.refreshToken),
 		scopes: i.scopes ?? [],
 		extraParams: i.extraParams ?? {},
 	}
-	const oauth: OAuth2Auth = {
-		$typeName: 'capabilities.networking.confidentialhttp.v1alpha.OAuth2Auth',
-		variant: { case: 'refreshToken', value: v },
-	}
-	return {
-		$typeName: 'capabilities.networking.confidentialhttp.v1alpha.AuthConfig',
-		method: { case: 'oauth2', value: oauth },
-	}
+	if (i.clientId !== undefined) out.clientId = toStringOrSecretJson(i.clientId)
+	if (i.clientSecret !== undefined) out.clientSecret = toSecretIdentifierJson(i.clientSecret)
+	return out
 }
