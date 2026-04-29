@@ -3,8 +3,8 @@
 /* eslint-disable */
 
 import type { Message } from '@bufbuild/protobuf'
-import type { GenFile, GenMessage, GenService } from '@bufbuild/protobuf/codegenv2'
-import { fileDesc, messageDesc, serviceDesc } from '@bufbuild/protobuf/codegenv2'
+import type { GenEnum, GenFile, GenMessage, GenService } from '@bufbuild/protobuf/codegenv2'
+import { enumDesc, fileDesc, messageDesc, serviceDesc } from '@bufbuild/protobuf/codegenv2'
 import type { Duration, DurationJson } from '@bufbuild/protobuf/wkt'
 import { file_google_protobuf_duration } from '@bufbuild/protobuf/wkt'
 import { file_tools_generator_v1alpha_cre_metadata } from '../../../../tools/generator/v1alpha/cre_metadata_pb'
@@ -15,7 +15,7 @@ import { file_tools_generator_v1alpha_cre_metadata } from '../../../../tools/gen
 export const file_capabilities_networking_confidentialhttp_v1alpha_client: GenFile =
 	/*@__PURE__*/
 	fileDesc(
-		'Cj1jYXBhYmlsaXRpZXMvbmV0d29ya2luZy9jb25maWRlbnRpYWxodHRwL3YxYWxwaGEvY2xpZW50LnByb3RvEjBjYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEiUAoQU2VjcmV0SWRlbnRpZmllchILCgNrZXkYASABKAkSEQoJbmFtZXNwYWNlGAIgASgJEhIKBW93bmVyGAMgASgJSACIAQFCCAoGX293bmVyIh4KDEhlYWRlclZhbHVlcxIOCgZ2YWx1ZXMYASADKAki1wQKC0hUVFBSZXF1ZXN0EgsKA3VybBgBIAEoCRIOCgZtZXRob2QYAiABKAkSFQoLYm9keV9zdHJpbmcYAyABKAlIABIUCgpib2R5X2J5dGVzGAggASgMSAASZgoNbXVsdGlfaGVhZGVycxgEIAMoCzJPLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IVFRQUmVxdWVzdC5NdWx0aUhlYWRlcnNFbnRyeRJ3ChZ0ZW1wbGF0ZV9wdWJsaWNfdmFsdWVzGAUgAygLMlcuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLkhUVFBSZXF1ZXN0LlRlbXBsYXRlUHVibGljVmFsdWVzRW50cnkSHwoXY3VzdG9tX3Jvb3RfY2FfY2VydF9wZW0YBiABKAwSKgoHdGltZW91dBgHIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhIWCg5lbmNyeXB0X291dHB1dBgJIAEoCBpzChFNdWx0aUhlYWRlcnNFbnRyeRILCgNrZXkYASABKAkSTQoFdmFsdWUYAiABKAsyPi5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuSGVhZGVyVmFsdWVzOgI4ARo7ChlUZW1wbGF0ZVB1YmxpY1ZhbHVlc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAFCBgoEYm9keSKPAgoMSFRUUFJlc3BvbnNlEhMKC3N0YXR1c19jb2RlGAEgASgNEgwKBGJvZHkYAiABKAwSZwoNbXVsdGlfaGVhZGVycxgDIAMoCzJQLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IVFRQUmVzcG9uc2UuTXVsdGlIZWFkZXJzRW50cnkacwoRTXVsdGlIZWFkZXJzRW50cnkSCwoDa2V5GAEgASgJEk0KBXZhbHVlGAIgASgLMj4uY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLkhlYWRlclZhbHVlczoCOAEiyAEKF0NvbmZpZGVudGlhbEhUVFBSZXF1ZXN0El0KEXZhdWx0X2Rvbl9zZWNyZXRzGAEgAygLMkIuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLlNlY3JldElkZW50aWZpZXISTgoHcmVxdWVzdBgCIAEoCzI9LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IVFRQUmVxdWVzdDLKAQoGQ2xpZW50EpgBCgtTZW5kUmVxdWVzdBJJLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5Db25maWRlbnRpYWxIVFRQUmVxdWVzdBo+LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IVFRQUmVzcG9uc2UaJYK1GCEIARIdY29uZmlkZW50aWFsLWh0dHBAMS4wLjAtYWxwaGFCpgIKNGNvbS5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGFCC0NsaWVudFByb3RvUAGiAgNDTkOqAjBDYXBhYmlsaXRpZXMuTmV0d29ya2luZy5Db25maWRlbnRpYWxodHRwLlYxYWxwaGHKAjBDYXBhYmlsaXRpZXNcTmV0d29ya2luZ1xDb25maWRlbnRpYWxodHRwXFYxYWxwaGHiAjxDYXBhYmlsaXRpZXNcTmV0d29ya2luZ1xDb25maWRlbnRpYWxodHRwXFYxYWxwaGFcR1BCTWV0YWRhdGHqAjNDYXBhYmlsaXRpZXM6Ok5ldHdvcmtpbmc6OkNvbmZpZGVudGlhbGh0dHA6OlYxYWxwaGFiBnByb3RvMw',
+		'Cj1jYXBhYmlsaXRpZXMvbmV0d29ya2luZy9jb25maWRlbnRpYWxodHRwL3YxYWxwaGEvY2xpZW50LnByb3RvEjBjYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEiUAoQU2VjcmV0SWRlbnRpZmllchILCgNrZXkYASABKAkSEQoJbmFtZXNwYWNlGAIgASgJEhIKBW93bmVyGAMgASgJSACIAQFCCAoGX293bmVyIoABCg5TdHJpbmdPclNlY3JldBIPCgVwbGFpbhgBIAEoCUgAElQKBnNlY3JldBgCIAEoCzJCLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5TZWNyZXRJZGVudGlmaWVySABCBwoFdmFsdWUiHgoMSGVhZGVyVmFsdWVzEg4KBnZhbHVlcxgBIAMoCSLXBAoLSFRUUFJlcXVlc3QSCwoDdXJsGAEgASgJEg4KBm1ldGhvZBgCIAEoCRIVCgtib2R5X3N0cmluZxgDIAEoCUgAEhQKCmJvZHlfYnl0ZXMYCCABKAxIABJmCg1tdWx0aV9oZWFkZXJzGAQgAygLMk8uY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLkhUVFBSZXF1ZXN0Lk11bHRpSGVhZGVyc0VudHJ5EncKFnRlbXBsYXRlX3B1YmxpY192YWx1ZXMYBSADKAsyVy5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuSFRUUFJlcXVlc3QuVGVtcGxhdGVQdWJsaWNWYWx1ZXNFbnRyeRIfChdjdXN0b21fcm9vdF9jYV9jZXJ0X3BlbRgGIAEoDBIqCgd0aW1lb3V0GAcgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEhYKDmVuY3J5cHRfb3V0cHV0GAkgASgIGnMKEU11bHRpSGVhZGVyc0VudHJ5EgsKA2tleRgBIAEoCRJNCgV2YWx1ZRgCIAEoCzI+LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IZWFkZXJWYWx1ZXM6AjgBGjsKGVRlbXBsYXRlUHVibGljVmFsdWVzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4AUIGCgRib2R5Io8CCgxIVFRQUmVzcG9uc2USEwoLc3RhdHVzX2NvZGUYASABKA0SDAoEYm9keRgCIAEoDBJnCg1tdWx0aV9oZWFkZXJzGAMgAygLMlAuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLkhUVFBSZXNwb25zZS5NdWx0aUhlYWRlcnNFbnRyeRpzChFNdWx0aUhlYWRlcnNFbnRyeRILCgNrZXkYASABKAkSTQoFdmFsdWUYAiABKAsyPi5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuSGVhZGVyVmFsdWVzOgI4ASKiAgoXQ29uZmlkZW50aWFsSFRUUFJlcXVlc3QSXQoRdmF1bHRfZG9uX3NlY3JldHMYASADKAsyQi5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuU2VjcmV0SWRlbnRpZmllchJOCgdyZXF1ZXN0GAIgASgLMj0uY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLkhUVFBSZXF1ZXN0Ek8KBGF1dGgYAyABKAsyPC5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuQXV0aENvbmZpZ0gAiAEBQgcKBV9hdXRoIqEDCgpBdXRoQ29uZmlnEk8KB2FwaV9rZXkYASABKAsyPC5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuQXBpS2V5QXV0aEgAEkwKBWJhc2ljGAIgASgLMjsuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLkJhc2ljQXV0aEgAEk4KBmJlYXJlchgDIAEoCzI8LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5CZWFyZXJBdXRoSAASSgoEaG1hYxgEIAEoCzI6LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IbWFjQXV0aEgAEk4KBm9hdXRoMhgFIAEoCzI8LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5PQXV0aDJBdXRoSABCCAoGbWV0aG9kIosBCgpBcGlLZXlBdXRoEhMKC2hlYWRlcl9uYW1lGAEgASgJElIKBnNlY3JldBgCIAEoCzJCLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5TZWNyZXRJZGVudGlmaWVyEhQKDHZhbHVlX3ByZWZpeBgDIAEoCSK1AQoJQmFzaWNBdXRoElIKCHVzZXJuYW1lGAEgASgLMkAuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLlN0cmluZ09yU2VjcmV0ElQKCHBhc3N3b3JkGAIgASgLMkIuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLlNlY3JldElkZW50aWZpZXIiigEKCkJlYXJlckF1dGgSUQoFdG9rZW4YASABKAsyQi5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuU2VjcmV0SWRlbnRpZmllchITCgtoZWFkZXJfbmFtZRgCIAEoCRIUCgx2YWx1ZV9wcmVmaXgYAyABKAkihwIKCEhtYWNBdXRoEk4KBnNoYTI1NhgBIAEoCzI8LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IbWFjU2hhMjU2SAASUAoKYXdzX3NpZ192NBgCIAEoCzI6LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5Bd3NTaWdWNEgAEk4KBmN1c3RvbRgDIAEoCzI8LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IbWFjQ3VzdG9tSABCCQoHdmFyaWFudCK9AQoKSG1hY1NoYTI1NhJSCgZzZWNyZXQYASABKAsyQi5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuU2VjcmV0SWRlbnRpZmllchIYChBzaWduYXR1cmVfaGVhZGVyGAIgASgJEhgKEHRpbWVzdGFtcF9oZWFkZXIYAyABKAkSFQoNaW5jbHVkZV9xdWVyeRgEIAEoCBIQCghlbmNvZGluZxgFIAEoCSLwAgoIQXdzU2lnVjQSVwoNYWNjZXNzX2tleV9pZBgBIAEoCzJALmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5TdHJpbmdPclNlY3JldBJdChFzZWNyZXRfYWNjZXNzX2tleRgCIAEoCzJCLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5TZWNyZXRJZGVudGlmaWVyElkKDXNlc3Npb25fdG9rZW4YAyABKAsyQi5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuU2VjcmV0SWRlbnRpZmllchIOCgZyZWdpb24YBCABKAkSDwoHc2VydmljZRgFIAEoCRIWCg5zaWduZWRfaGVhZGVycxgGIAMoCRIYChB1bnNpZ25lZF9wYXlsb2FkGAcgASgIIu0CCgpIbWFjQ3VzdG9tElIKBnNlY3JldBgBIAEoCzJCLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5TZWNyZXRJZGVudGlmaWVyEhoKEmNhbm9uaWNhbF90ZW1wbGF0ZRgCIAEoCRJPCgRoYXNoGAMgASgOMkEuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLkhtYWNDdXN0b20uSGFzaBIYChBzaWduYXR1cmVfaGVhZGVyGAQgASgJEhgKEHNpZ25hdHVyZV9wcmVmaXgYBSABKAkSGAoQdGltZXN0YW1wX2hlYWRlchgGIAEoCRIUCgxub25jZV9oZWFkZXIYByABKAkSEAoIZW5jb2RpbmcYCCABKAkiKAoESGFzaBIPCgtIQVNIX1NIQTI1NhAAEg8KC0hBU0hfU0hBNTEyEAEi3wEKCk9BdXRoMkF1dGgSZwoSY2xpZW50X2NyZWRlbnRpYWxzGAEgASgLMkkuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLk9BdXRoMkNsaWVudENyZWRlbnRpYWxzSAASXQoNcmVmcmVzaF90b2tlbhgCIAEoCzJELmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5PQXV0aDJSZWZyZXNoVG9rZW5IAEIJCgd2YXJpYW50IsADChdPQXV0aDJDbGllbnRDcmVkZW50aWFscxIRCgl0b2tlbl91cmwYASABKAkSUwoJY2xpZW50X2lkGAIgASgLMkAuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLlN0cmluZ09yU2VjcmV0ElkKDWNsaWVudF9zZWNyZXQYAyABKAsyQi5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuU2VjcmV0SWRlbnRpZmllchIOCgZzY29wZXMYBCADKAkSEAoIYXVkaWVuY2UYBSABKAkSGgoSY2xpZW50X2F1dGhfbWV0aG9kGAYgASgJEnAKDGV4dHJhX3BhcmFtcxgHIAMoCzJaLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5PQXV0aDJDbGllbnRDcmVkZW50aWFscy5FeHRyYVBhcmFtc0VudHJ5GjIKEEV4dHJhUGFyYW1zRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASLjAwoST0F1dGgyUmVmcmVzaFRva2VuEhEKCXRva2VuX3VybBgBIAEoCRJZCg1yZWZyZXNoX3Rva2VuGAIgASgLMkIuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLlNlY3JldElkZW50aWZpZXISUwoJY2xpZW50X2lkGAMgASgLMkAuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLlN0cmluZ09yU2VjcmV0ElkKDWNsaWVudF9zZWNyZXQYBCABKAsyQi5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGEuU2VjcmV0SWRlbnRpZmllchIOCgZzY29wZXMYBSADKAkSawoMZXh0cmFfcGFyYW1zGAYgAygLMlUuY2FwYWJpbGl0aWVzLm5ldHdvcmtpbmcuY29uZmlkZW50aWFsaHR0cC52MWFscGhhLk9BdXRoMlJlZnJlc2hUb2tlbi5FeHRyYVBhcmFtc0VudHJ5GjIKEEV4dHJhUGFyYW1zRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ATLKAQoGQ2xpZW50EpgBCgtTZW5kUmVxdWVzdBJJLmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5Db25maWRlbnRpYWxIVFRQUmVxdWVzdBo+LmNhcGFiaWxpdGllcy5uZXR3b3JraW5nLmNvbmZpZGVudGlhbGh0dHAudjFhbHBoYS5IVFRQUmVzcG9uc2UaJYK1GCEIARIdY29uZmlkZW50aWFsLWh0dHBAMS4wLjAtYWxwaGFCpgIKNGNvbS5jYXBhYmlsaXRpZXMubmV0d29ya2luZy5jb25maWRlbnRpYWxodHRwLnYxYWxwaGFCC0NsaWVudFByb3RvUAGiAgNDTkOqAjBDYXBhYmlsaXRpZXMuTmV0d29ya2luZy5Db25maWRlbnRpYWxodHRwLlYxYWxwaGHKAjBDYXBhYmlsaXRpZXNcTmV0d29ya2luZ1xDb25maWRlbnRpYWxodHRwXFYxYWxwaGHiAjxDYXBhYmlsaXRpZXNcTmV0d29ya2luZ1xDb25maWRlbnRpYWxodHRwXFYxYWxwaGFcR1BCTWV0YWRhdGHqAjNDYXBhYmlsaXRpZXM6Ok5ldHdvcmtpbmc6OkNvbmZpZGVudGlhbGh0dHA6OlYxYWxwaGFiBnByb3RvMw',
 		[file_google_protobuf_duration, file_tools_generator_v1alpha_cre_metadata],
 	)
 
@@ -70,6 +70,65 @@ export const SecretIdentifierSchema: GenMessage<
 > = /*@__PURE__*/ messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 0)
 
 /**
+ * StringOrSecret allows a field to carry either a plain string value
+ * (used directly) or a SecretIdentifier (resolved from the vault at
+ * signing time). Use this for fields that aren't necessarily secret,
+ * e.g. a username or client_id.
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.StringOrSecret
+ */
+export type StringOrSecret =
+	Message<'capabilities.networking.confidentialhttp.v1alpha.StringOrSecret'> & {
+		/**
+		 * @generated from oneof capabilities.networking.confidentialhttp.v1alpha.StringOrSecret.value
+		 */
+		value:
+			| {
+					/**
+					 * @generated from field: string plain = 1;
+					 */
+					value: string
+					case: 'plain'
+			  }
+			| {
+					/**
+					 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier secret = 2;
+					 */
+					value: SecretIdentifier
+					case: 'secret'
+			  }
+			| { case: undefined; value?: undefined }
+	}
+
+/**
+ * StringOrSecret allows a field to carry either a plain string value
+ * (used directly) or a SecretIdentifier (resolved from the vault at
+ * signing time). Use this for fields that aren't necessarily secret,
+ * e.g. a username or client_id.
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.StringOrSecret
+ */
+export type StringOrSecretJson = {
+	/**
+	 * @generated from field: string plain = 1;
+	 */
+	plain?: string
+
+	/**
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier secret = 2;
+	 */
+	secret?: SecretIdentifierJson
+}
+
+/**
+ * Describes the message capabilities.networking.confidentialhttp.v1alpha.StringOrSecret.
+ * Use `create(StringOrSecretSchema)` to create a new message.
+ */
+export const StringOrSecretSchema: GenMessage<StringOrSecret, { jsonType: StringOrSecretJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 1)
+
+/**
  * HeaderValues represents multiple values for a single header key.
  *
  * @generated from message capabilities.networking.confidentialhttp.v1alpha.HeaderValues
@@ -100,7 +159,7 @@ export type HeaderValuesJson = {
  */
 export const HeaderValuesSchema: GenMessage<HeaderValues, { jsonType: HeaderValuesJson }> =
 	/*@__PURE__*/
-	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 1)
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 2)
 
 /**
  * HTTPRequest contains the HTTP fields used to make a request from the enclave.
@@ -263,7 +322,7 @@ export type HTTPRequestJson = {
  */
 export const HTTPRequestSchema: GenMessage<HTTPRequest, { jsonType: HTTPRequestJson }> =
 	/*@__PURE__*/
-	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 2)
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 3)
 
 /**
  * HTTPResponse contains the HTTP response from the enclave.
@@ -330,7 +389,7 @@ export type HTTPResponseJson = {
  */
 export const HTTPResponseSchema: GenMessage<HTTPResponse, { jsonType: HTTPResponseJson }> =
 	/*@__PURE__*/
-	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 3)
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 4)
 
 /**
  * ConfidentialHTTPRequest is the input provided to the confidential HTTP capability.
@@ -349,6 +408,18 @@ export type ConfidentialHTTPRequest =
 		 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.HTTPRequest request = 2;
 		 */
 		request?: HTTPRequest
+
+		/**
+		 * auth, when set, instructs the enclave to sign the outbound request using
+		 * the specified method. Every SecretIdentifier referenced inside AuthConfig
+		 * must also appear in vault_don_secrets (enforced by the capability validator).
+		 * When auth is nil, the request is sent with only the headers/body the
+		 * caller provided — preserving the legacy "{{.SECRET_NAME}}" header-template
+		 * behavior.
+		 *
+		 * @generated from field: optional capabilities.networking.confidentialhttp.v1alpha.AuthConfig auth = 3;
+		 */
+		auth?: AuthConfig
 	}
 
 /**
@@ -367,6 +438,18 @@ export type ConfidentialHTTPRequestJson = {
 	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.HTTPRequest request = 2;
 	 */
 	request?: HTTPRequestJson
+
+	/**
+	 * auth, when set, instructs the enclave to sign the outbound request using
+	 * the specified method. Every SecretIdentifier referenced inside AuthConfig
+	 * must also appear in vault_don_secrets (enforced by the capability validator).
+	 * When auth is nil, the request is sent with only the headers/body the
+	 * caller provided — preserving the legacy "{{.SECRET_NAME}}" header-template
+	 * behavior.
+	 *
+	 * @generated from field: optional capabilities.networking.confidentialhttp.v1alpha.AuthConfig auth = 3;
+	 */
+	auth?: AuthConfigJson
 }
 
 /**
@@ -376,7 +459,1040 @@ export type ConfidentialHTTPRequestJson = {
 export const ConfidentialHTTPRequestSchema: GenMessage<
 	ConfidentialHTTPRequest,
 	{ jsonType: ConfidentialHTTPRequestJson }
-> = /*@__PURE__*/ messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 4)
+> = /*@__PURE__*/ messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 5)
+
+/**
+ * AuthConfig selects one of the supported request-signing methods.
+ * Each variant carries the method-specific parameters and references
+ * the secrets it needs.
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.AuthConfig
+ */
+export type AuthConfig = Message<'capabilities.networking.confidentialhttp.v1alpha.AuthConfig'> & {
+	/**
+	 * @generated from oneof capabilities.networking.confidentialhttp.v1alpha.AuthConfig.method
+	 */
+	method:
+		| {
+				/**
+				 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.ApiKeyAuth api_key = 1;
+				 */
+				value: ApiKeyAuth
+				case: 'apiKey'
+		  }
+		| {
+				/**
+				 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.BasicAuth basic = 2;
+				 */
+				value: BasicAuth
+				case: 'basic'
+		  }
+		| {
+				/**
+				 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.BearerAuth bearer = 3;
+				 */
+				value: BearerAuth
+				case: 'bearer'
+		  }
+		| {
+				/**
+				 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.HmacAuth hmac = 4;
+				 */
+				value: HmacAuth
+				case: 'hmac'
+		  }
+		| {
+				/**
+				 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.OAuth2Auth oauth2 = 5;
+				 */
+				value: OAuth2Auth
+				case: 'oauth2'
+		  }
+		| { case: undefined; value?: undefined }
+}
+
+/**
+ * AuthConfig selects one of the supported request-signing methods.
+ * Each variant carries the method-specific parameters and references
+ * the secrets it needs.
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.AuthConfig
+ */
+export type AuthConfigJson = {
+	/**
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.ApiKeyAuth api_key = 1;
+	 */
+	apiKey?: ApiKeyAuthJson
+
+	/**
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.BasicAuth basic = 2;
+	 */
+	basic?: BasicAuthJson
+
+	/**
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.BearerAuth bearer = 3;
+	 */
+	bearer?: BearerAuthJson
+
+	/**
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.HmacAuth hmac = 4;
+	 */
+	hmac?: HmacAuthJson
+
+	/**
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.OAuth2Auth oauth2 = 5;
+	 */
+	oauth2?: OAuth2AuthJson
+}
+
+/**
+ * Describes the message capabilities.networking.confidentialhttp.v1alpha.AuthConfig.
+ * Use `create(AuthConfigSchema)` to create a new message.
+ */
+export const AuthConfigSchema: GenMessage<AuthConfig, { jsonType: AuthConfigJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 6)
+
+/**
+ * ApiKeyAuth attaches a secret value to a chosen header.
+ * Renders as:  <header_name>: <value_prefix><secret-value>
+ * Example (header_name="x-api-key"):
+ *   x-api-key: <secret>
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.ApiKeyAuth
+ */
+export type ApiKeyAuth = Message<'capabilities.networking.confidentialhttp.v1alpha.ApiKeyAuth'> & {
+	/**
+	 * required, e.g. "x-api-key", "Authorization"
+	 *
+	 * @generated from field: string header_name = 1;
+	 */
+	headerName: string
+
+	/**
+	 * required; the API key value
+	 *
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier secret = 2;
+	 */
+	secret?: SecretIdentifier
+
+	/**
+	 * optional, e.g. "ApiKey ", "Token "
+	 *
+	 * @generated from field: string value_prefix = 3;
+	 */
+	valuePrefix: string
+}
+
+/**
+ * ApiKeyAuth attaches a secret value to a chosen header.
+ * Renders as:  <header_name>: <value_prefix><secret-value>
+ * Example (header_name="x-api-key"):
+ *   x-api-key: <secret>
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.ApiKeyAuth
+ */
+export type ApiKeyAuthJson = {
+	/**
+	 * required, e.g. "x-api-key", "Authorization"
+	 *
+	 * @generated from field: string header_name = 1;
+	 */
+	headerName?: string
+
+	/**
+	 * required; the API key value
+	 *
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier secret = 2;
+	 */
+	secret?: SecretIdentifierJson
+
+	/**
+	 * optional, e.g. "ApiKey ", "Token "
+	 *
+	 * @generated from field: string value_prefix = 3;
+	 */
+	valuePrefix?: string
+}
+
+/**
+ * Describes the message capabilities.networking.confidentialhttp.v1alpha.ApiKeyAuth.
+ * Use `create(ApiKeyAuthSchema)` to create a new message.
+ */
+export const ApiKeyAuthSchema: GenMessage<ApiKeyAuth, { jsonType: ApiKeyAuthJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 7)
+
+/**
+ * BasicAuth renders: Authorization: Basic base64(username ":" password).
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.BasicAuth
+ */
+export type BasicAuth = Message<'capabilities.networking.confidentialhttp.v1alpha.BasicAuth'> & {
+	/**
+	 * required
+	 *
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.StringOrSecret username = 1;
+	 */
+	username?: StringOrSecret
+
+	/**
+	 * required
+	 *
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier password = 2;
+	 */
+	password?: SecretIdentifier
+}
+
+/**
+ * BasicAuth renders: Authorization: Basic base64(username ":" password).
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.BasicAuth
+ */
+export type BasicAuthJson = {
+	/**
+	 * required
+	 *
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.StringOrSecret username = 1;
+	 */
+	username?: StringOrSecretJson
+
+	/**
+	 * required
+	 *
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier password = 2;
+	 */
+	password?: SecretIdentifierJson
+}
+
+/**
+ * Describes the message capabilities.networking.confidentialhttp.v1alpha.BasicAuth.
+ * Use `create(BasicAuthSchema)` to create a new message.
+ */
+export const BasicAuthSchema: GenMessage<BasicAuth, { jsonType: BasicAuthJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 8)
+
+/**
+ * BearerAuth attaches a pre-issued long-lived token.
+ * Default behavior: Authorization: Bearer <token>
+ * header_name and value_prefix allow rare overrides (e.g. GitHub's
+ * "Authorization: token <pat>").
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.BearerAuth
+ */
+export type BearerAuth = Message<'capabilities.networking.confidentialhttp.v1alpha.BearerAuth'> & {
+	/**
+	 * required
+	 *
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier token = 1;
+	 */
+	token?: SecretIdentifier
+
+	/**
+	 * optional override, default "Authorization"
+	 *
+	 * @generated from field: string header_name = 2;
+	 */
+	headerName: string
+
+	/**
+	 * optional override, default "Bearer "
+	 *
+	 * @generated from field: string value_prefix = 3;
+	 */
+	valuePrefix: string
+}
+
+/**
+ * BearerAuth attaches a pre-issued long-lived token.
+ * Default behavior: Authorization: Bearer <token>
+ * header_name and value_prefix allow rare overrides (e.g. GitHub's
+ * "Authorization: token <pat>").
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.BearerAuth
+ */
+export type BearerAuthJson = {
+	/**
+	 * required
+	 *
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier token = 1;
+	 */
+	token?: SecretIdentifierJson
+
+	/**
+	 * optional override, default "Authorization"
+	 *
+	 * @generated from field: string header_name = 2;
+	 */
+	headerName?: string
+
+	/**
+	 * optional override, default "Bearer "
+	 *
+	 * @generated from field: string value_prefix = 3;
+	 */
+	valuePrefix?: string
+}
+
+/**
+ * Describes the message capabilities.networking.confidentialhttp.v1alpha.BearerAuth.
+ * Use `create(BearerAuthSchema)` to create a new message.
+ */
+export const BearerAuthSchema: GenMessage<BearerAuth, { jsonType: BearerAuthJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 9)
+
+/**
+ * HmacAuth groups all HMAC-family signing variants.
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.HmacAuth
+ */
+export type HmacAuth = Message<'capabilities.networking.confidentialhttp.v1alpha.HmacAuth'> & {
+	/**
+	 * @generated from oneof capabilities.networking.confidentialhttp.v1alpha.HmacAuth.variant
+	 */
+	variant:
+		| {
+				/**
+				 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.HmacSha256 sha256 = 1;
+				 */
+				value: HmacSha256
+				case: 'sha256'
+		  }
+		| {
+				/**
+				 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.AwsSigV4 aws_sig_v4 = 2;
+				 */
+				value: AwsSigV4
+				case: 'awsSigV4'
+		  }
+		| {
+				/**
+				 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.HmacCustom custom = 3;
+				 */
+				value: HmacCustom
+				case: 'custom'
+		  }
+		| { case: undefined; value?: undefined }
+}
+
+/**
+ * HmacAuth groups all HMAC-family signing variants.
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.HmacAuth
+ */
+export type HmacAuthJson = {
+	/**
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.HmacSha256 sha256 = 1;
+	 */
+	sha256?: HmacSha256Json
+
+	/**
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.AwsSigV4 aws_sig_v4 = 2;
+	 */
+	awsSigV4?: AwsSigV4Json
+
+	/**
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.HmacCustom custom = 3;
+	 */
+	custom?: HmacCustomJson
+}
+
+/**
+ * Describes the message capabilities.networking.confidentialhttp.v1alpha.HmacAuth.
+ * Use `create(HmacAuthSchema)` to create a new message.
+ */
+export const HmacAuthSchema: GenMessage<HmacAuth, { jsonType: HmacAuthJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 10)
+
+/**
+ * HmacSha256 implements a generic canonical-string HMAC-SHA256 signature.
+ * Canonical string: method "\n" url "\n" sha256(body) "\n" timestamp
+ * Signature is attached via signature_header, timestamp via timestamp_header.
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.HmacSha256
+ */
+export type HmacSha256 = Message<'capabilities.networking.confidentialhttp.v1alpha.HmacSha256'> & {
+	/**
+	 * required; the shared signing secret
+	 *
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier secret = 1;
+	 */
+	secret?: SecretIdentifier
+
+	/**
+	 * default "X-Signature"
+	 *
+	 * @generated from field: string signature_header = 2;
+	 */
+	signatureHeader: string
+
+	/**
+	 * default "X-Timestamp"
+	 *
+	 * @generated from field: string timestamp_header = 3;
+	 */
+	timestampHeader: string
+
+	/**
+	 * if true, include the query string in the canonical url
+	 *
+	 * @generated from field: bool include_query = 4;
+	 */
+	includeQuery: boolean
+
+	/**
+	 * "hex" (default) or "base64"
+	 *
+	 * @generated from field: string encoding = 5;
+	 */
+	encoding: string
+}
+
+/**
+ * HmacSha256 implements a generic canonical-string HMAC-SHA256 signature.
+ * Canonical string: method "\n" url "\n" sha256(body) "\n" timestamp
+ * Signature is attached via signature_header, timestamp via timestamp_header.
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.HmacSha256
+ */
+export type HmacSha256Json = {
+	/**
+	 * required; the shared signing secret
+	 *
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier secret = 1;
+	 */
+	secret?: SecretIdentifierJson
+
+	/**
+	 * default "X-Signature"
+	 *
+	 * @generated from field: string signature_header = 2;
+	 */
+	signatureHeader?: string
+
+	/**
+	 * default "X-Timestamp"
+	 *
+	 * @generated from field: string timestamp_header = 3;
+	 */
+	timestampHeader?: string
+
+	/**
+	 * if true, include the query string in the canonical url
+	 *
+	 * @generated from field: bool include_query = 4;
+	 */
+	includeQuery?: boolean
+
+	/**
+	 * "hex" (default) or "base64"
+	 *
+	 * @generated from field: string encoding = 5;
+	 */
+	encoding?: string
+}
+
+/**
+ * Describes the message capabilities.networking.confidentialhttp.v1alpha.HmacSha256.
+ * Use `create(HmacSha256Schema)` to create a new message.
+ */
+export const HmacSha256Schema: GenMessage<HmacSha256, { jsonType: HmacSha256Json }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 11)
+
+/**
+ * AwsSigV4 implements AWS Signature Version 4.
+ * Uses github.com/aws/aws-sdk-go-v2/aws/signer/v4 under the hood.
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.AwsSigV4
+ */
+export type AwsSigV4 = Message<'capabilities.networking.confidentialhttp.v1alpha.AwsSigV4'> & {
+	/**
+	 * required
+	 *
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.StringOrSecret access_key_id = 1;
+	 */
+	accessKeyId?: StringOrSecret
+
+	/**
+	 * required
+	 *
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier secret_access_key = 2;
+	 */
+	secretAccessKey?: SecretIdentifier
+
+	/**
+	 * optional (for STS temporary credentials)
+	 *
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier session_token = 3;
+	 */
+	sessionToken?: SecretIdentifier
+
+	/**
+	 * required, e.g. "us-east-1"
+	 *
+	 * @generated from field: string region = 4;
+	 */
+	region: string
+
+	/**
+	 * required, e.g. "execute-api", "s3"
+	 *
+	 * @generated from field: string service = 5;
+	 */
+	service: string
+
+	/**
+	 * Signed headers (comma-separated lowercase). Optional; defaults to
+	 * "host;x-amz-date" plus "x-amz-security-token" if session_token is set.
+	 *
+	 * @generated from field: repeated string signed_headers = 6;
+	 */
+	signedHeaders: string[]
+
+	/**
+	 * If true, uses X-Amz-Content-Sha256: UNSIGNED-PAYLOAD (useful for large S3
+	 * uploads). Default false.
+	 *
+	 * @generated from field: bool unsigned_payload = 7;
+	 */
+	unsignedPayload: boolean
+}
+
+/**
+ * AwsSigV4 implements AWS Signature Version 4.
+ * Uses github.com/aws/aws-sdk-go-v2/aws/signer/v4 under the hood.
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.AwsSigV4
+ */
+export type AwsSigV4Json = {
+	/**
+	 * required
+	 *
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.StringOrSecret access_key_id = 1;
+	 */
+	accessKeyId?: StringOrSecretJson
+
+	/**
+	 * required
+	 *
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier secret_access_key = 2;
+	 */
+	secretAccessKey?: SecretIdentifierJson
+
+	/**
+	 * optional (for STS temporary credentials)
+	 *
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier session_token = 3;
+	 */
+	sessionToken?: SecretIdentifierJson
+
+	/**
+	 * required, e.g. "us-east-1"
+	 *
+	 * @generated from field: string region = 4;
+	 */
+	region?: string
+
+	/**
+	 * required, e.g. "execute-api", "s3"
+	 *
+	 * @generated from field: string service = 5;
+	 */
+	service?: string
+
+	/**
+	 * Signed headers (comma-separated lowercase). Optional; defaults to
+	 * "host;x-amz-date" plus "x-amz-security-token" if session_token is set.
+	 *
+	 * @generated from field: repeated string signed_headers = 6;
+	 */
+	signedHeaders?: string[]
+
+	/**
+	 * If true, uses X-Amz-Content-Sha256: UNSIGNED-PAYLOAD (useful for large S3
+	 * uploads). Default false.
+	 *
+	 * @generated from field: bool unsigned_payload = 7;
+	 */
+	unsignedPayload?: boolean
+}
+
+/**
+ * Describes the message capabilities.networking.confidentialhttp.v1alpha.AwsSigV4.
+ * Use `create(AwsSigV4Schema)` to create a new message.
+ */
+export const AwsSigV4Schema: GenMessage<AwsSigV4, { jsonType: AwsSigV4Json }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 12)
+
+/**
+ * HmacCustom lets workflow authors specify the canonical string via a
+ * Go text/template string. Available template vars:
+ *   {{.method}} {{.url}} {{.path}} {{.query}} {{.body}} {{.body_sha256}}
+ *   {{.timestamp}} {{.nonce}} {{header "X-Foo"}}
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.HmacCustom
+ */
+export type HmacCustom = Message<'capabilities.networking.confidentialhttp.v1alpha.HmacCustom'> & {
+	/**
+	 * required; the signing secret
+	 *
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier secret = 1;
+	 */
+	secret?: SecretIdentifier
+
+	/**
+	 * required
+	 *
+	 * @generated from field: string canonical_template = 2;
+	 */
+	canonicalTemplate: string
+
+	/**
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.HmacCustom.Hash hash = 3;
+	 */
+	hash: HmacCustom_Hash
+
+	/**
+	 * required
+	 *
+	 * @generated from field: string signature_header = 4;
+	 */
+	signatureHeader: string
+
+	/**
+	 * e.g. "HMAC-SHA256 "
+	 *
+	 * @generated from field: string signature_prefix = 5;
+	 */
+	signaturePrefix: string
+
+	/**
+	 * optional; if set, timestamp header injected
+	 *
+	 * @generated from field: string timestamp_header = 6;
+	 */
+	timestampHeader: string
+
+	/**
+	 * optional; if set, random nonce header injected
+	 *
+	 * @generated from field: string nonce_header = 7;
+	 */
+	nonceHeader: string
+
+	/**
+	 * "hex" (default) or "base64"
+	 *
+	 * @generated from field: string encoding = 8;
+	 */
+	encoding: string
+}
+
+/**
+ * HmacCustom lets workflow authors specify the canonical string via a
+ * Go text/template string. Available template vars:
+ *   {{.method}} {{.url}} {{.path}} {{.query}} {{.body}} {{.body_sha256}}
+ *   {{.timestamp}} {{.nonce}} {{header "X-Foo"}}
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.HmacCustom
+ */
+export type HmacCustomJson = {
+	/**
+	 * required; the signing secret
+	 *
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier secret = 1;
+	 */
+	secret?: SecretIdentifierJson
+
+	/**
+	 * required
+	 *
+	 * @generated from field: string canonical_template = 2;
+	 */
+	canonicalTemplate?: string
+
+	/**
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.HmacCustom.Hash hash = 3;
+	 */
+	hash?: HmacCustom_HashJson
+
+	/**
+	 * required
+	 *
+	 * @generated from field: string signature_header = 4;
+	 */
+	signatureHeader?: string
+
+	/**
+	 * e.g. "HMAC-SHA256 "
+	 *
+	 * @generated from field: string signature_prefix = 5;
+	 */
+	signaturePrefix?: string
+
+	/**
+	 * optional; if set, timestamp header injected
+	 *
+	 * @generated from field: string timestamp_header = 6;
+	 */
+	timestampHeader?: string
+
+	/**
+	 * optional; if set, random nonce header injected
+	 *
+	 * @generated from field: string nonce_header = 7;
+	 */
+	nonceHeader?: string
+
+	/**
+	 * "hex" (default) or "base64"
+	 *
+	 * @generated from field: string encoding = 8;
+	 */
+	encoding?: string
+}
+
+/**
+ * Describes the message capabilities.networking.confidentialhttp.v1alpha.HmacCustom.
+ * Use `create(HmacCustomSchema)` to create a new message.
+ */
+export const HmacCustomSchema: GenMessage<HmacCustom, { jsonType: HmacCustomJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 13)
+
+/**
+ * @generated from enum capabilities.networking.confidentialhttp.v1alpha.HmacCustom.Hash
+ */
+export enum HmacCustom_Hash {
+	/**
+	 * @generated from enum value: HASH_SHA256 = 0;
+	 */
+	SHA256 = 0,
+
+	/**
+	 * @generated from enum value: HASH_SHA512 = 1;
+	 */
+	SHA512 = 1,
+}
+
+/**
+ * @generated from enum capabilities.networking.confidentialhttp.v1alpha.HmacCustom.Hash
+ */
+export type HmacCustom_HashJson = 'HASH_SHA256' | 'HASH_SHA512'
+
+/**
+ * Describes the enum capabilities.networking.confidentialhttp.v1alpha.HmacCustom.Hash.
+ */
+export const HmacCustom_HashSchema: GenEnum<HmacCustom_Hash, HmacCustom_HashJson> =
+	/*@__PURE__*/
+	enumDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 13, 0)
+
+/**
+ * OAuth2Auth groups headless OAuth 2.0 flows.
+ * Interactive flows (Authorization Code, PKCE, Device Code) are NOT supported —
+ * they require browser consent that a headless TEE cannot perform.
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.OAuth2Auth
+ */
+export type OAuth2Auth = Message<'capabilities.networking.confidentialhttp.v1alpha.OAuth2Auth'> & {
+	/**
+	 * @generated from oneof capabilities.networking.confidentialhttp.v1alpha.OAuth2Auth.variant
+	 */
+	variant:
+		| {
+				/**
+				 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.OAuth2ClientCredentials client_credentials = 1;
+				 */
+				value: OAuth2ClientCredentials
+				case: 'clientCredentials'
+		  }
+		| {
+				/**
+				 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.OAuth2RefreshToken refresh_token = 2;
+				 */
+				value: OAuth2RefreshToken
+				case: 'refreshToken'
+		  }
+		| { case: undefined; value?: undefined }
+}
+
+/**
+ * OAuth2Auth groups headless OAuth 2.0 flows.
+ * Interactive flows (Authorization Code, PKCE, Device Code) are NOT supported —
+ * they require browser consent that a headless TEE cannot perform.
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.OAuth2Auth
+ */
+export type OAuth2AuthJson = {
+	/**
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.OAuth2ClientCredentials client_credentials = 1;
+	 */
+	clientCredentials?: OAuth2ClientCredentialsJson
+
+	/**
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.OAuth2RefreshToken refresh_token = 2;
+	 */
+	refreshToken?: OAuth2RefreshTokenJson
+}
+
+/**
+ * Describes the message capabilities.networking.confidentialhttp.v1alpha.OAuth2Auth.
+ * Use `create(OAuth2AuthSchema)` to create a new message.
+ */
+export const OAuth2AuthSchema: GenMessage<OAuth2Auth, { jsonType: OAuth2AuthJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 14)
+
+/**
+ * OAuth2ClientCredentials: machine-to-machine grant.
+ * The enclave POSTs to token_url with client_id/client_secret, caches the
+ * resulting access_token per (workflow_owner, token_url, client_id, scopes),
+ * and attaches "Authorization: Bearer <access_token>" to the outbound request.
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.OAuth2ClientCredentials
+ */
+export type OAuth2ClientCredentials =
+	Message<'capabilities.networking.confidentialhttp.v1alpha.OAuth2ClientCredentials'> & {
+		/**
+		 * required, must be https://
+		 *
+		 * @generated from field: string token_url = 1;
+		 */
+		tokenUrl: string
+
+		/**
+		 * required
+		 *
+		 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.StringOrSecret client_id = 2;
+		 */
+		clientId?: StringOrSecret
+
+		/**
+		 * required
+		 *
+		 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier client_secret = 3;
+		 */
+		clientSecret?: SecretIdentifier
+
+		/**
+		 * optional
+		 *
+		 * @generated from field: repeated string scopes = 4;
+		 */
+		scopes: string[]
+
+		/**
+		 * optional (Auth0-style)
+		 *
+		 * @generated from field: string audience = 5;
+		 */
+		audience: string
+
+		/**
+		 * "basic_auth" (default) or "request_body" — where to put client creds
+		 * on the token request.
+		 *
+		 * @generated from field: string client_auth_method = 6;
+		 */
+		clientAuthMethod: string
+
+		/**
+		 * Extra form params to send with the token request.
+		 *
+		 * @generated from field: map<string, string> extra_params = 7;
+		 */
+		extraParams: { [key: string]: string }
+	}
+
+/**
+ * OAuth2ClientCredentials: machine-to-machine grant.
+ * The enclave POSTs to token_url with client_id/client_secret, caches the
+ * resulting access_token per (workflow_owner, token_url, client_id, scopes),
+ * and attaches "Authorization: Bearer <access_token>" to the outbound request.
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.OAuth2ClientCredentials
+ */
+export type OAuth2ClientCredentialsJson = {
+	/**
+	 * required, must be https://
+	 *
+	 * @generated from field: string token_url = 1;
+	 */
+	tokenUrl?: string
+
+	/**
+	 * required
+	 *
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.StringOrSecret client_id = 2;
+	 */
+	clientId?: StringOrSecretJson
+
+	/**
+	 * required
+	 *
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier client_secret = 3;
+	 */
+	clientSecret?: SecretIdentifierJson
+
+	/**
+	 * optional
+	 *
+	 * @generated from field: repeated string scopes = 4;
+	 */
+	scopes?: string[]
+
+	/**
+	 * optional (Auth0-style)
+	 *
+	 * @generated from field: string audience = 5;
+	 */
+	audience?: string
+
+	/**
+	 * "basic_auth" (default) or "request_body" — where to put client creds
+	 * on the token request.
+	 *
+	 * @generated from field: string client_auth_method = 6;
+	 */
+	clientAuthMethod?: string
+
+	/**
+	 * Extra form params to send with the token request.
+	 *
+	 * @generated from field: map<string, string> extra_params = 7;
+	 */
+	extraParams?: { [key: string]: string }
+}
+
+/**
+ * Describes the message capabilities.networking.confidentialhttp.v1alpha.OAuth2ClientCredentials.
+ * Use `create(OAuth2ClientCredentialsSchema)` to create a new message.
+ */
+export const OAuth2ClientCredentialsSchema: GenMessage<
+	OAuth2ClientCredentials,
+	{ jsonType: OAuth2ClientCredentialsJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 15)
+
+/**
+ * OAuth2RefreshToken: the workflow stores a long-lived refresh_token in Vault
+ * (obtained out-of-band during an interactive consent). The enclave exchanges
+ * it for an access_token on cache miss.
+ *
+ * Important: if the IdP rotates refresh tokens on each exchange, the enclave
+ * cannot persist the new refresh_token back to Vault. Disable refresh-token
+ * rotation at the IdP, or prefer client_credentials where possible.
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.OAuth2RefreshToken
+ */
+export type OAuth2RefreshToken =
+	Message<'capabilities.networking.confidentialhttp.v1alpha.OAuth2RefreshToken'> & {
+		/**
+		 * required, must be https://
+		 *
+		 * @generated from field: string token_url = 1;
+		 */
+		tokenUrl: string
+
+		/**
+		 * required
+		 *
+		 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier refresh_token = 2;
+		 */
+		refreshToken?: SecretIdentifier
+
+		/**
+		 * optional
+		 *
+		 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.StringOrSecret client_id = 3;
+		 */
+		clientId?: StringOrSecret
+
+		/**
+		 * optional when present
+		 *
+		 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier client_secret = 4;
+		 */
+		clientSecret?: SecretIdentifier
+
+		/**
+		 * optional
+		 *
+		 * @generated from field: repeated string scopes = 5;
+		 */
+		scopes: string[]
+
+		/**
+		 * @generated from field: map<string, string> extra_params = 6;
+		 */
+		extraParams: { [key: string]: string }
+	}
+
+/**
+ * OAuth2RefreshToken: the workflow stores a long-lived refresh_token in Vault
+ * (obtained out-of-band during an interactive consent). The enclave exchanges
+ * it for an access_token on cache miss.
+ *
+ * Important: if the IdP rotates refresh tokens on each exchange, the enclave
+ * cannot persist the new refresh_token back to Vault. Disable refresh-token
+ * rotation at the IdP, or prefer client_credentials where possible.
+ *
+ * @generated from message capabilities.networking.confidentialhttp.v1alpha.OAuth2RefreshToken
+ */
+export type OAuth2RefreshTokenJson = {
+	/**
+	 * required, must be https://
+	 *
+	 * @generated from field: string token_url = 1;
+	 */
+	tokenUrl?: string
+
+	/**
+	 * required
+	 *
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier refresh_token = 2;
+	 */
+	refreshToken?: SecretIdentifierJson
+
+	/**
+	 * optional
+	 *
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.StringOrSecret client_id = 3;
+	 */
+	clientId?: StringOrSecretJson
+
+	/**
+	 * optional when present
+	 *
+	 * @generated from field: capabilities.networking.confidentialhttp.v1alpha.SecretIdentifier client_secret = 4;
+	 */
+	clientSecret?: SecretIdentifierJson
+
+	/**
+	 * optional
+	 *
+	 * @generated from field: repeated string scopes = 5;
+	 */
+	scopes?: string[]
+
+	/**
+	 * @generated from field: map<string, string> extra_params = 6;
+	 */
+	extraParams?: { [key: string]: string }
+}
+
+/**
+ * Describes the message capabilities.networking.confidentialhttp.v1alpha.OAuth2RefreshToken.
+ * Use `create(OAuth2RefreshTokenSchema)` to create a new message.
+ */
+export const OAuth2RefreshTokenSchema: GenMessage<
+	OAuth2RefreshToken,
+	{ jsonType: OAuth2RefreshTokenJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_networking_confidentialhttp_v1alpha_client, 16)
 
 /**
  * @generated from service capabilities.networking.confidentialhttp.v1alpha.Client
