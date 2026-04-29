@@ -111,6 +111,19 @@ TEMPLATES_DIR="${TEMPLATES_DIR:-../cre-templates}"
 # 1. Build
 
 info "Building SDK..."
+
+# Back up the compiled wasm artifact before the build overwrites it.
+# Using a file backup (not git restore) so we restore whatever state the
+# developer had — including uncommitted changes — not just the last commit.
+# IMPORTANT: the backup must live outside the dist/ directory because the
+# build's clean step runs `rm -rf dist`, which would delete an in-place backup.
+WASM_FILE="$MONOREPO_ROOT/packages/cre-sdk-javy-plugin/dist/javy-chainlink-sdk.plugin.wasm"
+if [ -f "$WASM_FILE" ]; then
+  WASM_BACKUP=$(mktemp)
+  cp "$WASM_FILE" "$WASM_BACKUP"
+  LOCKFILE_BACKUPS+=("$WASM_BACKUP:$WASM_FILE")
+fi
+
 _build_out=""
 if ! run_captured _build_out bun run build; then
   info "❌ SDK build failed."
