@@ -1,4 +1,4 @@
-name: Template Compatibility
+name: Template Compatibility Check
 
 on:
   pull_request:
@@ -13,13 +13,10 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write
 
 jobs:
   template-compatibility:
     runs-on: ubuntu-latest
-    # Only run on PRs (not push to main)
-    if: github.event_name == 'pull_request'
 
     defaults:
       run:
@@ -27,9 +24,6 @@ jobs:
 
     env:
       TEMPLATES_REPO: smartcontractkit/cre-templates
-      # Convention: a matching branch in cre-templates named compat/<sdk-branch>
-      # allows coordinated breaking changes without blocking the SDK PR.
-      COMPAT_BRANCH: compat/${{ github.head_ref }}
 
     steps:
       - name: Checkout SDK
@@ -74,7 +68,11 @@ jobs:
         id: detect-ref
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_REF: ${{ github.head_ref }}
         run: |
+          SAFE_HEAD_REF="${HEAD_REF//[^a-zA-Z0-9._\/-]/}"
+          COMPAT_BRANCH="compat/$SAFE_HEAD_REF"
+
           if gh api "repos/$TEMPLATES_REPO/branches/$COMPAT_BRANCH" &>/dev/null; then
             echo "ref=$COMPAT_BRANCH" >> "$GITHUB_OUTPUT"
             echo "Using compat branch: $COMPAT_BRANCH"
@@ -106,7 +104,6 @@ jobs:
           EXIT_CODE=$?
           set -e
 
-          # Save output to a file for the comment step
           echo "$OUTPUT" > /tmp/template-check-output.txt
 
           # Surface it in the action log regardless
@@ -114,94 +111,33 @@ jobs:
 
           echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
 
-      # Only post a comment when templates are broken.
-      # The comment is updated (not duplicated) on subsequent pushes.
-      - name: Post failure comment on PR
-        if: steps.template-check.outputs.exit_code != '0'
-        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+      # Bundle everything the comment workflow needs into an artifact.
+      # The comment workflow runs with pull-requests: write but must never
+      # execute external code — it only reads these files.
+      - name: Save results for comment workflow
+        if: always()
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          TEMPLATES_REF: ${{ steps.detect-ref.outputs.ref }}
+          HEAD_REF: ${{ github.head_ref }}
+          EXIT_CODE: ${{ steps.template-check.outputs.exit_code }}
+        run: |
+          mkdir -p /tmp/compat-results
+          printf '%s' "$PR_NUMBER"     > /tmp/compat-results/pr-number.txt
+          printf '%s' "$TEMPLATES_REF" > /tmp/compat-results/templates-ref.txt
+          printf '%s' "$HEAD_REF"      > /tmp/compat-results/head-ref.txt
+          printf '%s' "$EXIT_CODE"     > /tmp/compat-results/exit-code.txt
+          if [ -f /tmp/template-check-output.txt ]; then
+            cp /tmp/template-check-output.txt /tmp/compat-results/output.txt
+          fi
+
+      - name: Upload results artifact
+        if: always()
+        uses: actions/upload-artifact@ea165f8d68b2b1dc5da8e1af90a2a8f427aa4185 # v4.6.2
         with:
-          script: |
-            const fs = require('fs');
-            const fullOutput = fs.readFileSync('/tmp/template-check-output.txt', 'utf8');
-
-            // Extract just the "Results" and "Failure Details" sections
-            const resultsMatch = fullOutput.match(/={8,}\nResults:.*\n={8,}[\s\S]*/);
-            const failureSummary = resultsMatch ? resultsMatch[0].trim() : fullOutput.trim();
-
-            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-            const templatesRef = '${{ steps.detect-ref.outputs.ref }}';
-            const refNote = templatesRef === 'main'
-              ? 'tested against `cre-templates:main`'
-              : `tested against \`cre-templates:${templatesRef}\` (compat branch)`;
-
-            const body = [
-              '## ⚠️ Template Compatibility Failures',
-              '',
-              `This PR breaks one or more templates in [cre-templates](https://github.com/${{ env.TEMPLATES_REPO }}) (${refNote}).`,
-              '',
-              '```',
-              failureSummary,
-              '```',
-              '',
-              `[View full output →](${runUrl})`,
-              '',
-              '<details>',
-              '<summary>What should I do?</summary>',
-              '',
-              '- **Accidental break:** Fix the SDK change so existing templates continue to compile.',
-              '- **Intentional breaking change:** Create a branch in `cre-templates` named `compat/${{ github.head_ref }}` with the template fixes applied. This job will automatically retest against that branch.',
-              '',
-              '</details>',
-            ].join('\n');
-
-            const marker = '<!-- template-compat-comment -->';
-            const commentBody = `${marker}\n${body}`;
-
-            // Update existing comment if present, otherwise create a new one
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-            });
-
-            const existing = comments.find(c => c.body.includes(marker));
-            if (existing) {
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: existing.id,
-                body: commentBody,
-              });
-            } else {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body: commentBody,
-              });
-            }
-
-      # If a prior push had failures but this push fixes them, remove the stale comment
-      - name: Remove stale failure comment (if now passing)
-        if: steps.template-check.outputs.exit_code == '0'
-        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
-        with:
-          script: |
-            const marker = '<!-- template-compat-comment -->';
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-            });
-
-            const existing = comments.find(c => c.body.includes(marker));
-            if (existing) {
-              await github.rest.issues.deleteComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: existing.id,
-              });
-            }
+          name: template-compat-results
+          path: /tmp/compat-results/
+          retention-days: 7
 
       # Always exit 0 — this job is informational, not a merge gate
       - name: Report result (non-blocking)
