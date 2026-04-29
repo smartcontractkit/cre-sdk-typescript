@@ -51,6 +51,8 @@ unsafe extern "C" {
     fn random_seed(mode: i32) -> i64;
 
     fn now(result_timestamp: *mut u8) -> i32;
+
+    fn emit_metric(data_ptr: *const u8, data_len: i32) -> i32;
 }
 
 import_namespace!("javy_chainlink_sdk");
@@ -223,6 +225,16 @@ pub fn modify_runtime(runtime: Runtime) -> Runtime {
             Func::from(|message: String| {
                 let bytes = message.as_bytes();
                 unsafe { log(bytes.as_ptr(), bytes.len() as i32) };
+            }),
+        );
+
+        extend_wasm_exports(
+            &ctx,
+            "emitMetric",
+            Func::from(|_ctx: Ctx<'_>, data: ArgBytes| {
+                let bytes = data.0;
+                let rc = unsafe { emit_metric(bytes.as_ptr(), bytes.len() as i32) };
+                Ok::<i32, Error>(rc)
             }),
         );
 

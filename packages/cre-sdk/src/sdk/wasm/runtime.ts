@@ -91,4 +91,8 @@ class WasmRuntimeHelpers implements RuntimeHelpers {
 	log(message: string): void {
 		hostBindings.log(message)
 	}
+
+	emitMetric(payload: Uint8Array): boolean {
+		return hostBindings.emitMetric(payload) >= 0
+	}
 }

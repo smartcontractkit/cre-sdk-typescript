@@ -1,4 +1,4 @@
-import { create, type Message } from '@bufbuild/protobuf'
+import { create, type Message, toBinary } from '@bufbuild/protobuf'
 import type { GenMessage } from '@bufbuild/protobuf/codegenv2'
 import { type Any, anyPack, anyUnpack } from '@bufbuild/protobuf/wkt'
 import {
@@ -21,6 +21,10 @@ import {
 	SimpleConsensusInputsSchema,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import type { Value as ProtoValue } from '@cre/generated/values/v1/values_pb'
+import {
+	UserMetricType,
+	WorkflowUserMetricSchema,
+} from '@cre/generated/workflows/v2/workflow_user_metric_pb'
 import { ConsensusCapability } from '@cre/generated-sdk/capabilities/internal/consensus/v1alpha/consensus_sdk_gen'
 import type {
 	BaseRuntime,
@@ -208,6 +212,29 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 	log(message: string): void {
 		this.helpers.log(message)
 	}
+
+	emitMetric(
+		name: string,
+		value: number,
+		type: MetricType,
+		labels?: Record<string, string>,
+	): boolean {
+		const metric = create(WorkflowUserMetricSchema, {
+			name,
+			value,
+			type: METRIC_TYPE_TO_PROTO[type],
+			labels: labels ?? {},
+		})
+		return this.helpers.emitMetric(toBinary(WorkflowUserMetricSchema, metric))
+	}
+}
+
+/** Ergonomic union for {@link BaseRuntimeImpl.emitMetric}. */
+export type MetricType = 'counter' | 'gauge'
+
+const METRIC_TYPE_TO_PROTO: Record<MetricType, UserMetricType> = {
+	counter: UserMetricType.COUNTER,
+	gauge: UserMetricType.GAUGE,
 }
 
 /**
@@ -451,6 +478,12 @@ export interface RuntimeHelpers {
 
 	/** Logs a message to the host environment. */
 	log(message: string): void
+
+	/**
+	 * Emits a user metric to the host. Payload is a protobuf-encoded
+	 * `workflows.v2.WorkflowUserMetric`. Returns false if the host rejected it.
+	 */
+	emitMetric(payload: Uint8Array): boolean
 }
 
 function clearIgnoredFields(value: ProtoValue, descriptor: ConsensusDescriptor): void {
