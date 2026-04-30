@@ -13,10 +13,6 @@ on:
   workflow_run:
     workflows: ["Template Compatibility Check"]
     types: [completed]
-  workflow_dispatch:  # temporary — remove before merging
-    inputs:
-      run_id:
-        required: true
 
 permissions:
   pull-requests: write
