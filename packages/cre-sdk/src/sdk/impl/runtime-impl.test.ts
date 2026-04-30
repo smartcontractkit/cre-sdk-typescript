@@ -74,6 +74,7 @@ function createRuntimeHelpersMock(overrides: Partial<RuntimeHelpers> = {}): Runt
 			throw new Error('Method not implemented: now')
 		}),
 		log: mock(() => {}),
+		emitMetric: mock(() => true),
 	}
 
 	// Return a merged object with overrides taking precedence

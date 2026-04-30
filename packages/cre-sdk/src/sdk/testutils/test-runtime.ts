@@ -36,6 +36,7 @@ import {
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import type { Value as ProtoValue } from '@cre/generated/values/v1/values_pb'
 import { ValueSchema } from '@cre/generated/values/v1/values_pb'
+import type { WorkflowUserMetric } from '@cre/generated/workflows/v2/workflow_user_metric_pb'
 import type { RuntimeHelpers } from '../impl/runtime-impl'
 import { RuntimeImpl } from '../impl/runtime-impl'
 import { TestWriter } from './test-writer'
@@ -324,6 +325,11 @@ function createTestRuntimeHelpers(
 		log(message: string): void {
 			testWriter.log(message)
 		},
+
+		emitMetric(payload: Uint8Array): boolean {
+			testWriter.emitMetric(payload)
+			return true
+		},
 	}
 }
 
@@ -409,6 +415,10 @@ export class TestRuntime extends RuntimeImpl<unknown> {
 
 	getLogs(): string[] {
 		return this.testWriter.getLogs()
+	}
+
+	getMetrics(): WorkflowUserMetric[] {
+		return this.testWriter.getMetrics()
 	}
 
 	setTimeProvider(timeProvider: () => number): void {
