@@ -63,14 +63,14 @@
     },
     "packages/cre-sdk": {
       "name": "@chainlink/cre-sdk",
-      "version": "1.6.0-alpha.4",
+      "version": "1.6.0-alpha.5",
       "bin": {
         "cre-compile": "bin/cre-compile.ts",
       },
       "dependencies": {
         "@bufbuild/protobuf": "2.6.3",
         "@bufbuild/protoc-gen-es": "2.6.3",
-        "@chainlink/cre-sdk-javy-plugin": "1.6.0-alpha.4",
+        "@chainlink/cre-sdk-javy-plugin": "1.6.0-alpha.5",
         "@standard-schema/spec": "1.0.0",
         "viem": "2.34.0",
         "zod": "3.25.76",
@@ -88,17 +88,17 @@
     },
     "packages/cre-sdk-examples": {
       "name": "@chainlink/cre-sdk-examples",
-      "version": "1.6.0-alpha.4",
+      "version": "1.6.0-alpha.5",
       "dependencies": {
         "@bufbuild/protobuf": "2.6.3",
-        "@chainlink/cre-sdk": "1.6.0-alpha.4",
+        "@chainlink/cre-sdk": "1.6.0-alpha.5",
         "viem": "2.34.0",
         "zod": "3.25.76",
       },
     },
     "packages/cre-sdk-javy-plugin": {
       "name": "@chainlink/cre-sdk-javy-plugin",
-      "version": "1.6.0-alpha.4",
+      "version": "1.6.0-alpha.5",
       "bin": {
         "cre-setup": "bin/setup.ts",
         "cre-compile-workflow": "bin/compile-workflow.ts",
