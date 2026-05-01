@@ -5,6 +5,19 @@
 import type { Message } from '@bufbuild/protobuf'
 import type { GenFile, GenMessage, GenService } from '@bufbuild/protobuf/codegenv2'
 import { fileDesc, messageDesc, serviceDesc } from '@bufbuild/protobuf/codegenv2'
+import type { EmptySchema } from '@bufbuild/protobuf/wkt'
+import { file_google_protobuf_empty } from '@bufbuild/protobuf/wkt'
+import type {
+	ExecuteRequest,
+	ExecuteRequestJson,
+	ExecutionResult,
+	ExecutionResultJson,
+	Requirements,
+	RequirementsJson,
+	TeeTypeAndRegions,
+	TeeTypeAndRegionsJson,
+} from '../../../../sdk/v1alpha/sdk_pb'
+import { file_sdk_v1alpha_sdk } from '../../../../sdk/v1alpha/sdk_pb'
 import { file_tools_generator_v1alpha_cre_metadata } from '../../../../tools/generator/v1alpha/cre_metadata_pb'
 
 /**
@@ -13,8 +26,8 @@ import { file_tools_generator_v1alpha_cre_metadata } from '../../../../tools/gen
 export const file_capabilities_compute_confidentialworkflow_v1alpha_client: GenFile =
 	/*@__PURE__*/
 	fileDesc(
-		'Cj5jYXBhYmlsaXRpZXMvY29tcHV0ZS9jb25maWRlbnRpYWx3b3JrZmxvdy92MWFscGhhL2NsaWVudC5wcm90bxIxY2FwYWJpbGl0aWVzLmNvbXB1dGUuY29uZmlkZW50aWFsd29ya2Zsb3cudjFhbHBoYSJFChBTZWNyZXRJZGVudGlmaWVyEgsKA2tleRgBIAEoCRIWCgluYW1lc3BhY2UYAiABKAlIAIgBAUIMCgpfbmFtZXNwYWNlIp8BChFXb3JrZmxvd0V4ZWN1dGlvbhITCgt3b3JrZmxvd19pZBgBIAEoCRISCgpiaW5hcnlfdXJsGAIgASgJEhMKC2JpbmFyeV9oYXNoGAMgASgMEhcKD2V4ZWN1dGVfcmVxdWVzdBgEIAEoDBINCgVvd25lchgFIAEoCRIUCgxleGVjdXRpb25faWQYBiABKAkSDgoGb3JnX2lkGAcgASgJItYBChtDb25maWRlbnRpYWxXb3JrZmxvd1JlcXVlc3QSXgoRdmF1bHRfZG9uX3NlY3JldHMYASADKAsyQy5jYXBhYmlsaXRpZXMuY29tcHV0ZS5jb25maWRlbnRpYWx3b3JrZmxvdy52MWFscGhhLlNlY3JldElkZW50aWZpZXISVwoJZXhlY3V0aW9uGAIgASgLMkQuY2FwYWJpbGl0aWVzLmNvbXB1dGUuY29uZmlkZW50aWFsd29ya2Zsb3cudjFhbHBoYS5Xb3JrZmxvd0V4ZWN1dGlvbiI4ChxDb25maWRlbnRpYWxXb3JrZmxvd1Jlc3BvbnNlEhgKEGV4ZWN1dGlvbl9yZXN1bHQYASABKAwy4QEKBkNsaWVudBKqAQoHRXhlY3V0ZRJOLmNhcGFiaWxpdGllcy5jb21wdXRlLmNvbmZpZGVudGlhbHdvcmtmbG93LnYxYWxwaGEuQ29uZmlkZW50aWFsV29ya2Zsb3dSZXF1ZXN0Gk8uY2FwYWJpbGl0aWVzLmNvbXB1dGUuY29uZmlkZW50aWFsd29ya2Zsb3cudjFhbHBoYS5Db25maWRlbnRpYWxXb3JrZmxvd1Jlc3BvbnNlGiqCtRgmCAESImNvbmZpZGVudGlhbC13b3JrZmxvd3NAMS4wLjAtYWxwaGFCqwIKNWNvbS5jYXBhYmlsaXRpZXMuY29tcHV0ZS5jb25maWRlbnRpYWx3b3JrZmxvdy52MWFscGhhQgtDbGllbnRQcm90b1ABogIDQ0NDqgIxQ2FwYWJpbGl0aWVzLkNvbXB1dGUuQ29uZmlkZW50aWFsd29ya2Zsb3cuVjFhbHBoYcoCMUNhcGFiaWxpdGllc1xDb21wdXRlXENvbmZpZGVudGlhbHdvcmtmbG93XFYxYWxwaGHiAj1DYXBhYmlsaXRpZXNcQ29tcHV0ZVxDb25maWRlbnRpYWx3b3JrZmxvd1xWMWFscGhhXEdQQk1ldGFkYXRh6gI0Q2FwYWJpbGl0aWVzOjpDb21wdXRlOjpDb25maWRlbnRpYWx3b3JrZmxvdzo6VjFhbHBoYWIGcHJvdG8z',
-		[file_tools_generator_v1alpha_cre_metadata],
+		'Cj5jYXBhYmlsaXRpZXMvY29tcHV0ZS9jb25maWRlbnRpYWx3b3JrZmxvdy92MWFscGhhL2NsaWVudC5wcm90bxIxY2FwYWJpbGl0aWVzLmNvbXB1dGUuY29uZmlkZW50aWFsd29ya2Zsb3cudjFhbHBoYSJFChBTZWNyZXRJZGVudGlmaWVyEgsKA2tleRgBIAEoCRIWCgluYW1lc3BhY2UYAiABKAlIAIgBAUIMCgpfbmFtZXNwYWNlIu0BChFXb3JrZmxvd0V4ZWN1dGlvbhITCgt3b3JrZmxvd19pZBgBIAEoCRISCgpiaW5hcnlfdXJsGAIgASgJEhMKC2JpbmFyeV9oYXNoGAMgASgMEjQKD2V4ZWN1dGVfcmVxdWVzdBgEIAEoCzIbLnNkay52MWFscGhhLkV4ZWN1dGVSZXF1ZXN0Eg0KBW93bmVyGAUgASgJEhQKDGV4ZWN1dGlvbl9pZBgGIAEoCRIOCgZvcmdfaWQYByABKAkSLwoMcmVxdWlyZW1lbnRzGAggASgLMhkuc2RrLnYxYWxwaGEuUmVxdWlyZW1lbnRzItYBChtDb25maWRlbnRpYWxXb3JrZmxvd1JlcXVlc3QSXgoRdmF1bHRfZG9uX3NlY3JldHMYASADKAsyQy5jYXBhYmlsaXRpZXMuY29tcHV0ZS5jb25maWRlbnRpYWx3b3JrZmxvdy52MWFscGhhLlNlY3JldElkZW50aWZpZXISVwoJZXhlY3V0aW9uGAIgASgLMkQuY2FwYWJpbGl0aWVzLmNvbXB1dGUuY29uZmlkZW50aWFsd29ya2Zsb3cudjFhbHBoYS5Xb3JrZmxvd0V4ZWN1dGlvbiJWChxDb25maWRlbnRpYWxXb3JrZmxvd1Jlc3BvbnNlEjYKEGV4ZWN1dGlvbl9yZXN1bHQYASABKAsyHC5zZGsudjFhbHBoYS5FeGVjdXRpb25SZXN1bHQiQwoUUHJvdmlkZWRUZWVzUmVzcG9uc2USKwoDdGVlGAEgAygLMh4uc2RrLnYxYWxwaGEuVGVlVHlwZUFuZFJlZ2lvbnMy0gIKBkNsaWVudBKqAQoHRXhlY3V0ZRJOLmNhcGFiaWxpdGllcy5jb21wdXRlLmNvbmZpZGVudGlhbHdvcmtmbG93LnYxYWxwaGEuQ29uZmlkZW50aWFsV29ya2Zsb3dSZXF1ZXN0Gk8uY2FwYWJpbGl0aWVzLmNvbXB1dGUuY29uZmlkZW50aWFsd29ya2Zsb3cudjFhbHBoYS5Db25maWRlbnRpYWxXb3JrZmxvd1Jlc3BvbnNlEm8KDFByb3ZpZGVkVGVlcxIWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRpHLmNhcGFiaWxpdGllcy5jb21wdXRlLmNvbmZpZGVudGlhbHdvcmtmbG93LnYxYWxwaGEuUHJvdmlkZWRUZWVzUmVzcG9uc2UaKoK1GCYIARIiY29uZmlkZW50aWFsLXdvcmtmbG93c0AxLjAuMC1hbHBoYUKrAgo1Y29tLmNhcGFiaWxpdGllcy5jb21wdXRlLmNvbmZpZGVudGlhbHdvcmtmbG93LnYxYWxwaGFCC0NsaWVudFByb3RvUAGiAgNDQ0OqAjFDYXBhYmlsaXRpZXMuQ29tcHV0ZS5Db25maWRlbnRpYWx3b3JrZmxvdy5WMWFscGhhygIxQ2FwYWJpbGl0aWVzXENvbXB1dGVcQ29uZmlkZW50aWFsd29ya2Zsb3dcVjFhbHBoYeICPUNhcGFiaWxpdGllc1xDb21wdXRlXENvbmZpZGVudGlhbHdvcmtmbG93XFYxYWxwaGFcR1BCTWV0YWRhdGHqAjRDYXBhYmlsaXRpZXM6OkNvbXB1dGU6OkNvbmZpZGVudGlhbHdvcmtmbG93OjpWMWFscGhhYgZwcm90bzM',
+		[file_google_protobuf_empty, file_sdk_v1alpha_sdk, file_tools_generator_v1alpha_cre_metadata],
 	)
 
 /**
@@ -91,12 +104,11 @@ export type WorkflowExecution =
 		binaryHash: Uint8Array
 
 		/**
-		 * execute_request is a serialized sdk.v1alpha.ExecuteRequest proto.
 		 * Contains either a subscribe request or a trigger execution request.
 		 *
-		 * @generated from field: bytes execute_request = 4;
+		 * @generated from field: sdk.v1alpha.ExecuteRequest execute_request = 4;
 		 */
-		executeRequest: Uint8Array
+		executeRequest?: ExecuteRequest
 
 		/**
 		 * owner is the on-chain owner address of the workflow (hex, 0x-prefixed).
@@ -121,6 +133,13 @@ export type WorkflowExecution =
 		 * @generated from field: string org_id = 7;
 		 */
 		orgId: string
+
+		/**
+		 * requirements to run this workflow
+		 *
+		 * @generated from field: sdk.v1alpha.Requirements requirements = 8;
+		 */
+		requirements?: Requirements
 	}
 
 /**
@@ -152,12 +171,11 @@ export type WorkflowExecutionJson = {
 	binaryHash?: string
 
 	/**
-	 * execute_request is a serialized sdk.v1alpha.ExecuteRequest proto.
 	 * Contains either a subscribe request or a trigger execution request.
 	 *
-	 * @generated from field: bytes execute_request = 4;
+	 * @generated from field: sdk.v1alpha.ExecuteRequest execute_request = 4;
 	 */
-	executeRequest?: string
+	executeRequest?: ExecuteRequestJson
 
 	/**
 	 * owner is the on-chain owner address of the workflow (hex, 0x-prefixed).
@@ -182,6 +200,13 @@ export type WorkflowExecutionJson = {
 	 * @generated from field: string org_id = 7;
 	 */
 	orgId?: string
+
+	/**
+	 * requirements to run this workflow
+	 *
+	 * @generated from field: sdk.v1alpha.Requirements requirements = 8;
+	 */
+	requirements?: RequirementsJson
 }
 
 /**
@@ -249,9 +274,9 @@ export type ConfidentialWorkflowResponse =
 		/**
 		 * execution_result is a serialized sdk.v1alpha.ExecutionResult proto.
 		 *
-		 * @generated from field: bytes execution_result = 1;
+		 * @generated from field: sdk.v1alpha.ExecutionResult execution_result = 1;
 		 */
-		executionResult: Uint8Array
+		executionResult?: ExecutionResult
 	}
 
 /**
@@ -263,9 +288,9 @@ export type ConfidentialWorkflowResponseJson = {
 	/**
 	 * execution_result is a serialized sdk.v1alpha.ExecutionResult proto.
 	 *
-	 * @generated from field: bytes execution_result = 1;
+	 * @generated from field: sdk.v1alpha.ExecutionResult execution_result = 1;
 	 */
-	executionResult?: string
+	executionResult?: ExecutionResultJson
 }
 
 /**
@@ -278,6 +303,36 @@ export const ConfidentialWorkflowResponseSchema: GenMessage<
 > = /*@__PURE__*/ messageDesc(file_capabilities_compute_confidentialworkflow_v1alpha_client, 3)
 
 /**
+ * @generated from message capabilities.compute.confidentialworkflow.v1alpha.ProvidedTeesResponse
+ */
+export type ProvidedTeesResponse =
+	Message<'capabilities.compute.confidentialworkflow.v1alpha.ProvidedTeesResponse'> & {
+		/**
+		 * @generated from field: repeated sdk.v1alpha.TeeTypeAndRegions tee = 1;
+		 */
+		tee: TeeTypeAndRegions[]
+	}
+
+/**
+ * @generated from message capabilities.compute.confidentialworkflow.v1alpha.ProvidedTeesResponse
+ */
+export type ProvidedTeesResponseJson = {
+	/**
+	 * @generated from field: repeated sdk.v1alpha.TeeTypeAndRegions tee = 1;
+	 */
+	tee?: TeeTypeAndRegionsJson[]
+}
+
+/**
+ * Describes the message capabilities.compute.confidentialworkflow.v1alpha.ProvidedTeesResponse.
+ * Use `create(ProvidedTeesResponseSchema)` to create a new message.
+ */
+export const ProvidedTeesResponseSchema: GenMessage<
+	ProvidedTeesResponse,
+	{ jsonType: ProvidedTeesResponseJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_compute_confidentialworkflow_v1alpha_client, 4)
+
+/**
  * @generated from service capabilities.compute.confidentialworkflow.v1alpha.Client
  */
 export const Client: GenService<{
@@ -288,5 +343,13 @@ export const Client: GenService<{
 		methodKind: 'unary'
 		input: typeof ConfidentialWorkflowRequestSchema
 		output: typeof ConfidentialWorkflowResponseSchema
+	}
+	/**
+	 * @generated from rpc capabilities.compute.confidentialworkflow.v1alpha.Client.ProvidedTees
+	 */
+	providedTees: {
+		methodKind: 'unary'
+		input: typeof EmptySchema
+		output: typeof ProvidedTeesResponseSchema
 	}
 }> = /*@__PURE__*/ serviceDesc(file_capabilities_compute_confidentialworkflow_v1alpha_client, 0)

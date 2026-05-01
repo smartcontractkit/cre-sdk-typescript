@@ -330,9 +330,11 @@ describe('handlerInTee', () => {
 		expect(subs.length).toBe(1)
 		const expected = create(RequirementsSchema, {
 			tee: {
-				type: {
-					case: 'typeSelection',
-					value: { types: [{ type: TeeType.AWS_NITRO, regions: ['us-west-2'] }] },
+				item: {
+					case: 'teeTypesAndRegions',
+					value: {
+						teeTypeAndRegions: [{ type: TeeType.AWS_NITRO, regions: ['us-west-2'] }],
+					},
 				},
 			},
 		})
@@ -341,7 +343,7 @@ describe('handlerInTee', () => {
 		)
 	})
 
-	test('any tee sets requirements on subscription', async () => {
+	test('any tee with regions sets requirements on subscription', async () => {
 		var sentResponse: ExecutionResult | null = null
 		mockHostBindings.sendResponse = mock((input) => {
 			sentResponse = fromBinary(ExecutionResultSchema, input)
@@ -350,11 +352,10 @@ describe('handlerInTee', () => {
 		const runner = await getTestRunner(subscribeRequest)
 		await runner.run(async (_: string, secretsProvider: SecretsProvider) => {
 			return [
-				handlerInTee(
-					basicTrigger.trigger({ name: 'foo', number: 10 }),
-					(runtime, trigger) => 0,
-					'any',
-				),
+				handlerInTee(basicTrigger.trigger({ name: 'foo', number: 10 }), (runtime, trigger) => 0, {
+					type: 'any',
+					regions: ['us-west-2'],
+				}),
 			]
 		})
 		expect(sentResponse).toBeDefined()
@@ -362,7 +363,12 @@ describe('handlerInTee', () => {
 		const subs = (sentResponse!.result.value as TriggerSubscriptionRequest).subscriptions
 		expect(subs.length).toBe(1)
 		const expected = create(RequirementsSchema, {
-			tee: { type: { case: 'any', value: create(EmptySchema, {}) } },
+			tee: {
+				item: {
+					case: 'anyRegions',
+					value: { regions: ['us-west-2'] },
+				},
+			},
 		})
 		expect(toBinary(RequirementsSchema, subs[0].requirements!)).toEqual(
 			toBinary(RequirementsSchema, expected),
