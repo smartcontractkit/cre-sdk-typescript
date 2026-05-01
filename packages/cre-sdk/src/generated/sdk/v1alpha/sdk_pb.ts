@@ -16,7 +16,7 @@ import { file_values_v1_values } from '../../values/v1/values_pb'
 export const file_sdk_v1alpha_sdk: GenFile =
 	/*@__PURE__*/
 	fileDesc(
-		'ChVzZGsvdjFhbHBoYS9zZGsucHJvdG8SC3Nkay52MWFscGhhIrQBChVTaW1wbGVDb25zZW5zdXNJbnB1dHMSIQoFdmFsdWUYASABKAsyEC52YWx1ZXMudjEuVmFsdWVIABIPCgVlcnJvchgCIAEoCUgAEjUKC2Rlc2NyaXB0b3JzGAMgASgLMiAuc2RrLnYxYWxwaGEuQ29uc2Vuc3VzRGVzY3JpcHRvchIhCgdkZWZhdWx0GAQgASgLMhAudmFsdWVzLnYxLlZhbHVlQg0KC29ic2VydmF0aW9uIpABCglGaWVsZHNNYXASMgoGZmllbGRzGAEgAygLMiIuc2RrLnYxYWxwaGEuRmllbGRzTWFwLkZpZWxkc0VudHJ5Gk8KC0ZpZWxkc0VudHJ5EgsKA2tleRgBIAEoCRIvCgV2YWx1ZRgCIAEoCzIgLnNkay52MWFscGhhLkNvbnNlbnN1c0Rlc2NyaXB0b3I6AjgBIoYBChNDb25zZW5zdXNEZXNjcmlwdG9yEjMKC2FnZ3JlZ2F0aW9uGAEgASgOMhwuc2RrLnYxYWxwaGEuQWdncmVnYXRpb25UeXBlSAASLAoKZmllbGRzX21hcBgCIAEoCzIWLnNkay52MWFscGhhLkZpZWxkc01hcEgAQgwKCmRlc2NyaXB0b3IiagoNUmVwb3J0UmVxdWVzdBIXCg9lbmNvZGVkX3BheWxvYWQYASABKAwSFAoMZW5jb2Rlcl9uYW1lGAIgASgJEhQKDHNpZ25pbmdfYWxnbxgDIAEoCRIUCgxoYXNoaW5nX2FsZ28YBCABKAkilwEKDlJlcG9ydFJlc3BvbnNlEhUKDWNvbmZpZ19kaWdlc3QYASABKAwSEgoGc2VxX25yGAIgASgEQgIwABIWCg5yZXBvcnRfY29udGV4dBgDIAEoDBISCgpyYXdfcmVwb3J0GAQgASgMEi4KBHNpZ3MYBSADKAsyIC5zZGsudjFhbHBoYS5BdHRyaWJ1dGVkU2lnbmF0dXJlIjsKE0F0dHJpYnV0ZWRTaWduYXR1cmUSEQoJc2lnbmF0dXJlGAEgASgMEhEKCXNpZ25lcl9pZBgCIAEoDSJrChFDYXBhYmlsaXR5UmVxdWVzdBIKCgJpZBgBIAEoCRIlCgdwYXlsb2FkGAIgASgLMhQuZ29vZ2xlLnByb3RvYnVmLkFueRIOCgZtZXRob2QYAyABKAkSEwoLY2FsbGJhY2tfaWQYBCABKAUiWgoSQ2FwYWJpbGl0eVJlc3BvbnNlEicKB3BheWxvYWQYASABKAsyFC5nb29nbGUucHJvdG9idWYuQW55SAASDwoFZXJyb3IYAiABKAlIAEIKCghyZXNwb25zZSKJAQoTVHJpZ2dlclN1YnNjcmlwdGlvbhIKCgJpZBgBIAEoCRIlCgdwYXlsb2FkGAIgASgLMhQuZ29vZ2xlLnByb3RvYnVmLkFueRIOCgZtZXRob2QYAyABKAkSLwoMcmVxdWlyZW1lbnRzGAQgASgLMhkuc2RrLnYxYWxwaGEuUmVxdWlyZW1lbnRzIkgKEVRlZVR5cGVBbmRSZWdpb25zEiIKBHR5cGUYASABKA4yFC5zZGsudjFhbHBoYS5UZWVUeXBlEg8KB3JlZ2lvbnMYAiADKAkiQQoQVGVlVHlwZVNlbGVjdGlvbhItCgV0eXBlcxgBIAMoCzIeLnNkay52MWFscGhhLlRlZVR5cGVBbmRSZWdpb25zIm0KA1RlZRIlCgNhbnkYASABKAsyFi5nb29nbGUucHJvdG9idWYuRW1wdHlIABI3Cg50eXBlX3NlbGVjdGlvbhgCIAEoCzIdLnNkay52MWFscGhhLlRlZVR5cGVTZWxlY3Rpb25IAEIGCgR0eXBlIlUKGlRyaWdnZXJTdWJzY3JpcHRpb25SZXF1ZXN0EjcKDXN1YnNjcmlwdGlvbnMYASADKAsyIC5zZGsudjFhbHBoYS5UcmlnZ2VyU3Vic2NyaXB0aW9uIkAKB1RyaWdnZXISDgoCaWQYASABKARCAjAAEiUKB3BheWxvYWQYAiABKAsyFC5nb29nbGUucHJvdG9idWYuQW55Ii0KDFJlcXVpcmVtZW50cxIdCgN0ZWUYASABKAsyEC5zZGsudjFhbHBoYS5UZWUiJwoYQXdhaXRDYXBhYmlsaXRpZXNSZXF1ZXN0EgsKA2lkcxgBIAMoBSK4AQoZQXdhaXRDYXBhYmlsaXRpZXNSZXNwb25zZRJICglyZXNwb25zZXMYASADKAsyNS5zZGsudjFhbHBoYS5Bd2FpdENhcGFiaWxpdGllc1Jlc3BvbnNlLlJlc3BvbnNlc0VudHJ5GlEKDlJlc3BvbnNlc0VudHJ5EgsKA2tleRgBIAEoBRIuCgV2YWx1ZRgCIAEoCzIfLnNkay52MWFscGhhLkNhcGFiaWxpdHlSZXNwb25zZToCOAEioAEKDkV4ZWN1dGVSZXF1ZXN0Eg4KBmNvbmZpZxgBIAEoDBIrCglzdWJzY3JpYmUYAiABKAsyFi5nb29nbGUucHJvdG9idWYuRW1wdHlIABInCgd0cmlnZ2VyGAMgASgLMhQuc2RrLnYxYWxwaGEuVHJpZ2dlckgAEh0KEW1heF9yZXNwb25zZV9zaXplGAQgASgEQgIwAEIJCgdyZXF1ZXN0IpkBCg9FeGVjdXRpb25SZXN1bHQSIQoFdmFsdWUYASABKAsyEC52YWx1ZXMudjEuVmFsdWVIABIPCgVlcnJvchgCIAEoCUgAEkgKFXRyaWdnZXJfc3Vic2NyaXB0aW9ucxgDIAEoCzInLnNkay52MWFscGhhLlRyaWdnZXJTdWJzY3JpcHRpb25SZXF1ZXN0SABCCAoGcmVzdWx0IlYKEUdldFNlY3JldHNSZXF1ZXN0EiwKCHJlcXVlc3RzGAEgAygLMhouc2RrLnYxYWxwaGEuU2VjcmV0UmVxdWVzdBITCgtjYWxsYmFja19pZBgCIAEoBSIiChNBd2FpdFNlY3JldHNSZXF1ZXN0EgsKA2lkcxgBIAMoBSKrAQoUQXdhaXRTZWNyZXRzUmVzcG9uc2USQwoJcmVzcG9uc2VzGAEgAygLMjAuc2RrLnYxYWxwaGEuQXdhaXRTZWNyZXRzUmVzcG9uc2UuUmVzcG9uc2VzRW50cnkaTgoOUmVzcG9uc2VzRW50cnkSCwoDa2V5GAEgASgFEisKBXZhbHVlGAIgASgLMhwuc2RrLnYxYWxwaGEuU2VjcmV0UmVzcG9uc2VzOgI4ASIuCg1TZWNyZXRSZXF1ZXN0EgoKAmlkGAEgASgJEhEKCW5hbWVzcGFjZRgCIAEoCSJFCgZTZWNyZXQSCgoCaWQYASABKAkSEQoJbmFtZXNwYWNlGAIgASgJEg0KBW93bmVyGAMgASgJEg0KBXZhbHVlGAQgASgJIkoKC1NlY3JldEVycm9yEgoKAmlkGAEgASgJEhEKCW5hbWVzcGFjZRgCIAEoCRINCgVvd25lchgDIAEoCRINCgVlcnJvchgEIAEoCSJuCg5TZWNyZXRSZXNwb25zZRIlCgZzZWNyZXQYASABKAsyEy5zZGsudjFhbHBoYS5TZWNyZXRIABIpCgVlcnJvchgCIAEoCzIYLnNkay52MWFscGhhLlNlY3JldEVycm9ySABCCgoIcmVzcG9uc2UiQQoPU2VjcmV0UmVzcG9uc2VzEi4KCXJlc3BvbnNlcxgBIAMoCzIbLnNkay52MWFscGhhLlNlY3JldFJlc3BvbnNlKrgBCg9BZ2dyZWdhdGlvblR5cGUSIAocQUdHUkVHQVRJT05fVFlQRV9VTlNQRUNJRklFRBAAEhsKF0FHR1JFR0FUSU9OX1RZUEVfTUVESUFOEAESHgoaQUdHUkVHQVRJT05fVFlQRV9JREVOVElDQUwQAhIiCh5BR0dSRUdBVElPTl9UWVBFX0NPTU1PTl9QUkVGSVgQAxIiCh5BR0dSRUdBVElPTl9UWVBFX0NPTU1PTl9TVUZGSVgQBCo5CgRNb2RlEhQKEE1PREVfVU5TUEVDSUZJRUQQABIMCghNT0RFX0RPThABEg0KCU1PREVfTk9ERRACKiEKB1RlZVR5cGUSFgoSVEVFX1RZUEVfQVdTX05JVFJPEABCaAoPY29tLnNkay52MWFscGhhQghTZGtQcm90b1ABogIDU1hYqgILU2RrLlYxYWxwaGHKAgtTZGtcVjFhbHBoYeICF1Nka1xWMWFscGhhXEdQQk1ldGFkYXRh6gIMU2RrOjpWMWFscGhhYgZwcm90bzM',
+		'ChVzZGsvdjFhbHBoYS9zZGsucHJvdG8SC3Nkay52MWFscGhhIrQBChVTaW1wbGVDb25zZW5zdXNJbnB1dHMSIQoFdmFsdWUYASABKAsyEC52YWx1ZXMudjEuVmFsdWVIABIPCgVlcnJvchgCIAEoCUgAEjUKC2Rlc2NyaXB0b3JzGAMgASgLMiAuc2RrLnYxYWxwaGEuQ29uc2Vuc3VzRGVzY3JpcHRvchIhCgdkZWZhdWx0GAQgASgLMhAudmFsdWVzLnYxLlZhbHVlQg0KC29ic2VydmF0aW9uIpABCglGaWVsZHNNYXASMgoGZmllbGRzGAEgAygLMiIuc2RrLnYxYWxwaGEuRmllbGRzTWFwLkZpZWxkc0VudHJ5Gk8KC0ZpZWxkc0VudHJ5EgsKA2tleRgBIAEoCRIvCgV2YWx1ZRgCIAEoCzIgLnNkay52MWFscGhhLkNvbnNlbnN1c0Rlc2NyaXB0b3I6AjgBIoYBChNDb25zZW5zdXNEZXNjcmlwdG9yEjMKC2FnZ3JlZ2F0aW9uGAEgASgOMhwuc2RrLnYxYWxwaGEuQWdncmVnYXRpb25UeXBlSAASLAoKZmllbGRzX21hcBgCIAEoCzIWLnNkay52MWFscGhhLkZpZWxkc01hcEgAQgwKCmRlc2NyaXB0b3IiagoNUmVwb3J0UmVxdWVzdBIXCg9lbmNvZGVkX3BheWxvYWQYASABKAwSFAoMZW5jb2Rlcl9uYW1lGAIgASgJEhQKDHNpZ25pbmdfYWxnbxgDIAEoCRIUCgxoYXNoaW5nX2FsZ28YBCABKAkilwEKDlJlcG9ydFJlc3BvbnNlEhUKDWNvbmZpZ19kaWdlc3QYASABKAwSEgoGc2VxX25yGAIgASgEQgIwABIWCg5yZXBvcnRfY29udGV4dBgDIAEoDBISCgpyYXdfcmVwb3J0GAQgASgMEi4KBHNpZ3MYBSADKAsyIC5zZGsudjFhbHBoYS5BdHRyaWJ1dGVkU2lnbmF0dXJlIjsKE0F0dHJpYnV0ZWRTaWduYXR1cmUSEQoJc2lnbmF0dXJlGAEgASgMEhEKCXNpZ25lcl9pZBgCIAEoDSJrChFDYXBhYmlsaXR5UmVxdWVzdBIKCgJpZBgBIAEoCRIlCgdwYXlsb2FkGAIgASgLMhQuZ29vZ2xlLnByb3RvYnVmLkFueRIOCgZtZXRob2QYAyABKAkSEwoLY2FsbGJhY2tfaWQYBCABKAUiWgoSQ2FwYWJpbGl0eVJlc3BvbnNlEicKB3BheWxvYWQYASABKAsyFC5nb29nbGUucHJvdG9idWYuQW55SAASDwoFZXJyb3IYAiABKAlIAEIKCghyZXNwb25zZSKJAQoTVHJpZ2dlclN1YnNjcmlwdGlvbhIKCgJpZBgBIAEoCRIlCgdwYXlsb2FkGAIgASgLMhQuZ29vZ2xlLnByb3RvYnVmLkFueRIOCgZtZXRob2QYAyABKAkSLwoMcmVxdWlyZW1lbnRzGAQgASgLMhkuc2RrLnYxYWxwaGEuUmVxdWlyZW1lbnRzIkgKEVRlZVR5cGVBbmRSZWdpb25zEiIKBHR5cGUYASABKA4yFC5zZGsudjFhbHBoYS5UZWVUeXBlEg8KB3JlZ2lvbnMYAyADKAkiVQoaVHJpZ2dlclN1YnNjcmlwdGlvblJlcXVlc3QSNwoNc3Vic2NyaXB0aW9ucxgBIAMoCzIgLnNkay52MWFscGhhLlRyaWdnZXJTdWJzY3JpcHRpb24iQAoHVHJpZ2dlchIOCgJpZBgBIAEoBEICMAASJQoHcGF5bG9hZBgCIAEoCzIULmdvb2dsZS5wcm90b2J1Zi5BbnkiGgoHUmVnaW9ucxIPCgdyZWdpb25zGAEgAygJIlIKElRlZVR5cGVzQW5kUmVnaW9ucxI8ChR0ZWVfdHlwZV9hbmRfcmVnaW9ucxgBIAMoCzIeLnNkay52MWFscGhhLlRlZVR5cGVBbmRSZWdpb25zInwKA1RlZRIrCgthbnlfcmVnaW9ucxgBIAEoCzIULnNkay52MWFscGhhLlJlZ2lvbnNIABJAChV0ZWVfdHlwZXNfYW5kX3JlZ2lvbnMYAiABKAsyHy5zZGsudjFhbHBoYS5UZWVUeXBlc0FuZFJlZ2lvbnNIAEIGCgRpdGVtIi0KDFJlcXVpcmVtZW50cxIdCgN0ZWUYASABKAsyEC5zZGsudjFhbHBoYS5UZWUiJwoYQXdhaXRDYXBhYmlsaXRpZXNSZXF1ZXN0EgsKA2lkcxgBIAMoBSK4AQoZQXdhaXRDYXBhYmlsaXRpZXNSZXNwb25zZRJICglyZXNwb25zZXMYASADKAsyNS5zZGsudjFhbHBoYS5Bd2FpdENhcGFiaWxpdGllc1Jlc3BvbnNlLlJlc3BvbnNlc0VudHJ5GlEKDlJlc3BvbnNlc0VudHJ5EgsKA2tleRgBIAEoBRIuCgV2YWx1ZRgCIAEoCzIfLnNkay52MWFscGhhLkNhcGFiaWxpdHlSZXNwb25zZToCOAEioAEKDkV4ZWN1dGVSZXF1ZXN0Eg4KBmNvbmZpZxgBIAEoDBIrCglzdWJzY3JpYmUYAiABKAsyFi5nb29nbGUucHJvdG9idWYuRW1wdHlIABInCgd0cmlnZ2VyGAMgASgLMhQuc2RrLnYxYWxwaGEuVHJpZ2dlckgAEh0KEW1heF9yZXNwb25zZV9zaXplGAQgASgEQgIwAEIJCgdyZXF1ZXN0IpkBCg9FeGVjdXRpb25SZXN1bHQSIQoFdmFsdWUYASABKAsyEC52YWx1ZXMudjEuVmFsdWVIABIPCgVlcnJvchgCIAEoCUgAEkgKFXRyaWdnZXJfc3Vic2NyaXB0aW9ucxgDIAEoCzInLnNkay52MWFscGhhLlRyaWdnZXJTdWJzY3JpcHRpb25SZXF1ZXN0SABCCAoGcmVzdWx0IlYKEUdldFNlY3JldHNSZXF1ZXN0EiwKCHJlcXVlc3RzGAEgAygLMhouc2RrLnYxYWxwaGEuU2VjcmV0UmVxdWVzdBITCgtjYWxsYmFja19pZBgCIAEoBSIiChNBd2FpdFNlY3JldHNSZXF1ZXN0EgsKA2lkcxgBIAMoBSKrAQoUQXdhaXRTZWNyZXRzUmVzcG9uc2USQwoJcmVzcG9uc2VzGAEgAygLMjAuc2RrLnYxYWxwaGEuQXdhaXRTZWNyZXRzUmVzcG9uc2UuUmVzcG9uc2VzRW50cnkaTgoOUmVzcG9uc2VzRW50cnkSCwoDa2V5GAEgASgFEisKBXZhbHVlGAIgASgLMhwuc2RrLnYxYWxwaGEuU2VjcmV0UmVzcG9uc2VzOgI4ASIuCg1TZWNyZXRSZXF1ZXN0EgoKAmlkGAEgASgJEhEKCW5hbWVzcGFjZRgCIAEoCSJFCgZTZWNyZXQSCgoCaWQYASABKAkSEQoJbmFtZXNwYWNlGAIgASgJEg0KBW93bmVyGAMgASgJEg0KBXZhbHVlGAQgASgJIkoKC1NlY3JldEVycm9yEgoKAmlkGAEgASgJEhEKCW5hbWVzcGFjZRgCIAEoCRINCgVvd25lchgDIAEoCRINCgVlcnJvchgEIAEoCSJuCg5TZWNyZXRSZXNwb25zZRIlCgZzZWNyZXQYASABKAsyEy5zZGsudjFhbHBoYS5TZWNyZXRIABIpCgVlcnJvchgCIAEoCzIYLnNkay52MWFscGhhLlNlY3JldEVycm9ySABCCgoIcmVzcG9uc2UiQQoPU2VjcmV0UmVzcG9uc2VzEi4KCXJlc3BvbnNlcxgBIAMoCzIbLnNkay52MWFscGhhLlNlY3JldFJlc3BvbnNlKrgBCg9BZ2dyZWdhdGlvblR5cGUSIAocQUdHUkVHQVRJT05fVFlQRV9VTlNQRUNJRklFRBAAEhsKF0FHR1JFR0FUSU9OX1RZUEVfTUVESUFOEAESHgoaQUdHUkVHQVRJT05fVFlQRV9JREVOVElDQUwQAhIiCh5BR0dSRUdBVElPTl9UWVBFX0NPTU1PTl9QUkVGSVgQAxIiCh5BR0dSRUdBVElPTl9UWVBFX0NPTU1PTl9TVUZGSVgQBCo5CgRNb2RlEhQKEE1PREVfVU5TUEVDSUZJRUQQABIMCghNT0RFX0RPThABEg0KCU1PREVfTk9ERRACKiEKB1RlZVR5cGUSFgoSVEVFX1RZUEVfQVdTX05JVFJPEABCaAoPY29tLnNkay52MWFscGhhQghTZGtQcm90b1ABogIDU1hYqgILU2RrLlYxYWxwaGHKAgtTZGtcVjFhbHBoYeICF1Nka1xWMWFscGhhXEdQQk1ldGFkYXRh6gIMU2RrOjpWMWFscGhhYgZwcm90bzM',
 		[file_google_protobuf_any, file_google_protobuf_empty, file_values_v1_values],
 	)
 
@@ -512,7 +512,7 @@ export type TeeTypeAndRegions = Message<'sdk.v1alpha.TeeTypeAndRegions'> & {
 	type: TeeType
 
 	/**
-	 * @generated from field: repeated string regions = 2;
+	 * @generated from field: repeated string regions = 3;
 	 */
 	regions: string[]
 }
@@ -527,7 +527,7 @@ export type TeeTypeAndRegionsJson = {
 	type?: TeeTypeJson
 
 	/**
-	 * @generated from field: repeated string regions = 2;
+	 * @generated from field: repeated string regions = 3;
 	 */
 	regions?: string[]
 }
@@ -540,83 +540,6 @@ export const TeeTypeAndRegionsSchema: GenMessage<
 	TeeTypeAndRegions,
 	{ jsonType: TeeTypeAndRegionsJson }
 > = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 9)
-
-/**
- * @generated from message sdk.v1alpha.TeeTypeSelection
- */
-export type TeeTypeSelection = Message<'sdk.v1alpha.TeeTypeSelection'> & {
-	/**
-	 * @generated from field: repeated sdk.v1alpha.TeeTypeAndRegions types = 1;
-	 */
-	types: TeeTypeAndRegions[]
-}
-
-/**
- * @generated from message sdk.v1alpha.TeeTypeSelection
- */
-export type TeeTypeSelectionJson = {
-	/**
-	 * @generated from field: repeated sdk.v1alpha.TeeTypeAndRegions types = 1;
-	 */
-	types?: TeeTypeAndRegionsJson[]
-}
-
-/**
- * Describes the message sdk.v1alpha.TeeTypeSelection.
- * Use `create(TeeTypeSelectionSchema)` to create a new message.
- */
-export const TeeTypeSelectionSchema: GenMessage<
-	TeeTypeSelection,
-	{ jsonType: TeeTypeSelectionJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 10)
-
-/**
- * @generated from message sdk.v1alpha.Tee
- */
-export type Tee = Message<'sdk.v1alpha.Tee'> & {
-	/**
-	 * @generated from oneof sdk.v1alpha.Tee.type
-	 */
-	type:
-		| {
-				/**
-				 * @generated from field: google.protobuf.Empty any = 1;
-				 */
-				value: Empty
-				case: 'any'
-		  }
-		| {
-				/**
-				 * @generated from field: sdk.v1alpha.TeeTypeSelection type_selection = 2;
-				 */
-				value: TeeTypeSelection
-				case: 'typeSelection'
-		  }
-		| { case: undefined; value?: undefined }
-}
-
-/**
- * @generated from message sdk.v1alpha.Tee
- */
-export type TeeJson = {
-	/**
-	 * @generated from field: google.protobuf.Empty any = 1;
-	 */
-	any?: EmptyJson
-
-	/**
-	 * @generated from field: sdk.v1alpha.TeeTypeSelection type_selection = 2;
-	 */
-	typeSelection?: TeeTypeSelectionJson
-}
-
-/**
- * Describes the message sdk.v1alpha.Tee.
- * Use `create(TeeSchema)` to create a new message.
- */
-export const TeeSchema: GenMessage<Tee, { jsonType: TeeJson }> =
-	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 11)
 
 /**
  * @generated from message sdk.v1alpha.TriggerSubscriptionRequest
@@ -645,7 +568,7 @@ export type TriggerSubscriptionRequestJson = {
 export const TriggerSubscriptionRequestSchema: GenMessage<
 	TriggerSubscriptionRequest,
 	{ jsonType: TriggerSubscriptionRequestJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 12)
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 10)
 
 /**
  * @generated from message sdk.v1alpha.Trigger
@@ -683,7 +606,112 @@ export type TriggerJson = {
  */
 export const TriggerSchema: GenMessage<Trigger, { jsonType: TriggerJson }> =
 	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 13)
+	messageDesc(file_sdk_v1alpha_sdk, 11)
+
+/**
+ * @generated from message sdk.v1alpha.Regions
+ */
+export type Regions = Message<'sdk.v1alpha.Regions'> & {
+	/**
+	 * @generated from field: repeated string regions = 1;
+	 */
+	regions: string[]
+}
+
+/**
+ * @generated from message sdk.v1alpha.Regions
+ */
+export type RegionsJson = {
+	/**
+	 * @generated from field: repeated string regions = 1;
+	 */
+	regions?: string[]
+}
+
+/**
+ * Describes the message sdk.v1alpha.Regions.
+ * Use `create(RegionsSchema)` to create a new message.
+ */
+export const RegionsSchema: GenMessage<Regions, { jsonType: RegionsJson }> =
+	/*@__PURE__*/
+	messageDesc(file_sdk_v1alpha_sdk, 12)
+
+/**
+ * @generated from message sdk.v1alpha.TeeTypesAndRegions
+ */
+export type TeeTypesAndRegions = Message<'sdk.v1alpha.TeeTypesAndRegions'> & {
+	/**
+	 * @generated from field: repeated sdk.v1alpha.TeeTypeAndRegions tee_type_and_regions = 1;
+	 */
+	teeTypeAndRegions: TeeTypeAndRegions[]
+}
+
+/**
+ * @generated from message sdk.v1alpha.TeeTypesAndRegions
+ */
+export type TeeTypesAndRegionsJson = {
+	/**
+	 * @generated from field: repeated sdk.v1alpha.TeeTypeAndRegions tee_type_and_regions = 1;
+	 */
+	teeTypeAndRegions?: TeeTypeAndRegionsJson[]
+}
+
+/**
+ * Describes the message sdk.v1alpha.TeeTypesAndRegions.
+ * Use `create(TeeTypesAndRegionsSchema)` to create a new message.
+ */
+export const TeeTypesAndRegionsSchema: GenMessage<
+	TeeTypesAndRegions,
+	{ jsonType: TeeTypesAndRegionsJson }
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 13)
+
+/**
+ * @generated from message sdk.v1alpha.Tee
+ */
+export type Tee = Message<'sdk.v1alpha.Tee'> & {
+	/**
+	 * @generated from oneof sdk.v1alpha.Tee.item
+	 */
+	item:
+		| {
+				/**
+				 * @generated from field: sdk.v1alpha.Regions any_regions = 1;
+				 */
+				value: Regions
+				case: 'anyRegions'
+		  }
+		| {
+				/**
+				 * @generated from field: sdk.v1alpha.TeeTypesAndRegions tee_types_and_regions = 2;
+				 */
+				value: TeeTypesAndRegions
+				case: 'teeTypesAndRegions'
+		  }
+		| { case: undefined; value?: undefined }
+}
+
+/**
+ * @generated from message sdk.v1alpha.Tee
+ */
+export type TeeJson = {
+	/**
+	 * @generated from field: sdk.v1alpha.Regions any_regions = 1;
+	 */
+	anyRegions?: RegionsJson
+
+	/**
+	 * @generated from field: sdk.v1alpha.TeeTypesAndRegions tee_types_and_regions = 2;
+	 */
+	teeTypesAndRegions?: TeeTypesAndRegionsJson
+}
+
+/**
+ * Describes the message sdk.v1alpha.Tee.
+ * Use `create(TeeSchema)` to create a new message.
+ */
+export const TeeSchema: GenMessage<Tee, { jsonType: TeeJson }> =
+	/*@__PURE__*/
+	messageDesc(file_sdk_v1alpha_sdk, 14)
 
 /**
  * @generated from message sdk.v1alpha.Requirements
@@ -711,7 +739,7 @@ export type RequirementsJson = {
  */
 export const RequirementsSchema: GenMessage<Requirements, { jsonType: RequirementsJson }> =
 	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 14)
+	messageDesc(file_sdk_v1alpha_sdk, 15)
 
 /**
  * @generated from message sdk.v1alpha.AwaitCapabilitiesRequest
@@ -740,7 +768,7 @@ export type AwaitCapabilitiesRequestJson = {
 export const AwaitCapabilitiesRequestSchema: GenMessage<
 	AwaitCapabilitiesRequest,
 	{ jsonType: AwaitCapabilitiesRequestJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 15)
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 16)
 
 /**
  * @generated from message sdk.v1alpha.AwaitCapabilitiesResponse
@@ -769,7 +797,7 @@ export type AwaitCapabilitiesResponseJson = {
 export const AwaitCapabilitiesResponseSchema: GenMessage<
 	AwaitCapabilitiesResponse,
 	{ jsonType: AwaitCapabilitiesResponseJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 16)
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 17)
 
 /**
  * @generated from message sdk.v1alpha.ExecuteRequest
@@ -837,7 +865,7 @@ export type ExecuteRequestJson = {
  */
 export const ExecuteRequestSchema: GenMessage<ExecuteRequest, { jsonType: ExecuteRequestJson }> =
 	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 17)
+	messageDesc(file_sdk_v1alpha_sdk, 18)
 
 /**
  * @generated from message sdk.v1alpha.ExecutionResult
@@ -897,7 +925,7 @@ export type ExecutionResultJson = {
  */
 export const ExecutionResultSchema: GenMessage<ExecutionResult, { jsonType: ExecutionResultJson }> =
 	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 18)
+	messageDesc(file_sdk_v1alpha_sdk, 19)
 
 /**
  * @generated from message sdk.v1alpha.GetSecretsRequest
@@ -936,7 +964,7 @@ export type GetSecretsRequestJson = {
 export const GetSecretsRequestSchema: GenMessage<
 	GetSecretsRequest,
 	{ jsonType: GetSecretsRequestJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 19)
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 20)
 
 /**
  * @generated from message sdk.v1alpha.AwaitSecretsRequest
@@ -965,7 +993,7 @@ export type AwaitSecretsRequestJson = {
 export const AwaitSecretsRequestSchema: GenMessage<
 	AwaitSecretsRequest,
 	{ jsonType: AwaitSecretsRequestJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 20)
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 21)
 
 /**
  * @generated from message sdk.v1alpha.AwaitSecretsResponse
@@ -994,7 +1022,7 @@ export type AwaitSecretsResponseJson = {
 export const AwaitSecretsResponseSchema: GenMessage<
 	AwaitSecretsResponse,
 	{ jsonType: AwaitSecretsResponseJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 21)
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 22)
 
 /**
  * @generated from message sdk.v1alpha.SecretRequest
@@ -1032,7 +1060,7 @@ export type SecretRequestJson = {
  */
 export const SecretRequestSchema: GenMessage<SecretRequest, { jsonType: SecretRequestJson }> =
 	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 22)
+	messageDesc(file_sdk_v1alpha_sdk, 23)
 
 /**
  * @generated from message sdk.v1alpha.Secret
@@ -1090,7 +1118,7 @@ export type SecretJson = {
  */
 export const SecretSchema: GenMessage<Secret, { jsonType: SecretJson }> =
 	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 23)
+	messageDesc(file_sdk_v1alpha_sdk, 24)
 
 /**
  * @generated from message sdk.v1alpha.SecretError
@@ -1148,7 +1176,7 @@ export type SecretErrorJson = {
  */
 export const SecretErrorSchema: GenMessage<SecretError, { jsonType: SecretErrorJson }> =
 	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 24)
+	messageDesc(file_sdk_v1alpha_sdk, 25)
 
 /**
  * @generated from message sdk.v1alpha.SecretResponse
@@ -1196,7 +1224,7 @@ export type SecretResponseJson = {
  */
 export const SecretResponseSchema: GenMessage<SecretResponse, { jsonType: SecretResponseJson }> =
 	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 25)
+	messageDesc(file_sdk_v1alpha_sdk, 26)
 
 /**
  * @generated from message sdk.v1alpha.SecretResponses
@@ -1224,7 +1252,7 @@ export type SecretResponsesJson = {
  */
 export const SecretResponsesSchema: GenMessage<SecretResponses, { jsonType: SecretResponsesJson }> =
 	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 26)
+	messageDesc(file_sdk_v1alpha_sdk, 27)
 
 /**
  * @generated from enum sdk.v1alpha.AggregationType
