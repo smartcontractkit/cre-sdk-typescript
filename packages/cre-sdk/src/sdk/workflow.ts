@@ -6,9 +6,13 @@ import type {
 	Secret,
 	SecretRequest,
 	SecretRequestJson,
+} from '@cre/generated/sdk/v1alpha/sdk_pb'
+import {
+	RegionsSchema,
+	RequirementsSchema,
+	TeeSchema,
 	TeeType,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import { RegionsSchema, RequirementsSchema, TeeSchema } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import type { Runtime, TeeRuntime } from '@cre/sdk/runtime'
 import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 import type { CreSerializable } from './utils'
@@ -53,7 +57,7 @@ export const handler = <
 	hooks,
 })
 
-export type TeeRequirement = { type: TeeType; regions?: string[] }
+export type TeeRequirement = { type: Exclude<TeeType, TeeType.UNSPECIFIED>; regions?: string[] }
 export type AnyTeeRequirement = { type: 'any'; regions?: string[] }
 export type AcceptedTees = TeeRequirement[] | AnyTeeRequirement
 
