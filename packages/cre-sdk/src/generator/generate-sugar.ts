@@ -22,10 +22,8 @@ export function generateActionSugarClass(
 	return `
 export class ${sugarClassName} {
 	constructor(private readonly runtime: NodeRuntime<unknown>, private readonly client: ${capabilityClassName}) {}
-	${methodName}<TInput>(input: CapabilityInput<TInput, ${method.input.name}, ${method.input.name}Json>): {result: () => ${outputType}}
-	${methodName}(input: ${method.input.name} | ${method.input.name}Json): {result: () => ${outputType}} {
-		// Cast to native overload signature - the impl dispatches on $typeName.
-		return this.client.${methodName}(this.runtime, input as ${method.input.name})
+	${methodName}<TInput>(input: CapabilityInput<TInput, ${method.input.name}, ${method.input.name}Json>): {result: () => ${outputType}} {
+		return this.client.${methodName}<TInput>(this.runtime, input)
 	}
 }`
 }

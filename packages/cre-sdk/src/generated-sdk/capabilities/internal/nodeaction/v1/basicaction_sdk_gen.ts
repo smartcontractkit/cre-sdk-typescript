@@ -18,10 +18,8 @@ export class PerformActioner {
 	) {}
 	performAction<TInput>(input: CapabilityInput<TInput, NodeInputs, NodeInputsJson>): {
 		result: () => NodeOutputs
-	}
-	performAction(input: NodeInputs | NodeInputsJson): { result: () => NodeOutputs } {
-		// Cast to native overload signature - the impl dispatches on $typeName.
-		return this.client.performAction(this.runtime, input as NodeInputs)
+	} {
+		return this.client.performAction<TInput>(this.runtime, input)
 	}
 }
 

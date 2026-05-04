@@ -18,10 +18,8 @@ export class SendRequester {
 	) {}
 	sendRequest<TInput>(input: CapabilityInput<TInput, Request, RequestJson>): {
 		result: () => Response
-	}
-	sendRequest(input: Request | RequestJson): { result: () => Response } {
-		// Cast to native overload signature - the impl dispatches on $typeName.
-		return this.client.sendRequest(this.runtime, input as Request)
+	} {
+		return this.client.sendRequest<TInput>(this.runtime, input)
 	}
 }
 
