@@ -8,6 +8,7 @@ import {
 	OutputsSchema,
 } from '@cre/generated/capabilities/internal/basictrigger/v1/basic_trigger_pb'
 import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
+import type { NoExcess } from '@cre/sdk/utils/types/no-excess'
 
 /**
  * Basic Capability
@@ -23,9 +24,9 @@ export class BasicCapability {
 	static readonly CAPABILITY_NAME = 'basic-test-trigger'
 	static readonly CAPABILITY_VERSION = '1.0.0'
 
-	trigger(config: ConfigJson): BasicTrigger {
+	trigger<TConfig extends ConfigJson>(config: NoExcess<TConfig, ConfigJson>): BasicTrigger {
 		const capabilityId = BasicCapability.CAPABILITY_ID
-		return new BasicTrigger(config, capabilityId, 'Trigger')
+		return new BasicTrigger(config as ConfigJson, capabilityId, 'Trigger')
 	}
 }
 

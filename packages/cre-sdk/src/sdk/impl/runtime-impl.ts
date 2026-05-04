@@ -428,7 +428,8 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 	 */
 	report(input: ReportRequest | ReportRequestJson): { result: () => Report } {
 		const consensus = new ConsensusCapability()
-		const call = consensus.report(this, input)
+		// Cast to native overload signature - the impl dispatches on $typeName.
+		const call = consensus.report(this, input as ReportRequest)
 		return {
 			result: () => call.result(),
 		}
