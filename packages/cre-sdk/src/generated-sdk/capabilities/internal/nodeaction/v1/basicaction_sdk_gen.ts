@@ -9,14 +9,19 @@ import {
 import type { NodeRuntime, Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import type { ConsensusAggregation, PrimitiveTypes, UnwrapOptions } from '@cre/sdk/utils'
+import type { CapabilityInput } from '@cre/sdk/utils/types/no-excess'
 
 export class PerformActioner {
 	constructor(
 		private readonly runtime: NodeRuntime<unknown>,
 		private readonly client: BasicActionCapability,
 	) {}
+	performAction<TInput>(input: CapabilityInput<TInput, NodeInputs, NodeInputsJson>): {
+		result: () => NodeOutputs
+	}
 	performAction(input: NodeInputs | NodeInputsJson): { result: () => NodeOutputs } {
-		return this.client.performAction(this.runtime, input)
+		// Cast to native overload signature - the impl dispatches on $typeName.
+		return this.client.performAction(this.runtime, input as NodeInputs)
 	}
 }
 
@@ -34,9 +39,9 @@ export class BasicActionCapability {
 	static readonly CAPABILITY_NAME = 'basic-test-node-action'
 	static readonly CAPABILITY_VERSION = '1.0.0'
 
-	performAction(
+	performAction<TInput>(
 		runtime: NodeRuntime<unknown>,
-		input: NodeInputs | NodeInputsJson,
+		input: CapabilityInput<TInput, NodeInputs, NodeInputsJson>,
 	): { result: () => NodeOutputs }
 	performAction<TArgs extends unknown[], TOutput>(
 		runtime: Runtime<unknown>,
