@@ -140,24 +140,44 @@ info ""
 info "Packing SDK..."
 
 cd packages/cre-sdk-javy-plugin
-JAVY_TARBALL=$(npm pack --quiet 2>/dev/null)
-if [ -z "$JAVY_TARBALL" ]; then
+_pack_log=$(mktemp)
+if ! bun pm pack --quiet >"$_pack_log" 2>&1; then
   info "❌ Failed to pack Javy plugin."
+  info "$(cat "$_pack_log")"
+  rm -f "$_pack_log"
   exit 1
 fi
+JAVY_TARBALL=$(grep -oE '[^[:space:]]+\.tgz' "$_pack_log" | tail -n1 | tr -d '\r\n')
+if [ -z "$JAVY_TARBALL" ] || [ ! -f "$(pwd)/$JAVY_TARBALL" ]; then
+  info "❌ Failed to pack Javy plugin (no .tgz produced or name not found)."
+  info "$(cat "$_pack_log")"
+  rm -f "$_pack_log"
+  exit 1
+fi
+rm -f "$_pack_log"
 JAVY_TARBALL_PATH="$(pwd)/$JAVY_TARBALL"
 SDK_TARBALLS+=("$JAVY_TARBALL_PATH")
 vlog "  Javy plugin: $JAVY_TARBALL_PATH"
 
 cd ../cre-sdk
 cp package.json package.json.bak
-npm pkg set dependencies."@chainlink/cre-sdk-javy-plugin"="file:$JAVY_TARBALL_PATH"
+bun pm pkg set "dependencies.@chainlink/cre-sdk-javy-plugin=file:$JAVY_TARBALL_PATH"
 
-TARBALL=$(npm pack --quiet 2>/dev/null)
-if [ -z "$TARBALL" ]; then
+_pack_log=$(mktemp)
+if ! bun pm pack --quiet >"$_pack_log" 2>&1; then
   info "❌ Failed to pack SDK."
+  info "$(cat "$_pack_log")"
+  rm -f "$_pack_log"
   exit 1
 fi
+TARBALL=$(grep -oE '[^[:space:]]+\.tgz' "$_pack_log" | tail -n1 | tr -d '\r\n')
+if [ -z "$TARBALL" ] || [ ! -f "$(pwd)/$TARBALL" ]; then
+  info "❌ Failed to pack SDK (no .tgz produced or name not found)."
+  info "$(cat "$_pack_log")"
+  rm -f "$_pack_log"
+  exit 1
+fi
+rm -f "$_pack_log"
 TARBALL_PATH="$(pwd)/$TARBALL"
 SDK_TARBALLS+=("$TARBALL_PATH")
 vlog "  SDK:         $TARBALL_PATH"
@@ -173,7 +193,7 @@ info ""
 
 if [ ! -d "$TEMPLATES_DIR" ]; then
   info "❌ Templates directory not found: $TEMPLATES_DIR"
-  info "Override with: TEMPLATES_DIR=/path/to/cre-templates ./scripts/test-templates.sh"
+  info "Override with: TEMPLATES_DIR=/path/to/cre-templates bun run test:templates"
   exit 1
 fi
 
@@ -226,17 +246,17 @@ for pkg in "${ALL_PKGS[@]}"; do
   # Install dependencies
   vlog "  Installing dependencies..."
   _out=""
-  if ! run_captured _out npm install --no-audit --fund=false; then
+  if ! run_captured _out bun install; then
     info "  ❌ $PREFIX $DISPLAY_NAME"
     FAILED_TEMPLATES+=("$DISPLAY_NAME")
-    FAILURE_STEPS+=("npm install")
+    FAILURE_STEPS+=("bun install")
     FAILURE_OUTPUTS+=("$_out")
     continue
   fi
 
   # Inject local SDK tarball
   vlog "  Installing local SDK..."
-  if ! run_captured _out npm install --no-save --no-audit --fund=false "$TARBALL_PATH"; then
+  if ! run_captured _out bun install --no-save "@chainlink/cre-sdk@file:$TARBALL_PATH"; then
     info "  ❌ $PREFIX $DISPLAY_NAME"
     FAILED_TEMPLATES+=("$DISPLAY_NAME")
     FAILURE_STEPS+=("sdk install")
@@ -249,7 +269,7 @@ for pkg in "${ALL_PKGS[@]}"; do
   # Typecheck
   if grep -q '"typecheck"' package.json; then
     vlog "  Running typecheck..."
-    if ! run_captured _out npm run typecheck --silent; then
+    if ! run_captured _out bun run typecheck; then
       info "  ❌ $PREFIX $DISPLAY_NAME"
       FAILED_TEMPLATES+=("$DISPLAY_NAME")
       FAILURE_STEPS+=("typecheck")
@@ -268,7 +288,7 @@ for pkg in "${ALL_PKGS[@]}"; do
   if [ -f "main.ts" ]; then
     GENERATED_FILES+=("$WORKFLOW_DIR/main.js" "$WORKFLOW_DIR/main.wasm")
     vlog "  Running cre-compile..."
-    if ! run_captured _out npx --no cre-compile main.ts; then
+    if ! run_captured _out bunx cre-compile main.ts; then
       info "  ❌ $PREFIX $DISPLAY_NAME"
       FAILED_TEMPLATES+=("$DISPLAY_NAME")
       FAILURE_STEPS+=("cre-compile")
@@ -312,8 +332,8 @@ if [ $FAIL_COUNT -gt 0 ]; then
     info ""
     info "❌ ${FAILED_TEMPLATES[$i]} — ${FAILURE_STEPS[$i]}"
     info "--------"
-    # Print the captured output, stripping npm warn noise to highlight real errors
-    echo "${FAILURE_OUTPUTS[$i]}" | grep -v "^npm warn" | grep -v "^$" || true
+    # Print the captured output, stripping common PM noise to highlight real errors
+    echo "${FAILURE_OUTPUTS[$i]}" | grep -v "^npm warn" | grep -v "^bun install v" | grep -v "^$" || true
   done
 
   exit 1

@@ -4,6 +4,10 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+concurrency:
+  group: template-compat-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 # This job is informational — it is intentionally NOT a required status check
 # so that breaking SDK changes (major version bumps) can still be merged.
 # When templates break, a comment is posted on the PR with details.
@@ -17,6 +21,7 @@ permissions:
 jobs:
   template-compatibility:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     defaults:
       run:
