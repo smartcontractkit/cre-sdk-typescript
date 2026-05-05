@@ -55,12 +55,19 @@ export function generateSdk(file: GenFile, outputDir: string) {
 
 		let hasTriggers = false
 		let hasActions = false
+		let hasConfidentialHttpRequestInput = false
 		// Process each method to collect types
 		service.methods.forEach((method) => {
 			if (method.methodKind === 'server_streaming') {
 				hasTriggers = true
 			} else {
 				hasActions = true
+			}
+			const isConfidentialHttpRequestInput =
+				method.input.file.name === 'capabilities/networking/confidentialhttp/v1alpha/client' &&
+				method.input.name === 'ConfidentialHTTPRequest'
+			if (isConfidentialHttpRequestInput) {
+				hasConfidentialHttpRequestInput = true
 			}
 
 			// Handle input type
@@ -76,7 +83,9 @@ export function generateSdk(file: GenFile, outputDir: string) {
 
 			const inputPathTypes = typeImports.get(inputPath)!
 			inputPathTypes.add(`${method.input.name}Schema`)
-			inputPathTypes.add(`type ${method.input.name}Json`)
+			if (!isConfidentialHttpRequestInput) {
+				inputPathTypes.add(`type ${method.input.name}Json`)
+			}
 			inputPathTypes.add(`type ${method.input.name}`)
 
 			// Handle output type
@@ -108,15 +117,9 @@ export function generateSdk(file: GenFile, outputDir: string) {
 			imports.add(`import { type Any, AnySchema, anyPack } from "@bufbuild/protobuf/wkt"`)
 		}
 
-		// Gate JSON input shapes at every capability boundary. Actions use the
-		// $typeName-aware CapabilityInput; triggers (JSON-only configs) use
-		// NoExcess directly. Import only what each file actually references.
-		const noExcessImports: string[] = []
-		if (hasActions) noExcessImports.push('CapabilityInput')
-		if (hasTriggers) noExcessImports.push('NoExcess')
-		if (noExcessImports.length > 0) {
+		if (hasConfidentialHttpRequestInput) {
 			imports.add(
-				`import type { ${noExcessImports.join(', ')} } from "@cre/sdk/utils/types/no-excess"`,
+				'import { normalizeConfidentialHttpRequestInput, type ConfidentialHttpRequestInput } from "@cre/sdk/utils/capabilities/confidentialhttp/confidential-http-helpers"',
 			)
 		}
 

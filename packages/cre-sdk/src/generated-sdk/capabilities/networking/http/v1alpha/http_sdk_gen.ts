@@ -8,7 +8,6 @@ import {
 	PayloadSchema,
 } from '@cre/generated/capabilities/networking/http/v1alpha/trigger_pb'
 import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
-import type { NoExcess } from '@cre/sdk/utils/types/no-excess'
 
 /**
  * HTTP Capability
@@ -24,9 +23,9 @@ export class HTTPCapability {
 	static readonly CAPABILITY_NAME = 'http-trigger'
 	static readonly CAPABILITY_VERSION = '1.0.0-alpha'
 
-	trigger<TConfig extends ConfigJson>(config: NoExcess<TConfig, ConfigJson>): HTTPTrigger {
+	trigger(config: ConfigJson): HTTPTrigger {
 		const capabilityId = HTTPCapability.CAPABILITY_ID
-		return new HTTPTrigger(config as ConfigJson, capabilityId, 'Trigger')
+		return new HTTPTrigger(config, capabilityId, 'Trigger')
 	}
 }
 

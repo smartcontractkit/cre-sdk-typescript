@@ -26,9 +26,9 @@ export function generateTriggerMethod(
 		labels.length > 0 ? ', ' + labels.map((label) => `this.${label.name}`).join(', ') : ''
 
 	return `
-  ${methodName}<TConfig extends ${method.input.name}Json>(config: NoExcess<TConfig, ${method.input.name}Json>): ${triggerClassName} {
+  ${methodName}(config: ${method.input.name}Json): ${triggerClassName} {
     ${capabilityIdLogic}
-    return new ${triggerClassName}(config as ${method.input.name}Json, capabilityId, "${method.name}"${labelArgs});
+    return new ${triggerClassName}(config, capabilityId, "${method.name}"${labelArgs});
   }`
 }
 

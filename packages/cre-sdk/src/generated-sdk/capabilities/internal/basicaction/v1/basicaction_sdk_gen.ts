@@ -9,7 +9,6 @@ import {
 import type { Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import { hexToBytes } from '@cre/sdk/utils/hex-utils'
-import type { CapabilityInput } from '@cre/sdk/utils/types/no-excess'
 
 /**
  * BasicAction Capability
@@ -25,10 +24,6 @@ export class BasicActionCapability {
 	static readonly CAPABILITY_NAME = 'basic-test-action'
 	static readonly CAPABILITY_VERSION = '1.0.0'
 
-	performAction<TInput>(
-		runtime: Runtime<unknown>,
-		input: CapabilityInput<TInput, Inputs, InputsJson>,
-	): { result: () => Outputs }
 	performAction(runtime: Runtime<unknown>, input: Inputs | InputsJson): { result: () => Outputs } {
 		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
 		let payload: Inputs

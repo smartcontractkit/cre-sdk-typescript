@@ -13,7 +13,6 @@ import { type Value, ValueSchema } from '@cre/generated/values/v1/values_pb'
 import type { Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import { hexToBytes } from '@cre/sdk/utils/hex-utils'
-import type { CapabilityInput } from '@cre/sdk/utils/types/no-excess'
 
 /**
  * Consensus Capability
@@ -29,10 +28,6 @@ export class ConsensusCapability {
 	static readonly CAPABILITY_NAME = 'consensus'
 	static readonly CAPABILITY_VERSION = '1.0.0-alpha'
 
-	simple<TInput>(
-		runtime: Runtime<unknown>,
-		input: CapabilityInput<TInput, SimpleConsensusInputs, SimpleConsensusInputsJson>,
-	): { result: () => Value }
 	simple(
 		runtime: Runtime<unknown>,
 		input: SimpleConsensusInputs | SimpleConsensusInputsJson,
@@ -67,10 +62,6 @@ export class ConsensusCapability {
 		}
 	}
 
-	report<TInput>(
-		runtime: Runtime<unknown>,
-		input: CapabilityInput<TInput, ReportRequest, ReportRequestJson>,
-	): { result: () => Report }
 	report(
 		runtime: Runtime<unknown>,
 		input: ReportRequest | ReportRequestJson,

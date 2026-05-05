@@ -10,7 +10,6 @@ import {
 	PayloadSchema,
 } from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
 import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
-import type { NoExcess } from '@cre/sdk/utils/types/no-excess'
 
 /**
  * Cron Capability
@@ -26,9 +25,9 @@ export class CronCapability {
 	static readonly CAPABILITY_NAME = 'cron-trigger'
 	static readonly CAPABILITY_VERSION = '1.0.0'
 
-	trigger<TConfig extends ConfigJson>(config: NoExcess<TConfig, ConfigJson>): CronTrigger {
+	trigger(config: ConfigJson): CronTrigger {
 		const capabilityId = CronCapability.CAPABILITY_ID
-		return new CronTrigger(config as ConfigJson, capabilityId, 'Trigger')
+		return new CronTrigger(config, capabilityId, 'Trigger')
 	}
 }
 

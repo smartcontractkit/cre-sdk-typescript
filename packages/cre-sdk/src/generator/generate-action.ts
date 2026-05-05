@@ -29,7 +29,12 @@ export function generateActionMethod(
 	const inputTypes = hasWrappedInput
 		? [wrappedInputType.name, `${wrappedInputType.name}Json`]
 		: [method.input.name, `${method.input.name}Json`]
-	const [nativeInputType, jsonInputType] = inputTypes
+	const isConfidentialHttpRequestInput =
+		method.input.file.name === 'capabilities/networking/confidentialhttp/v1alpha/client' &&
+		method.input.name === 'ConfidentialHTTPRequest'
+	if (isConfidentialHttpRequestInput) {
+		inputTypes[1] = 'ConfidentialHttpRequestInput'
+	}
 
 	// Build output type
 	const hasWrappedOutput = wrappedOutputType !== method.output
@@ -41,16 +46,8 @@ export function generateActionMethod(
 			? 'Report'
 			: method.output.name
 
-	// Public-facing signature uses CapabilityInput, a conditional that
-	// branches on the `$typeName` brand:
-	//   - native protobuf message -> pass-through
-	//   - JSON shape -> wrapped in NoExcess so unknown keys (e.g. plain
-	//     `body` instead of `bodyString`) fail at the call boundary even
-	//     when the user lifts the request object into a variable.
-	const callSig = `<TInput>(runtime: ${modePrefix}Runtime<unknown>, input: CapabilityInput<TInput, ${nativeInputType}, ${jsonInputType}>): {result: () => ${outputType}}`
-	// Internal impl signature - widest, accepts either form.
-	const implSig = `(runtime: ${modePrefix}Runtime<unknown>, input: ${nativeInputType} | ${jsonInputType}): {result: () => ${outputType}}`
-	const callSigAndBody = `${implSig} {
+	const callSig = `(runtime: ${modePrefix}Runtime<unknown>, input: ${inputTypes.join(' | ')}): {result: () => ${outputType}}`
+	const callSigAndBody = `${callSig} {
     // Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
     let payload: ${method.input.name}
     ${
@@ -70,7 +67,11 @@ export function generateActionMethod(
       payload = input as ${method.input.name}
     } else {
       // It's regular JSON, convert using fromJson
-      payload = fromJson(${method.input.name}Schema, input as ${method.input.name}Json)
+      payload = fromJson(${method.input.name}Schema, ${
+				isConfidentialHttpRequestInput
+					? 'normalizeConfidentialHttpRequestInput(input as ConfidentialHttpRequestInput)'
+					: `input as ${method.input.name}Json`
+			})
     }`
 		}
     
@@ -135,6 +136,5 @@ export function generateActionMethod(
     }`
 	}
 	return `
-  ${methodName}${callSig}
   ${methodName}${callSigAndBody}`
 }

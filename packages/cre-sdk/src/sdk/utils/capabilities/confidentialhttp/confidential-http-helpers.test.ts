@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'bun:test'
-import { httpRequest } from './confidential-http-helpers'
+import type { ClientCapability } from '@cre/generated-sdk/capabilities/networking/confidentialhttp/v1alpha/client_sdk_gen'
+import { httpRequest, normalizeConfidentialHttpRequestInput } from './confidential-http-helpers'
 
 describe('httpRequest', () => {
 	test('coerces string body to bodyString', () => {
@@ -139,5 +140,45 @@ describe('httpRequest', () => {
 	test('sets encryptOutput only when truthy', () => {
 		expect(httpRequest({ url: 'x', encryptOutput: true }).encryptOutput).toBe(true)
 		expect(httpRequest({ url: 'x' }).encryptOutput).toBeUndefined()
+	})
+})
+
+describe('normalizeConfidentialHttpRequestInput', () => {
+	test('coerces nested request body to bodyString', () => {
+		const r = normalizeConfidentialHttpRequestInput({
+			request: { url: 'https://x', method: 'POST', body: { hello: 'world' } },
+		})
+		expect(r.request?.bodyString).toBe('{"hello":"world"}')
+		expect(r.request?.bodyBytes).toBeUndefined()
+	})
+
+	test('preserves canonical confidential request fields', () => {
+		const r = normalizeConfidentialHttpRequestInput({
+			vaultDonSecrets: [{ key: 'api-key', namespace: 'main' }],
+			request: {
+				url: 'https://x',
+				bodyString: 'hello',
+				multiHeaders: { 'x-test': { values: ['1'] } },
+			},
+		})
+		expect(r.vaultDonSecrets).toEqual([{ key: 'api-key', namespace: 'main' }])
+		expect(r.request?.bodyString).toBe('hello')
+		expect(r.request?.multiHeaders).toEqual({ 'x-test': { values: ['1'] } })
+	})
+
+	test('throws when nested body fields conflict', () => {
+		expect(() =>
+			normalizeConfidentialHttpRequestInput({
+				request: { url: 'https://x', body: 'a', bodyString: 'b' },
+			}),
+		).toThrow(/mutually exclusive/)
+	})
+
+	test('ClientCapability input type accepts body on variables', () => {
+		const input = {
+			request: { url: 'https://x', method: 'POST', body: { hello: 'world' } },
+		}
+		const typed: Parameters<ClientCapability['sendRequest']>[1] = input
+		expect(typed).toBe(input)
 	})
 })

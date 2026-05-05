@@ -1,14 +1,28 @@
 import type { DurationJson } from '@bufbuild/protobuf/wkt'
 import type {
-	HTTPRequestJson as ConfidentialHTTPRequestJson,
+	ConfidentialHTTPRequestJson,
 	HeaderValuesJson,
+	HTTPRequestJson,
 } from '@cre/generated/capabilities/networking/confidentialhttp/v1alpha/client_pb'
+
+export type HttpRequestBody = string | Uint8Array | object
+
+export type ConfidentialHttpRequestOptions = Omit<HTTPRequestJson, 'bodyBytes'> & {
+	body?: HttpRequestBody
+	bodyBytes?: Uint8Array | string
+	headers?: Record<string, string | string[]>
+	templateValues?: Record<string, string>
+}
+
+export type ConfidentialHttpRequestInput = Omit<ConfidentialHTTPRequestJson, 'request'> & {
+	request?: ConfidentialHttpRequestOptions
+}
 
 /**
  * Build an HTTPRequest JSON shape for the confidential-http capability.
  *
  * The proto defines `oneof body { string body_string = 3; bytes body_bytes = 8 }`,
- * so the JSON wire keys are `bodyString` / `bodyBytes` — never plain `body`.
+ * so the JSON wire keys are `bodyString` / `bodyBytes`, never plain `body`.
  * Three mutually-exclusive ways to set the body, in order of preference:
  *
  *   - `body`        ergonomic; coerces by runtime type:
@@ -20,87 +34,87 @@ import type {
  *   - `bodyBytes`   `Uint8Array` is base64-encoded; a `string` is treated as
  *                   already-encoded base64 and passed through verbatim
  *
- * Supplying more than one of these fields throws — the underlying proto is a
+ * Supplying more than one of these fields throws because the underlying proto is a
  * oneof, so the call would otherwise be ambiguous.
  *
  * Headers can be passed in two ways:
  *   - `headers`: flat record with single or repeated values, mapped onto the
  *     `multiHeaders` shape under the hood.
- *   - `multiHeaders`: native proto shape `{ [name]: { values: string[] } }` —
+ *   - `multiHeaders`: native proto shape `{ [name]: { values: string[] } }`,
  *     useful when forwarding headers already in canonical form.
  *
  * If both are supplied, `multiHeaders` is applied first and `headers` entries
  * merge on top per-name (replacing the values list for that name).
  */
-export interface HttpRequestOptions {
+export interface HttpRequestOptions extends ConfidentialHttpRequestOptions {
 	url: string
-	method?: string
-	body?: string | Uint8Array | object
-	bodyString?: string
-	bodyBytes?: Uint8Array | string
-	headers?: Record<string, string | string[]>
-	multiHeaders?: Record<string, HeaderValuesJson>
-	templateValues?: Record<string, string>
 	timeout?: DurationJson
-	encryptOutput?: boolean
 }
 
-export function httpRequest(opts: HttpRequestOptions): ConfidentialHTTPRequestJson {
-	const out: ConfidentialHTTPRequestJson = {
-		url: opts.url,
-		method: opts.method ?? 'GET',
+export function normalizeConfidentialHttpRequestInput(
+	input: ConfidentialHttpRequestInput,
+): ConfidentialHTTPRequestJson {
+	const { request, ...rest } = input
+	if (!request) {
+		return rest
 	}
 
+	return {
+		...rest,
+		request: normalizeHttpRequest(request),
+	}
+}
+
+export function normalizeHttpRequest(opts: ConfidentialHttpRequestOptions): HTTPRequestJson {
+	const { body, bodyBytes, headers, templateValues, ...canonical } = opts
+	const out: HTTPRequestJson = { ...canonical }
+
 	const bodyFieldsSet =
-		(opts.body !== undefined ? 1 : 0) +
+		(body !== undefined ? 1 : 0) +
 		(opts.bodyString !== undefined ? 1 : 0) +
-		(opts.bodyBytes !== undefined ? 1 : 0)
+		(bodyBytes !== undefined ? 1 : 0)
 	if (bodyFieldsSet > 1) {
 		throw new Error(
-			'httpRequest: body, bodyString and bodyBytes are mutually exclusive (proto oneof)',
+			'confidential HTTP request: body, bodyString and bodyBytes are mutually exclusive (proto oneof)',
 		)
 	}
 
 	if (opts.bodyString !== undefined) {
 		out.bodyString = opts.bodyString
-	} else if (opts.bodyBytes !== undefined) {
+	} else if (bodyBytes !== undefined) {
 		out.bodyBytes =
-			typeof opts.bodyBytes === 'string'
-				? opts.bodyBytes
-				: Buffer.from(opts.bodyBytes).toString('base64')
-	} else if (typeof opts.body === 'string') {
-		out.bodyString = opts.body
-	} else if (opts.body instanceof Uint8Array) {
-		out.bodyBytes = Buffer.from(opts.body).toString('base64')
-	} else if (opts.body !== undefined) {
-		// Compact JSON encoding; bigints serialise as strings.
-		out.bodyString = JSON.stringify(opts.body, (_k, v) =>
-			typeof v === 'bigint' ? v.toString() : v,
+			typeof bodyBytes === 'string' ? bodyBytes : Buffer.from(bodyBytes).toString('base64')
+	} else if (typeof body === 'string') {
+		out.bodyString = body
+	} else if (body instanceof Uint8Array) {
+		out.bodyBytes = Buffer.from(body).toString('base64')
+	} else if (body !== undefined) {
+		out.bodyString = JSON.stringify(body, (_key, value) =>
+			typeof value === 'bigint' ? value.toString() : value,
 		)
 	}
 
-	if (opts.multiHeaders || opts.headers) {
+	if (out.multiHeaders || headers) {
 		const merged: Record<string, HeaderValuesJson> = {}
-		for (const [name, value] of Object.entries(opts.multiHeaders ?? {})) {
+		for (const [name, value] of Object.entries(out.multiHeaders ?? {})) {
 			merged[name] = { values: value.values ?? [] }
 		}
-		for (const [name, value] of Object.entries(opts.headers ?? {})) {
+		for (const [name, value] of Object.entries(headers ?? {})) {
 			merged[name] = { values: Array.isArray(value) ? value : [value] }
 		}
 		out.multiHeaders = merged
 	}
 
-	if (opts.templateValues) {
-		out.templatePublicValues = { ...opts.templateValues }
-	}
-
-	if (opts.timeout) {
-		out.timeout = opts.timeout
-	}
-
-	if (opts.encryptOutput) {
-		out.encryptOutput = true
+	if (templateValues) {
+		out.templatePublicValues = { ...templateValues }
 	}
 
 	return out
+}
+
+export function httpRequest(opts: HttpRequestOptions): HTTPRequestJson {
+	return normalizeHttpRequest({
+		...opts,
+		method: opts.method ?? 'GET',
+	})
 }

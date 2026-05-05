@@ -16,7 +16,6 @@ import type { Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import { hexToBytes } from '@cre/sdk/utils/hex-utils'
 import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
-import type { CapabilityInput, NoExcess } from '@cre/sdk/utils/types/no-excess'
 
 /**
  * Basic Capability
@@ -32,10 +31,6 @@ export class BasicCapability {
 	static readonly CAPABILITY_NAME = 'basic-test-action-trigger'
 	static readonly CAPABILITY_VERSION = '1.0.0'
 
-	action<TInput>(
-		runtime: Runtime<unknown>,
-		input: CapabilityInput<TInput, Input, InputJson>,
-	): { result: () => Output }
 	action(runtime: Runtime<unknown>, input: Input | InputJson): { result: () => Output } {
 		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
 		let payload: Input
@@ -67,9 +62,9 @@ export class BasicCapability {
 		}
 	}
 
-	trigger<TConfig extends ConfigJson>(config: NoExcess<TConfig, ConfigJson>): BasicTrigger {
+	trigger(config: ConfigJson): BasicTrigger {
 		const capabilityId = BasicCapability.CAPABILITY_ID
-		return new BasicTrigger(config as ConfigJson, capabilityId, 'Trigger')
+		return new BasicTrigger(config, capabilityId, 'Trigger')
 	}
 }
 

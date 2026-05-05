@@ -1,15 +1,17 @@
 import { fromJson } from '@bufbuild/protobuf'
 import {
 	type ConfidentialHTTPRequest,
-	type ConfidentialHTTPRequestJson,
 	ConfidentialHTTPRequestSchema,
 	type HTTPResponse,
 	HTTPResponseSchema,
 } from '@cre/generated/capabilities/networking/confidentialhttp/v1alpha/client_pb'
 import type { Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
+import {
+	type ConfidentialHttpRequestInput,
+	normalizeConfidentialHttpRequestInput,
+} from '@cre/sdk/utils/capabilities/confidentialhttp/confidential-http-helpers'
 import { hexToBytes } from '@cre/sdk/utils/hex-utils'
-import type { CapabilityInput } from '@cre/sdk/utils/types/no-excess'
 
 /**
  * Client Capability
@@ -25,13 +27,9 @@ export class ClientCapability {
 	static readonly CAPABILITY_NAME = 'confidential-http'
 	static readonly CAPABILITY_VERSION = '1.0.0-alpha'
 
-	sendRequest<TInput>(
-		runtime: Runtime<unknown>,
-		input: CapabilityInput<TInput, ConfidentialHTTPRequest, ConfidentialHTTPRequestJson>,
-	): { result: () => HTTPResponse }
 	sendRequest(
 		runtime: Runtime<unknown>,
-		input: ConfidentialHTTPRequest | ConfidentialHTTPRequestJson,
+		input: ConfidentialHTTPRequest | ConfidentialHttpRequestInput,
 	): { result: () => HTTPResponse } {
 		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
 		let payload: ConfidentialHTTPRequest
@@ -41,7 +39,10 @@ export class ClientCapability {
 			payload = input as ConfidentialHTTPRequest
 		} else {
 			// It's regular JSON, convert using fromJson
-			payload = fromJson(ConfidentialHTTPRequestSchema, input as ConfidentialHTTPRequestJson)
+			payload = fromJson(
+				ConfidentialHTTPRequestSchema,
+				normalizeConfidentialHttpRequestInput(input as ConfidentialHttpRequestInput),
+			)
 		}
 
 		const capabilityId = ClientCapability.CAPABILITY_ID
