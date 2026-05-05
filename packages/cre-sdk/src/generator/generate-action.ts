@@ -29,6 +29,12 @@ export function generateActionMethod(
 	const inputTypes = hasWrappedInput
 		? [wrappedInputType.name, `${wrappedInputType.name}Json`]
 		: [method.input.name, `${method.input.name}Json`]
+	const isConfidentialHttpRequestInput =
+		method.input.file.name === 'capabilities/networking/confidentialhttp/v1alpha/client' &&
+		method.input.name === 'ConfidentialHTTPRequest'
+	if (isConfidentialHttpRequestInput) {
+		inputTypes[1] = 'ConfidentialHttpRequestInput'
+	}
 
 	// Build output type
 	const hasWrappedOutput = wrappedOutputType !== method.output
@@ -61,7 +67,11 @@ export function generateActionMethod(
       payload = input as ${method.input.name}
     } else {
       // It's regular JSON, convert using fromJson
-      payload = fromJson(${method.input.name}Schema, input as ${method.input.name}Json)
+      payload = fromJson(${method.input.name}Schema, ${
+				isConfidentialHttpRequestInput
+					? 'normalizeConfidentialHttpRequestInput(input as ConfidentialHttpRequestInput)'
+					: `input as ${method.input.name}Json`
+			})
     }`
 		}
     

@@ -1,0 +1,4 @@
+{
+	"schedule": "0 */1 * * * *",
+	"url": "https://api.mathjs.org/v4?expr=randomInt(1,101)"
+}

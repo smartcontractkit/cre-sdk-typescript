@@ -662,7 +662,7 @@ describe('test getSecret', () => {
 	test('getSecret in node mode throws DonModeError', () => {
 		const helpers = createRuntimeHelpersMock()
 
-		ConsensusCapability.prototype.simple = mock(() => {
+		;(ConsensusCapability.prototype as any).simple = mock(() => {
 			return { result: () => Value.from(0).proto() }
 		})
 
@@ -695,7 +695,7 @@ describe('test run in node mode', () => {
 			}),
 		})
 
-		ConsensusCapability.prototype.simple = mock(
+		;(ConsensusCapability.prototype as any).simple = mock(
 			(_: Runtime<unknown>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
 				expect(modes).toEqual([Mode.DON, Mode.NODE, Mode.DON])
 				expect(inputs.default).toBeUndefined()
@@ -770,7 +770,7 @@ describe('test run in node mode', () => {
 			switchModes: mock((_: Mode) => {}),
 		})
 
-		ConsensusCapability.prototype.simple = mock(
+		;(ConsensusCapability.prototype as any).simple = mock(
 			(_: Runtime<unknown>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
 				expect(inputs.default).toBeUndefined()
 				expect(inputs.descriptors).toEqual(
@@ -804,7 +804,7 @@ describe('test run in node mode', () => {
 			switchModes: mock((_: Mode) => {}),
 		})
 
-		ConsensusCapability.prototype.simple = mock(
+		;(ConsensusCapability.prototype as any).simple = mock(
 			(_: Runtime<unknown>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
 				const inputsProto = inputs as SimpleConsensusInputs
 				expect(inputsProto.observation.case).toEqual('value')
@@ -837,7 +837,7 @@ describe('test run in node mode', () => {
 			switchModes: mock((_: Mode) => {}),
 		})
 
-		ConsensusCapability.prototype.simple = mock(
+		;(ConsensusCapability.prototype as any).simple = mock(
 			(_: Runtime<unknown>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
 				const inputsProto = inputs as SimpleConsensusInputs
 				expect(inputsProto.observation.case).toEqual('error')
@@ -869,7 +869,7 @@ describe('test run in node mode', () => {
 			}),
 		})
 
-		ConsensusCapability.prototype.simple = mock(
+		;(ConsensusCapability.prototype as any).simple = mock(
 			(_: Runtime<unknown>, __: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
 				return { result: () => Value.from(0).proto() }
 			},
@@ -896,7 +896,7 @@ describe('test run in node mode', () => {
 			switchModes: mock((_: Mode) => {}),
 		})
 
-		ConsensusCapability.prototype.simple = mock(
+		;(ConsensusCapability.prototype as any).simple = mock(
 			(_: Runtime<unknown>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
 				expect(inputs.default).toBeUndefined()
 				expect(inputs.descriptors).toEqual(
@@ -948,7 +948,7 @@ describe('test run in node mode', () => {
 			}),
 		})
 
-		ConsensusCapability.prototype.simple = mock(
+		;(ConsensusCapability.prototype as any).simple = mock(
 			(_: Runtime<unknown>, __: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
 				return {
 					result: () => Value.from(create(NodeOutputsSchema, { outputThing: 42 })).proto(),
@@ -1026,7 +1026,7 @@ describe('test run in node mode', () => {
 			switchModes: mock((_: Mode) => {}),
 		})
 
-		ConsensusCapability.prototype.simple = mock(
+		;(ConsensusCapability.prototype as any).simple = mock(
 			(_: Runtime<unknown>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
 				const inputsProto = inputs as SimpleConsensusInputs
 				if (inputsProto.observation.case === 'value') {
