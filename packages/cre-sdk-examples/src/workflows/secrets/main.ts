@@ -8,14 +8,14 @@ import {
 	ok,
 	Runner,
 	type Runtime,
-} from "@chainlink/cre-sdk";
-import { z } from "zod";
+} from '@chainlink/cre-sdk'
+import { z } from 'zod'
 
 const configSchema = z.object({
 	url: z.string(),
-});
+})
 
-type Config = z.infer<typeof configSchema>;
+type Config = z.infer<typeof configSchema>
 
 const responseSchema = z.object({
 	name: z.string(),
@@ -34,9 +34,9 @@ const responseSchema = z.object({
 	created: z.string().datetime(),
 	edited: z.string().datetime(),
 	url: z.string(),
-});
+})
 
-type StarWarsCharacter = z.infer<typeof responseSchema>;
+type StarWarsCharacter = z.infer<typeof responseSchema>
 
 const fetchStarWarsCharacter = (
 	sendRequester: HTTPSendRequester,
@@ -44,65 +44,60 @@ const fetchStarWarsCharacter = (
 	url: string,
 	characterId: string,
 ): StarWarsCharacter => {
-	url = config.url.replace("{characterId}", characterId);
-	const response = sendRequester.sendRequest({ url, method: "GET" }).result();
+	url = config.url.replace('{characterId}', characterId)
+	const response = sendRequester.sendRequest({ url, method: 'GET' }).result()
 
 	// Check if the response is successful using the helper function
 	if (!ok(response)) {
-		throw new Error(`HTTP request failed with status: ${response.statusCode}`);
+		throw new Error(`HTTP request failed with status: ${response.statusCode}`)
 	}
 
-	const character = responseSchema.parse(json(response));
+	const character = responseSchema.parse(json(response))
 
-	return character;
-};
+	return character
+}
 
 const onHTTPTrigger = async (runtime: Runtime<Config>) => {
-	const httpCapability = new HTTPClient();
+	const httpCapability = new HTTPClient()
 	// Fetch a single secret
-	const secretUrlValue = runtime.getSecret({ id: "SECRET_URL" }).result().value;
+	const secretUrlValue = runtime.getSecret({ id: 'SECRET_URL' }).result().value
 
 	// Fetch multiple secrets
-	const secretsToFetch = [
-		{ id: "CHARACTER_ID1" },
-		{ id: "CHARACTER_ID2" },
-		{ id: "CHARACTER_ID3" },
-	];
-	const secretResponses = runtime.getSecrets(secretsToFetch).result();
+	const secretsToFetch = [{ id: 'CHARACTER_ID1' }, { id: 'CHARACTER_ID2' }, { id: 'CHARACTER_ID3' }]
+	const secretResponses = runtime.getSecrets(secretsToFetch).result()
 	const characterIds = secretResponses.flatMap((response) =>
-		response.response.case === "secret" && response.response.value?.id
+		response.response.case === 'secret' && response.response.value?.id
 			? [response.response.value.value]
 			: [],
-	);
+	)
 	if (characterIds.length === 0) {
-		throw new Error("No character ID secrets available");
+		throw new Error('No character ID secrets available')
 	}
 
 	// choose a random character id
 	// Math.random() is safe to use in the workflow
-	const characterId =
-		characterIds[Math.floor(Math.random() * characterIds.length)];
+	const characterId = characterIds[Math.floor(Math.random() * characterIds.length)]
 
 	const result: StarWarsCharacter = httpCapability
-		.sendRequest(
-			runtime,
-			fetchStarWarsCharacter,
-			consensusIdenticalAggregation(),
-		)(runtime.config, secretUrlValue, characterId)
-		.result();
+		.sendRequest(runtime, fetchStarWarsCharacter, consensusIdenticalAggregation())(
+			runtime.config,
+			secretUrlValue,
+			characterId,
+		)
+		.result()
 
-	return result;
-};
+	return result
+}
 
 const initWorkflow = () => {
-	const httpTrigger = new HTTPCapability();
+	const httpTrigger = new HTTPCapability()
 
-	return [handler(httpTrigger.trigger({}), onHTTPTrigger)];
-};
+	return [handler(httpTrigger.trigger({}), onHTTPTrigger)]
+}
 
 export async function main() {
 	const runner = await Runner.newRunner<Config>({
 		configSchema,
-	});
-	await runner.run(initWorkflow);
+	})
+	await runner.run(initWorkflow)
 }

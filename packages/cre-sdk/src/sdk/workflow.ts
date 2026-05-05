@@ -1,18 +1,18 @@
-import type { Message } from "@bufbuild/protobuf";
+import type { Message } from '@bufbuild/protobuf'
 import type {
 	Secret,
 	SecretRequest,
 	SecretRequestJson,
 	SecretResponse,
-} from "@cre/generated/sdk/v1alpha/sdk_pb";
-import type { Runtime } from "@cre/sdk/runtime";
-import type { Trigger } from "@cre/sdk/utils/triggers/trigger-interface";
-import type { CreSerializable } from "./utils";
+} from '@cre/generated/sdk/v1alpha/sdk_pb'
+import type { Runtime } from '@cre/sdk/runtime'
+import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
+import type { CreSerializable } from './utils'
 
 export type HandlerFn<TConfig, TTriggerOutput, TResult> = (
 	runtime: Runtime<TConfig>,
 	triggerOutput: TTriggerOutput,
-) => Promise<CreSerializable<TResult>> | CreSerializable<TResult>;
+) => Promise<CreSerializable<TResult>> | CreSerializable<TResult>
 
 export interface HandlerEntry<
 	TConfig,
@@ -20,13 +20,11 @@ export interface HandlerEntry<
 	TTriggerOutput,
 	TResult,
 > {
-	trigger: Trigger<TRawTriggerOutput, TTriggerOutput>;
-	fn: HandlerFn<TConfig, TTriggerOutput, TResult>;
+	trigger: Trigger<TRawTriggerOutput, TTriggerOutput>
+	fn: HandlerFn<TConfig, TTriggerOutput, TResult>
 }
 
-export type Workflow<TConfig> = ReadonlyArray<
-	HandlerEntry<TConfig, any, any, any>
->;
+export type Workflow<TConfig> = ReadonlyArray<HandlerEntry<TConfig, any, any, any>>
 
 export const handler = <
 	TRawTriggerOutput extends Message<string>,
@@ -39,13 +37,13 @@ export const handler = <
 ): HandlerEntry<TConfig, TRawTriggerOutput, TTriggerOutput, TResult> => ({
 	trigger,
 	fn,
-});
+})
 
 export type SecretsProvider = {
 	getSecrets(requests: Array<SecretRequest | SecretRequestJson>): {
-		result: () => SecretResponse[];
-	};
+		result: () => SecretResponse[]
+	}
 	getSecret(request: SecretRequest | SecretRequestJson): {
-		result: () => Secret;
-	};
-};
+		result: () => Secret
+	}
+}
