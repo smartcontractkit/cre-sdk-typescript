@@ -26,6 +26,18 @@ export class SecretsError extends Error {
 	}
 }
 
+export class SecretsBatchError extends Error {
+	constructor(
+		public readonly secretRequests: SecretRequest[],
+		public readonly error: string,
+	) {
+		super(
+			`batch secret retrieval failed for ${secretRequests.length} request(s): ${error}. Verify the host response is complete and that the workflow has access to the requested secrets`,
+		)
+		this.name = 'SecretsBatchError'
+	}
+}
+
 export class NullReportError extends Error {
 	constructor() {
 		super('null report')
