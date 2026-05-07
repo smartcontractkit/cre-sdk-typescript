@@ -115,9 +115,11 @@ jobs:
           NEW="${{ steps.version.outputs.NEW_VERSION }}"
           bun ../../scripts/cd-release/pin-deps.ts package.json "$NEW"
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
-            npm publish --dry-run --access public --tag cd --verbose
+            npm publish --dry-run --access public --tag cd --provenance --verbose
+          elif npm view "@chainlink/cre-sdk-javy-plugin@$NEW" version > /dev/null 2>&1; then
+            echo "::notice::@chainlink/cre-sdk-javy-plugin@$NEW already published — skipping publish (re-run idempotency)"
           else
-            npm publish --access public --tag cd --verbose
+            npm publish --access public --tag cd --provenance --verbose
           fi
 
       - name: Resolve effective javy version for sdk pin
@@ -144,9 +146,11 @@ jobs:
           bun ../../scripts/cd-release/pin-deps.ts package.json "$NEW" \
             "@chainlink/cre-sdk-javy-plugin=$JAVY"
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
-            npm publish --dry-run --access public --tag cd --verbose
+            npm publish --dry-run --access public --tag cd --provenance --verbose
+          elif npm view "@chainlink/cre-sdk@$NEW" version > /dev/null 2>&1; then
+            echo "::notice::@chainlink/cre-sdk@$NEW already published — skipping publish (re-run idempotency)"
           else
-            npm publish --access public --tag cd --verbose
+            npm publish --access public --tag cd --provenance --verbose
           fi
 
       - name: Pin cre-sdk-examples (no publish)
