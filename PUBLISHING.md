@@ -83,3 +83,59 @@ Once the pre-release has been validated:
 
 1. Update `packages/cre-sdk/package.json` version to `1.1.3` (remove the pre-release suffix)
 2. Follow the normal release process — the workflow will publish with `--tag latest`
+
+## 🟡 capabilities-development continuous prereleases
+
+The `capabilities-development` branch publishes a continuous prerelease line under the npm `cd` dist-tag. **No manual coordination is required** — every push to `capabilities-development` triggers `.github/workflows/cd-release.yml`, which:
+
+1. Computes the next version by patch-bumping the highest existing `v*.*.*-cd` git tag.
+2. Republishes `@chainlink/cre-sdk-javy-plugin` only if its source changed since the last cd release.
+3. Pins `workspace:*` dependencies to the new concrete version inside the published tarball metadata.
+4. Tags the release as `v0.0.N-cd` (without modifying the branch — the tag points at an ephemeral release commit).
+5. Creates a GitHub prerelease with auto-generated notes.
+
+### Version scheme
+
+| Channel | Version pattern | Source | dist-tag |
+|---|---|---|---|
+| Stable | `1.6.0` | `main` via `publish-cre-sdk*.yml` | `latest` |
+| Curated alpha / beta / rc | `1.6.1-alpha.1` etc. | release branches via `publish-cre-sdk*.yml` | `alpha` / `beta` / `rc` |
+| Continuous capabilities-development | `0.0.N-cd` | `capabilities-development` via `cd-release.yml` | `cd` |
+
+The cd line is intentionally rooted at `0.0.0` and only patch-bumps. Major / minor never advance — the cd line is alpha-quality and does not communicate semantic version meaning. Consumers should pin to specific versions (`0.0.7-cd`) for reproducibility, or use the `cd` dist-tag for "always latest dev":
+
+```bash
+bun add @chainlink/cre-sdk@cd
+bun add @chainlink/cre-sdk@0.0.7-cd
+```
+
+### One-time seed
+
+The cd line must be seeded once with the lowest tag the workflow should bump from:
+
+```bash
+git tag v0.0.0-cd
+git push origin v0.0.0-cd
+```
+
+After that, the workflow runs hands-off. To restart the line at a new base (e.g., `v1.0.0-cd`) tag manually with the new base; the next automated run will continue from there.
+
+### Guards
+
+- **L1**: npm `latest` dist-tag is never assigned to cd versions because `npm publish --tag cd` is hard-coded in the workflow.
+- **L2**: The workflow asserts the computed version ends in `-cd` and aborts if not.
+- **L3**: The manual `publish-cre-sdk.yml` and `publish-cre-sdk-javy-plugin.yml` workflows reject any input tag matching `*-cd*`.
+
+### Branch state
+
+The `capabilities-development` branch is **never modified** by the workflow. `package.json` files always show `workspace:*`. Pinned versions exist only inside the ephemeral release commit that the git tag points to. To consume the released artifact verbatim, check out the tag:
+
+```bash
+git checkout v0.0.7-cd
+cd packages/cre-sdk-examples
+bun install   # resolves @chainlink/cre-sdk@0.0.7-cd from npm
+```
+
+### Re-run safety
+
+If `cd-release.yml` runs again on the same commit (e.g., manual dispatch retry), it short-circuits when the current `HEAD` already has a `*-cd` tag. To force a re-publish, delete the tag locally and on origin first.
