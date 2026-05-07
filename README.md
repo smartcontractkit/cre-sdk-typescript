@@ -266,6 +266,18 @@ bun generate:chain-selectors  # Update chain selector types
 bun generate:sdk          # Generate all SDK types and code
 ```
 
+### Breaking Changes
+
+The `breaking-changes` CI job blocks PRs that alter any of the three protected contracts.
+If your change is intentional, update the relevant baseline before pushing:
+
+| Contract | What triggers the failure | How to update |
+|---|---|---|
+| Proto fields | Field deleted, renamed, renumbered, or type changed | No baseline file needed — CI runs `buf breaking` on `submodules/chainlink-protos` (`cre` module) against the submodule commit pinned on `main` |
+| TypeScript public API | An exported type/interface was removed or changed | Run `bun run update-api-baseline` inside `packages/cre-sdk` and commit `api-baseline.d.ts` |
+| JS host binding names | A binding was added, removed, or renamed in `host-bindings.ts` | Run `bun test --update-snapshots` inside `packages/cre-sdk` and commit the updated `__snapshots__` file |
+| Rust host imports | An `extern "C"` import was added or removed in `lib.rs` | Re-run the sed extraction (see `breaking-changes.yml`) and commit `host-imports-baseline.txt` |
+
 For detailed development setup, see individual package READMEs:
 
 - [CRE SDK Development](./packages/cre-sdk/README.md#building-from-source)

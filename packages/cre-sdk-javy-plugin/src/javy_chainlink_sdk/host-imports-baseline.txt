@@ -1,0 +1,32 @@
+unsafe extern "C" {
+    fn call_capability(req_ptr: *const u8, req_len: i32) -> i64;
+    fn await_capabilities(
+        await_request_ptr: *const u8,
+        await_request_len: i32,
+        response_buffer_ptr: *mut u8,
+        max_response_len: i32,
+    ) -> i64;
+
+    fn get_secrets(
+        req_ptr: *const u8,
+        req_len: i32,
+        response_buffer_ptr: *mut u8,
+        max_response_len: i32,
+    ) -> i64;
+    fn await_secrets(
+        await_request_ptr: *const u8,
+        await_request_len: i32,
+        response_buffer_ptr: *mut u8,
+        max_response_len: i32,
+    ) -> i64;
+
+    fn log(message_ptr: *const u8, message_len: i32);
+    fn send_response(response_ptr: *const u8, response_len: i32) -> i32;
+
+    fn switch_modes(mode: i32);
+    fn version_v2_typescript();
+
+    fn random_seed(mode: i32) -> i64;
+
+    fn now(result_timestamp: *mut u8) -> i32;
+}

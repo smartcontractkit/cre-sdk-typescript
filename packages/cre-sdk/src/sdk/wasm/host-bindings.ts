@@ -2,7 +2,7 @@ import { Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { z } from 'zod'
 
 // Zod schema for validating global host functions
-const globalHostBindingsSchema = z.object({
+export const globalHostBindingsSchema = z.object({
 	switchModes: z.function().args(z.nativeEnum(Mode)).returns(z.void()),
 	log: z.function().args(z.string()).returns(z.void()),
 	sendResponse: z
