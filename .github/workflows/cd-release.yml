@@ -1,0 +1,206 @@
+name: cd Release (capabilities-development)
+
+on:
+  push:
+    branches:
+      - capabilities-development
+    paths-ignore:
+      - "**/*.md"
+      - ".github/**"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Run without publishing or pushing tags"
+        required: false
+        default: false
+        type: boolean
+
+env:
+  BUN_VERSION: "1.2.21"
+
+concurrency:
+  group: cd-release
+  cancel-in-progress: false
+
+jobs:
+  cd-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write       # for git tag push and gh release create
+      id-token: write       # for npm provenance
+    environment: Publish
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Re-run guard (skip if HEAD already published)
+        run: |
+          if git describe --exact-match --match 'v*-cd' HEAD 2>/dev/null; then
+            echo "::notice::HEAD already has a cd tag; skipping."
+            echo "SKIP=true" >> $GITHUB_ENV
+          else
+            echo "SKIP=false" >> $GITHUB_ENV
+          fi
+
+      - name: Setup Bun
+        if: env.SKIP != 'true'
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Setup Node.js for npm publish
+        if: env.SKIP != 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Update npm
+        if: env.SKIP != 'true'
+        run: npm install -g npm@latest
+
+      - name: Compute next cd version
+        if: env.SKIP != 'true'
+        id: version
+        run: |
+          NEW_VERSION=$(bun scripts/cd-release/version.ts)
+          echo "Computed next version: $NEW_VERSION"
+          if [[ ! "$NEW_VERSION" =~ -cd$ ]]; then
+            echo "::error::L2 guard tripped: version '$NEW_VERSION' does not end in -cd"
+            exit 1
+          fi
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
+          # also compute prior tag for release notes
+          PRIOR_TAG=$(git tag -l 'v*-cd' | sort -V | tail -1)
+          echo "PRIOR_TAG=$PRIOR_TAG" >> $GITHUB_OUTPUT
+
+      - name: Install dependencies
+        if: env.SKIP != 'true'
+        run: bun install --frozen-lockfile
+
+      - name: Run helper unit tests
+        if: env.SKIP != 'true'
+        working-directory: scripts/cd-release
+        run: bun test
+
+      - name: Decide whether javy needs republishing
+        if: env.SKIP != 'true'
+        id: javy
+        run: |
+          PRIOR="${{ steps.version.outputs.PRIOR_TAG }}"
+          # query last published javy under cd dist-tag; empty string if none
+          LAST_JAVY_CD=$(npm view @chainlink/cre-sdk-javy-plugin@cd version 2>/dev/null || true)
+          echo "LAST_JAVY_CD=$LAST_JAVY_CD"
+          if [ -z "$LAST_JAVY_CD" ]; then
+            CHANGED=true
+          else
+            CHANGED=$(bun scripts/cd-release/javy-changed.ts "$PRIOR")
+          fi
+          echo "CHANGED=$CHANGED" >> $GITHUB_OUTPUT
+          echo "LAST_JAVY_CD=$LAST_JAVY_CD" >> $GITHUB_OUTPUT
+
+      - name: Publish javy plugin (if changed)
+        if: env.SKIP != 'true' && steps.javy.outputs.CHANGED == 'true'
+        working-directory: packages/cre-sdk-javy-plugin
+        run: |
+          NEW="${{ steps.version.outputs.NEW_VERSION }}"
+          bun ../../scripts/cd-release/pin-deps.ts package.json "$NEW"
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            npm publish --dry-run --access public --tag cd --verbose
+          else
+            npm publish --access public --tag cd --verbose
+          fi
+
+      - name: Resolve effective javy version for sdk pin
+        if: env.SKIP != 'true'
+        id: javyver
+        run: |
+          if [ "${{ steps.javy.outputs.CHANGED }}" = "true" ]; then
+            echo "JAVY_VER=${{ steps.version.outputs.NEW_VERSION }}" >> $GITHUB_OUTPUT
+          else
+            echo "JAVY_VER=${{ steps.javy.outputs.LAST_JAVY_CD }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build cre-sdk
+        if: env.SKIP != 'true'
+        working-directory: packages/cre-sdk
+        run: bun run build
+
+      - name: Pin and publish cre-sdk
+        if: env.SKIP != 'true'
+        working-directory: packages/cre-sdk
+        run: |
+          NEW="${{ steps.version.outputs.NEW_VERSION }}"
+          JAVY="${{ steps.javyver.outputs.JAVY_VER }}"
+          bun ../../scripts/cd-release/pin-deps.ts package.json "$NEW" \
+            "@chainlink/cre-sdk-javy-plugin=$JAVY"
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            npm publish --dry-run --access public --tag cd --verbose
+          else
+            npm publish --access public --tag cd --verbose
+          fi
+
+      - name: Pin cre-sdk-examples (no publish)
+        if: env.SKIP != 'true'
+        working-directory: packages/cre-sdk-examples
+        run: |
+          NEW="${{ steps.version.outputs.NEW_VERSION }}"
+          bun ../../scripts/cd-release/pin-deps.ts package.json "$NEW" \
+            "@chainlink/cre-sdk=$NEW"
+
+      - name: Create ephemeral release commit and tag
+        if: env.SKIP != 'true'
+        run: |
+          NEW="${{ steps.version.outputs.NEW_VERSION }}"
+          git add packages/cre-sdk/package.json \
+                  packages/cre-sdk-examples/package.json \
+                  packages/cre-sdk-javy-plugin/package.json
+          git commit -m "chore(release): v${NEW} [skip ci]"
+          git tag "v${NEW}"
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            echo "DRY RUN: would push tag v${NEW}"
+            git tag -d "v${NEW}"
+          else
+            git push origin "v${NEW}"
+          fi
+
+      - name: Create GitHub prerelease
+        if: env.SKIP != 'true' && github.event.inputs.dry_run != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NEW="${{ steps.version.outputs.NEW_VERSION }}"
+          PRIOR="${{ steps.version.outputs.PRIOR_TAG }}"
+          gh release create "v${NEW}" \
+            --prerelease \
+            --latest=false \
+            --generate-notes \
+            --notes-start-tag "$PRIOR" \
+            --title "v${NEW}"
+
+      - name: Summary
+        if: env.SKIP != 'true'
+        run: |
+          NEW="${{ steps.version.outputs.NEW_VERSION }}"
+          {
+            echo "## 🟡 cd Release v${NEW}"
+            echo ""
+            echo "- npm dist-tag: \`cd\`"
+            echo "- javy republished: ${{ steps.javy.outputs.CHANGED }}"
+            echo "- dry run: ${{ github.event.inputs.dry_run }}"
+            echo ""
+            echo "### Install"
+            echo '```bash'
+            echo "bun add @chainlink/cre-sdk@cd"
+            echo "bun add @chainlink/cre-sdk@${NEW}"
+            echo '```'
+          } >> $GITHUB_STEP_SUMMARY
