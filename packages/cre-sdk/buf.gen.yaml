@@ -10,6 +10,26 @@ managed:
 
 inputs:
   - directory: ../../submodules/chainlink-protos/cre
+    # Allowlist: only generate for protos we explicitly opt into.
+    # New protos added to chainlink-protos/cre will NOT be picked up
+    # until listed here. Keep in sync with generate-sdks.ts.
+    paths:
+      - ../../submodules/chainlink-protos/cre/capabilities/blockchain/aptos/v1alpha
+      - ../../submodules/chainlink-protos/cre/capabilities/blockchain/evm/v1alpha
+      - ../../submodules/chainlink-protos/cre/capabilities/internal/actionandtrigger/v1
+      - ../../submodules/chainlink-protos/cre/capabilities/internal/basicaction/v1
+      - ../../submodules/chainlink-protos/cre/capabilities/internal/basictrigger/v1
+      - ../../submodules/chainlink-protos/cre/capabilities/internal/consensus/v1alpha
+      - ../../submodules/chainlink-protos/cre/capabilities/internal/importclash/p1/v1
+      - ../../submodules/chainlink-protos/cre/capabilities/internal/importclash/p2/v1
+      - ../../submodules/chainlink-protos/cre/capabilities/internal/importclash/v1
+      - ../../submodules/chainlink-protos/cre/capabilities/internal/nodeaction/v1
+      - ../../submodules/chainlink-protos/cre/capabilities/networking/confidentialhttp/v1alpha
+      - ../../submodules/chainlink-protos/cre/capabilities/networking/http/v1alpha
+      - ../../submodules/chainlink-protos/cre/capabilities/scheduler/cron/v1
+      - ../../submodules/chainlink-protos/cre/sdk/v1alpha
+      - ../../submodules/chainlink-protos/cre/tools/generator/v1alpha
+      - ../../submodules/chainlink-protos/cre/values/v1
 
 plugins:
   # Modern @bufbuild/protoc-gen-es plugin

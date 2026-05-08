@@ -124,8 +124,12 @@ cargo build --target wasm32-wasip1 --release
 
 After building, you'll find:
 
-- `dist/javy_chainlink_sdk.wasm` - The compiled plugin
+- `dist/javy-chainlink-sdk.plugin.wasm` - Initialized plugin (for `--plugin` / default compile)
 - `dist/workflow.wit` - WebAssembly Interface Types definitions
+
+`--cre-exports` workflow builds link **`javy_chainlink_sdk` and `cre_wasm_exports` from source** via path dependencies (`src/javy_chainlink_sdk/`, `src/cre_wasm_exports/`); those directories are included in the published npm package.
+
+The **uninitialized** `javy_chainlink_sdk.wasm` from `cargo` exists only under `target/` during the build and is used as input to `javy init-plugin`; it is not shipped in `dist/`.
 
 ### Deterministic initialized plugin (`build:plugin-wasm`)
 

@@ -1,4 +1,8 @@
 [submodule "submodules/chainlink-protos"]
 	path = submodules/chainlink-protos
 	url = https://github.com/smartcontractkit/chainlink-protos.git
+<<<<<<< HEAD
 	branch = rtinianov_tee
+=======
+	branch = rtinianov_restricted
+>>>>>>> rtinianov_restricted

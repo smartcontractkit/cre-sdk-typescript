@@ -6,6 +6,7 @@ import {
 	type NodeOutputs,
 	NodeOutputsSchema,
 } from '@cre/generated/capabilities/internal/nodeaction/v1/node_action_pb'
+import type { CapabilityRestrictionJson } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import type { NodeRuntime, Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import type { ConsensusAggregation, PrimitiveTypes, UnwrapOptions } from '@cre/sdk/utils'
@@ -103,5 +104,19 @@ export class BasicActionCapability {
 			return fn(performActioner, ...args)
 		}
 		return runtime.runInNodeMode(wrappedFn, consensusAggregation, unwrapOptions)
+	}
+}
+
+export class BasicActionRestrictor {
+	limitPerformAction(maxCalls: number): CapabilityRestrictionJson {
+		const capabilityId = BasicActionCapability.CAPABILITY_ID
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'PerformAction',
+				maxCalls,
+			},
+		}
 	}
 }

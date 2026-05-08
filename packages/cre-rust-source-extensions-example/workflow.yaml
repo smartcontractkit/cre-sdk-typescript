@@ -1,0 +1,8 @@
+# Example 1: source-extensions — both lib_alpha and lib_beta via --cre-exports
+local-simulation:
+  user-workflow:
+    workflow-owner-address: "(optional)"
+    workflow-name: "rust-inject-source-extensions"
+  workflow-artifacts:
+    workflow-path: "./wasm/workflow.wasm"
+    config-path: "./config.json"

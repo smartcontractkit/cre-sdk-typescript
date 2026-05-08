@@ -5,6 +5,7 @@ import {
 	type EVMLog,
 	getNetwork,
 	handler,
+	logTriggerConfig,
 	protoBigIntToBigint,
 	Runner,
 	type Runtime,
@@ -74,11 +75,18 @@ const initWorkflow = (config: Config) => {
 		return 'success'
 	}
 
+	// keccak256("MessageEmitted(address,uint256,string)")
+	const MESSAGE_EMITTED_TOPIC =
+		'0xc799f359194674b273986b8c03283265390f642b631c04e6526b99d0d8f4c38d' as `0x${string}`
+
 	return [
 		handler(
-			evmClient.logTrigger({
-				addresses: [config.evms[0].messageEmitterAddress],
-			}),
+			evmClient.logTrigger(
+				logTriggerConfig({
+					addresses: [config.evms[0].messageEmitterAddress as `0x${string}`],
+					topics: [[MESSAGE_EMITTED_TOPIC]],
+				}),
+			),
 			onLogTrigger,
 		),
 	]

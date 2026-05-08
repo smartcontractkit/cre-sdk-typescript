@@ -35,11 +35,10 @@ echo "---> Building javy_chainlink_sdk (wasm32-wasip1 release)"
 
 UNINIT="$PLUGIN_CRATE/target/wasm32-wasip1/release/javy_chainlink_sdk.wasm"
 mkdir -p "$PLUGIN_DIR/dist"
-cp "$UNINIT" "$PLUGIN_DIR/dist/javy_chainlink_sdk.wasm"
 cp "$PLUGIN_DIR/src/workflow.wit" "$PLUGIN_DIR/dist/workflow.wit"
 
 echo "---> javy init-plugin --deterministic"
-"$JAVY_BIN" init-plugin --deterministic "$PLUGIN_DIR/dist/javy_chainlink_sdk.wasm" \
+"$JAVY_BIN" init-plugin --deterministic "$UNINIT" \
 	-o "$PLUGIN_DIR/dist/javy-chainlink-sdk.plugin.wasm"
 
 echo ""

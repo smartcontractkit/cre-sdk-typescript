@@ -1,0 +1,19 @@
+{
+	"name": "@chainlink/cre-rust-source-extensions-example",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"description": "Example: installs @chainlink/cre-rust-inject-alpha from npm and compiles its Rust source alongside a local lib_beta extension.",
+	"scripts": {
+		"check": "biome check --write ${BIOME_PATHS:-.}",
+		"check:ci": "biome ci .",
+		"typecheck": "tsc"
+	},
+	"dependencies": {
+		"@chainlink/cre-sdk": "workspace:*",
+		"@chainlink/cre-sdk-javy-plugin": "workspace:*",
+		"@chainlink/cre-rust-inject-alpha": "workspace:*",
+		"@chainlink/cre-rust-inject-beta": "workspace:*",
+		"zod": "3.25.76"
+	}
+}

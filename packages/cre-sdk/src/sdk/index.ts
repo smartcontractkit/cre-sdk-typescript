@@ -1,4 +1,6 @@
 export * from './cre'
+export * from './don-info'
+export * from './errors'
 export * from './report'
 export type * from './runtime'
 export * from './runtime'

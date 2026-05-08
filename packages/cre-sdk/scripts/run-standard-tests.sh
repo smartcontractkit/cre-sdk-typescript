@@ -8,9 +8,9 @@ set -e
 # Create dist test workflow folder
 mkdir -p ./dist/workflows/standard_tests
 
-# Build javy wasm
-if [ ! -f ../cre-sdk-javy-plugin/dist/javy_chainlink_sdk.wasm ]; then
-    echo "Error: javy_chainlink_sdk.wasm not found"
+# Plugin package must be built (initialized plugin is what we ship).
+if [ ! -f ../cre-sdk-javy-plugin/dist/javy-chainlink-sdk.plugin.wasm ]; then
+    echo "Error: javy-chainlink-sdk.plugin.wasm not found (run cre-sdk-javy-plugin build first)"
     exit 1
 fi
 

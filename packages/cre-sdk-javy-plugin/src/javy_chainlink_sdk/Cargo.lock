@@ -101,6 +101,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "cre_wasm_exports"
+version = "0.1.0"
+dependencies = [
+ "javy-plugin-api",
+]
+
+[[package]]
 name = "either"
 version = "1.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -287,6 +294,7 @@ name = "javy_chainlink_sdk"
 version = "0.1.0"
 dependencies = [
  "base64",
+ "cre_wasm_exports",
  "javy",
  "javy-plugin-api",
  "rand 0.8.5",
