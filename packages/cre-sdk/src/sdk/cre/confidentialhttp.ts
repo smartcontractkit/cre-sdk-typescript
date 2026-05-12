@@ -17,6 +17,7 @@ import type {
 	HmacAuthJson,
 	HmacCustomJson,
 	HmacSha256Json,
+	MtlsAuthJson,
 	OAuth2AuthJson,
 	OAuth2ClientCredentialsJson,
 	OAuth2RefreshTokenJson,
@@ -47,6 +48,16 @@ export type AuthConfigInput =
 	| HmacCustomInput
 	| OAuth2ClientCredentialsInput
 	| OAuth2RefreshTokenInput
+
+/** Mutual TLS config for transport-level client authentication. */
+export type MtlsInput = {
+	/** Vault secret key for the PEM-encoded client certificate. */
+	clientCert: SecretRef
+	/** Vault secret key for the PEM-encoded client private key. */
+	clientKey: SecretRef
+	/** Optional Vault secret key for a PEM-encoded CA bundle (server verification). */
+	caCert?: SecretRef
+}
 
 export type ApiKeyAuthInput = {
 	kind: 'apiKey'
@@ -273,5 +284,29 @@ function oauth2RefreshTokenJson(i: OAuth2RefreshTokenInput): OAuth2RefreshTokenJ
 	}
 	if (i.clientId !== undefined) out.clientId = toStringOrSecretJson(i.clientId)
 	if (i.clientSecret !== undefined) out.clientSecret = toSecretIdentifierJson(i.clientSecret)
+	return out
+}
+
+/**
+ * Convert a MtlsInput into the proto-JSON MtlsAuth expected by
+ * `HTTPRequestJson.mtls`. The returned object should be set on
+ * `request.mtls` (the inner HTTPRequest, not ConfidentialHTTPRequest).
+ * All referenced secrets must appear in `vaultDonSecrets`.
+ *
+ * @example
+ *   const mtls = buildMtlsConfig({
+ *     clientCert: { key: 'my-cert', namespace: 'my-ns' },
+ *     clientKey:  { key: 'my-key',  namespace: 'my-ns' },
+ *   })
+ *   client.sendRequest(runtime, { request: { ...req, mtls }, vaultDonSecrets })
+ */
+export function buildMtlsConfig(input: MtlsInput): MtlsAuthJson {
+	const out: MtlsAuthJson = {
+		clientCert: toSecretIdentifierJson(input.clientCert),
+		clientKey: toSecretIdentifierJson(input.clientKey),
+	}
+	if (input.caCert !== undefined) {
+		out.caCert = toSecretIdentifierJson(input.caCert)
+	}
 	return out
 }

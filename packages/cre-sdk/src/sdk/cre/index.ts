@@ -39,7 +39,9 @@ export {
 	type HmacCustomInput,
 	type OAuth2ClientCredentialsInput,
 	type OAuth2RefreshTokenInput,
+	type MtlsInput,
 	buildAuthConfig,
+	buildMtlsConfig,
 } from '@cre/sdk/cre/confidentialhttp'
 // HTTP Capability
 export {
