@@ -172,7 +172,15 @@ pub fn modify_runtime(runtime: Runtime) -> Runtime {
                     )
                 };
                 if n < 0 {
-                    return Err(Error::new_into_js("Error", "get_secrets failed"));
+                    let error_len = (-n) as usize;
+                    let error_msg =
+                        String::from_utf8_lossy(&buf[..error_len.min(max_len as usize)]).into_owned();
+                    let error_msg = if error_msg.is_empty() {
+                        "get_secrets failed".to_string()
+                    } else {
+                        error_msg
+                    };
+                    return Err(Exception::throw_message(&ctx, &error_msg));
                 }
                 if n > max_len as i64 {
                     return Err(Error::new_into_js(
@@ -205,7 +213,15 @@ pub fn modify_runtime(runtime: Runtime) -> Runtime {
                     )
                 };
                 if n < 0 {
-                    return Err(Error::new_into_js("Error", "await_secrets failed"));
+                    let error_len = (-n) as usize;
+                    let error_msg =
+                        String::from_utf8_lossy(&buf[..error_len.min(max_len as usize)]).into_owned();
+                    let error_msg = if error_msg.is_empty() {
+                        "await_secrets failed".to_string()
+                    } else {
+                        error_msg
+                    };
+                    return Err(Exception::throw_message(&ctx, &error_msg));
                 }
                 if n > max_len as i64 {
                     return Err(Error::new_into_js(
@@ -342,4 +358,3 @@ pub fn modify_runtime(runtime: Runtime) -> Runtime {
 
     runtime
 }
-
