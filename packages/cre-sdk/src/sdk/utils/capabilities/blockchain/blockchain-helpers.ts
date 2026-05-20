@@ -149,6 +149,13 @@ export const EVM_DEFAULT_REPORT_ENCODER = {
 	hashingAlgo: 'keccak256',
 }
 
+/** Default report encoder metadata for Solana `WriteReport` (matches Go `GenerateReport` / keystone forwarder). */
+export const SOLANA_DEFAULT_REPORT_ENCODER = {
+	encoderName: 'solana',
+	signingAlgo: 'ecdsa',
+	hashingAlgo: 'keccak256',
+}
+
 /**
  * Prepares a report request for the EVM capability to pass to `.report()` function.
  *

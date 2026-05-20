@@ -13,6 +13,7 @@ import {
 	type ProtoBigInt,
 	prepareReportRequest,
 	protoBigIntToBigint,
+	SOLANA_DEFAULT_REPORT_ENCODER,
 } from './blockchain-helpers'
 
 describe('blockchain-helpers', () => {
@@ -217,6 +218,20 @@ describe('blockchain-helpers', () => {
 		})
 	})
 
+	describe('SOLANA_DEFAULT_REPORT_ENCODER', () => {
+		test('should use solana encoder name', () => {
+			expect(SOLANA_DEFAULT_REPORT_ENCODER.encoderName).toBe('solana')
+		})
+
+		test('should use ecdsa signing algorithm', () => {
+			expect(SOLANA_DEFAULT_REPORT_ENCODER.signingAlgo).toBe('ecdsa')
+		})
+
+		test('should use keccak256 hashing algorithm', () => {
+			expect(SOLANA_DEFAULT_REPORT_ENCODER.hashingAlgo).toBe('keccak256')
+		})
+	})
+
 	describe('prepareReportRequest', () => {
 		test('should prepare report request with default encoder', () => {
 			const hexPayload = '0x1234567890abcdef' as const
@@ -246,6 +261,14 @@ describe('blockchain-helpers', () => {
 			expect(result.signingAlgo).toBe('ed25519')
 			expect(result.hashingAlgo).toBe('sha256')
 			expect(result.encodedPayload).toBeTruthy()
+		})
+
+		test('should prepare report request with solana encoder', () => {
+			const hexPayload = '0x01' as const
+			const result = prepareReportRequest(hexPayload, SOLANA_DEFAULT_REPORT_ENCODER)
+			expect(result.encoderName).toBe('solana')
+			expect(result.signingAlgo).toBe('ecdsa')
+			expect(result.hashingAlgo).toBe('keccak256')
 		})
 
 		test('should encode payload as base64', () => {
