@@ -122,6 +122,7 @@ export class ClientCapability {
 
 	/** Available ChainSelector values */
 	static readonly SUPPORTED_CHAIN_SELECTORS = {
+		'adi-mainnet': 4059281736450291836n,
 		'adi-testnet': 9418205736192840573n,
 		'apechain-testnet-curtis': 9900119385908781505n,
 		'arc-testnet': 3034092155422581607n,
