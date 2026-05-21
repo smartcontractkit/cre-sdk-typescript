@@ -57,7 +57,7 @@ export function httpRequest(opts: HttpRequestOptions): ConfidentialHTTPRequestJs
 		(opts.bodyBytes !== undefined ? 1 : 0)
 	if (bodyFieldsSet > 1) {
 		throw new Error(
-			'httpRequest: body, bodyString and bodyBytes are mutually exclusive (proto oneof)',
+			'httpRequest: specify the request body using only one of: body, bodyString or bodyBytes',
 		)
 	}
 
@@ -74,9 +74,15 @@ export function httpRequest(opts: HttpRequestOptions): ConfidentialHTTPRequestJs
 		out.bodyBytes = Buffer.from(opts.body).toString('base64')
 	} else if (opts.body !== undefined) {
 		// Compact JSON encoding; bigints serialise as strings.
-		out.bodyString = JSON.stringify(opts.body, (_k, v) =>
-			typeof v === 'bigint' ? v.toString() : v,
-		)
+		try {
+			out.bodyString = JSON.stringify(opts.body, (_k, v) =>
+				typeof v === 'bigint' ? v.toString() : v,
+			)
+		} catch (cause) {
+			throw new Error('httpRequest: failed to serialize body as JSON', {
+				cause,
+			})
+		}
 	}
 
 	if (opts.multiHeaders || opts.headers) {

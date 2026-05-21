@@ -26,7 +26,10 @@ describe('httpRequest', () => {
 	})
 
 	test('passes bodyString through verbatim', () => {
-		const r = httpRequest({ url: 'https://x', bodyString: '{"already":"json"}' })
+		const r = httpRequest({
+			url: 'https://x',
+			bodyString: '{"already":"json"}',
+		})
 		expect(r.bodyString).toBe('{"already":"json"}')
 		expect(r.bodyBytes).toBeUndefined()
 	})
@@ -47,19 +50,30 @@ describe('httpRequest', () => {
 	})
 
 	test('throws when more than one body field is supplied', () => {
-		expect(() => httpRequest({ url: 'https://x', body: 'a', bodyString: 'b' })).toThrow(
-			/mutually exclusive/,
-		)
-		expect(() => httpRequest({ url: 'https://x', bodyString: 'a', bodyBytes: 'b' })).toThrow(
-			/mutually exclusive/,
-		)
+		const errMsg =
+			'httpRequest: specify the request body using only one of: body, bodyString or bodyBytes'
+		expect(() => httpRequest({ url: 'https://x', body: 'a', bodyString: 'b' })).toThrow(errMsg)
+		expect(() => httpRequest({ url: 'https://x', bodyString: 'a', bodyBytes: 'b' })).toThrow(errMsg)
 		expect(() =>
 			httpRequest({
 				url: 'https://x',
 				body: 'a',
 				bodyBytes: new Uint8Array([1]),
 			}),
-		).toThrow(/mutually exclusive/)
+		).toThrow(errMsg)
+	})
+
+	test('wraps object body JSON serialization errors', () => {
+		const body: { self?: unknown } = {}
+		body.self = body
+
+		expect(() => {
+			httpRequest({
+				url: 'https://x',
+				method: 'POST',
+				body,
+			})
+		}).toThrow('httpRequest: failed to serialize body as JSON')
 	})
 
 	test('omits body fields when no body provided', () => {
