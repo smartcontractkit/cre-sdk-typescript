@@ -364,12 +364,9 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 			}
 		}
 
-		const rawSecretRequest = (request as unknown as { $typeName?: string }).$typeName
-			? (request as SecretRequest)
-			: create(SecretRequestSchema, request)
 		const secretRequest = create(SecretRequestSchema, {
-			id: rawSecretRequest.id,
-			namespace: rawSecretRequest.namespace || DEFAULT_SECRET_NAMESPACE,
+			id: request.id,
+			namespace: request.namespace || DEFAULT_SECRET_NAMESPACE,
 		})
 
 		// Allocate callback ID and send request

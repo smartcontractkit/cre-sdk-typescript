@@ -15,6 +15,17 @@ import { decodeJson } from '@cre/sdk/utils/decode-json'
 
 type HeaderCapableResponse = Response | ConfidentialHTTPResponse
 
+function findCaseInsensitive<M extends Record<string, unknown>>(
+	map: M | undefined,
+	name: string,
+): M[string] | undefined {
+	if (!map) return undefined
+	const lowerName = name.toLowerCase()
+	return Object.entries(map).find(([key]) => key.toLowerCase() === lowerName)?.[1] as
+		| M[string]
+		| undefined
+}
+
 /**
  * HTTP Response Helper Functions
  *
@@ -121,22 +132,10 @@ export function json(
 }
 
 /**
- * Gets all values for a specific header.
- * Reads `multiHeaders` first and falls back to the deprecated single-value `headers` map.
- *
- * @param response - The Response object
- * @param name - The header name (case-insensitive)
- * @returns Header values or an empty array if not found
+ * Returns all values for a header (case-insensitive).
+ * Reads `multiHeaders` first; falls back to the deprecated single-value `headers` map.
  */
 export function getHeaders(response: HeaderCapableResponse, name: string): string[]
-/**
- * Gets all values for a specific header.
- * Reads `multiHeaders` first and falls back to the deprecated single-value `headers` map.
- *
- * @param responseFn - Function that returns an object with result function that returns Response
- * @param name - The header name (case-insensitive)
- * @returns Object with result function that returns header values or an empty array if not found
- */
 export function getHeaders(
 	responseFn: () => { result: HeaderCapableResponse },
 	name: string,
@@ -151,39 +150,23 @@ export function getHeaders(
 		}
 	}
 
-	const lowerName = name.toLowerCase()
-	const multiHeader = Object.entries(responseOrFn.multiHeaders ?? {}).find(
-		([key]) => key.toLowerCase() === lowerName,
-	)?.[1]
+	const multiHeader = findCaseInsensitive(responseOrFn.multiHeaders, name)
 	if (multiHeader) {
 		return [...multiHeader.values]
 	}
 
-	const singleHeader = Object.entries('headers' in responseOrFn ? responseOrFn.headers : {}).find(
-		([key]) => key.toLowerCase() === lowerName,
-	)?.[1]
+	const singleHeader = findCaseInsensitive(
+		'headers' in responseOrFn ? responseOrFn.headers : undefined,
+		name,
+	)
 	return singleHeader === undefined ? [] : [singleHeader]
 }
 
 /**
- * Gets a specific header value.
- * Multiple values are returned as a comma-separated string. Use `getHeaders`
- * when header boundaries must be preserved.
- *
- * @param response - The Response object
- * @param name - The header name (case-insensitive)
- * @returns The header value or undefined if not found
+ * Returns a header value (case-insensitive). Multiple values are joined with `, `;
+ * use `getHeaders` when boundaries between values must be preserved.
  */
 export function getHeader(response: HeaderCapableResponse, name: string): string | undefined
-/**
- * Gets a specific header value.
- * Multiple values are returned as a comma-separated string. Use `getHeaders`
- * when header boundaries must be preserved.
- *
- * @param responseFn - Function that returns an object with result function that returns Response
- * @param name - The header name (case-insensitive)
- * @returns Object with result function that returns the header value or undefined if not found
- */
 export function getHeader(
 	responseFn: () => { result: HeaderCapableResponse },
 	name: string,
