@@ -19,9 +19,12 @@ export {
 	type Log as EVMLog,
 	TxStatus,
 } from '@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb'
+export {
+	ReceiverContractExecutionStatus as SolanaReceiverContractExecutionStatus,
+	TxStatus as SolanaTxStatus,
+} from '@cre/generated/capabilities/blockchain/solana/v1alpha/client_pb'
 export type { Payload as HTTPPayload } from '@cre/generated/capabilities/networking/http/v1alpha/trigger_pb'
 export type { Payload as CronPayload } from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
-
 // EVM Capability
 export {
 	ClientCapability as EVMClient,
@@ -34,10 +37,6 @@ export {
 	type WriteCreReportRequest as SolanaWriteCreReportRequest,
 	type WriteCreReportRequestJson as SolanaWriteCreReportRequestJson,
 } from '@cre/generated-sdk/capabilities/blockchain/solana/v1alpha/client_sdk_gen'
-export {
-	TxStatus as SolanaTxStatus,
-	ReceiverContractExecutionStatus as SolanaReceiverContractExecutionStatus,
-} from '@cre/generated/capabilities/blockchain/solana/v1alpha/client_pb'
 // Confidential HTTP Capability
 export { ClientCapability as ConfidentialHTTPClient } from '@cre/generated-sdk/capabilities/networking/confidentialhttp/v1alpha/client_sdk_gen'
 // HTTP Capability
