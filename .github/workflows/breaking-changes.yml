@@ -3,6 +3,10 @@ name: Breaking changes
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 on:
   pull_request:
     branches: [main]
@@ -86,21 +90,13 @@ jobs:
         if: env.SKIP != 'true'
         run: bun install --frozen-lockfile
 
-      - name: Compile declaration emit
-        if: env.SKIP != 'true'
-        working-directory: packages/cre-sdk
-        run: bun run compile:build
-
       - name: Diff TypeScript public API vs baseline
         if: env.SKIP != 'true'
         working-directory: packages/cre-sdk
         run: |
-          cat dist/index.d.ts dist/pb.d.ts \
-            dist/sdk/index.d.ts dist/sdk/runtime.d.ts \
-            dist/sdk/workflow.d.ts dist/sdk/errors.d.ts \
-            dist/sdk/report.d.ts > /tmp/api-current.d.ts
+          bun run update-api-baseline
 
-          if ! diff api-baseline.d.ts /tmp/api-current.d.ts; then
+          if ! git diff --exit-code api-baseline.d.ts; then
             echo "::error::TypeScript public API surface changed. Run 'bun run update-api-baseline' locally and commit the updated api-baseline.d.ts."
             exit 1
           fi
@@ -140,9 +136,9 @@ jobs:
       - name: Diff Rust host imports vs baseline
         if: env.SKIP != 'true'
         run: |
-          sed -n '/unsafe extern "C"/,/^}/p' \
+          grep -E '^\s+fn [a-z_]+\(' \
             packages/cre-sdk-javy-plugin/src/javy_chainlink_sdk/src/lib.rs \
-            > /tmp/current-imports.txt
+            | grep -v '{$' > /tmp/current-imports.txt
 
           if ! diff packages/cre-sdk-javy-plugin/src/javy_chainlink_sdk/host-imports-baseline.txt \
                    /tmp/current-imports.txt; then

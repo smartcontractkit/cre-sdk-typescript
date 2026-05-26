@@ -56,7 +56,7 @@
 		"test": "bun test",
 		"test:standard": "./scripts/run-standard-tests.sh",
 		"typecheck": "tsc -p tsconfig.json --noEmit",
-		"update-api-baseline": "bun run compile:build && cat dist/index.d.ts dist/pb.d.ts dist/sdk/index.d.ts dist/sdk/runtime.d.ts dist/sdk/workflow.d.ts dist/sdk/errors.d.ts dist/sdk/report.d.ts > api-baseline.d.ts"
+		"update-api-baseline": "bun run compile:build && cat dist/index.d.ts dist/pb.d.ts dist/sdk/index.d.ts dist/sdk/runtime.d.ts dist/sdk/workflow.d.ts dist/sdk/errors.d.ts dist/sdk/report.d.ts dist/sdk/test/index.d.ts > api-baseline.d.ts"
 	},
 	"dependencies": {
 		"@bufbuild/protobuf": "2.6.3",
