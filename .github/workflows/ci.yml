@@ -110,6 +110,8 @@ jobs:
             echo ""
             echo "=========================================="
             echo "Uncommitted file changes detected after full-checks!"
+            echo "Changed files:"
+            git diff --name-only
             echo "Run 'bun full-checks' locally and commit the resulting changes."
             echo "=========================================="
             exit 1
