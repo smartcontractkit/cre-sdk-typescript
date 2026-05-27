@@ -459,7 +459,7 @@ describe('test getSecret', () => {
 										case: 'secret',
 										value: {
 											id: 'secret',
-											namespace: 'default',
+											namespace: 'main',
 											owner: 'owner',
 											value: 'value',
 										},
@@ -476,7 +476,7 @@ describe('test getSecret', () => {
 		runtime.getSecret({ id: 'json-secret' }).result()
 		runtime.getSecret(create(SecretRequestSchema, { id: 'proto-secret' })).result()
 
-		expect(observedNamespaces).toEqual(['default', 'default'])
+		expect(observedNamespaces).toEqual(['main', 'main'])
 	})
 
 	test('getSecrets throws → wrapped as SecretsError', () => {

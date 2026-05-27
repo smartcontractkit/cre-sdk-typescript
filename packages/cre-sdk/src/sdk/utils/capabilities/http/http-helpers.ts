@@ -134,8 +134,18 @@ export function json(
 /**
  * Returns all values for a header (case-insensitive).
  * Reads `multiHeaders` first; falls back to the deprecated single-value `headers` map.
+ * @param response - The Response object
+ * @param name - The header name (case-insensitive)
+ * @returns Array of header values; empty if not present
  */
 export function getHeaders(response: HeaderCapableResponse, name: string): string[]
+/**
+ * Returns all values for a header (case-insensitive).
+ * Reads `multiHeaders` first; falls back to the deprecated single-value `headers` map.
+ * @param responseFn - Function that returns an object with result function that returns Response
+ * @param name - The header name (case-insensitive)
+ * @returns Object with result function that returns array of header values; empty if not present
+ */
 export function getHeaders(
 	responseFn: () => { result: HeaderCapableResponse },
 	name: string,

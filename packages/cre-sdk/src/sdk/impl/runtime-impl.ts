@@ -41,7 +41,7 @@ import {
 import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
 import { DonModeError, NodeModeError, SecretsError } from '../errors'
 
-const DEFAULT_SECRET_NAMESPACE = 'default'
+const DEFAULT_SECRET_NAMESPACE = 'main'
 
 /**
  * Base implementation shared by DON and Node runtimes.
