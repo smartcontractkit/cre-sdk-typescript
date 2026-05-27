@@ -247,7 +247,8 @@ function sendReport(
 ): { result: () => Response } {
 	const rawReport = report.x_generatedCodeOnly_unwrap()
 	const request = fn(rawReport)
-	return this.sendRequest(runtime, request)
+	// Cast to native overload signature - the impl dispatches on $typeName.
+	return this.sendRequest(runtime, request as Request)
 }
 
 /**
@@ -267,7 +268,8 @@ function sendRequesterSendReport(
 ): { result: () => Response } {
 	const rawReport = report.x_generatedCodeOnly_unwrap()
 	const request = fn(rawReport)
-	return this.sendRequest(request)
+	// Cast to native overload signature - the impl dispatches on $typeName.
+	return this.sendRequest(request as Request)
 }
 
 // ============================================================================
