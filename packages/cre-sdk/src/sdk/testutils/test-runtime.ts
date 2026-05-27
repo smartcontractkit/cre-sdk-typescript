@@ -386,7 +386,11 @@ export function newTestRuntime(
 	const state: TestRuntimeState = {
 		timeProvider: options.timeProvider,
 	}
-	const maxResponseSize = BigInt(options.maxResponseSize ?? DEFAULT_MAX_RESPONSE_SIZE_BYTES)
+	const configuredMaxResponseSize = options.maxResponseSize ?? DEFAULT_MAX_RESPONSE_SIZE_BYTES
+	if (!Number.isSafeInteger(configuredMaxResponseSize) || configuredMaxResponseSize < 0) {
+		throw new Error('newTestRuntime maxResponseSize must be a non-negative safe integer number')
+	}
+	const maxResponseSize = BigInt(configuredMaxResponseSize)
 	const helpers = createTestRuntimeHelpers(registry, secretsMap, testWriter, state, maxResponseSize)
 
 	return new TestRuntime(helpers, maxResponseSize, testWriter, state)

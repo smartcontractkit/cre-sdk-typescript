@@ -41,6 +41,8 @@ import {
 import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
 import { DonModeError, NodeModeError, SecretsError } from '../errors'
 
+const DEFAULT_SECRET_NAMESPACE = 'main'
+
 /**
  * Base implementation shared by DON and Node runtimes.
  *
@@ -362,10 +364,10 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 			}
 		}
 
-		// Normalize request (accept both protobuf and JSON formats)
-		const secretRequest = (request as unknown as { $typeName?: string }).$typeName
-			? (request as SecretRequest)
-			: create(SecretRequestSchema, request)
+		const secretRequest = create(SecretRequestSchema, {
+			id: request.id,
+			namespace: request.namespace || DEFAULT_SECRET_NAMESPACE,
+		})
 
 		// Allocate callback ID and send request
 		const id = this.nextCallId

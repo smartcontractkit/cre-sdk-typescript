@@ -23,7 +23,9 @@ pub fn extend_wasm_exports<'js, V: IntoJs<'js>>(ctx: &Ctx<'js>, name: &'static s
             panic!("Duplicate WASM export: '{name}' is already registered");
         }
     });
-    ctx.globals().set(name, value).unwrap();
+    ctx.globals()
+        .set(name, value)
+        .unwrap_or_else(|err| panic!("failed to register WASM export '{name}': {err:?}"));
 }
 
 /// Resets the export registry for a new initialization cycle.
@@ -53,7 +55,8 @@ mod tests {
     #[should_panic(expected = "Duplicate WASM export")]
     fn rejects_duplicate_export_name() {
         REGISTERED.with(|cell| cell.borrow_mut().clear());
-        let runtime = Runtime::new(Config::default()).unwrap();
+        let runtime =
+            Runtime::new(Config::default()).expect("failed to create QuickJS runtime for test");
         runtime.context().with(|ctx| {
             extend_wasm_exports(&ctx, "duplicatedName", true);
             extend_wasm_exports(&ctx, "duplicatedName", true);

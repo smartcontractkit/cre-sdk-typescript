@@ -201,6 +201,12 @@ describe('TestRuntime / helper layer', () => {
 		).toThrow(RESPONSE_BUFFER_TOO_SMALL)
 	})
 
+	test('newTestRuntime rejects unsafe maxResponseSize values', () => {
+		expect(() => newTestRuntime(null, { maxResponseSize: Number.MAX_SAFE_INTEGER + 1 })).toThrow(
+			'newTestRuntime maxResponseSize must be a non-negative safe integer number',
+		)
+	})
+
 	test('newTestRuntime with null/undefined secrets uses empty map', () => {
 		const rt = newTestRuntime(null)
 		expect(() => rt.getSecret({ id: 'x', namespace: 'y' }).result()).toThrow(SecretsError)
