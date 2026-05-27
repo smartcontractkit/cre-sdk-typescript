@@ -122,8 +122,6 @@ export class ClientCapability {
 
 	/** Available ChainSelector values */
 	static readonly SUPPORTED_CHAIN_SELECTORS = {
-		'adi-mainnet': 4059281736450291836n,
-		'adi-testnet': 9418205736192840573n,
 		'apechain-testnet-curtis': 9900119385908781505n,
 		'arc-testnet': 3034092155422581607n,
 		'avalanche-mainnet': 6433500567565415381n,
@@ -131,7 +129,6 @@ export class ClientCapability {
 		'binance_smart_chain-mainnet': 11344663589394136015n,
 		'binance_smart_chain-testnet': 13264668187771770619n,
 		'celo-mainnet': 1346049177634351622n,
-		'celo-sepolia': 3761762704474186180n,
 		'cronos-testnet': 2995292832068775165n,
 		'dtcc-testnet-andesite': 15513093881969820114n,
 		'ethereum-mainnet': 5009297550715157269n,
@@ -171,7 +168,6 @@ export class ClientCapability {
 		'polygon-mainnet': 4051577828743386545n,
 		'polygon-testnet-amoy': 16281711391670634445n,
 		'private-testnet-andesite': 6915682381028791124n,
-		'private-testnet-rhyolite': 604447335222770945n,
 		'sonic-mainnet': 1673871237479749969n,
 		'sonic-testnet': 1763698235108410440n,
 		'tac-testnet': 9488606126177218005n,

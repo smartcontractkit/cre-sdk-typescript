@@ -23,6 +23,12 @@ There are 2 possible scenarios that you might encounter:
 
 Below ale the steps for two scenarios.
 
+> **Breaking changes:** If the release includes any intentional breaking changes to the
+> TypeScript API surface, JS host bindings, or Rust host imports, the corresponding baseline
+> files (`api-baseline.d.ts`, `__snapshots__/host-bindings-contract.test.ts.snap`,
+> `host-imports-baseline.txt`) must already be committed on the release branch before
+> tagging. The `breaking-changes` CI job must be green before publishing.
+
 ### 1. Both packages need an update
 
 1. Create a new branch from `main` with the name `release-candidate-vx.y.z` (for example `release-candidate-v1.0.8`).

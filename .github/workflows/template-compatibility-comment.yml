@@ -40,5 +40,5 @@ jobs:
         with:
           script: |
             const path = require('path');
-            const run = require(path.join(process.env.GITHUB_WORKSPACE, 'scripts', 'template-compatibility-comment.js'));
+            const run = require(path.join(process.env.GITHUB_WORKSPACE, 'scripts', 'template-compatibility-comment.cjs'));
             await run({ github, context });
