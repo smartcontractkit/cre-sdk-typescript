@@ -73,6 +73,9 @@ function createRuntimeHelpersMock(overrides: Partial<RuntimeHelpers> = {}): Runt
 		now: mock(() => {
 			throw new Error('Method not implemented: now')
 		}),
+		sleep: mock(() => {
+			throw new Error('Method not implemented: sleep')
+		}),
 		log: mock(() => {}),
 	}
 
@@ -354,6 +357,31 @@ describe('test now converts to date', () => {
 		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
 		const now = runtime.now()
 		expect(now).toEqual(new Date(1716153600000))
+	})
+})
+
+describe('test sleep delegates to helpers', () => {
+	test('sleep calls helpers.sleep with the provided milliseconds', () => {
+		const sleepMock = mock(() => {})
+		const helpers = createRuntimeHelpersMock({
+			sleep: sleepMock,
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		runtime.sleep(500)
+		expect(sleepMock).toHaveBeenCalledTimes(1)
+		expect(sleepMock).toHaveBeenCalledWith(500)
+	})
+
+	test('sleep passes zero milliseconds to helpers.sleep', () => {
+		const sleepMock = mock(() => {})
+		const helpers = createRuntimeHelpersMock({
+			sleep: sleepMock,
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		runtime.sleep(0)
+		expect(sleepMock).toHaveBeenCalledWith(0)
 	})
 })
 

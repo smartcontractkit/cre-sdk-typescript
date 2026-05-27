@@ -10,6 +10,7 @@ exports[`JS host bindings contract 1`] = `
   "log",
   "now",
   "sendResponse",
+  "sleep",
   "switchModes",
   "versionV2",
 ]

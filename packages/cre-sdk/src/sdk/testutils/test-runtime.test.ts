@@ -71,6 +71,22 @@ describe('TestRuntime / helper layer', () => {
 		expect(rt.now().getTime()).toBe(fixed)
 	})
 
+	test('sleep() completes without throwing', () => {
+		const rt = newTestRuntime()
+		expect(() => rt.sleep(100)).not.toThrow()
+	})
+
+	test('sleep() with zero milliseconds completes without throwing', () => {
+		const rt = newTestRuntime()
+		expect(() => rt.sleep(0)).not.toThrow()
+	})
+
+	test('sleep() returns undefined (no-op in test runtime)', () => {
+		const rt = newTestRuntime()
+		const result = rt.sleep(250)
+		expect(result).toBeUndefined()
+	})
+
 	test('helper call returns false for unregistered capability', () => {
 		const rt = newTestRuntime()
 		const cap = new BasicActionCapability()

@@ -104,6 +104,9 @@ const proxyHostBindings = {
 	now: () => {
 		throw new Error('now called unexpectedly in test')
 	},
+	sleep: () => {
+		throw new Error('sleep called unexpectedly in test')
+	},
 }
 
 Object.assign(globalThis, proxyHostBindings)

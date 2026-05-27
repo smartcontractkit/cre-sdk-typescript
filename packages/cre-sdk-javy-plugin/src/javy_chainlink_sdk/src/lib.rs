@@ -13,6 +13,8 @@ use rand_chacha::ChaCha8Rng;
 use std::collections::HashMap;
 use std::env;
 use std::sync::{Mutex, OnceLock};
+use std::thread;
+use std::time::Duration;
 
 static CURRENT_MODE: Mutex<i32> = Mutex::new(0);
 static RANDOM_GENERATORS: OnceLock<Mutex<HashMap<i32, ChaCha8Rng>>> = OnceLock::new();
@@ -320,6 +322,15 @@ pub fn modify_runtime(runtime: Runtime) -> Runtime {
 
                 let milliseconds = nanoseconds / 1_000_000;
                 Ok(milliseconds as f64)
+            }),
+        );
+
+        extend_wasm_exports(
+            &ctx,
+            "sleep",
+            Func::from(|_ctx: Ctx<'_>, ms: u64| -> Result<(), Error> {
+                thread::sleep(Duration::from_millis(ms));
+                Ok(())
             }),
         );
     });

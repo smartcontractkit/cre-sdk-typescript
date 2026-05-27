@@ -217,6 +217,10 @@ function createTestRuntimeHelpers(
 		return state.timeProvider ? state.timeProvider() : Date.now()
 	}
 
+	function sleep(ms: number): void {
+		return
+	}
+
 	return {
 		call(request: Parameters<RuntimeHelpers['call']>[0]): boolean {
 			const handler = registry.get(request.id)
@@ -319,6 +323,8 @@ function createTestRuntimeHelpers(
 		switchModes(_mode: Mode): void {},
 
 		now,
+
+		sleep,
 
 		log(message: string): void {
 			testWriter.log(message)
