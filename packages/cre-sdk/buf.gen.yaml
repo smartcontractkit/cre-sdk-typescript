@@ -16,6 +16,7 @@ inputs:
     paths:
       - ../../submodules/chainlink-protos/cre/capabilities/blockchain/aptos/v1alpha
       - ../../submodules/chainlink-protos/cre/capabilities/blockchain/evm/v1alpha
+      - ../../submodules/chainlink-protos/cre/capabilities/blockchain/solana/v1alpha
       - ../../submodules/chainlink-protos/cre/capabilities/internal/actionandtrigger/v1
       - ../../submodules/chainlink-protos/cre/capabilities/internal/basicaction/v1
       - ../../submodules/chainlink-protos/cre/capabilities/internal/basictrigger/v1

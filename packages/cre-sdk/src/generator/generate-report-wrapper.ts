@@ -1,6 +1,33 @@
-import type { DescMessage } from '@bufbuild/protobuf'
+import type { DescMessage, ScalarType } from '@bufbuild/protobuf'
 import { ReportResponseSchema } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { getImportPathForFile, wrappedReportDesc, wrapType } from './utils'
+
+function scalarToTsType(scalar: ScalarType, json: boolean): string {
+	switch (scalar) {
+		case 1:
+		case 2:
+			return 'number'
+		case 3:
+		case 4:
+		case 5:
+		case 6:
+		case 7:
+		case 13:
+		case 15:
+		case 16:
+		case 17:
+		case 18:
+			return 'bigint'
+		case 8:
+			return 'boolean'
+		case 9:
+			return 'string'
+		case 12:
+			return json ? 'string' : 'Uint8Array'
+		default:
+			return 'unknown'
+	}
+}
 
 export function generateReportWrapper(tpe: DescMessage): [string, Map<string, Set<string>>] {
 	const wrappedType = wrapType(tpe)
@@ -12,19 +39,22 @@ export function generateReportWrapper(tpe: DescMessage): [string, Map<string, Se
 
 	// Process fields to collect imports
 	wrappedType.fields.forEach((field) => {
-		if (field.fieldKind === 'message') {
-			if (field.message === wrappedReportDesc) {
-				return
-			}
-			const importPath = getImportPathForFile(field.message.file.name)
+		const msg =
+			field.fieldKind === 'message'
+				? field.message
+				: field.fieldKind === 'list' && field.listKind === 'message'
+					? field.message
+					: undefined
+		if (msg && msg !== wrappedReportDesc) {
+			const importPath = getImportPathForFile(msg.file.name)
 			if (!typeImports.has(importPath)) {
 				typeImports.set(importPath, new Set())
 			}
 			const types = typeImports.get(importPath)
 			if (types) {
-				types.add(`${field.message.name}Schema`)
-				types.add(`type ${field.message.name}`)
-				types.add(`type ${field.message.name}Json`)
+				types.add(`${msg.name}Schema`)
+				types.add(`type ${msg.name}`)
+				types.add(`type ${msg.name}Json`)
 			}
 		}
 	})
@@ -48,37 +78,17 @@ export function generateReportWrapper(tpe: DescMessage): [string, Map<string, Se
 			if (field.fieldKind === 'message') {
 				fieldType = field.message.name
 			} else if (field.fieldKind === 'scalar') {
-				switch (field.scalar) {
-					case 1:
-					case 2:
-						fieldType = 'number'
-						break
-					case 3:
-					case 4:
-					case 5:
-					case 6:
-					case 7:
-					case 13:
-					case 15:
-					case 16:
-					case 17:
-					case 18:
-						fieldType = 'bigint'
-						break
-					case 8:
-						fieldType = 'boolean'
-						break
-					case 9:
-						fieldType = 'string'
-						break
-					case 12:
-						fieldType = 'Uint8Array'
-						break
-					default:
-						fieldType = 'unknown'
-				}
+				fieldType = scalarToTsType(field.scalar, false)
 			} else if (field.fieldKind === 'enum') {
 				fieldType = field.enum.name
+			} else if (field.fieldKind === 'list') {
+				if (field.listKind === 'message') {
+					fieldType = `${field.message.name}[]`
+				} else if (field.listKind === 'scalar') {
+					fieldType = `${scalarToTsType(field.scalar, false)}[]`
+				} else {
+					fieldType = `${field.enum.name}[]`
+				}
 			} else {
 				fieldType = 'unknown'
 			}
@@ -102,41 +112,20 @@ export function generateReportWrapper(tpe: DescMessage): [string, Map<string, Se
 					fieldType = `${field.message.name}Json`
 				}
 			} else if (field.fieldKind === 'scalar') {
-				switch (field.scalar) {
-					case 1:
-					case 2:
-						fieldType = 'number'
-						break
-					case 3:
-					case 4:
-					case 5:
-					case 6:
-					case 7:
-					case 13:
-					case 15:
-					case 16:
-					case 17:
-					case 18:
-						fieldType = 'bigint'
-						break
-					case 8:
-						fieldType = 'boolean'
-						break
-					case 9:
-						fieldType = 'string'
-						break
-					case 12:
-						fieldType = 'string' // JSON uses string for bytes
-						break
-					default:
-						fieldType = 'unknown'
-				}
+				fieldType = scalarToTsType(field.scalar, true)
 			} else if (field.fieldKind === 'enum') {
 				fieldType = field.enum.name
+			} else if (field.fieldKind === 'list') {
+				if (field.listKind === 'message') {
+					fieldType = `${field.message.name}Json[]`
+				} else if (field.listKind === 'scalar') {
+					fieldType = `${scalarToTsType(field.scalar, true)}[]`
+				} else {
+					fieldType = `${field.enum.name}[]`
+				}
 			} else {
 				fieldType = 'unknown'
 			}
-			// In proto3, all message fields are nullable, so add "?" for message fields
 			const optionalSuffix = field.fieldKind === 'message' ? '?' : ''
 			return `${field.localName}${optionalSuffix}: ${fieldType}`
 		})
@@ -173,6 +162,10 @@ export function generateReportWrapper(tpe: DescMessage): [string, Map<string, Se
 					if (field.fieldKind === 'message') {
 						// Handle other message fields - convert from JSON to regular type using fromJson
 						return `${field.localName}: input.${field.localName} !== undefined ? fromJson(${field.message.name}Schema, input.${field.localName}) : undefined`
+					}
+
+					if (field.fieldKind === 'list' && field.listKind === 'message') {
+						return `${field.localName}: (input.${field.localName} ?? []).map(v => fromJson(${field.message.name}Schema, v))`
 					}
 
 					if (field.fieldKind === 'scalar' && field.scalar === 12) {
