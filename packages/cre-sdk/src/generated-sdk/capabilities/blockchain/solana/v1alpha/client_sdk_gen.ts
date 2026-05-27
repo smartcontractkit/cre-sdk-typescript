@@ -20,6 +20,7 @@ import {
 import type { Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import { hexToBytes } from '@cre/sdk/utils/hex-utils'
+import type { CapabilityInput } from '@cre/sdk/utils/types/no-excess'
 
 export type WriteCreReportRequest = {
 	remainingAccounts: AccountMeta[]
@@ -95,6 +96,10 @@ export class ClientCapability {
 
 	constructor(private readonly ChainSelector: bigint) {}
 
+	writeReport<TInput>(
+		runtime: Runtime<unknown>,
+		input: CapabilityInput<TInput, WriteCreReportRequest, WriteCreReportRequestJson>,
+	): { result: () => WriteReportReply }
 	writeReport(
 		runtime: Runtime<unknown>,
 		input: WriteCreReportRequest | WriteCreReportRequestJson,
