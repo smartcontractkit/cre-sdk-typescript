@@ -47,6 +47,10 @@ class WasmRuntimeHelpers implements RuntimeHelpers {
 		return hostBindings.now()
 	}
 
+	sleep(ms: number): void {
+		hostBindings.sleep(ms)
+	}
+
 	public static getInstance(): WasmRuntimeHelpers {
 		if (!WasmRuntimeHelpers.instance) {
 			WasmRuntimeHelpers.instance = new WasmRuntimeHelpers()

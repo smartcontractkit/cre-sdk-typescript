@@ -207,6 +207,10 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 		return new Date(this.helpers.now())
 	}
 
+	sleep(ms: number): void {
+		this.helpers.sleep(ms)
+	}
+
 	log(message: string): void {
 		this.helpers.log(message)
 	}
@@ -460,6 +464,9 @@ export interface RuntimeHelpers {
 
 	/** Returns current time in milliseconds since Unix epoch. */
 	now(): number
+
+	/** Sleeps for the specified duration. */
+	sleep(ms: number): void
 
 	/** Logs a message to the host environment. */
 	log(message: string): void

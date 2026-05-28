@@ -83,6 +83,12 @@ declare global {
 	function now(): number
 
 	/**
+	 * Sleeps for the specified duration.
+	 * @param ms - Duration in milliseconds
+	 */
+	function sleep(ms: number): void
+
+	/**
 	 * Console API available in the QuickJS runtime
 	 */
 	type CreConsole = {
