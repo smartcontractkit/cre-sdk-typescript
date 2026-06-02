@@ -39,6 +39,20 @@ export {
 } from '@cre/generated-sdk/capabilities/blockchain/solana/v1alpha/client_sdk_gen'
 // Confidential HTTP Capability
 export { ClientCapability as ConfidentialHTTPClient } from '@cre/generated-sdk/capabilities/networking/confidentialhttp/v1alpha/client_sdk_gen'
+export {
+	type AuthConfigInput,
+	type ApiKeyAuthInput,
+	type BasicAuthInput,
+	type BearerAuthInput,
+	type HmacSha256Input,
+	type AwsSigV4Input,
+	type HmacCustomInput,
+	type OAuth2ClientCredentialsInput,
+	type OAuth2RefreshTokenInput,
+	type MtlsInput,
+	buildAuthConfig,
+	buildMtlsConfig,
+} from '@cre/sdk/cre/confidentialhttp'
 // HTTP Capability
 export {
 	ClientCapability as HTTPClient,
