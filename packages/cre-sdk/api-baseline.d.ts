@@ -94,10 +94,12 @@ export interface Runtime<C> extends BaseRuntime<C>, SecretsProvider {
 }
 import type { Message } from '@bufbuild/protobuf';
 import type { Requirements, RestrictionsJson, Secret, SecretRequest, SecretRequestJson } from '@cre/generated/sdk/v1alpha/sdk_pb';
-import { TeeType } from '@cre/generated/sdk/v1alpha/sdk_pb';
 import type { Runtime, TeeRuntime } from '@cre/sdk/runtime';
 import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface';
 import type { CreSerializable } from './utils';
+export type { AnyTeeConstraint, NitroBinding, NitroRegion, OneOfTees, Region, TeeBinding, TeeConstraint, } from './tee-constraints';
+export { buildTeeRequirements, NITRO_REGIONS, REGIONS, teeConstraintSchema, } from './tee-constraints';
+import type { TeeConstraint } from './tee-constraints';
 export type HandlerFn<TConfig, TTriggerOutput, TResult, TRuntime = Runtime<TConfig>> = (runtime: TRuntime, triggerOutput: TTriggerOutput) => Promise<CreSerializable<TResult>> | CreSerializable<TResult>;
 export interface Hooks<TConfig, TTriggerOutput> {
     preHook?: (config: TConfig, triggerOutput: TTriggerOutput) => RestrictionsJson;
@@ -110,16 +112,7 @@ export interface HandlerEntry<TConfig, TRawTriggerOutput extends Message<string>
 }
 export type Workflow<TConfig> = ReadonlyArray<HandlerEntry<TConfig, any, any, any, any>>;
 export declare const handler: <TRawTriggerOutput extends Message<string>, TTriggerOutput, TConfig, TResult, TRuntime = Runtime<TConfig>>(trigger: Trigger<TRawTriggerOutput, TTriggerOutput>, fn: HandlerFn<TConfig, TTriggerOutput, TResult, TRuntime>, hooks?: Hooks<TConfig, TTriggerOutput>) => HandlerEntry<TConfig, TRawTriggerOutput, TTriggerOutput, TResult, TRuntime>;
-export type TeeRequirement = {
-    type: Exclude<TeeType, TeeType.UNSPECIFIED>;
-    regions?: string[];
-};
-export type AnyTeeRequirement = {
-    type: 'any';
-    regions?: string[];
-};
-export type AcceptedTees = TeeRequirement[] | AnyTeeRequirement;
-export declare const handlerInTee: <TRawTriggerOutput extends Message<string>, TTriggerOutput, TConfig, TResult>(trigger: Trigger<TRawTriggerOutput, TTriggerOutput>, fn: HandlerFn<TConfig, TTriggerOutput, TResult, TeeRuntime<TConfig>>, tees: AcceptedTees, hooks?: Hooks<TConfig, TTriggerOutput>) => HandlerEntry<TConfig, TRawTriggerOutput, TTriggerOutput, TResult, TeeRuntime<TConfig>>;
+export declare const handlerInTee: <TRawTriggerOutput extends Message<string>, TTriggerOutput, TConfig, TResult>(trigger: Trigger<TRawTriggerOutput, TTriggerOutput>, fn: HandlerFn<TConfig, TTriggerOutput, TResult, TeeRuntime<TConfig>>, tees: TeeConstraint, hooks?: Hooks<TConfig, TTriggerOutput>) => HandlerEntry<TConfig, TRawTriggerOutput, TTriggerOutput, TResult, TeeRuntime<TConfig>>;
 export type SecretsProvider = {
     getSecrets(requests: Array<SecretRequest | SecretRequestJson>): {
         result: () => Record<string, Secret>;

@@ -73,16 +73,23 @@ export {
 	HTTPCapability,
 	HTTPRestrictor,
 } from '@cre/generated-sdk/capabilities/networking/http/v1alpha/http_sdk_gen'
-
 // CRON Capability
 export {
 	CronCapability,
 	CronRestrictor,
 } from '@cre/generated-sdk/capabilities/scheduler/cron/v1/cron_sdk_gen'
-
 // Runtime
 export type { NodeRuntime, Runtime, TeeRuntime } from '@cre/sdk/runtime'
-export { handler, handlerInTee } from '@cre/sdk/workflow'
+export type {
+	AnyTeeConstraint,
+	NitroBinding,
+	NitroRegion,
+	OneOfTees,
+	Region,
+	TeeBinding,
+	TeeConstraint,
+} from '@cre/sdk/workflow'
+export { handler, handlerInTee, NITRO_REGIONS, REGIONS } from '@cre/sdk/workflow'
 
 prepareRuntime()
 
