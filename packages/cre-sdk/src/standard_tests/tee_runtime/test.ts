@@ -1,5 +1,4 @@
 import type { Outputs } from '@cre/generated/capabilities/internal/basictrigger/v1/basic_trigger_pb'
-import { TeeType } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
 import { cre, type Runtime, type TeeRuntime } from '@cre/sdk/cre'
 import { Runner } from '@cre/sdk/wasm'
@@ -12,7 +11,7 @@ const initWorkflow = () => {
 	const basicTrigger = new BasicTriggerCapability()
 	return [
 		handlerInTee(basicTrigger.trigger({ name: 'first-trigger', number: 100 }), teeTrigger, [
-			{ type: TeeType.AWS_NITRO, regions: ['us-west-2'] },
+			{ tee: 'nitro', regions: ['us-west-2'] },
 		]),
 		cre.handler(basicTrigger.trigger({ name: 'second-trigger', number: 200 }), regularTrigger),
 	]

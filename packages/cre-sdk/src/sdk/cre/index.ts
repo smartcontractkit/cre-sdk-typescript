@@ -21,6 +21,16 @@ export {
 export type { Payload as HTTPPayload } from '@cre/generated/capabilities/networking/http/v1alpha/trigger_pb'
 export type { Payload as CronPayload } from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
 export { TeeType } from '@cre/generated/sdk/v1alpha/sdk_pb'
+export type {
+	Region,
+	NitroRegion,
+	TeeConstraint,
+	AnyTeeConstraint,
+	OneOfTees,
+	TeeBinding,
+	NitroBinding,
+} from '@cre/sdk/workflow'
+export { REGIONS, NITRO_REGIONS } from '@cre/sdk/workflow'
 // EVM Capability
 export {
 	ClientCapability as EVMClient,
