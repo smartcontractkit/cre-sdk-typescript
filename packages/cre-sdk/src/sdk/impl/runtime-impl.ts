@@ -451,6 +451,20 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 			throw new SecretsBatchError(requests, 'invalid value returned from host')
 		}
 
+		const failedResponses = secretsResponse.responses.filter(
+			(response) => response.response.case === 'error',
+		)
+		if (failedResponses.length > 0) {
+			const errorMessages = failedResponses.map((response) => {
+				if (response.response.case !== 'error') {
+					return 'unknown: unknown error'
+				}
+				const { id, error } = response.response.value
+				return `${id || 'unknown'}: ${error || 'unknown error'}`
+			})
+			throw new SecretsBatchError(requests, errorMessages.join('\n'))
+		}
+
 		return secretsResponse.responses
 	}
 
