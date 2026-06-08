@@ -35,7 +35,7 @@ export class SecretsBatchError extends Error {
 		public readonly error: string,
 	) {
 		super(
-			`batch secret retrieval failed for ${secretRequests.length} request(s): ${error}. Verify the host response is complete and that the workflow has access to the requested secrets`,
+			`batch secret retrieval failed for ${secretRequests.length} request(s):\n${error}\nVerify the host response is complete and that the workflow has access to the requested secrets`,
 		)
 		this.name = 'SecretsBatchError'
 	}

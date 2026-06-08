@@ -62,16 +62,16 @@ const onHTTPTrigger = async (runtime: Runtime<Config>) => {
 	// Fetch a single secret
 	const secretUrlValue = runtime.getSecret({ id: 'SECRET_URL' }).result().value
 
-	// Fetch multiple secrets
+	// Fetch multiple secrets — throws if any secret fails
 	const secretsToFetch = [{ id: 'CHARACTER_ID1' }, { id: 'CHARACTER_ID2' }, { id: 'CHARACTER_ID3' }]
-	const secretResponses = runtime.getSecrets(secretsToFetch).result()
-	const characterIds = secretResponses.flatMap((response) =>
-		response.response.case === 'secret' && response.response.value?.id
-			? [response.response.value.value]
-			: [],
-	)
-	if (characterIds.length === 0) {
-		throw new Error('No character ID secrets available')
+	let characterIds: string[]
+	try {
+		characterIds = runtime
+			.getSecrets(secretsToFetch)
+			.result()
+			.map((response: any) => response.response.value.value)
+	} catch (err: any) {
+		throw new Error(`Failed to fetch character ID secrets: ${err.message}`)
 	}
 
 	// choose a random character id
