@@ -449,7 +449,7 @@ describe('test getSecret', () => {
 		}
 	})
 
-	test('getSecrets returns mixed success and error responses without throwing', () => {
+	test('getSecrets throws SecretsBatchError when any secret fails', () => {
 		const helpers = createRuntimeHelpersMock({
 			getSecrets: mock(() => undefined),
 			awaitSecrets: mock(() => {
@@ -487,16 +487,71 @@ describe('test getSecret', () => {
 		})
 
 		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
-		const responses = runtime
-			.getSecrets([
-				{ id: 'ok-secret', namespace: 'ns' },
-				{ id: 'missing-secret', namespace: 'ns' },
-			])
-			.result()
+		try {
+			runtime
+				.getSecrets([
+					{ id: 'ok-secret', namespace: 'ns' },
+					{ id: 'missing-secret', namespace: 'ns' },
+				])
+				.result()
+			throw new Error('expected getSecrets to throw')
+		} catch (err) {
+			expect(err).toBeInstanceOf(SecretsBatchError)
+			expect((err as SecretsBatchError).message).toContain('missing-secret: secret not found')
+		}
+	})
 
-		expect(responses.length).toEqual(2)
-		expect(responses[0].response.case).toEqual('secret')
-		expect(responses[1].response.case).toEqual('error')
+	test('getSecrets throws SecretsBatchError with all error messages when multiple secrets fail', () => {
+		const helpers = createRuntimeHelpersMock({
+			getSecrets: mock(() => undefined),
+			awaitSecrets: mock(() => {
+				return create(AwaitSecretsResponseSchema, {
+					responses: {
+						1: create(SecretResponsesSchema, {
+							responses: [
+								create(SecretResponseSchema, {
+									response: {
+										case: 'error',
+										value: {
+											id: 'missing-a',
+											namespace: 'ns',
+											owner: 'owner',
+											error: 'not found',
+										},
+									},
+								}),
+								create(SecretResponseSchema, {
+									response: {
+										case: 'error',
+										value: {
+											id: 'missing-b',
+											namespace: 'ns',
+											owner: 'owner',
+											error: 'access denied',
+										},
+									},
+								}),
+							],
+						}),
+					},
+				})
+			}),
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		try {
+			runtime
+				.getSecrets([
+					{ id: 'missing-a', namespace: 'ns' },
+					{ id: 'missing-b', namespace: 'ns' },
+				])
+				.result()
+			throw new Error('expected getSecrets to throw')
+		} catch (err) {
+			expect(err).toBeInstanceOf(SecretsBatchError)
+			expect((err as SecretsBatchError).message).toContain('missing-a: not found')
+			expect((err as SecretsBatchError).message).toContain('missing-b: access denied')
+		}
 	})
 
 	test('normalizes missing secret namespace to default for JSON and protobuf requests', () => {
@@ -795,7 +850,10 @@ describe('test getSecret', () => {
 						1: create(SecretResponsesSchema, {
 							responses: [
 								create(SecretResponseSchema, {
-									response: { case: 'error', value: { error: errorMessage } },
+									response: {
+										case: 'error',
+										value: { id: 'test-secret', error: errorMessage },
+									},
 								}),
 							],
 						}),
@@ -806,7 +864,7 @@ describe('test getSecret', () => {
 
 		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
 		expect(() => runtime.getSecret(secretRequest).result()).toThrow(
-			new SecretsError(secretRequest, errorMessage),
+			new SecretsError(secretRequest, 'test-secret: secret not found'),
 		)
 	})
 
