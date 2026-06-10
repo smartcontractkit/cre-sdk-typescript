@@ -1,3 +1,4 @@
+export * from '../capabilities/errors'
 export * from './cre'
 export * from './don-info'
 export * from './errors'
