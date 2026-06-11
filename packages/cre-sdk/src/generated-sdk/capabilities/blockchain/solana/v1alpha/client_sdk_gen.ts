@@ -92,6 +92,7 @@ export class ClientCapability {
 	/** Available ChainSelector values */
 	static readonly SUPPORTED_CHAIN_SELECTORS = {
 		'solana-devnet': 16423721717087811551n,
+		'solana-mainnet': 124615329519749607n,
 	} as const
 
 	constructor(private readonly ChainSelector: bigint) {}
