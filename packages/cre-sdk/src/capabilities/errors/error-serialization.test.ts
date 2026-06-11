@@ -109,7 +109,12 @@ describe('deserializeErrorFromString that is not serialised capability error', (
 
 	test('valid serialized still returns capability error', () => {
 		const serialized = 'Public:User:DeadlineExceeded:detail'
-		const expected = new CapabilityExecutionError('detail', VisibilityPublic, OriginUser, DeadlineExceeded)
+		const expected = new CapabilityExecutionError(
+			'detail',
+			VisibilityPublic,
+			OriginUser,
+			DeadlineExceeded,
+		)
 		const err = deserializeErrorFromString(serialized)
 		const deserialized = requireCapabilityError(err)
 		expect(capabilityErrorsEqual(expected, deserialized)).toBe(true)
@@ -118,7 +123,12 @@ describe('deserializeErrorFromString that is not serialised capability error', (
 	test('detail with colons preserves colons', () => {
 		const detail = 'failed at step: 1: connection refused'
 		const serialized = `Public:User:DeadlineExceeded:${detail}`
-		const expected = new CapabilityExecutionError(detail, VisibilityPublic, OriginUser, DeadlineExceeded)
+		const expected = new CapabilityExecutionError(
+			detail,
+			VisibilityPublic,
+			OriginUser,
+			DeadlineExceeded,
+		)
 		const err = deserializeErrorFromString(serialized)
 		const deserialized = requireCapabilityError(err)
 		expect(capabilityErrorsEqual(expected, deserialized)).toBe(true)
@@ -128,7 +138,12 @@ describe('deserializeErrorFromString that is not serialised capability error', (
 
 describe('CapabilityExecutionError formatting', () => {
 	test('recognised code includes code prefix', () => {
-		const err = new CapabilityExecutionError('detail', VisibilityPublic, OriginUser, DeadlineExceeded)
+		const err = new CapabilityExecutionError(
+			'detail',
+			VisibilityPublic,
+			OriginUser,
+			DeadlineExceeded,
+		)
 		expect(err.toString()).toBe('[4]DeadlineExceeded: detail')
 	})
 
