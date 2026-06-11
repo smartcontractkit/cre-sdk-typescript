@@ -13,9 +13,9 @@ import {
 	type ProtoBigInt,
 	prepareReportRequest,
 	protoBigIntToBigint,
-} from './blockchain-helpers'
+} from './evm-helpers'
 
-describe('blockchain-helpers', () => {
+describe('evm-helpers', () => {
 	describe('bigintToProtoBigInt', () => {
 		test('should encode number', () => {
 			const result = bigintToProtoBigInt(123)

@@ -1,0 +1,24 @@
+# ==========================================================================
+# CRE WORKFLOW SETTINGS FILE
+# ==========================================================================
+# This file defines environment-specific workflow settings used by the CRE CLI.
+#
+# Each top-level key is a target (e.g., `production`, `production-testnet`, etc.).
+# You can also define your own custom targets, such as `my-target`, and
+# point the CLI to it via an environment variable.
+#
+# Note: If any setting in this file conflicts with a setting in the CRE Project Settings File,
+# the value defined here in the workflow settings file will take precedence.
+# ==========================================================================
+local-simulation:
+  user-workflow:
+    workflow-owner-address: "(optional) Multi-signature contract address"
+    workflow-name: "solana-onchain-write"
+  workflow-artifacts:
+    workflow-path: "./index.ts"
+    config-path: "./config.json"
+# ==========================================================================
+production-testnet:
+  user-workflow:
+    workflow-owner-address: "(optional) Multi-signature contract address"
+    workflow-name: "solana-onchain-write"

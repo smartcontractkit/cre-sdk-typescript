@@ -1,4 +1,6 @@
-export * from './capabilities/blockchain/blockchain-helpers'
+export * from './capabilities/blockchain/evm/evm-helpers'
+export * from './capabilities/blockchain/report-helpers'
+export * from './capabilities/blockchain/solana/solana-helpers'
 export * from './capabilities/http/http-helpers'
 export * from './chain-selectors'
 export * from './decode-json'
