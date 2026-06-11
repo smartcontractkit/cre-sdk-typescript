@@ -2,6 +2,13 @@ import { afterEach, describe, expect, mock, test } from 'bun:test'
 import { create } from '@bufbuild/protobuf'
 import { type Any, anyPack, anyUnpack } from '@bufbuild/protobuf/wkt'
 import {
+	CapabilityExecutionError,
+	DeadlineExceeded,
+	isCapabilityExecutionError,
+	OriginUser,
+	VisibilityPublic,
+} from '@cre/capabilities/errors'
+import {
 	InputSchema,
 	OutputSchema,
 } from '@cre/generated/capabilities/internal/actionandtrigger/v1/action_and_trigger_pb'
@@ -47,8 +54,7 @@ import {
 	median,
 	Value,
 } from '@cre/sdk/utils'
-import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
-import { DonModeError, NodeModeError, SecretsError } from '../errors'
+import { CapabilityRuntimeError, DonModeError, NodeModeError, SecretsError } from '../errors'
 import { RESPONSE_BUFFER_TOO_SMALL } from '../testutils/test-runtime'
 import { type RuntimeHelpers, RuntimeImpl } from './runtime-impl'
 
@@ -183,7 +189,7 @@ describe('test runtime', () => {
 			)
 
 			expect(() => call1.result()).toThrow(
-				new CapabilityError(
+				new CapabilityRuntimeError(
 					`Capability '${BasicActionCapability.CAPABILITY_ID}' not found: the host rejected the call to method 'PerformAction'. Verify the capability ID is correct and the capability is available in this CRE environment`,
 					{
 						callbackId: 1,
@@ -219,16 +225,44 @@ describe('test runtime', () => {
 				create(InputsSchema, { inputThing: true }),
 			)
 
-			expect(() => call1.result()).toThrow(
-				new CapabilityError(
-					`Capability '${BasicActionCapability.CAPABILITY_ID}' method 'PerformAction' returned an error: ${anyError}`,
-					{
-						callbackId: 1,
-						capabilityId: BasicActionCapability.CAPABILITY_ID,
-						method: 'PerformAction',
-					},
-				),
+			expect(() => call1.result()).toThrow(new Error(anyError))
+		})
+
+		test('serialized capability errors are deserialized for the caller', () => {
+			const serializedError = 'Public:User:DeadlineExceeded:capability failed'
+			const helpers = createRuntimeHelpersMock({
+				call: mock((_: CapabilityRequest) => {
+					return true
+				}),
+				await: mock((request: AwaitCapabilitiesRequest) => {
+					expect(request.ids.length).toEqual(1)
+					return create(AwaitCapabilitiesResponseSchema, {
+						responses: {
+							[request.ids[0]]: create(CapabilityResponseSchema, {
+								response: { case: 'error', value: serializedError },
+							}),
+						},
+					})
+				}),
+			})
+
+			const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+			const workflowAction1 = new BasicActionCapability()
+			const call1 = workflowAction1.performAction(
+				runtime,
+				create(InputsSchema, { inputThing: true }),
 			)
+
+			try {
+				call1.result()
+				expect(false).toBe(true)
+			} catch (err) {
+				expect(isCapabilityExecutionError(err)).toBe(true)
+				const capErr = err as CapabilityExecutionError
+				expect(capErr.code).toBe(DeadlineExceeded)
+				expect(capErr.detail).toBe('capability failed')
+				expect(capErr.message).toBe('[4]DeadlineExceeded: capability failed')
+			}
 		})
 
 		test('await errors', () => {
@@ -250,7 +284,7 @@ describe('test runtime', () => {
 			)
 
 			expect(() => call1.result()).toThrow(
-				new CapabilityError(anyError, {
+				new CapabilityRuntimeError(anyError, {
 					callbackId: 1,
 					capabilityId: BasicActionCapability.CAPABILITY_ID,
 					method: 'PerformAction',
@@ -276,7 +310,7 @@ describe('test runtime', () => {
 			)
 
 			expect(() => call1.result()).toThrow(
-				new CapabilityError(
+				new CapabilityRuntimeError(
 					`No response found for capability '${BasicActionCapability.CAPABILITY_ID}' method 'PerformAction' (callback ID 1): the host returned a response map that does not contain an entry for this call`,
 					{
 						callbackId: 1,
@@ -305,7 +339,7 @@ describe('test runtime', () => {
 			expect(() => call1.result()).toThrow(RESPONSE_BUFFER_TOO_SMALL)
 		})
 
-		test('await returns unparsable payload throws CapabilityError', () => {
+		test('await returns unparsable payload throws CapabilityRuntimeError', () => {
 			// Any with correct type_url but invalid value bytes so fromBinary throws
 			const validAny = anyPack(OutputsSchema, create(OutputsSchema, { adaptedThing: 'x' }))
 			const corruptPayload = {
@@ -335,7 +369,7 @@ describe('test runtime', () => {
 			)
 
 			expect(() => call1.result()).toThrow(
-				new CapabilityError(
+				new CapabilityRuntimeError(
 					`Failed to deserialize response payload for capability '${BasicActionCapability.CAPABILITY_ID}' method 'PerformAction': the response could not be unpacked into the expected output schema`,
 					{
 						callbackId: 1,

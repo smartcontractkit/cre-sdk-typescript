@@ -1,6 +1,7 @@
 import { create, type Message } from '@bufbuild/protobuf'
 import type { GenMessage } from '@bufbuild/protobuf/codegenv2'
 import { type Any, anyPack, anyUnpack } from '@bufbuild/protobuf/wkt'
+import { deserializeErrorFromString } from '@cre/capabilities/errors'
 import {
 	type AwaitCapabilitiesRequest,
 	AwaitCapabilitiesRequestSchema,
@@ -38,8 +39,7 @@ import {
 	type UnwrapOptions,
 	Value,
 } from '@cre/sdk/utils'
-import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
-import { DonModeError, NodeModeError, SecretsError } from '../errors'
+import { CapabilityRuntimeError, DonModeError, NodeModeError, SecretsError } from '../errors'
 
 const DEFAULT_SECRET_NAMESPACE = 'main'
 
@@ -102,7 +102,7 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 		if (!this.helpers.call(req)) {
 			return {
 				result: () => {
-					throw new CapabilityError(
+					throw new CapabilityRuntimeError(
 						`Capability '${capabilityId}' not found: the host rejected the call to method '${method}'. Verify the capability ID is correct and the capability is available in this CRE environment`,
 						{
 							callbackId,
@@ -151,7 +151,7 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 		const capabilityResponse = awaitResponse.responses[callbackId]
 
 		if (!capabilityResponse) {
-			throw new CapabilityError(
+			throw new CapabilityRuntimeError(
 				`No response found for capability '${capabilityId}' method '${method}' (callback ID ${callbackId}): the host returned a response map that does not contain an entry for this call`,
 				{
 					capabilityId,
@@ -167,7 +167,7 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 				try {
 					return anyUnpack(response.value as Any, outputSchema) as O
 				} catch {
-					throw new CapabilityError(
+					throw new CapabilityRuntimeError(
 						`Failed to deserialize response payload for capability '${capabilityId}' method '${method}': the response could not be unpacked into the expected output schema`,
 						{
 							capabilityId,
@@ -178,16 +178,9 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 				}
 			}
 			case 'error':
-				throw new CapabilityError(
-					`Capability '${capabilityId}' method '${method}' returned an error: ${response.value}`,
-					{
-						capabilityId,
-						method,
-						callbackId,
-					},
-				)
+				throw deserializeErrorFromString(response.value)
 			default:
-				throw new CapabilityError(
+				throw new CapabilityRuntimeError(
 					`Unexpected response type '${response.case}' for capability '${capabilityId}' method '${method}': expected 'payload' or 'error'`,
 					{
 						capabilityId,
