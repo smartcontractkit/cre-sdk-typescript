@@ -1,4 +1,4 @@
-# Chainlink CRE SDK for TypeScript.
+# Chainlink CRE SDK for TypeScript
 
 Build decentralized workflows that combine off-chain computation with on-chain execution using the Chainlink Runtime Environment (CRE) SDK.
 
