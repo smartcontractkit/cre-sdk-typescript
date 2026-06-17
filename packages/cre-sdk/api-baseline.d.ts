@@ -8,6 +8,7 @@ export * as CRON_TRIGGER_PB from '@cre/generated/capabilities/scheduler/cron/v1/
 export * as SDK_PB from '@cre/generated/sdk/v1alpha/sdk_pb';
 export * as VALUES_PB from '@cre/generated/values/v1/values_pb';
 export * as BUFBUILD_TYPES from '@cre/sdk/types/bufbuild-types';
+export * from '../capabilities/errors';
 export * from './cre';
 export * from './don-info';
 export * from './errors';
@@ -89,6 +90,7 @@ export type SecretsProvider = {
     };
 };
 import type { SecretRequest } from '@cre/generated/sdk/v1alpha/sdk_pb';
+export { CapabilityError as CapabilityRuntimeError } from './utils/capabilities/capability-error';
 export declare class DonModeError extends Error {
     constructor();
 }
