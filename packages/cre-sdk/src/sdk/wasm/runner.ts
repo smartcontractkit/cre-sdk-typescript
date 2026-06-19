@@ -4,27 +4,30 @@ import {
 	ExecuteRequestSchema,
 	type ExecutionResult,
 	ExecutionResultSchema,
+	type SecretRequest,
+	type SecretRequestJson,
 	TriggerSubscriptionRequestSchema,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { type ConfigHandlerParams, configHandler } from '@cre/sdk/utils/config'
 import type { SecretsProvider, Workflow } from '@cre/sdk/workflow'
 import { Value } from '../utils'
 import { hostBindings } from './host-bindings'
-import { Runtime } from './runtime'
+import { Runtime, TeeRuntime } from './runtime'
 
-export class Runner<TConfig> {
-	private constructor(
+class RunnerBase<TConfig> {
+	protected constructor(
 		private readonly config: TConfig,
 		private readonly request: ExecuteRequest,
 	) {}
 
-	static async newRunner<TConfig, TIntermediateConfig = TConfig>(
+	protected static async newRunnerHelper<TConfig, TIntermediateConfig, TRunner>(
+		newRunner: (config: TConfig, request: ExecuteRequest) => TRunner,
 		configHandlerParams?: ConfigHandlerParams<TConfig, TIntermediateConfig>,
-	): Promise<Runner<TConfig>> {
+	): Promise<TRunner> {
 		hostBindings.versionV2()
-		const request = Runner.getRequest()
+		const request = RunnerBase.getRequest()
 		const config = await configHandler<TConfig, TIntermediateConfig>(request, configHandlerParams)
-		return new Runner<TConfig>(config, request)
+		return newRunner(config, request)
 	}
 
 	private static getRequest(): ExecuteRequest {
@@ -61,11 +64,16 @@ export class Runner<TConfig> {
 	) {
 		const runtime = new Runtime(this.config, 0, this.request.maxResponseSize)
 
+		// wrap runtime's getSecret so other methods cannot be used
+		const sp = {
+			getSecret: (request: SecretRequest | SecretRequestJson) => {
+				return runtime.getSecret(request)
+			},
+		}
+
 		let result: Promise<ExecutionResult> | ExecutionResult
 		try {
-			const workflow = await initFn(this.config, {
-				getSecret: runtime.getSecret.bind(runtime),
-			})
+			const workflow = await initFn(this.config, sp)
 
 			switch (this.request.request.case) {
 				case 'subscribe':
@@ -90,7 +98,7 @@ export class Runner<TConfig> {
 		hostBindings.sendResponse(toBinary(ExecutionResultSchema, awaitedResult))
 	}
 
-	async handleExecutionPhase<TConfig>(
+	async handleExecutionPhase(
 		req: ExecuteRequest,
 		workflow: Workflow<TConfig>,
 		runtime: Runtime<TConfig>,
@@ -137,8 +145,12 @@ export class Runner<TConfig> {
 			const decoded = fromBinary(schema, payloadAny.value)
 			const adapted = entry.trigger.adapt(decoded)
 
+			// If the handler has requirements (e.g. TEE), use TeeRuntime; otherwise use the default runtime.
+			const handlerRuntime =
+				entry.requirements != null ? new TeeRuntime(this.config, 0, req.maxResponseSize) : runtime
+
 			try {
-				const result = await entry.fn(runtime, adapted)
+				const result = await entry.fn(handlerRuntime as any, adapted)
 				const wrapped = Value.wrap(result)
 				return create(ExecutionResultSchema, {
 					result: { case: 'value', value: wrapped.proto() },
@@ -169,11 +181,12 @@ export class Runner<TConfig> {
 			})
 		}
 
-		// Build TriggerSubscriptionRequest from the workflow entries
+		// Build TriggerSubscriptionRequest from the workflow entries, including any per-handler requirements.
 		const subscriptions = workflow.map((entry) => ({
 			id: entry.trigger.capabilityId(),
 			method: entry.trigger.method(),
 			payload: entry.trigger.configAsAny(),
+			requirements: entry.requirements,
 		}))
 
 		const subscriptionRequest = create(TriggerSubscriptionRequestSchema, {
@@ -183,5 +196,20 @@ export class Runner<TConfig> {
 		return create(ExecutionResultSchema, {
 			result: { case: 'triggerSubscriptions', value: subscriptionRequest },
 		})
+	}
+}
+
+export class Runner<TConfig> extends RunnerBase<TConfig> {
+	private constructor(config: TConfig, request: ExecuteRequest) {
+		super(config, request)
+	}
+
+	static async newRunner<TConfig, TIntermediateConfig = TConfig>(
+		configHandlerParams?: ConfigHandlerParams<TConfig, TIntermediateConfig>,
+	): Promise<Runner<TConfig>> {
+		return RunnerBase.newRunnerHelper(
+			(config, request) => new Runner(config, request),
+			configHandlerParams,
+		)
 	}
 }

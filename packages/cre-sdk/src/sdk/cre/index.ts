@@ -10,7 +10,7 @@ import { ClientCapability as HTTPClient } from '@cre/generated-sdk/capabilities/
 import { HTTPCapability } from '@cre/generated-sdk/capabilities/networking/http/v1alpha/http_sdk_gen'
 import { CronCapability } from '@cre/generated-sdk/capabilities/scheduler/cron/v1/cron_sdk_gen'
 import { prepareRuntime } from '@cre/sdk/utils/prepare-runtime'
-import { handler } from '@cre/sdk/workflow'
+import { handler, handlerInTee } from '@cre/sdk/workflow'
 
 /**
  * Public exports for the CRE SDK.
@@ -26,6 +26,7 @@ export {
 } from '@cre/generated/capabilities/blockchain/solana/v1alpha/client_pb'
 export type { Payload as HTTPPayload } from '@cre/generated/capabilities/networking/http/v1alpha/trigger_pb'
 export type { Payload as CronPayload } from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
+export { TeeType } from '@cre/generated/sdk/v1alpha/sdk_pb'
 // Aptos Capability
 export {
 	ClientCapability as AptosClient,
@@ -53,13 +54,20 @@ export {
 	type SendRequester as HTTPSendRequester,
 } from '@cre/generated-sdk/capabilities/networking/http/v1alpha/client_sdk_gen'
 export { HTTPCapability } from '@cre/generated-sdk/capabilities/networking/http/v1alpha/http_sdk_gen'
-
 // CRON Capability
 export { CronCapability } from '@cre/generated-sdk/capabilities/scheduler/cron/v1/cron_sdk_gen'
-
 // Runtime
-export type { NodeRuntime, Runtime } from '@cre/sdk/runtime'
-export { handler } from '@cre/sdk/workflow'
+export type { NodeRuntime, Runtime, TeeRuntime } from '@cre/sdk/runtime'
+export type {
+	AnyTeeConstraint,
+	NitroBinding,
+	NitroRegion,
+	OneOfTees,
+	Region,
+	TeeBinding,
+	TeeConstraint,
+} from '@cre/sdk/workflow'
+export { handler, handlerInTee, NITRO_REGIONS, REGIONS } from '@cre/sdk/workflow'
 
 prepareRuntime()
 
@@ -74,4 +82,5 @@ export const cre = {
 		SolanaClient,
 	},
 	handler,
+	handlerInTee,
 }
