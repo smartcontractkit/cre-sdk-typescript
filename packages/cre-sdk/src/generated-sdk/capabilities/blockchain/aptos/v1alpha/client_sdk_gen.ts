@@ -37,6 +37,7 @@ import {
 import type { Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import { hexToBytes } from '@cre/sdk/utils/hex-utils'
+import type { CapabilityInput } from '@cre/sdk/utils/types/no-excess'
 
 export type WriteCreReportRequest = {
 	receiver: Uint8Array
@@ -106,6 +107,10 @@ export class ClientCapability {
 
 	constructor(private readonly ChainSelector: bigint) {}
 
+	accountAPTBalance<TInput>(
+		runtime: Runtime<unknown>,
+		input: CapabilityInput<TInput, AccountAPTBalanceRequest, AccountAPTBalanceRequestJson>,
+	): { result: () => AccountAPTBalanceReply }
 	accountAPTBalance(
 		runtime: Runtime<unknown>,
 		input: AccountAPTBalanceRequest | AccountAPTBalanceRequestJson,
@@ -144,6 +149,10 @@ export class ClientCapability {
 		}
 	}
 
+	view<TInput>(
+		runtime: Runtime<unknown>,
+		input: CapabilityInput<TInput, ViewRequest, ViewRequestJson>,
+	): { result: () => ViewReply }
 	view(
 		runtime: Runtime<unknown>,
 		input: ViewRequest | ViewRequestJson,
@@ -179,6 +188,10 @@ export class ClientCapability {
 		}
 	}
 
+	transactionByHash<TInput>(
+		runtime: Runtime<unknown>,
+		input: CapabilityInput<TInput, TransactionByHashRequest, TransactionByHashRequestJson>,
+	): { result: () => TransactionByHashReply }
 	transactionByHash(
 		runtime: Runtime<unknown>,
 		input: TransactionByHashRequest | TransactionByHashRequestJson,
@@ -217,6 +230,10 @@ export class ClientCapability {
 		}
 	}
 
+	accountTransactions<TInput>(
+		runtime: Runtime<unknown>,
+		input: CapabilityInput<TInput, AccountTransactionsRequest, AccountTransactionsRequestJson>,
+	): { result: () => AccountTransactionsReply }
 	accountTransactions(
 		runtime: Runtime<unknown>,
 		input: AccountTransactionsRequest | AccountTransactionsRequestJson,
@@ -255,6 +272,10 @@ export class ClientCapability {
 		}
 	}
 
+	writeReport<TInput>(
+		runtime: Runtime<unknown>,
+		input: CapabilityInput<TInput, WriteCreReportRequest, WriteCreReportRequestJson>,
+	): { result: () => WriteReportReply }
 	writeReport(
 		runtime: Runtime<unknown>,
 		input: WriteCreReportRequest | WriteCreReportRequestJson,

@@ -108,6 +108,18 @@ export function generateSdk(file: GenFile, outputDir: string) {
 			imports.add(`import { type Any, AnySchema, anyPack } from "@bufbuild/protobuf/wkt"`)
 		}
 
+		// Gate JSON input shapes at every capability boundary. Actions use the
+		// $typeName-aware CapabilityInput; triggers (JSON-only configs) use
+		// NoExcess directly. Import only what each file actually references.
+		const noExcessImports: string[] = []
+		if (hasActions) noExcessImports.push('CapabilityInput')
+		if (hasTriggers) noExcessImports.push('NoExcess')
+		if (noExcessImports.length > 0) {
+			imports.add(
+				`import type { ${noExcessImports.join(', ')} } from "@cre/sdk/utils/types/no-excess"`,
+			)
+		}
+
 		if (hasActions) {
 			if (modePrefix !== '') {
 				imports.add(`import type { Runtime, ${modePrefix}Runtime } from "@cre/sdk"`)

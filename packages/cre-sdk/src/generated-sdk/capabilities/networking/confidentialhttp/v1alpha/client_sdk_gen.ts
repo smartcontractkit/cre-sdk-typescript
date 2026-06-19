@@ -9,6 +9,7 @@ import {
 import type { Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import { hexToBytes } from '@cre/sdk/utils/hex-utils'
+import type { CapabilityInput } from '@cre/sdk/utils/types/no-excess'
 
 /**
  * Client Capability
@@ -24,6 +25,10 @@ export class ClientCapability {
 	static readonly CAPABILITY_NAME = 'confidential-http'
 	static readonly CAPABILITY_VERSION = '1.0.0-alpha'
 
+	sendRequest<TInput>(
+		runtime: Runtime<unknown>,
+		input: CapabilityInput<TInput, ConfidentialHTTPRequest, ConfidentialHTTPRequestJson>,
+	): { result: () => HTTPResponse }
 	sendRequest(
 		runtime: Runtime<unknown>,
 		input: ConfidentialHTTPRequest | ConfidentialHTTPRequestJson,

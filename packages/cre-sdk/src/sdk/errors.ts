@@ -1,5 +1,8 @@
 import type { SecretRequest } from '@cre/generated/sdk/v1alpha/sdk_pb'
 
+// TODO: on the next major version, rename this to CapabilityRuntimeError
+export { CapabilityError as CapabilityRuntimeError } from './utils/capabilities/capability-error'
+
 export class DonModeError extends Error {
 	constructor() {
 		super('cannot use Runtime inside RunInNodeMode')

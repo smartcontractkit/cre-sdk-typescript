@@ -1,6 +1,7 @@
 import { create, type Message, toBinary } from '@bufbuild/protobuf'
 import type { GenMessage } from '@bufbuild/protobuf/codegenv2'
 import { type Any, anyPack, anyUnpack } from '@bufbuild/protobuf/wkt'
+import { deserializeErrorFromString } from '@cre/capabilities/errors'
 import {
 	type AwaitCapabilitiesRequest,
 	AwaitCapabilitiesRequestSchema,
@@ -42,8 +43,9 @@ import {
 	type UnwrapOptions,
 	Value,
 } from '@cre/sdk/utils'
-import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
-import { DonModeError, NodeModeError, SecretsError } from '../errors'
+import { CapabilityRuntimeError, DonModeError, NodeModeError, SecretsError } from '../errors'
+
+const DEFAULT_SECRET_NAMESPACE = 'main'
 
 /**
  * Base implementation shared by DON and Node runtimes.
@@ -104,7 +106,7 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 		if (!this.helpers.call(req)) {
 			return {
 				result: () => {
-					throw new CapabilityError(
+					throw new CapabilityRuntimeError(
 						`Capability '${capabilityId}' not found: the host rejected the call to method '${method}'. Verify the capability ID is correct and the capability is available in this CRE environment`,
 						{
 							callbackId,
@@ -153,7 +155,7 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 		const capabilityResponse = awaitResponse.responses[callbackId]
 
 		if (!capabilityResponse) {
-			throw new CapabilityError(
+			throw new CapabilityRuntimeError(
 				`No response found for capability '${capabilityId}' method '${method}' (callback ID ${callbackId}): the host returned a response map that does not contain an entry for this call`,
 				{
 					capabilityId,
@@ -169,7 +171,7 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 				try {
 					return anyUnpack(response.value as Any, outputSchema) as O
 				} catch {
-					throw new CapabilityError(
+					throw new CapabilityRuntimeError(
 						`Failed to deserialize response payload for capability '${capabilityId}' method '${method}': the response could not be unpacked into the expected output schema`,
 						{
 							capabilityId,
@@ -180,16 +182,9 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 				}
 			}
 			case 'error':
-				throw new CapabilityError(
-					`Capability '${capabilityId}' method '${method}' returned an error: ${response.value}`,
-					{
-						capabilityId,
-						method,
-						callbackId,
-					},
-				)
+				throw deserializeErrorFromString(response.value)
 			default:
-				throw new CapabilityError(
+				throw new CapabilityRuntimeError(
 					`Unexpected response type '${response.case}' for capability '${capabilityId}' method '${method}': expected 'payload' or 'error'`,
 					{
 						capabilityId,
@@ -207,6 +202,10 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 	now(): Date {
 		// date is already in milliseconds
 		return new Date(this.helpers.now())
+	}
+
+	sleep(ms: number): void {
+		this.helpers.sleep(ms)
 	}
 
 	log(message: string): void {
@@ -389,10 +388,10 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 			}
 		}
 
-		// Normalize request (accept both protobuf and JSON formats)
-		const secretRequest = (request as unknown as { $typeName?: string }).$typeName
-			? (request as SecretRequest)
-			: create(SecretRequestSchema, request)
+		const secretRequest = create(SecretRequestSchema, {
+			id: request.id,
+			namespace: request.namespace || DEFAULT_SECRET_NAMESPACE,
+		})
 
 		// Allocate callback ID and send request
 		const id = this.nextCallId
@@ -455,7 +454,8 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 	 */
 	report(input: ReportRequest | ReportRequestJson): { result: () => Report } {
 		const consensus = new ConsensusCapability()
-		const call = consensus.report(this, input)
+		// Cast to native overload signature - the impl dispatches on $typeName.
+		const call = consensus.report(this, input as ReportRequest)
 		return {
 			result: () => call.result(),
 		}
@@ -484,6 +484,9 @@ export interface RuntimeHelpers {
 
 	/** Returns current time in milliseconds since Unix epoch. */
 	now(): number
+
+	/** Sleeps for the specified duration. */
+	sleep(ms: number): void
 
 	/** Logs a message to the host environment. */
 	log(message: string): void

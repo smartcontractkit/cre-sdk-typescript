@@ -222,6 +222,12 @@ describe('val helpers', () => {
 		expect(() => new Int64(1.5)).toThrow()
 	})
 
+	test('int64 rejects unsafe integer numbers', () => {
+		expect(() => new Int64(Number.MAX_SAFE_INTEGER + 1)).toThrow(
+			'int64 requires a safe integer number',
+		)
+	})
+
 	test('int64 overflow throws (number)', () => {
 		// larger than int64 max
 		const tooBig = Number(2n ** 63n)
@@ -259,6 +265,12 @@ describe('val helpers', () => {
 
 	test('uint64 throws on non-integer number', () => {
 		expect(() => new UInt64(1.5)).toThrow()
+	})
+
+	test('uint64 rejects unsafe integer numbers', () => {
+		expect(() => new UInt64(Number.MAX_SAFE_INTEGER + 1)).toThrow(
+			'uint64 requires a safe integer number',
+		)
 	})
 
 	test('uint64 overflow throws (number)', () => {

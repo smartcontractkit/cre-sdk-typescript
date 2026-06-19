@@ -175,7 +175,7 @@ pub unsafe extern "C" fn initialize_runtime() {
             runtime
         },
     )
-    .unwrap();
+    .expect("failed to initialize CRE Javy runtime");
 }
 `
 

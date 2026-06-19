@@ -71,6 +71,12 @@ describe('blockchain-helpers', () => {
 				'bigintToProtoBigInt requires an integer number',
 			)
 		})
+
+		test('should reject unsafe integer numbers', () => {
+			expect(() => bigintToProtoBigInt(Number.MAX_SAFE_INTEGER + 1)).toThrow(
+				'bigintToProtoBigInt requires a safe integer number',
+			)
+		})
 	})
 
 	describe('protoBigIntToBigint', () => {

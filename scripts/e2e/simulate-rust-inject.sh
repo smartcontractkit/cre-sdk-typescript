@@ -23,16 +23,18 @@ make -C "$PACKAGES_DIR/cre-rust-inject-alpha" build
 # ── Step 2: Build prebuilt-plugin and source-extensions in parallel ──────────
 echo ""
 echo "=== Step 2: Building prebuilt-plugin and source-extensions in parallel ==="
-make -C "$PACKAGES_DIR/cre-rust-prebuilt-plugin-example" build &
+BUILD_LOG_5A="$(mktemp)"
+BUILD_LOG_5B="$(mktemp)"
+make -C "$PACKAGES_DIR/cre-rust-prebuilt-plugin-example" build > "$BUILD_LOG_5A" 2>&1 &
 PID_5A=$!
-make -C "$PACKAGES_DIR/cre-rust-source-extensions-example" build &
+make -C "$PACKAGES_DIR/cre-rust-source-extensions-example" build > "$BUILD_LOG_5B" 2>&1 &
 PID_5B=$!
 
 FAIL=0
-wait $PID_5A || FAIL=1
-wait $PID_5B || FAIL=1
+wait $PID_5A || { echo "❌ prebuilt-plugin build failed:"; cat "$BUILD_LOG_5A"; FAIL=1; }
+wait $PID_5B || { echo "❌ source-extensions build failed:"; cat "$BUILD_LOG_5B"; FAIL=1; }
+rm -f "$BUILD_LOG_5A" "$BUILD_LOG_5B"
 if [ $FAIL -ne 0 ]; then
-  echo "❌ One or more builds failed"
   exit 1
 fi
 
@@ -41,6 +43,11 @@ echo ""
 echo "=== Step 3a: Simulating prebuilt-plugin ==="
 cd "$PACKAGES_DIR/cre-rust-prebuilt-plugin-example"
 cp -n "$PACKAGES_DIR/cre-sdk-examples/.env.example" .env 2>/dev/null || true
+
+if [ ! -f "./wasm/workflow.wasm" ]; then
+  echo "❌ ERROR: ./wasm/workflow.wasm not found — build step did not produce it"
+  exit 1
+fi
 
 cre workflow simulate . \
   --non-interactive \
@@ -61,6 +68,11 @@ echo ""
 echo "=== Step 3b: Simulating source-extensions ==="
 cd "$PACKAGES_DIR/cre-rust-source-extensions-example"
 cp -n "$PACKAGES_DIR/cre-sdk-examples/.env.example" .env 2>/dev/null || true
+
+if [ ! -f "./wasm/workflow.wasm" ]; then
+  echo "❌ ERROR: ./wasm/workflow.wasm not found — build step did not produce it"
+  exit 1
+fi
 
 cre workflow simulate . \
   --non-interactive \

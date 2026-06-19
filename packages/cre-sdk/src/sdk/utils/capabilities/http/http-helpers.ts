@@ -13,6 +13,19 @@ import type { NodeRuntime } from '@cre/sdk'
 import type { Report } from '@cre/sdk/report'
 import { decodeJson } from '@cre/sdk/utils/decode-json'
 
+type HeaderCapableResponse = Response | ConfidentialHTTPResponse
+
+function findCaseInsensitive<M extends Record<string, unknown>>(
+	map: M | undefined,
+	name: string,
+): M[string] | undefined {
+	if (!map) return undefined
+	const lowerName = name.toLowerCase()
+	return Object.entries(map).find(([key]) => key.toLowerCase() === lowerName)?.[1] as
+		| M[string]
+		| undefined
+}
+
 /**
  * HTTP Response Helper Functions
  *
@@ -119,36 +132,67 @@ export function json(
 }
 
 /**
- * Gets a specific header value
+ * Returns all values for a header (case-insensitive).
+ * Reads `multiHeaders` first; falls back to the deprecated single-value `headers` map.
  * @param response - The Response object
  * @param name - The header name (case-insensitive)
- * @returns The header value or undefined if not found
+ * @returns Array of header values; empty if not present
  */
-export function getHeader(response: Response, name: string): string | undefined
+export function getHeaders(response: HeaderCapableResponse, name: string): string[]
 /**
- * Gets a specific header value
+ * Returns all values for a header (case-insensitive).
+ * Reads `multiHeaders` first; falls back to the deprecated single-value `headers` map.
  * @param responseFn - Function that returns an object with result function that returns Response
  * @param name - The header name (case-insensitive)
- * @returns Object with result function that returns the header value or undefined if not found
+ * @returns Object with result function that returns array of header values; empty if not present
  */
+export function getHeaders(
+	responseFn: () => { result: HeaderCapableResponse },
+	name: string,
+): { result: () => string[] }
+export function getHeaders(
+	responseOrFn: HeaderCapableResponse | (() => { result: HeaderCapableResponse }),
+	name: string,
+): string[] | { result: () => string[] } {
+	if (typeof responseOrFn === 'function') {
+		return {
+			result: () => getHeaders(responseOrFn().result, name),
+		}
+	}
+
+	const multiHeader = findCaseInsensitive(responseOrFn.multiHeaders, name)
+	if (multiHeader) {
+		return [...multiHeader.values]
+	}
+
+	const singleHeader = findCaseInsensitive(
+		'headers' in responseOrFn ? responseOrFn.headers : undefined,
+		name,
+	)
+	return singleHeader === undefined ? [] : [singleHeader]
+}
+
+/**
+ * Returns a header value (case-insensitive). Multiple values are joined with `, `;
+ * use `getHeaders` when boundaries between values must be preserved.
+ */
+export function getHeader(response: HeaderCapableResponse, name: string): string | undefined
 export function getHeader(
-	responseFn: () => { result: Response },
+	responseFn: () => { result: HeaderCapableResponse },
 	name: string,
 ): { result: () => string | undefined }
 export function getHeader(
-	responseOrFn: Response | (() => { result: Response }),
+	responseOrFn: HeaderCapableResponse | (() => { result: HeaderCapableResponse }),
 	name: string,
 ): string | undefined | { result: () => string | undefined } {
 	if (typeof responseOrFn === 'function') {
 		return {
 			result: () => getHeader(responseOrFn().result, name),
 		}
-	} else {
-		const lowerName = name.toLowerCase()
-		return Object.entries(responseOrFn.headers).find(
-			([key]) => key.toLowerCase() === lowerName,
-		)?.[1]
 	}
+
+	const values = getHeaders(responseOrFn, name)
+	return values.length === 0 ? undefined : values.join(', ')
 }
 
 /**
@@ -203,7 +247,8 @@ function sendReport(
 ): { result: () => Response } {
 	const rawReport = report.x_generatedCodeOnly_unwrap()
 	const request = fn(rawReport)
-	return this.sendRequest(runtime, request)
+	// Cast to native overload signature - the impl dispatches on $typeName.
+	return this.sendRequest(runtime, request as Request)
 }
 
 /**
@@ -223,7 +268,8 @@ function sendRequesterSendReport(
 ): { result: () => Response } {
 	const rawReport = report.x_generatedCodeOnly_unwrap()
 	const request = fn(rawReport)
-	return this.sendRequest(request)
+	// Cast to native overload signature - the impl dispatches on $typeName.
+	return this.sendRequest(request as Request)
 }
 
 // ============================================================================

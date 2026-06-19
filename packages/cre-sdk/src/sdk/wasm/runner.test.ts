@@ -107,6 +107,9 @@ const proxyHostBindings = {
 	emitMetric: (_payload: Uint8Array) => {
 		throw new Error('emitMetric called unexpectedly in test')
 	},
+	sleep: () => {
+		throw new Error('sleep called unexpectedly in test')
+	},
 }
 
 Object.assign(globalThis, proxyHostBindings)
