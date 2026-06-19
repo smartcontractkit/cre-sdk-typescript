@@ -9,9 +9,22 @@ import type { Runtime, TeeRuntime } from '@cre/sdk/runtime'
 import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 import type { CreSerializable } from './utils'
 
-export type { TeeConstraint, AnyTeeConstraint, OneOfTees, TeeBinding, NitroBinding } from './tee-constraints'
-export { buildTeeRequirements, REGIONS, NITRO_REGIONS, teeConstraintSchema } from './tee-constraints'
-export type { Region, NitroRegion } from './tee-constraints'
+export type {
+	AnyTeeConstraint,
+	NitroBinding,
+	NitroRegion,
+	OneOfTees,
+	Region,
+	TeeBinding,
+	TeeConstraint,
+} from './tee-constraints'
+export {
+	buildTeeRequirements,
+	NITRO_REGIONS,
+	REGIONS,
+	teeConstraintSchema,
+} from './tee-constraints'
+
 import type { TeeConstraint } from './tee-constraints'
 import { buildTeeRequirements } from './tee-constraints'
 

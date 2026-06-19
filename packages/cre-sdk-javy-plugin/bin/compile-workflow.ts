@@ -1,51 +1,143 @@
 #!/usr/bin/env bun
-import { spawn } from 'node:child_process'
-import { existsSync } from 'node:fs'
-import { dirname, resolve } from 'node:path'
+import { copyFileSync, existsSync, mkdtempSync, rmSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { ensureJavy } from '../scripts/ensure-javy.ts'
+import { generateHostCrate, resolveExtensions } from '../scripts/generate-host-crate.ts'
+import { parseCompileFlags } from '../scripts/parse-compile-flags.ts'
+import { JAVY_VERSION, run } from '../scripts/shared.ts'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
-const [jsFile, wasmFile] = process.argv.slice(2)
+const DEFAULT_PLUGIN_PATH = resolve(__dirname, '..', 'dist', 'javy-chainlink-sdk.plugin.wasm')
 
-if (!jsFile || !wasmFile) {
-	console.error('Usage: compile-workflow <input.js> <output.wasm>')
-	process.exit(1)
+function findBuiltWasm(targetDir: string): string {
+	const releaseDir = resolve(targetDir, 'wasm32-wasip1', 'release')
+	for (const name of ['cre_generated_host.wasm', 'libcre_generated_host.wasm']) {
+		const candidate = resolve(releaseDir, name)
+		if (existsSync(candidate)) return candidate
+	}
+	throw new Error(`Build succeeded but WASM not found in ${releaseDir}`)
 }
 
-const javyPath = await ensureJavy({ version: 'v8.1.0' })
-const witPath = resolve(__dirname, '../dist/workflow.wit')
-const pluginPath = resolve(__dirname, '../dist/javy-chainlink-sdk.plugin.wasm')
+async function main() {
+	const argv = process.argv.slice(2)
+	const { creExports, plugin: pluginArg, lockfile: lockfileArg, rest } = parseCompileFlags(argv)
 
-if (!existsSync(pluginPath)) {
-	console.error(
-		`❌ CRE SDK Javy plugin not found at: ${pluginPath}\n\n` +
-			'The pre-built plugin WASM should be included in the package.\n' +
-			'Try reinstalling @chainlink/cre-sdk-javy-plugin.\n' +
-			'See: https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-javy-plugin/README.md#quick-start',
+	if (rest.length < 2) {
+		console.error(
+			'Usage: compile-workflow.ts [--plugin <path>] [--cre-exports <crate-dir>]... [--lockfile <path>] <input.js> <output.wasm>',
+		)
+		console.error('  --plugin: use pre-built .plugin.wasm (mutually exclusive with --cre-exports)')
+		console.error('  --cre-exports: path to a Rust extension crate directory (repeat for multiple)')
+		console.error('  --lockfile: Cargo.lock to use for reproducible builds')
+		console.error('  If neither given, uses default pre-built plugin from dist/')
+		process.exit(1)
+	}
+	if (pluginArg !== null && creExports.length > 0) {
+		console.error(
+			'❌ Error: --plugin and --cre-exports are mutually exclusive. Use one or the other.',
+		)
+		process.exit(1)
+	}
+
+	const jsFile = rest[0]
+	const wasmFile = rest[1]
+
+	if (!existsSync(jsFile)) {
+		console.error(`❌ Input file not found: ${jsFile}`)
+		process.exit(1)
+	}
+
+	const pluginDir = resolve(__dirname, '..')
+	const witPath = resolve(pluginDir, 'dist', 'workflow.wit')
+
+	let pluginPath: string
+
+	if (pluginArg !== null) {
+		pluginPath = resolve(process.cwd(), pluginArg)
+		if (!existsSync(pluginPath)) {
+			console.error(`❌ Plugin file not found: ${pluginPath}`)
+			process.exit(1)
+		}
+	} else if (creExports.length > 0) {
+		const tmpDir = mkdtempSync(join(tmpdir(), 'cre-host-'))
+		const sharedTargetDir = resolve(pluginDir, '.cargo-target')
+		try {
+			const extensions = resolveExtensions(creExports)
+			generateHostCrate(tmpDir, pluginDir, extensions)
+
+			const cargoArgs = ['build', '--target', 'wasm32-wasip1', '--release']
+			if (lockfileArg) {
+				copyFileSync(resolve(lockfileArg), join(tmpDir, 'Cargo.lock'))
+				cargoArgs.splice(1, 0, '--locked')
+			}
+
+			const [, javyPath] = await Promise.all([
+				run('cargo', cargoArgs, tmpDir, {
+					CARGO_TARGET_DIR: sharedTargetDir,
+				}),
+				ensureJavy({ version: JAVY_VERSION }),
+			])
+
+			const builtWasm = findBuiltWasm(sharedTargetDir)
+			pluginPath = resolve(tmpDir, 'cre.plugin.wasm')
+			await run(javyPath, ['init-plugin', '--deterministic', builtWasm, '-o', pluginPath], tmpDir)
+
+			await run(
+				javyPath,
+				[
+					'build',
+					'-C',
+					`wit=${witPath}`,
+					'-C',
+					'wit-world=workflow',
+					'-C',
+					`plugin=${pluginPath}`,
+					'-C',
+					'deterministic=y',
+					jsFile,
+					'-o',
+					wasmFile,
+				],
+				process.cwd(),
+			)
+		} finally {
+			rmSync(tmpDir, { recursive: true, force: true })
+		}
+		return
+	} else {
+		pluginPath = DEFAULT_PLUGIN_PATH
+		if (!existsSync(pluginPath)) {
+			console.error(`❌ Default plugin not found: ${pluginPath}`)
+			console.error('   Run: bun run build (in packages/cre-sdk-javy-plugin) or bun x cre-setup')
+			process.exit(1)
+		}
+	}
+
+	const javyPath = await ensureJavy({ version: JAVY_VERSION })
+	await run(
+		javyPath,
+		[
+			'build',
+			'-C',
+			`wit=${witPath}`,
+			'-C',
+			'wit-world=workflow',
+			'-C',
+			`plugin=${pluginPath}`,
+			'-C',
+			'deterministic=y',
+			jsFile,
+			'-o',
+			wasmFile,
+		],
+		process.cwd(),
 	)
-	process.exit(1)
 }
 
-const javyArgs = [
-	'build',
-	'-C',
-	`wit=${witPath}`,
-	'-C',
-	'wit-world=workflow',
-	'-C',
-	`plugin=${pluginPath}`,
-	'-C',
-	'deterministic=y',
-	jsFile,
-	'-o',
-	wasmFile,
-]
-
-const child = spawn(javyPath, javyArgs, { stdio: 'inherit' })
-
-child.on('exit', (code, signal) => {
-	if (signal) process.kill(process.pid, signal)
-	else process.exit(code ?? 1)
+main().catch((e) => {
+	console.error(e)
+	process.exit(1)
 })

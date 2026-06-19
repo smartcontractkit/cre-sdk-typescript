@@ -1,11 +1,12 @@
 import type { Message } from '@bufbuild/protobuf'
 import type { GenMessage } from '@bufbuild/protobuf/codegenv2'
 import type { ReportRequest, ReportRequestJson } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import type { MetricType } from '@cre/sdk/impl/runtime-impl'
 import type { Report } from '@cre/sdk/report'
 import type { ConsensusAggregation, PrimitiveTypes, UnwrapOptions } from '@cre/sdk/utils'
 import type { SecretsProvider } from '.'
 
-export type { ReportRequest, ReportRequestJson }
+export type { ReportRequest, ReportRequestJson, MetricType }
 
 export type CallCapabilityParams<I extends Message, O extends Message> = {
 	capabilityId: string
@@ -30,6 +31,13 @@ export interface BaseRuntime<C> {
 	now(): Date
 
 	log(message: string): void
+
+	emitMetric(
+		name: string,
+		value: number,
+		type: MetricType,
+		labels?: Record<string, string>,
+	): boolean
 }
 
 /**

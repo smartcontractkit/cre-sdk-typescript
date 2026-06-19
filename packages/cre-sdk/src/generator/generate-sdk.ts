@@ -5,7 +5,7 @@ import type { GenFile } from '@bufbuild/protobuf/codegenv2'
 import { Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import type { CapabilityMetadata } from '@cre/generated/tools/generator/v1alpha/cre_metadata_pb'
 import {
-	AdditionalEnironments,
+	AdditionalEnvironments,
 	capability,
 	method as methodOption,
 } from '@cre/generated/tools/generator/v1alpha/cre_metadata_pb'
@@ -92,9 +92,7 @@ export function generateSdk(file: GenFile, outputDir: string) {
 		})
 
 		const modePrefix = capOption.mode === Mode.NODE ? 'Node' : ''
-		const teeEnabled = capOption.additionalEnvironments.includes(
-			AdditionalEnironments.ADDITIONAL_ENVIRONMENTS_TEE,
-		)
+		const teeEnabled = capOption.additionalEnvironments.includes(AdditionalEnvironments.TEE)
 
 		// Build import statements
 		// Note: protobuf imports are deferred until after report wrappers are processed,

@@ -1,3 +1,7 @@
 node_modules
 src/javy_chainlink_sdk/target/
+.cargo-target/
 .turbo
+
+# Temporary: uninitialized plugin wasm (only needed as input to `javy init-plugin` to produce the initialized plugin). If present under dist/, ignore — we do not ship it.
+dist/javy_chainlink_sdk.wasm

@@ -9,6 +9,7 @@ import { create, toBinary } from '@bufbuild/protobuf'
 import type { Any } from '@bufbuild/protobuf/wkt'
 import { anyPack, anyUnpack } from '@bufbuild/protobuf/wkt'
 import type {
+	AwaitCapabilitiesRequest,
 	AwaitCapabilitiesResponse,
 	AwaitSecretsResponse,
 	CapabilityResponse,
@@ -35,6 +36,7 @@ import {
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import type { Value as ProtoValue } from '@cre/generated/values/v1/values_pb'
 import { ValueSchema } from '@cre/generated/values/v1/values_pb'
+import type { WorkflowUserMetric } from '@cre/generated/workflows/v2/workflow_user_metric_pb'
 import type { RuntimeHelpers } from '../impl/runtime-impl'
 import { RuntimeImpl, TeeRuntimeImpl } from '../impl/runtime-impl'
 import { TestWriter } from './test-writer'
@@ -237,7 +239,18 @@ function createTestRuntimeHelpers(
 			return true
 		},
 
-		await(request: { ids: number[] }, maxResponseSizeBytes: bigint): AwaitCapabilitiesResponse {
+		await(
+			request: AwaitCapabilitiesRequest,
+			maxResponseSizeBytes: bigint,
+		): AwaitCapabilitiesResponse {
+			if (
+				(request as unknown as { $typeName?: string }).$typeName !==
+				'sdk.v1alpha.AwaitCapabilitiesRequest'
+			) {
+				throw new Error(
+					'await: expected a typed AwaitCapabilitiesRequest (created via create(AwaitCapabilitiesRequestSchema, ...)); got a plain object. The real WASM bridge serializes this to binary and will fail with a plain object.',
+				)
+			}
 			const responses: Record<number, CapabilityResponse> = {}
 			for (const id of request.ids) {
 				const resp = pendingCalls.get(id)
@@ -254,7 +267,7 @@ function createTestRuntimeHelpers(
 			return response
 		},
 
-		getSecrets(req: GetSecretsRequest, _maxResponseSize: bigint): boolean {
+		getSecrets(req: GetSecretsRequest, _maxResponseSize: bigint): void {
 			const resp: SecretResponse[] = []
 			for (const secretReq of req.requests) {
 				const ns = secrets.get(secretReq.namespace || 'default')
@@ -289,7 +302,6 @@ function createTestRuntimeHelpers(
 				}
 			}
 			pendingSecrets.set(req.callbackId, resp)
-			return true
 		},
 
 		awaitSecrets(request: { ids: number[] }, _maxResponseSize: bigint): AwaitSecretsResponse {
@@ -311,6 +323,11 @@ function createTestRuntimeHelpers(
 
 		log(message: string): void {
 			testWriter.log(message)
+		},
+
+		emitMetric(payload: Uint8Array): boolean {
+			testWriter.emitMetric(payload)
+			return true
 		},
 	}
 }
@@ -423,6 +440,10 @@ export class TestTeeRuntime<T> extends TeeRuntimeImpl<T> {
 
 	getLogs(): string[] {
 		return this.testWriter.getLogs()
+	}
+
+	getMetrics(): WorkflowUserMetric[] {
+		return this.testWriter.getMetrics()
 	}
 
 	setTimeProvider(timeProvider: () => number): void {

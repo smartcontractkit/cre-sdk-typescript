@@ -1,3 +1,7 @@
+/**
+ * @deprecated Use {@link CapabilityRuntimeError} from `@chainlink/cre-sdk` instead.
+ * Will be removed in the next major version.
+ */
 export class CapabilityError extends Error {
 	public name: string
 	public capabilityId?: string

@@ -1,6 +1,7 @@
-import { create, type Message } from '@bufbuild/protobuf'
+import { create, type Message, toBinary } from '@bufbuild/protobuf'
 import type { GenMessage } from '@bufbuild/protobuf/codegenv2'
 import { type Any, anyPack, anyUnpack } from '@bufbuild/protobuf/wkt'
+import { deserializeErrorFromString } from '@cre/capabilities/errors'
 import {
 	type AwaitCapabilitiesRequest,
 	AwaitCapabilitiesRequestSchema,
@@ -21,6 +22,10 @@ import {
 	SimpleConsensusInputsSchema,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import type { Value as ProtoValue } from '@cre/generated/values/v1/values_pb'
+import {
+	UserMetricType,
+	WorkflowUserMetricSchema,
+} from '@cre/generated/workflows/v2/workflow_user_metric_pb'
 import { ConsensusCapability } from '@cre/generated-sdk/capabilities/internal/consensus/v1alpha/consensus_sdk_gen'
 import type {
 	BaseRuntime,
@@ -39,8 +44,7 @@ import {
 	type UnwrapOptions,
 	Value,
 } from '@cre/sdk/utils'
-import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
-import { DonModeError, NodeModeError, SecretsError } from '../errors'
+import { CapabilityRuntimeError, DonModeError, NodeModeError, SecretsError } from '../errors'
 
 /**
  * Base implementation shared by DON and Node runtimes.
@@ -101,7 +105,7 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 		if (!this.helpers.call(req)) {
 			return {
 				result: () => {
-					throw new CapabilityError(
+					throw new CapabilityRuntimeError(
 						`Capability '${capabilityId}' not found: the host rejected the call to method '${method}'. Verify the capability ID is correct and the capability is available in this CRE environment`,
 						{
 							callbackId,
@@ -150,7 +154,7 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 		const capabilityResponse = awaitResponse.responses[callbackId]
 
 		if (!capabilityResponse) {
-			throw new CapabilityError(
+			throw new CapabilityRuntimeError(
 				`No response found for capability '${capabilityId}' method '${method}' (callback ID ${callbackId}): the host returned a response map that does not contain an entry for this call`,
 				{
 					capabilityId,
@@ -166,7 +170,7 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 				try {
 					return anyUnpack(response.value as Any, outputSchema) as O
 				} catch {
-					throw new CapabilityError(
+					throw new CapabilityRuntimeError(
 						`Failed to deserialize response payload for capability '${capabilityId}' method '${method}': the response could not be unpacked into the expected output schema`,
 						{
 							capabilityId,
@@ -177,16 +181,9 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 				}
 			}
 			case 'error':
-				throw new CapabilityError(
-					`Capability '${capabilityId}' method '${method}' returned an error: ${response.value}`,
-					{
-						capabilityId,
-						method,
-						callbackId,
-					},
-				)
+				throw deserializeErrorFromString(response.value)
 			default:
-				throw new CapabilityError(
+				throw new CapabilityRuntimeError(
 					`Unexpected response type '${response.case}' for capability '${capabilityId}' method '${method}': expected 'payload' or 'error'`,
 					{
 						capabilityId,
@@ -209,6 +206,29 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 	log(message: string): void {
 		this.helpers.log(message)
 	}
+
+	emitMetric(
+		name: string,
+		value: number,
+		type: MetricType,
+		labels?: Record<string, string>,
+	): boolean {
+		const metric = create(WorkflowUserMetricSchema, {
+			name,
+			value,
+			type: METRIC_TYPE_TO_PROTO[type],
+			labels: labels ?? {},
+		})
+		return this.helpers.emitMetric(toBinary(WorkflowUserMetricSchema, metric))
+	}
+}
+
+/** Ergonomic union for {@link BaseRuntimeImpl.emitMetric}. */
+export type MetricType = 'counter' | 'gauge'
+
+const METRIC_TYPE_TO_PROTO: Record<MetricType, UserMetricType> = {
+	counter: UserMetricType.COUNTER,
+	gauge: UserMetricType.GAUGE,
 }
 
 /**
@@ -376,10 +396,13 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 			requests: [secretRequest],
 		})
 
-		if (!this.helpers.getSecrets(secretsReq, this.maxResponseSize)) {
+		try {
+			this.helpers.getSecrets(secretsReq, this.maxResponseSize)
+		} catch (err) {
+			const message = err instanceof Error ? err.message : String(err)
 			return {
 				result: () => {
-					throw new SecretsError(secretRequest, 'host is not making the secrets request')
+					throw new SecretsError(secretRequest, message)
 				},
 			}
 		}
@@ -392,7 +415,13 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 
 	private awaitAndUnwrapSecret(id: number, secretRequest: SecretRequest): Secret {
 		const awaitRequest = create(AwaitSecretsRequestSchema, { ids: [id] })
-		const awaitResponse = this.helpers.awaitSecrets(awaitRequest, this.maxResponseSize)
+		let awaitResponse: AwaitSecretsResponse
+		try {
+			awaitResponse = this.helpers.awaitSecrets(awaitRequest, this.maxResponseSize)
+		} catch (err) {
+			const message = err instanceof Error ? err.message : String(err)
+			throw new SecretsError(secretRequest, message)
+		}
 		const secretsResponse = awaitResponse.responses[id]
 
 		if (!secretsResponse) {
@@ -448,6 +477,15 @@ export class TeeRuntimeImpl<C> implements TeeRuntime<C> {
 		this.runtime.log(message)
 	}
 
+	emitMetric(
+		name: string,
+		value: number,
+		type: MetricType,
+		labels?: Record<string, string>,
+	): boolean {
+		return this.runtime.emitMetric(name, value, type, labels)
+	}
+
 	callCapability<I extends Message, O extends Message>({
 		capabilityId,
 		method,
@@ -486,8 +524,8 @@ export interface RuntimeHelpers {
 	/** Awaits capability responses. Blocks until responses are ready. */
 	await(request: AwaitCapabilitiesRequest, maxResponseSize: bigint): AwaitCapabilitiesResponse
 
-	/** Requests secrets from host. Returns false if host rejects request. */
-	getSecrets(request: GetSecretsRequest, maxResponseSize: bigint): boolean
+	/** Requests secrets from host. Throws if host rejects the request. */
+	getSecrets(request: GetSecretsRequest, maxResponseSize: bigint): void
 
 	/** Awaits secret responses. Blocks until secrets are ready. */
 	awaitSecrets(request: AwaitSecretsRequest, maxResponseSize: bigint): AwaitSecretsResponse
@@ -500,6 +538,12 @@ export interface RuntimeHelpers {
 
 	/** Logs a message to the host environment. */
 	log(message: string): void
+
+	/**
+	 * Emits a user metric to the host. Payload is a protobuf-encoded
+	 * `workflows.v2.WorkflowUserMetric`. Returns false if the host rejected it.
+	 */
+	emitMetric(payload: Uint8Array): boolean
 }
 
 function clearIgnoredFields(value: ProtoValue, descriptor: ConsensusDescriptor): void {

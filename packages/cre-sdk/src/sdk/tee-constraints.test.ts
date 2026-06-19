@@ -8,8 +8,8 @@ import {
 	TeeTypesAndRegionsSchema,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { ZodError } from 'zod'
-import { buildTeeRequirements, teeConstraintSchema } from './tee-constraints'
 import type { TeeConstraint } from './tee-constraints'
+import { buildTeeRequirements, teeConstraintSchema } from './tee-constraints'
 
 describe('teeConstraintSchema', () => {
 	test('accepts empty object (any tee)', () => {
@@ -37,9 +37,9 @@ describe('teeConstraintSchema', () => {
 	})
 
 	test('rejects unknown region in nitro binding', () => {
-		expect(() =>
-			teeConstraintSchema.parse([{ tee: 'nitro', regions: ['eu-central-1'] }]),
-		).toThrow(ZodError)
+		expect(() => teeConstraintSchema.parse([{ tee: 'nitro', regions: ['eu-central-1'] }])).toThrow(
+			ZodError,
+		)
 	})
 
 	test('rejects unknown tee type', () => {

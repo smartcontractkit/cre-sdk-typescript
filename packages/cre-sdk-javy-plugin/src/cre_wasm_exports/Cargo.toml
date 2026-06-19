@@ -1,0 +1,10 @@
+[package]
+name = "cre_wasm_exports"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ["lib"]
+
+[dependencies]
+javy-plugin-api = "6.0.0"

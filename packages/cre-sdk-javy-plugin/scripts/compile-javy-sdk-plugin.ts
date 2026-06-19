@@ -1,53 +1,74 @@
 #!/usr/bin/env bun
 
-import { spawn } from 'node:child_process'
-import { copyFileSync, mkdirSync } from 'node:fs'
-import { join } from 'node:path'
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, rmSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join, resolve } from 'node:path'
+import { ensureJavy } from './ensure-javy.ts'
+import { generateHostCrate } from './generate-host-crate.ts'
+import { JAVY_VERSION, run } from './shared.ts'
 
-const builtWasmPath = join(
-	process.cwd(),
-	'src',
-	'javy_chainlink_sdk',
-	'target',
-	'wasm32-wasip1',
-	'release',
-	'javy_chainlink_sdk.wasm',
-)
-const distWasmPath = join(process.cwd(), 'dist', 'javy_chainlink_sdk.wasm')
-const witFilePath = join(process.cwd(), 'src', 'workflow.wit')
-const distWitFilePath = join(process.cwd(), 'dist', 'workflow.wit')
+const pluginDir = join(import.meta.dir, '..')
+const distPluginWasmPath = join(pluginDir, 'dist', 'javy-chainlink-sdk.plugin.wasm')
+const witFilePath = join(pluginDir, 'src', 'workflow.wit')
+const distWitFilePath = join(pluginDir, 'dist', 'workflow.wit')
+
+function findBuiltWasm(targetDir: string): string {
+	const releaseDir = resolve(targetDir, 'wasm32-wasip1', 'release')
+	for (const name of ['cre_generated_host.wasm', 'libcre_generated_host.wasm']) {
+		const candidate = resolve(releaseDir, name)
+		if (existsSync(candidate)) return candidate
+	}
+	throw new Error(`Build succeeded but WASM not found in ${releaseDir}`)
+}
+
+function parseLockfileArg(): string | null {
+	const argv = process.argv.slice(2)
+	for (let i = 0; i < argv.length; i++) {
+		if (argv[i] === '--lockfile' && i + 1 < argv.length) {
+			return resolve(argv[i + 1])
+		}
+	}
+	return null
+}
 
 export const main = async () => {
-	const pluginDir = join(process.cwd(), 'src', 'javy_chainlink_sdk')
-
 	console.info('\n\n---> Compiling Chainlink SDK Javy plugin (Rust) \n\n')
 
-	return new Promise<void>((resolve, reject) => {
-		const buildProcess = spawn('cargo', ['build', '--target', 'wasm32-wasip1', '--release'], {
-			cwd: pluginDir,
-			stdio: 'inherit',
-			shell: true,
-		})
+	const lockfilePath = parseLockfileArg()
+	const tmpDir = mkdtempSync(join(tmpdir(), 'cre-plugin-'))
+	const sharedTargetDir = resolve(pluginDir, '.cargo-target')
 
-		buildProcess.on('close', (code) => {
-			if (code === 0) {
-				mkdirSync('dist', { recursive: true })
-				copyFileSync(builtWasmPath, distWasmPath)
-				copyFileSync(witFilePath, distWitFilePath)
+	try {
+		generateHostCrate(tmpDir, pluginDir, [])
 
-				console.info('✅ Done!')
-				resolve()
-			} else {
-				console.error(`❌ Plugin build failed with code ${code}`)
-				reject(new Error(`Plugin build failed with code ${code}`))
-			}
-		})
+		const cargoArgs = ['build', '--target', 'wasm32-wasip1', '--release']
+		if (lockfilePath) {
+			copyFileSync(lockfilePath, join(tmpDir, 'Cargo.lock'))
+			cargoArgs.splice(1, 0, '--locked')
+		}
 
-		buildProcess.on('error', (error) => {
-			console.error('❌ Failed to start build process:', error)
-			reject(error)
-		})
-	})
+		const [, javyPath] = await Promise.all([
+			run('cargo', cargoArgs, tmpDir, {
+				CARGO_TARGET_DIR: sharedTargetDir,
+			}),
+			ensureJavy({ version: JAVY_VERSION }),
+		])
+
+		const builtWasm = findBuiltWasm(sharedTargetDir)
+		const distDir = join(pluginDir, 'dist')
+		mkdirSync(distDir, { recursive: true })
+		copyFileSync(witFilePath, distWitFilePath)
+
+		await run(
+			javyPath,
+			['init-plugin', '--deterministic', builtWasm, '-o', distPluginWasmPath],
+			tmpDir,
+		)
+
+		console.info('✅ Done!')
+	} finally {
+		rmSync(tmpDir, { recursive: true, force: true })
+	}
 }
 
 main()

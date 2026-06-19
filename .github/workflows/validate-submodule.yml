@@ -3,10 +3,11 @@ permissions: {}
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
-    branches: [capabilities-development]
+    branches:
+      - capabilities-development
   push:
-    branches: [capabilities-development]
+    branches:
+      - capabilities-development
 
 jobs:
   validate-submodule:

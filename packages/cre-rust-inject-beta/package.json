@@ -1,0 +1,23 @@
+{
+	"name": "@chainlink/cre-rust-inject-beta",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"description": "Example Rust extension (beta) for CRE rust-inject demos — crate source.",
+	"scripts": {
+		"check": "biome check --write ${BIOME_PATHS:-.}",
+		"check:ci": "biome ci .",
+		"typecheck": "tsc"
+	},
+	"files": [
+		"src",
+		"Cargo.toml",
+		"index.ts"
+	],
+	"keywords": [],
+	"license": "BUSL-1.1",
+	"peerDependencies": {
+		"@chainlink/cre-sdk-javy-plugin": ">=1.0.0",
+		"zod": ">=3.0.0"
+	}
+}

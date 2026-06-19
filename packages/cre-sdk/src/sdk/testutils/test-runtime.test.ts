@@ -8,8 +8,7 @@ import { create } from '@bufbuild/protobuf'
 import { AnySchema } from '@bufbuild/protobuf/wkt'
 import { BasicActionCapability } from '@cre/generated-sdk/capabilities/internal/basicaction/v1/basicaction_sdk_gen'
 import { consensusMedianAggregation } from '@cre/sdk/utils'
-import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
-import { SecretsError } from '../errors'
+import { CapabilityRuntimeError, SecretsError } from '../errors'
 import { BasicTestActionMock } from '../test/generated/capabilities/internal/basicaction/v1/basic_test_action_mock_gen'
 import {
 	__testOnlyRegistryStore,
@@ -75,7 +74,7 @@ describe('TestRuntime / helper layer', () => {
 		const rt = newTestRuntime()
 		const cap = new BasicActionCapability()
 		const call = cap.performAction(rt, { inputThing: true })
-		expect(() => call.result()).toThrow(CapabilityError)
+		expect(() => call.result()).toThrow(CapabilityRuntimeError)
 		expect(() => call.result()).toThrow(/not found/)
 	})
 
