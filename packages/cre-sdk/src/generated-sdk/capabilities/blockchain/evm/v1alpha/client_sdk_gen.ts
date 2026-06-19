@@ -59,6 +59,7 @@ import type { Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import { hexToBytes } from '@cre/sdk/utils/hex-utils'
 import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
+import type { CapabilityInput, NoExcess } from '@cre/sdk/utils/types/no-excess'
 
 export type WriteCreReportRequest = {
 	receiver: Uint8Array
@@ -180,6 +181,10 @@ export class ClientCapability {
 
 	constructor(private readonly ChainSelector: bigint) {}
 
+	callContract<TInput>(
+		runtime: Runtime<unknown>,
+		input: CapabilityInput<TInput, CallContractRequest, CallContractRequestJson>,
+	): { result: () => CallContractReply }
 	callContract(
 		runtime: Runtime<unknown>,
 		input: CallContractRequest | CallContractRequestJson,
@@ -215,6 +220,10 @@ export class ClientCapability {
 		}
 	}
 
+	filterLogs<TInput>(
+		runtime: Runtime<unknown>,
+		input: CapabilityInput<TInput, FilterLogsRequest, FilterLogsRequestJson>,
+	): { result: () => FilterLogsReply }
 	filterLogs(
 		runtime: Runtime<unknown>,
 		input: FilterLogsRequest | FilterLogsRequestJson,
@@ -250,6 +259,10 @@ export class ClientCapability {
 		}
 	}
 
+	balanceAt<TInput>(
+		runtime: Runtime<unknown>,
+		input: CapabilityInput<TInput, BalanceAtRequest, BalanceAtRequestJson>,
+	): { result: () => BalanceAtReply }
 	balanceAt(
 		runtime: Runtime<unknown>,
 		input: BalanceAtRequest | BalanceAtRequestJson,
@@ -285,6 +298,10 @@ export class ClientCapability {
 		}
 	}
 
+	estimateGas<TInput>(
+		runtime: Runtime<unknown>,
+		input: CapabilityInput<TInput, EstimateGasRequest, EstimateGasRequestJson>,
+	): { result: () => EstimateGasReply }
 	estimateGas(
 		runtime: Runtime<unknown>,
 		input: EstimateGasRequest | EstimateGasRequestJson,
@@ -320,6 +337,10 @@ export class ClientCapability {
 		}
 	}
 
+	getTransactionByHash<TInput>(
+		runtime: Runtime<unknown>,
+		input: CapabilityInput<TInput, GetTransactionByHashRequest, GetTransactionByHashRequestJson>,
+	): { result: () => GetTransactionByHashReply }
 	getTransactionByHash(
 		runtime: Runtime<unknown>,
 		input: GetTransactionByHashRequest | GetTransactionByHashRequestJson,
@@ -361,6 +382,10 @@ export class ClientCapability {
 		}
 	}
 
+	getTransactionReceipt<TInput>(
+		runtime: Runtime<unknown>,
+		input: CapabilityInput<TInput, GetTransactionReceiptRequest, GetTransactionReceiptRequestJson>,
+	): { result: () => GetTransactionReceiptReply }
 	getTransactionReceipt(
 		runtime: Runtime<unknown>,
 		input: GetTransactionReceiptRequest | GetTransactionReceiptRequestJson,
@@ -402,6 +427,10 @@ export class ClientCapability {
 		}
 	}
 
+	headerByNumber<TInput>(
+		runtime: Runtime<unknown>,
+		input: CapabilityInput<TInput, HeaderByNumberRequest, HeaderByNumberRequestJson>,
+	): { result: () => HeaderByNumberReply }
 	headerByNumber(
 		runtime: Runtime<unknown>,
 		input: HeaderByNumberRequest | HeaderByNumberRequestJson,
@@ -437,12 +466,23 @@ export class ClientCapability {
 		}
 	}
 
-	logTrigger(config: FilterLogTriggerRequestJson): ClientLogTrigger {
+	logTrigger<TConfig extends FilterLogTriggerRequestJson>(
+		config: NoExcess<TConfig, FilterLogTriggerRequestJson>,
+	): ClientLogTrigger {
 		// Include all labels in capability ID for routing when specified
 		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
-		return new ClientLogTrigger(config, capabilityId, 'LogTrigger', this.ChainSelector)
+		return new ClientLogTrigger(
+			config as FilterLogTriggerRequestJson,
+			capabilityId,
+			'LogTrigger',
+			this.ChainSelector,
+		)
 	}
 
+	writeReport<TInput>(
+		runtime: Runtime<unknown>,
+		input: CapabilityInput<TInput, WriteCreReportRequest, WriteCreReportRequestJson>,
+	): { result: () => WriteReportReply }
 	writeReport(
 		runtime: Runtime<unknown>,
 		input: WriteCreReportRequest | WriteCreReportRequestJson,

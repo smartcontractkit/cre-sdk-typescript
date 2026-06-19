@@ -79,6 +79,9 @@ function createRuntimeHelpersMock(overrides: Partial<RuntimeHelpers> = {}): Runt
 		now: mock(() => {
 			throw new Error('Method not implemented: now')
 		}),
+		sleep: mock(() => {
+			throw new Error('Method not implemented: sleep')
+		}),
 		log: mock(() => {}),
 		emitMetric: mock(() => true),
 	}
@@ -392,6 +395,31 @@ describe('test now converts to date', () => {
 	})
 })
 
+describe('test sleep delegates to helpers', () => {
+	test('sleep calls helpers.sleep with the provided milliseconds', () => {
+		const sleepMock = mock(() => {})
+		const helpers = createRuntimeHelpersMock({
+			sleep: sleepMock,
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		runtime.sleep(500)
+		expect(sleepMock).toHaveBeenCalledTimes(1)
+		expect(sleepMock).toHaveBeenCalledWith(500)
+	})
+
+	test('sleep passes zero milliseconds to helpers.sleep', () => {
+		const sleepMock = mock(() => {})
+		const helpers = createRuntimeHelpersMock({
+			sleep: sleepMock,
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		runtime.sleep(0)
+		expect(sleepMock).toHaveBeenCalledWith(0)
+	})
+})
+
 describe('test getSecret', () => {
 	test('successfully gets secret with SecretRequest (proto message)', () => {
 		const secretRequest = create(SecretRequestSchema, {
@@ -474,6 +502,44 @@ describe('test getSecret', () => {
 		expect(result.id).toEqual('another-secret')
 		expect(result.namespace).toEqual('another-ns')
 		expect(result.value).toEqual('value-456')
+	})
+
+	test('normalizes missing secret namespace to default for JSON and protobuf requests', () => {
+		const observedNamespaces: string[] = []
+		const helpers = createRuntimeHelpersMock({
+			getSecrets: mock((request) => {
+				expect(request.requests.length).toEqual(1)
+				observedNamespaces.push(request.requests[0].namespace)
+			}),
+			awaitSecrets: mock((request) => {
+				const id = request.ids[0]
+				return create(AwaitSecretsResponseSchema, {
+					responses: {
+						[id]: create(SecretResponsesSchema, {
+							responses: [
+								create(SecretResponseSchema, {
+									response: {
+										case: 'secret',
+										value: {
+											id: 'secret',
+											namespace: 'main',
+											owner: 'owner',
+											value: 'value',
+										},
+									},
+								}),
+							],
+						}),
+					},
+				})
+			}),
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		runtime.getSecret({ id: 'json-secret' }).result()
+		runtime.getSecret(create(SecretRequestSchema, { id: 'proto-secret' })).result()
+
+		expect(observedNamespaces).toEqual(['main', 'main'])
 	})
 
 	test('getSecrets throws → wrapped as SecretsError', () => {

@@ -1,0 +1,18 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`JS host bindings contract 1`] = `
+[
+  "awaitCapabilities",
+  "awaitSecrets",
+  "callCapability",
+  "emitMetric",
+  "getSecrets",
+  "getWasiArgs",
+  "log",
+  "now",
+  "sendResponse",
+  "sleep",
+  "switchModes",
+  "versionV2",
+]
+`;

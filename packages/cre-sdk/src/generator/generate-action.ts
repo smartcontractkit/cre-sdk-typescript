@@ -30,6 +30,7 @@ export function generateActionMethod(
 	const inputTypes = hasWrappedInput
 		? [wrappedInputType.name, `${wrappedInputType.name}Json`]
 		: [method.input.name, `${method.input.name}Json`]
+	const [nativeInputType, jsonInputType] = inputTypes
 
 	// Build output type
 	const hasWrappedOutput = wrappedOutputType !== method.output
@@ -41,7 +42,13 @@ export function generateActionMethod(
 			? 'Report'
 			: method.output.name
 
-	const basicSig = `(runtime: ${modePrefix}Runtime<unknown>, input: ${inputTypes.join(' | ')}): {result: () => ${outputType}}`
+	// Public-facing signature uses CapabilityInput, a conditional that
+	// branches on the `$typeName` brand:
+	//   - native protobuf message -> pass-through
+	//   - JSON shape -> wrapped in NoExcess so unknown keys (e.g. plain
+	//     `body` instead of `bodyString`) fail at the call boundary even
+	//     when the user lifts the request object into a variable.
+	const basicSig = `<TInput>(runtime: ${modePrefix}Runtime<unknown>, input: CapabilityInput<TInput, ${nativeInputType}, ${jsonInputType}>): {result: () => ${outputType}}`
 
 	const callSig = teeEnabled
 		? basicSig.replace(
@@ -56,7 +63,11 @@ export function generateActionMethod(
 		? `${methodName}${teeSig}\n${methodName}${basicSig};\n${methodName}${callSig};`
 		: `${methodName}${callSig};`
 
-	const callSigAndBody = `${callSig} {
+	// Internal impl signature - widest, accepts either form (and either runtime when TEE is enabled).
+	const implSig = `(runtime: ${modePrefix}Runtime<unknown>${
+		teeEnabled ? ' | TeeRuntime<unknown>' : ''
+	}, input: ${nativeInputType} | ${jsonInputType}): {result: () => ${outputType}}`
+	const callSigAndBody = `${implSig} {
     // Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
     let payload: ${method.input.name}
     ${
@@ -143,7 +154,9 @@ export function generateActionMethod(
 
 	// For DON mode: emit tee + basic overload declarations, then the implementation with its name.
 	// nameAndPublicSigs is designed for Node mode's dispatcher pattern and must not be reused here.
-	const donOverloads = teeEnabled ? `${methodName}${teeSig}\n  ${methodName}${basicSig}\n  ` : ''
+	const donOverloads = teeEnabled
+		? `${methodName}${teeSig}\n  ${methodName}${basicSig}\n  `
+		: `${methodName}${callSig}\n  `
 
 	return `
   ${donOverloads}${methodName}${callSigAndBody}`

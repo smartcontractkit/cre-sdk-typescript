@@ -46,6 +46,8 @@ import {
 } from '@cre/sdk/utils'
 import { CapabilityRuntimeError, DonModeError, NodeModeError, SecretsError } from '../errors'
 
+const DEFAULT_SECRET_NAMESPACE = 'main'
+
 /**
  * Base implementation shared by DON and Node runtimes.
  *
@@ -201,6 +203,10 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 	now(): Date {
 		// date is already in milliseconds
 		return new Date(this.helpers.now())
+	}
+
+	sleep(ms: number): void {
+		this.helpers.sleep(ms)
 	}
 
 	log(message: string): void {
@@ -383,10 +389,10 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 			}
 		}
 
-		// Normalize request (accept both protobuf and JSON formats)
-		const secretRequest = (request as unknown as { $typeName?: string }).$typeName
-			? (request as SecretRequest)
-			: create(SecretRequestSchema, request)
+		const secretRequest = create(SecretRequestSchema, {
+			id: request.id,
+			namespace: request.namespace || DEFAULT_SECRET_NAMESPACE,
+		})
 
 		// Allocate callback ID and send request
 		const id = this.nextCallId
@@ -449,7 +455,8 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 	 */
 	report(input: ReportRequest | ReportRequestJson): { result: () => Report } {
 		const consensus = new ConsensusCapability()
-		const call = consensus.report(this, input)
+		// Cast to native overload signature - the impl dispatches on $typeName.
+		const call = consensus.report(this, input as ReportRequest)
 		return {
 			result: () => call.result(),
 		}
@@ -535,6 +542,9 @@ export interface RuntimeHelpers {
 
 	/** Returns current time in milliseconds since Unix epoch. */
 	now(): number
+
+	/** Sleeps for the specified duration. */
+	sleep(ms: number): void
 
 	/** Logs a message to the host environment. */
 	log(message: string): void

@@ -1,0 +1,9 @@
+    fn call_capability(req_ptr: *const u8, req_len: i32) -> i64;
+    fn await_capabilities(
+    fn get_secrets(
+    fn await_secrets(
+    fn log(message_ptr: *const u8, message_len: i32);
+    fn send_response(response_ptr: *const u8, response_len: i32) -> i32;
+    fn switch_modes(mode: i32);
+    fn random_seed(mode: i32) -> i64;
+    fn now(result_timestamp: *mut u8) -> i32;
