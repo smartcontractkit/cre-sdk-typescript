@@ -67,6 +67,7 @@ import type { Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import { hexToBytes } from '@cre/sdk/utils/hex-utils'
 import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
+import type { CapabilityInput, NoExcess } from '@cre/sdk/utils/types/no-excess'
 
 export type WriteCreReportRequest = {
 	remainingAccounts: AccountMeta[]
@@ -138,12 +139,18 @@ export class ClientCapability {
 	/** Available ChainSelector values */
 	static readonly SUPPORTED_CHAIN_SELECTORS = {
 		'solana-devnet': 16423721717087811551n,
-		'solana-mainnet': 124615329519749607n,
-		'solana-testnet': 6302590918974934319n,
 	} as const
 
 	constructor(private readonly ChainSelector: bigint) {}
 
+	getAccountInfoWithOpts<TInput>(
+		runtime: Runtime<unknown>,
+		input: CapabilityInput<
+			TInput,
+			GetAccountInfoWithOptsRequest,
+			GetAccountInfoWithOptsRequestJson
+		>,
+	): { result: () => GetAccountInfoWithOptsReply }
 	getAccountInfoWithOpts(
 		runtime: Runtime<unknown>,
 		input: GetAccountInfoWithOptsRequest | GetAccountInfoWithOptsRequestJson,
@@ -185,6 +192,10 @@ export class ClientCapability {
 		}
 	}
 
+	getBalance<TInput>(
+		runtime: Runtime<unknown>,
+		input: CapabilityInput<TInput, GetBalanceRequest, GetBalanceRequestJson>,
+	): { result: () => GetBalanceReply }
 	getBalance(
 		runtime: Runtime<unknown>,
 		input: GetBalanceRequest | GetBalanceRequestJson,
@@ -220,6 +231,10 @@ export class ClientCapability {
 		}
 	}
 
+	getBlock<TInput>(
+		runtime: Runtime<unknown>,
+		input: CapabilityInput<TInput, GetBlockRequest, GetBlockRequestJson>,
+	): { result: () => GetBlockReply }
 	getBlock(
 		runtime: Runtime<unknown>,
 		input: GetBlockRequest | GetBlockRequestJson,
@@ -255,6 +270,10 @@ export class ClientCapability {
 		}
 	}
 
+	getFeeForMessage<TInput>(
+		runtime: Runtime<unknown>,
+		input: CapabilityInput<TInput, GetFeeForMessageRequest, GetFeeForMessageRequestJson>,
+	): { result: () => GetFeeForMessageReply }
 	getFeeForMessage(
 		runtime: Runtime<unknown>,
 		input: GetFeeForMessageRequest | GetFeeForMessageRequestJson,
@@ -293,6 +312,14 @@ export class ClientCapability {
 		}
 	}
 
+	getMultipleAccountsWithOpts<TInput>(
+		runtime: Runtime<unknown>,
+		input: CapabilityInput<
+			TInput,
+			GetMultipleAccountsWithOptsRequest,
+			GetMultipleAccountsWithOptsRequestJson
+		>,
+	): { result: () => GetMultipleAccountsWithOptsReply }
 	getMultipleAccountsWithOpts(
 		runtime: Runtime<unknown>,
 		input: GetMultipleAccountsWithOptsRequest | GetMultipleAccountsWithOptsRequestJson,
@@ -334,6 +361,10 @@ export class ClientCapability {
 		}
 	}
 
+	getSignatureStatuses<TInput>(
+		runtime: Runtime<unknown>,
+		input: CapabilityInput<TInput, GetSignatureStatusesRequest, GetSignatureStatusesRequestJson>,
+	): { result: () => GetSignatureStatusesReply }
 	getSignatureStatuses(
 		runtime: Runtime<unknown>,
 		input: GetSignatureStatusesRequest | GetSignatureStatusesRequestJson,
@@ -375,6 +406,10 @@ export class ClientCapability {
 		}
 	}
 
+	getSlotHeight<TInput>(
+		runtime: Runtime<unknown>,
+		input: CapabilityInput<TInput, GetSlotHeightRequest, GetSlotHeightRequestJson>,
+	): { result: () => GetSlotHeightReply }
 	getSlotHeight(
 		runtime: Runtime<unknown>,
 		input: GetSlotHeightRequest | GetSlotHeightRequestJson,
@@ -410,6 +445,10 @@ export class ClientCapability {
 		}
 	}
 
+	getTransaction<TInput>(
+		runtime: Runtime<unknown>,
+		input: CapabilityInput<TInput, GetTransactionRequest, GetTransactionRequestJson>,
+	): { result: () => GetTransactionReply }
 	getTransaction(
 		runtime: Runtime<unknown>,
 		input: GetTransactionRequest | GetTransactionRequestJson,
@@ -445,12 +484,23 @@ export class ClientCapability {
 		}
 	}
 
-	logTrigger(config: FilterLogTriggerRequestJson): ClientLogTrigger {
+	logTrigger<TConfig extends FilterLogTriggerRequestJson>(
+		config: NoExcess<TConfig, FilterLogTriggerRequestJson>,
+	): ClientLogTrigger {
 		// Include all labels in capability ID for routing when specified
 		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
-		return new ClientLogTrigger(config, capabilityId, 'LogTrigger', this.ChainSelector)
+		return new ClientLogTrigger(
+			config as FilterLogTriggerRequestJson,
+			capabilityId,
+			'LogTrigger',
+			this.ChainSelector,
+		)
 	}
 
+	writeReport<TInput>(
+		runtime: Runtime<unknown>,
+		input: CapabilityInput<TInput, WriteCreReportRequest, WriteCreReportRequestJson>,
+	): { result: () => WriteReportReply }
 	writeReport(
 		runtime: Runtime<unknown>,
 		input: WriteCreReportRequest | WriteCreReportRequestJson,

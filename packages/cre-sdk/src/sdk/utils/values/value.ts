@@ -15,6 +15,7 @@ import {
 	ValueSchema,
 } from '@cre/generated/values/v1/values_pb'
 
+import { assertSafeIntegerNumber } from '../safe-integer'
 import type { CreSerializable, PrimitiveTypes } from './serializer_types'
 
 /**
@@ -53,8 +54,7 @@ export class Int64 {
 			return v
 		}
 
-		if (!Number.isFinite(v) || !Number.isInteger(v))
-			throw new Error('int64 requires an integer number')
+		assertSafeIntegerNumber(v, 'int64')
 
 		const bi = BigInt(v)
 		if (bi > Int64.INT64_MAX) throw new Error('int64 overflow')
@@ -106,8 +106,7 @@ export class UInt64 {
 			return v
 		}
 
-		if (!Number.isFinite(v) || !Number.isInteger(v))
-			throw new Error('uint64 requires an integer number')
+		assertSafeIntegerNumber(v, 'uint64')
 		const bi = BigInt(v)
 		if (bi > UInt64.UINT64_MAX) throw new Error('uint64 overflow')
 		else if (bi < 0n) throw new Error('uint64 underflow')
