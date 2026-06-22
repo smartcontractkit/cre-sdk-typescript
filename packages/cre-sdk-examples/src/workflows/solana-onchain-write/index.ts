@@ -14,6 +14,7 @@ import { getBase58Decoder } from '@solana/codecs'
 import { z } from 'zod'
 
 const BASE58_DECODER = getBase58Decoder()
+
 import { DataStorage, type UserData } from './DataStorage'
 
 // Validates base58-encoded Solana addresses at config-parse time.
