@@ -35,8 +35,7 @@
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true
 	},
-
-	"include": ["src/index.ts", "src/sdk/**/*", "src/pb.ts"],
+	"include": ["src/index.ts", "src/capabilities/**/*", "src/sdk/**/*", "src/pb.ts"],
 	"exclude": [
 		"cli/**/*",
 		"**/*.test.ts",
