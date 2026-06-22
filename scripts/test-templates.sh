@@ -210,6 +210,49 @@ info "Found $TOTAL TypeScript templates to test."
 info ""
 
 # --------------------------------------------------------------------------
+# 3b. Pre-install dependencies for every package
+#
+# Some templates typecheck files imported from sibling packages (e.g.
+# por/workflow.ts imports ../contracts/evm/ts/generated/*). Those imports
+# only resolve if the sibling package's dependencies are installed too.
+# Install every package up front — including packages that aren't templates
+# themselves — so results don't depend on the order templates are processed.
+
+info "Pre-installing dependencies for all packages..."
+
+while IFS= read -r pkg; do
+  PKG_DIR=$(dirname "$pkg")
+  cd "$PKG_DIR"
+
+  # Track lock files for restoration
+  for lockfile in package-lock.json bun.lock; do
+    if [ -f "$lockfile" ]; then
+      cp "$lockfile" "$lockfile.bak"
+      LOCKFILE_BACKUPS+=("$PKG_DIR/$lockfile.bak:$PKG_DIR/$lockfile")
+    else
+      GENERATED_FILES+=("$PKG_DIR/$lockfile")
+    fi
+  done
+
+  _out=""
+  if ! run_captured _out bun install; then
+    # Failures in actual templates are caught and reported in the main loop.
+    vlog "  ⚠️  bun install failed in $PKG_DIR"
+    continue
+  fi
+  # Inject the local SDK tarball so sibling files typecheck against the
+  # SDK under test rather than the published version.
+  if grep -q '"@chainlink/cre-sdk"' package.json; then
+    run_captured _out bun install --no-save "@chainlink/cre-sdk@file:$TARBALL_PATH" || \
+      vlog "  ⚠️  SDK tarball install failed in $PKG_DIR"
+  fi
+done < <(/usr/bin/find "$TEMPLATES_ABS_PATH" -name "package.json" -not -path "*/node_modules/*")
+
+cd "$MONOREPO_ROOT"
+info "✅ Dependencies pre-installed."
+info ""
+
+# --------------------------------------------------------------------------
 # 4. Test each template
 
 FAILED_TEMPLATES=()
@@ -233,15 +276,7 @@ for pkg in "${ALL_PKGS[@]}"; do
 
   cd "$WORKFLOW_DIR"
 
-  # Track lock files for restoration
-  for lockfile in package-lock.json bun.lock; do
-    if [ -f "$lockfile" ]; then
-      cp "$lockfile" "$lockfile.bak"
-      LOCKFILE_BACKUPS+=("$WORKFLOW_DIR/$lockfile.bak:$WORKFLOW_DIR/$lockfile")
-    else
-      GENERATED_FILES+=("$WORKFLOW_DIR/$lockfile")
-    fi
-  done
+  # Lock file backups are handled by the pre-install pass above.
 
   # Install dependencies
   vlog "  Installing dependencies..."

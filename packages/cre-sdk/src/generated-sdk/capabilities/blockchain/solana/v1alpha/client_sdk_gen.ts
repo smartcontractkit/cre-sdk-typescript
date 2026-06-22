@@ -35,6 +35,11 @@ import {
 	type GetMultipleAccountsWithOptsRequest,
 	type GetMultipleAccountsWithOptsRequestJson,
 	GetMultipleAccountsWithOptsRequestSchema,
+	type GetProgramAccountsReply,
+	GetProgramAccountsReplySchema,
+	type GetProgramAccountsRequest,
+	type GetProgramAccountsRequestJson,
+	GetProgramAccountsRequestSchema,
 	type GetSignatureStatusesReply,
 	GetSignatureStatusesReplySchema,
 	type GetSignatureStatusesRequest,
@@ -139,6 +144,7 @@ export class ClientCapability {
 	/** Available ChainSelector values */
 	static readonly SUPPORTED_CHAIN_SELECTORS = {
 		'solana-devnet': 16423721717087811551n,
+		'solana-mainnet': 124615329519749607n,
 	} as const
 
 	constructor(private readonly ChainSelector: bigint) {}
@@ -350,6 +356,48 @@ export class ClientCapability {
 			payload,
 			inputSchema: GetMultipleAccountsWithOptsRequestSchema,
 			outputSchema: GetMultipleAccountsWithOptsReplySchema,
+		})
+
+		return {
+			result: () => {
+				const result = capabilityResponse.result()
+
+				return result
+			},
+		}
+	}
+
+	getProgramAccounts<TInput>(
+		runtime: Runtime<unknown>,
+		input: CapabilityInput<TInput, GetProgramAccountsRequest, GetProgramAccountsRequestJson>,
+	): { result: () => GetProgramAccountsReply }
+	getProgramAccounts(
+		runtime: Runtime<unknown>,
+		input: GetProgramAccountsRequest | GetProgramAccountsRequestJson,
+	): { result: () => GetProgramAccountsReply } {
+		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
+		let payload: GetProgramAccountsRequest
+
+		if ((input as unknown as { $typeName?: string }).$typeName) {
+			// It's the original protobuf type
+			payload = input as GetProgramAccountsRequest
+		} else {
+			// It's regular JSON, convert using fromJson
+			payload = fromJson(GetProgramAccountsRequestSchema, input as GetProgramAccountsRequestJson)
+		}
+
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+
+		const capabilityResponse = runtime.callCapability<
+			GetProgramAccountsRequest,
+			GetProgramAccountsReply
+		>({
+			capabilityId,
+			method: 'GetProgramAccounts',
+			payload,
+			inputSchema: GetProgramAccountsRequestSchema,
+			outputSchema: GetProgramAccountsReplySchema,
 		})
 
 		return {
