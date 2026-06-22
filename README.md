@@ -270,23 +270,23 @@ bun generate:sdk          # Generate all SDK types and code
 
 The [`breaking-changes`](./.github/workflows/breaking-changes.yml) workflow blocks PRs that alter any of the three protected contracts. If your change is intentional, update the relevant baseline before pushing:
 
-| Contract | What triggers the failure | How to update |
-|---|---|---|
-| Proto fields | Field deleted, renamed, renumbered, or type changed | No baseline file — CI runs `buf breaking` on `submodules/chainlink-protos` (`cre` module) against the submodule commit pinned on `main` |
-| TypeScript public API | An exported type/interface was removed or changed | Run `bun run update-api-baseline` inside `packages/cre-sdk` and commit `api-baseline.d.ts` |
-| JS host binding names | A binding was added, removed, or renamed in `host-bindings.ts` | Run `bun test --update-snapshots` inside `packages/cre-sdk` and commit the updated `__snapshots__` file |
-| Rust host imports | An `extern "C"` import was added or removed in `lib.rs` | Re-run the sed extraction (see `breaking-changes.yml`) and commit `host-imports-baseline.txt` |
+| Contract              | What triggers the failure                                      | How to update                                                                                                                           |
+| --------------------- | -------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Proto fields          | Field deleted, renamed, renumbered, or type changed            | No baseline file — CI runs `buf breaking` on `submodules/chainlink-protos` (`cre` module) against the submodule commit pinned on `main` |
+| TypeScript public API | An exported type/interface was removed or changed              | Run `bun run update-api-baseline` inside `packages/cre-sdk` and commit `api-baseline.d.ts`                                              |
+| JS host binding names | A binding was added, removed, or renamed in `host-bindings.ts` | Run `bun test --update-snapshots` inside `packages/cre-sdk` and commit the updated `__snapshots__` file                                 |
+| Rust host imports     | An `extern "C"` import was added or removed in `lib.rs`        | Re-run the sed extraction (see `breaking-changes.yml`) and commit `host-imports-baseline.txt`                                           |
 
 #### CI override labels
 
 When a change is **intentionally** breaking and cannot be fixed by updating a baseline (e.g. a coordinated proto break before `main` catches up), a **maintainer** adds the matching label on the PR (this re-runs the workflow):
 
-| Label | Skips |
-|-------|--------|
-| `breaking-change:proto` | `proto-breaking` (`buf breaking`) |
-| `breaking-change:typescript-api` | `ts-api-surface` |
-| `breaking-change:host-bindings` | `host-bindings` |
-| `breaking-change:approved` | All three jobs |
+| Label                            | Skips                             |
+| -------------------------------- | --------------------------------- |
+| `breaking-change:proto`          | `proto-breaking` (`buf breaking`) |
+| `breaking-change:typescript-api` | `ts-api-surface`                  |
+| `breaking-change:host-bindings`  | `host-bindings`                   |
+| `breaking-change:approved`       | All three jobs                    |
 
 Labels are an audit trail in the PR timeline, not a substitute for review. Prefer updating baselines (`api-baseline.d.ts`, snapshots, `host-imports-baseline.txt`) when the new contract is the new source of truth. For proto breaks, coordinate the `chainlink-protos` submodule bump and document migration notes in the PR.
 
