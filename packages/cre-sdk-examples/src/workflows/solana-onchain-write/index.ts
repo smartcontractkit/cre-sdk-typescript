@@ -12,6 +12,8 @@ import {
 import { address } from '@solana/addresses'
 import { getBase58Decoder } from '@solana/codecs'
 import { z } from 'zod'
+
+const BASE58_DECODER = getBase58Decoder()
 import { DataStorage, type UserData } from './DataStorage'
 
 // Validates base58-encoded Solana addresses at config-parse time.
@@ -90,7 +92,7 @@ const onCronTrigger = (runtime: Runtime<Config>) => {
 		throw new Error(`Failed to write report: ${resp.errorMessage || resp.txStatus}`)
 	}
 
-	const txSignature = resp.txSignature ? getBase58Decoder().decode(resp.txSignature) : ''
+	const txSignature = resp.txSignature ? BASE58_DECODER.decode(resp.txSignature) : ''
 
 	runtime.log(`Successfully wrote report, tx signature: ${txSignature}`)
 

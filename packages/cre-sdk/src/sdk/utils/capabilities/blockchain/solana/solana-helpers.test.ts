@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import { sha256 } from '@noble/hashes/sha256'
+import { sha256 } from '@noble/hashes/sha2'
 import {
 	calculateAccountsHash,
 	encodeBorshVecU32,
