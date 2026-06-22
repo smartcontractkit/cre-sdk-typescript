@@ -4,12 +4,23 @@ import type {
 } from '@cre/generated/capabilities/blockchain/solana/v1alpha/client_pb'
 import type { ReportRequestJson } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { bytesToBase64 } from '@cre/sdk/utils/hex-utils'
-import { sha256 } from '@noble/hashes/sha256'
-import { type Address, address, getAddressEncoder } from '@solana/addresses'
+import { sha256 } from '@noble/hashes/sha2'
+import { concatBytes } from '@noble/hashes/utils'
+import { address, getAddressEncoder } from '@solana/addresses'
 import { prepareReportRequestFromBytes, type ReportEncoder } from '../report-helpers'
 
 const ACCOUNT_HASH_LENGTH = 32
 const U32_LENGTH = 4
+
+// Stateless address encoder; hoisted so the encoder stack isn't rebuilt per call.
+const ADDRESS_ENCODER = getAddressEncoder()
+
+/** Encodes a number as a little-endian Borsh u32. */
+const u32LE = (value: number): Uint8Array => {
+	const bytes = new Uint8Array(U32_LENGTH)
+	new DataView(bytes.buffer).setUint32(0, value, true)
+	return bytes
+}
 
 /**
  * An account passed to the Solana capability's `remainingAccounts` list.
@@ -43,7 +54,7 @@ export type SolanaAccountInput = Pick<SolanaAccountMeta, 'publicKey'> &
  * @returns The 32-byte public key.
  */
 export const solanaAddressToBytes = (base58Address: string): Uint8Array =>
-	new Uint8Array(getAddressEncoder().encode(address(base58Address)))
+	new Uint8Array(ADDRESS_ENCODER.encode(address(base58Address)))
 
 /**
  * Builds an account entry for the Solana capability's `remainingAccounts` list.
@@ -86,16 +97,8 @@ export const solanaAccountMetasToJson = (
 export const calculateAccountsHash = (
 	accounts: ReadonlyArray<SolanaAccountInput | null | undefined>,
 ): Uint8Array => {
-	const present = accounts.filter((acc) => acc != null)
-	const concatenated = new Uint8Array(
-		present.reduce((total, acc) => total + acc.publicKey.length, 0),
-	)
-	let offset = 0
-	for (const acc of present) {
-		concatenated.set(acc.publicKey, offset)
-		offset += acc.publicKey.length
-	}
-	return sha256(concatenated)
+	const publicKeys = accounts.filter((acc) => acc != null).map(({ publicKey }) => publicKey)
+	return sha256(concatBytes(...publicKeys))
 }
 
 export interface ForwarderReport {
@@ -120,11 +123,7 @@ export const encodeForwarderReport = (report: ForwarderReport): Uint8Array => {
 			`encodeForwarderReport: accountHash must be exactly ${ACCOUNT_HASH_LENGTH} bytes, got ${report.accountHash.length}`,
 		)
 	}
-	const encoded = new Uint8Array(ACCOUNT_HASH_LENGTH + U32_LENGTH + report.payload.length)
-	encoded.set(report.accountHash, 0)
-	new DataView(encoded.buffer).setUint32(ACCOUNT_HASH_LENGTH, report.payload.length, true)
-	encoded.set(report.payload, ACCOUNT_HASH_LENGTH + U32_LENGTH)
-	return encoded
+	return concatBytes(report.accountHash, u32LE(report.payload.length), report.payload)
 }
 
 /**
@@ -137,17 +136,8 @@ export const encodeForwarderReport = (report: ForwarderReport): Uint8Array => {
  * @param elementPayloads - The pre-encoded Vec elements.
  * @returns The encoded Vec.
  */
-export const encodeBorshVecU32 = (elementPayloads: ReadonlyArray<Uint8Array>): Uint8Array => {
-	const totalLength = elementPayloads.reduce((total, elem) => total + elem.length, 0)
-	const encoded = new Uint8Array(U32_LENGTH + totalLength)
-	new DataView(encoded.buffer).setUint32(0, elementPayloads.length, true)
-	let offset = U32_LENGTH
-	for (const elem of elementPayloads) {
-		encoded.set(elem, offset)
-		offset += elem.length
-	}
-	return encoded
-}
+export const encodeBorshVecU32 = (elementPayloads: ReadonlyArray<Uint8Array>): Uint8Array =>
+	concatBytes(u32LE(elementPayloads.length), ...elementPayloads)
 
 /**
  * Default values expected by the Solana capability for report encoding.
@@ -157,7 +147,7 @@ export const SOLANA_DEFAULT_REPORT_ENCODER = {
 	encoderName: 'solana',
 	signingAlgo: 'ecdsa',
 	hashingAlgo: 'keccak256',
-}
+} satisfies ReportEncoder
 
 /**
  * Prepares a report request for the Solana capability to pass to `.report()`.
@@ -171,5 +161,3 @@ export const prepareSolanaReportRequest = (
 	payload: Uint8Array,
 	reportEncoder: ReportEncoder = SOLANA_DEFAULT_REPORT_ENCODER,
 ): ReportRequestJson => prepareReportRequestFromBytes(payload, reportEncoder)
-
-export type { Address as SolanaAddress }

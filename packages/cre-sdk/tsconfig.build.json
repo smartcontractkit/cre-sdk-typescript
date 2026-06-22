@@ -37,5 +37,13 @@
 	},
 
 	"include": ["src/index.ts", "src/sdk/**/*", "src/pb.ts"],
-	"exclude": ["cli/**/*", "**/*.test.ts", "**/*.test.js"]
+	"exclude": [
+		"cli/**/*",
+		"**/*.test.ts",
+		"**/*.test.js",
+		// solana-binding-fixture is a test-only copy of cre-cli generated bindings;
+		// it is not part of the published surface and its inferred codec types are
+		// not portable under declaration emit (TS2742).
+		"src/sdk/test/solana-binding-fixture/**/*"
+	]
 }

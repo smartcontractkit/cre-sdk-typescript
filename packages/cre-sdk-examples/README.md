@@ -52,6 +52,12 @@ cre workflow simulate ./src/workflows/on-chain
 cre workflow simulate ./src/workflows/on-chain-write
 ```
 
+[Solana On-Chain Write workflow](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/solana-onchain-write/index.ts):
+
+```zsh
+cre workflow simulate ./src/workflows/solana-onchain-write
+```
+
 [Proof of Reserve workflow](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/proof-of-reserve/index.ts):
 
 ```zsh

@@ -1,4 +1,5 @@
 import type { ReportRequestJson } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import { bytesToBase64 } from '@cre/sdk/utils/hex-utils'
 
 /**
  * Report-encoder settings for a chain family (everything in a `ReportRequest`
@@ -22,6 +23,6 @@ export const prepareReportRequestFromBytes = (
 	payload: Uint8Array,
 	reportEncoder: ReportEncoder,
 ): ReportRequestJson => ({
-	encodedPayload: Buffer.from(payload).toString('base64'),
+	encodedPayload: bytesToBase64(payload),
 	...reportEncoder,
 })

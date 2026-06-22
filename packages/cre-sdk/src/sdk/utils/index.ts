@@ -1,5 +1,6 @@
 export * from './capabilities/blockchain/evm/evm-helpers'
-export * from './capabilities/blockchain/report-helpers'
+// Only the shared encoder type is public
+export type { ReportEncoder } from './capabilities/blockchain/report-helpers'
 export * from './capabilities/blockchain/solana/solana-helpers'
 export * from './capabilities/http/http-helpers'
 export * from './chain-selectors'
