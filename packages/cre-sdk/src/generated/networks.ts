@@ -8,7 +8,6 @@ import mainnet_evm_ab_mainnet from './chain-selectors/mainnet/evm/ab-mainnet'
 import mainnet_evm_abstract_mainnet from './chain-selectors/mainnet/evm/abstract-mainnet'
 import mainnet_evm_adi_mainnet from './chain-selectors/mainnet/evm/adi-mainnet'
 import mainnet_evm_apechain_mainnet from './chain-selectors/mainnet/evm/apechain-mainnet'
-import mainnet_evm_arc_mainnet from './chain-selectors/mainnet/evm/arc-mainnet'
 import mainnet_evm_areon_mainnet from './chain-selectors/mainnet/evm/areon-mainnet'
 import mainnet_evm_avalanche_mainnet from './chain-selectors/mainnet/evm/avalanche-mainnet'
 import mainnet_evm_avalanche_subnet_dexalot_mainnet from './chain-selectors/mainnet/evm/avalanche-subnet-dexalot-mainnet'
@@ -29,7 +28,6 @@ import mainnet_evm_coinex_smart_chain_mainnet from './chain-selectors/mainnet/ev
 import mainnet_evm_conflux_mainnet from './chain-selectors/mainnet/evm/conflux-mainnet'
 import mainnet_evm_core_mainnet from './chain-selectors/mainnet/evm/core-mainnet'
 import mainnet_evm_corn_mainnet from './chain-selectors/mainnet/evm/corn-mainnet'
-import mainnet_evm_creditcoin_mainnet from './chain-selectors/mainnet/evm/creditcoin-mainnet'
 import mainnet_evm_cronos_mainnet from './chain-selectors/mainnet/evm/cronos-mainnet'
 import mainnet_evm_cronos_zkevm_mainnet from './chain-selectors/mainnet/evm/cronos-zkevm-mainnet'
 import mainnet_evm_edge_mainnet from './chain-selectors/mainnet/evm/edge-mainnet'
@@ -100,7 +98,6 @@ import mainnet_evm_polkadot_mainnet_darwinia from './chain-selectors/mainnet/evm
 import mainnet_evm_polkadot_mainnet_moonbeam from './chain-selectors/mainnet/evm/polkadot-mainnet-moonbeam'
 import mainnet_evm_polygon_mainnet from './chain-selectors/mainnet/evm/polygon-mainnet'
 import mainnet_evm_polygon_mainnet_katana from './chain-selectors/mainnet/evm/polygon-mainnet-katana'
-import mainnet_evm_robinhood_mainnet from './chain-selectors/mainnet/evm/robinhood-mainnet'
 import mainnet_evm_ronin_mainnet from './chain-selectors/mainnet/evm/ronin-mainnet'
 import mainnet_evm_rootstock_mainnet from './chain-selectors/mainnet/evm/rootstock-mainnet'
 import mainnet_evm_sei_mainnet from './chain-selectors/mainnet/evm/sei-mainnet'
@@ -158,7 +155,6 @@ import testnet_evm_celo_testnet_alfajores from './chain-selectors/testnet/evm/ce
 import testnet_evm_codex_testnet from './chain-selectors/testnet/evm/codex-testnet'
 import testnet_evm_coinex_smart_chain_testnet from './chain-selectors/testnet/evm/coinex.smart.chain-testnet'
 import testnet_evm_core_testnet from './chain-selectors/testnet/evm/core-testnet'
-import testnet_evm_creditcoin_testnet from './chain-selectors/testnet/evm/creditcoin-testnet'
 import testnet_evm_cronos_testnet from './chain-selectors/testnet/evm/cronos-testnet'
 import testnet_evm_cronos_testnet_zkevm_1 from './chain-selectors/testnet/evm/cronos-testnet-zkevm-1'
 import testnet_evm_cronos_zkevm_testnet_sepolia from './chain-selectors/testnet/evm/cronos-zkevm-testnet-sepolia'
@@ -214,7 +210,6 @@ import testnet_evm_filecoin_testnet from './chain-selectors/testnet/evm/filecoin
 import testnet_evm_gate_chain_testnet_meteora from './chain-selectors/testnet/evm/gate-chain-testnet-meteora'
 import testnet_evm_gate_layer_testnet from './chain-selectors/testnet/evm/gate-layer-testnet'
 import testnet_evm_geth_testnet from './chain-selectors/testnet/evm/geth-testnet'
-import testnet_evm_glamsterdam_devnet_5 from './chain-selectors/testnet/evm/glamsterdam-devnet-5'
 import testnet_evm_gnosis_chain_testnet_chiado from './chain-selectors/testnet/evm/gnosis.chain-testnet-chiado'
 import testnet_evm_hedera_testnet from './chain-selectors/testnet/evm/hedera-testnet'
 import testnet_evm_hemi_testnet_sepolia from './chain-selectors/testnet/evm/hemi-testnet-sepolia'
@@ -255,8 +250,6 @@ import testnet_evm_private_testnet_granite from './chain-selectors/testnet/evm/p
 import testnet_evm_private_testnet_mica from './chain-selectors/testnet/evm/private-testnet-mica'
 import testnet_evm_private_testnet_obsidian from './chain-selectors/testnet/evm/private-testnet-obsidian'
 import testnet_evm_private_testnet_opala from './chain-selectors/testnet/evm/private-testnet-opala'
-import testnet_evm_private_testnet_pumice from './chain-selectors/testnet/evm/private-testnet-pumice'
-import testnet_evm_private_testnet_rhyolite from './chain-selectors/testnet/evm/private-testnet-rhyolite'
 import testnet_evm_robinhood_testnet from './chain-selectors/testnet/evm/robinhood-testnet'
 import testnet_evm_ronin_testnet_saigon from './chain-selectors/testnet/evm/ronin-testnet-saigon'
 import testnet_evm_sei_testnet_atlantic from './chain-selectors/testnet/evm/sei-testnet-atlantic'
@@ -418,12 +411,10 @@ export const allNetworks: NetworkInfo[] = [
 	testnet_evm_ethereum_testnet_sepolia_lisk_1,
 	mainnet_evm_tempo_mainnet,
 	mainnet_evm_megaeth_mainnet,
-	mainnet_evm_robinhood_mainnet,
 	testnet_evm_ethereum_testnet_sepolia_worldchain_1,
 	mainnet_evm_ethereum_mainnet_mantle_1,
 	testnet_evm_ethereum_testnet_goerli_mantle_1,
 	testnet_evm_ethereum_testnet_sepolia_mantle_1,
-	mainnet_evm_arc_mainnet,
 	mainnet_evm_superseed_mainnet,
 	testnet_evm_binance_smart_chain_testnet_opbnb_1,
 	testnet_evm_nexon_dev,
@@ -506,8 +497,6 @@ export const allNetworks: NetworkInfo[] = [
 	mainnet_evm_plume_mainnet,
 	testnet_evm_plume_testnet_sepolia,
 	testnet_evm_adi_testnet,
-	mainnet_evm_creditcoin_mainnet,
-	testnet_evm_creditcoin_testnet,
 	testnet_evm_etherlink_testnet,
 	testnet_evm_polygon_testnet_tatara,
 	mainnet_evm_ethereum_mainnet_taiko_1,
@@ -559,12 +548,9 @@ export const allNetworks: NetworkInfo[] = [
 	testnet_evm_ethereum_testnet_sepolia_blast_1,
 	mainnet_evm_tron_mainnet_evm,
 	testnet_evm_zora_testnet,
-	testnet_evm_private_testnet_rhyolite,
-	testnet_evm_private_testnet_pumice,
 	testnet_evm_tron_testnet_shasta_evm,
 	testnet_evm_tron_devnet_evm,
 	testnet_evm_tron_testnet_nile_evm,
-	testnet_evm_glamsterdam_devnet_5,
 	mainnet_solana_solana_mainnet,
 	testnet_solana_solana_testnet,
 	testnet_solana_solana_devnet,
@@ -651,9 +637,7 @@ export const mainnet = {
 		mainnet_evm_bitcoin_merlin_mainnet,
 		mainnet_evm_tempo_mainnet,
 		mainnet_evm_megaeth_mainnet,
-		mainnet_evm_robinhood_mainnet,
 		mainnet_evm_ethereum_mainnet_mantle_1,
-		mainnet_evm_arc_mainnet,
 		mainnet_evm_superseed_mainnet,
 		mainnet_evm_nibiru_mainnet,
 		mainnet_evm_zetachain_mainnet,
@@ -687,7 +671,6 @@ export const mainnet = {
 		mainnet_evm_codex_mainnet,
 		mainnet_evm_ethereum_mainnet_blast_1,
 		mainnet_evm_plume_mainnet,
-		mainnet_evm_creditcoin_mainnet,
 		mainnet_evm_ethereum_mainnet_taiko_1,
 		mainnet_evm_bitcoin_mainnet_bitlayer_1,
 		mainnet_evm_avalanche_subnet_dexalot_mainnet,
@@ -822,7 +805,6 @@ export const testnet = {
 		testnet_evm_plume_devnet,
 		testnet_evm_plume_testnet_sepolia,
 		testnet_evm_adi_testnet,
-		testnet_evm_creditcoin_testnet,
 		testnet_evm_etherlink_testnet,
 		testnet_evm_polygon_testnet_tatara,
 		testnet_evm_ethereum_testnet_holesky_taiko_1,
@@ -861,12 +843,9 @@ export const testnet = {
 		testnet_evm_plume_testnet,
 		testnet_evm_ethereum_testnet_sepolia_blast_1,
 		testnet_evm_zora_testnet,
-		testnet_evm_private_testnet_rhyolite,
-		testnet_evm_private_testnet_pumice,
 		testnet_evm_tron_testnet_shasta_evm,
 		testnet_evm_tron_devnet_evm,
 		testnet_evm_tron_testnet_nile_evm,
-		testnet_evm_glamsterdam_devnet_5,
 	] as const,
 	solana: [testnet_solana_solana_testnet, testnet_solana_solana_devnet] as const,
 	aptos: [testnet_aptos_aptos_testnet, testnet_aptos_aptos_localnet] as const,
@@ -947,9 +926,7 @@ export const mainnetBySelector = new Map<bigint, NetworkInfo>([
 	[241851231317828981n, mainnet_evm_bitcoin_merlin_mainnet],
 	[7281642695469137430n, mainnet_evm_tempo_mainnet],
 	[6093540873831549674n, mainnet_evm_megaeth_mainnet],
-	[6180753054346818345n, mainnet_evm_robinhood_mainnet],
 	[1556008542357238666n, mainnet_evm_ethereum_mainnet_mantle_1],
-	[6370580034781731079n, mainnet_evm_arc_mainnet],
 	[470401360549526817n, mainnet_evm_superseed_mainnet],
 	[17349189558768828726n, mainnet_evm_nibiru_mainnet],
 	[10817664450262215148n, mainnet_evm_zetachain_mainnet],
@@ -983,7 +960,6 @@ export const mainnetBySelector = new Map<bigint, NetworkInfo>([
 	[9478124434908827753n, mainnet_evm_codex_mainnet],
 	[4411394078118774322n, mainnet_evm_ethereum_mainnet_blast_1],
 	[17912061998839310979n, mainnet_evm_plume_mainnet],
-	[18240105181246962294n, mainnet_evm_creditcoin_mainnet],
 	[16468599424800719238n, mainnet_evm_ethereum_mainnet_taiko_1],
 	[7937294810946806131n, mainnet_evm_bitcoin_mainnet_bitlayer_1],
 	[5463201557265485081n, mainnet_evm_avalanche_subnet_dexalot_mainnet],
@@ -1116,7 +1092,6 @@ export const testnetBySelector = new Map<bigint, NetworkInfo>([
 	[3743020999916460931n, testnet_evm_plume_devnet],
 	[13874588925447303949n, testnet_evm_plume_testnet_sepolia],
 	[9418205736192840573n, testnet_evm_adi_testnet],
-	[16960985330067274105n, testnet_evm_creditcoin_testnet],
 	[1910019406958449359n, testnet_evm_etherlink_testnet],
 	[9090863410735740267n, testnet_evm_polygon_testnet_tatara],
 	[7248756420937879088n, testnet_evm_ethereum_testnet_holesky_taiko_1],
@@ -1155,12 +1130,9 @@ export const testnetBySelector = new Map<bigint, NetworkInfo>([
 	[14684575664602284776n, testnet_evm_plume_testnet],
 	[2027362563942762617n, testnet_evm_ethereum_testnet_sepolia_blast_1],
 	[16244020411108056671n, testnet_evm_zora_testnet],
-	[604447335222770945n, testnet_evm_private_testnet_rhyolite],
-	[1564738277398880633n, testnet_evm_private_testnet_pumice],
 	[13231703482326770598n, testnet_evm_tron_testnet_shasta_evm],
 	[13231703482326770600n, testnet_evm_tron_devnet_evm],
 	[2052925811360307749n, testnet_evm_tron_testnet_nile_evm],
-	[10073034426865795585n, testnet_evm_glamsterdam_devnet_5],
 	[6302590918974934319n, testnet_solana_solana_testnet],
 	[16423721717087811551n, testnet_solana_solana_devnet],
 	[743186221051783445n, testnet_aptos_aptos_testnet],
@@ -1242,9 +1214,7 @@ export const mainnetByName = new Map<string, NetworkInfo>([
 	['bitcoin-merlin-mainnet', mainnet_evm_bitcoin_merlin_mainnet],
 	['tempo-mainnet', mainnet_evm_tempo_mainnet],
 	['megaeth-mainnet', mainnet_evm_megaeth_mainnet],
-	['robinhood-mainnet', mainnet_evm_robinhood_mainnet],
 	['ethereum-mainnet-mantle-1', mainnet_evm_ethereum_mainnet_mantle_1],
-	['arc-mainnet', mainnet_evm_arc_mainnet],
 	['superseed-mainnet', mainnet_evm_superseed_mainnet],
 	['nibiru-mainnet', mainnet_evm_nibiru_mainnet],
 	['zetachain-mainnet', mainnet_evm_zetachain_mainnet],
@@ -1278,7 +1248,6 @@ export const mainnetByName = new Map<string, NetworkInfo>([
 	['codex-mainnet', mainnet_evm_codex_mainnet],
 	['ethereum-mainnet-blast-1', mainnet_evm_ethereum_mainnet_blast_1],
 	['plume-mainnet', mainnet_evm_plume_mainnet],
-	['creditcoin-mainnet', mainnet_evm_creditcoin_mainnet],
 	['ethereum-mainnet-taiko-1', mainnet_evm_ethereum_mainnet_taiko_1],
 	['bitcoin-mainnet-bitlayer-1', mainnet_evm_bitcoin_mainnet_bitlayer_1],
 	['avalanche-subnet-dexalot-mainnet', mainnet_evm_avalanche_subnet_dexalot_mainnet],
@@ -1420,7 +1389,6 @@ export const testnetByName = new Map<string, NetworkInfo>([
 	['plume-devnet', testnet_evm_plume_devnet],
 	['plume-testnet-sepolia', testnet_evm_plume_testnet_sepolia],
 	['adi-testnet', testnet_evm_adi_testnet],
-	['creditcoin-testnet', testnet_evm_creditcoin_testnet],
 	['etherlink-testnet', testnet_evm_etherlink_testnet],
 	['polygon-testnet-tatara', testnet_evm_polygon_testnet_tatara],
 	['ethereum-testnet-holesky-taiko-1', testnet_evm_ethereum_testnet_holesky_taiko_1],
@@ -1465,12 +1433,9 @@ export const testnetByName = new Map<string, NetworkInfo>([
 	['plume-testnet', testnet_evm_plume_testnet],
 	['ethereum-testnet-sepolia-blast-1', testnet_evm_ethereum_testnet_sepolia_blast_1],
 	['zora-testnet', testnet_evm_zora_testnet],
-	['private-testnet-rhyolite', testnet_evm_private_testnet_rhyolite],
-	['private-testnet-pumice', testnet_evm_private_testnet_pumice],
 	['tron-testnet-shasta-evm', testnet_evm_tron_testnet_shasta_evm],
 	['tron-devnet-evm', testnet_evm_tron_devnet_evm],
 	['tron-testnet-nile-evm', testnet_evm_tron_testnet_nile_evm],
-	['glamsterdam-devnet-5', testnet_evm_glamsterdam_devnet_5],
 	['solana-testnet', testnet_solana_solana_testnet],
 	['solana-devnet', testnet_solana_solana_devnet],
 	['aptos-testnet', testnet_aptos_aptos_testnet],
@@ -1553,9 +1518,7 @@ export const mainnetBySelectorByFamily = {
 		[241851231317828981n, mainnet_evm_bitcoin_merlin_mainnet],
 		[7281642695469137430n, mainnet_evm_tempo_mainnet],
 		[6093540873831549674n, mainnet_evm_megaeth_mainnet],
-		[6180753054346818345n, mainnet_evm_robinhood_mainnet],
 		[1556008542357238666n, mainnet_evm_ethereum_mainnet_mantle_1],
-		[6370580034781731079n, mainnet_evm_arc_mainnet],
 		[470401360549526817n, mainnet_evm_superseed_mainnet],
 		[17349189558768828726n, mainnet_evm_nibiru_mainnet],
 		[10817664450262215148n, mainnet_evm_zetachain_mainnet],
@@ -1589,7 +1552,6 @@ export const mainnetBySelectorByFamily = {
 		[9478124434908827753n, mainnet_evm_codex_mainnet],
 		[4411394078118774322n, mainnet_evm_ethereum_mainnet_blast_1],
 		[17912061998839310979n, mainnet_evm_plume_mainnet],
-		[18240105181246962294n, mainnet_evm_creditcoin_mainnet],
 		[16468599424800719238n, mainnet_evm_ethereum_mainnet_taiko_1],
 		[7937294810946806131n, mainnet_evm_bitcoin_mainnet_bitlayer_1],
 		[5463201557265485081n, mainnet_evm_avalanche_subnet_dexalot_mainnet],
@@ -1724,7 +1686,6 @@ export const testnetBySelectorByFamily = {
 		[3743020999916460931n, testnet_evm_plume_devnet],
 		[13874588925447303949n, testnet_evm_plume_testnet_sepolia],
 		[9418205736192840573n, testnet_evm_adi_testnet],
-		[16960985330067274105n, testnet_evm_creditcoin_testnet],
 		[1910019406958449359n, testnet_evm_etherlink_testnet],
 		[9090863410735740267n, testnet_evm_polygon_testnet_tatara],
 		[7248756420937879088n, testnet_evm_ethereum_testnet_holesky_taiko_1],
@@ -1763,12 +1724,9 @@ export const testnetBySelectorByFamily = {
 		[14684575664602284776n, testnet_evm_plume_testnet],
 		[2027362563942762617n, testnet_evm_ethereum_testnet_sepolia_blast_1],
 		[16244020411108056671n, testnet_evm_zora_testnet],
-		[604447335222770945n, testnet_evm_private_testnet_rhyolite],
-		[1564738277398880633n, testnet_evm_private_testnet_pumice],
 		[13231703482326770598n, testnet_evm_tron_testnet_shasta_evm],
 		[13231703482326770600n, testnet_evm_tron_devnet_evm],
 		[2052925811360307749n, testnet_evm_tron_testnet_nile_evm],
-		[10073034426865795585n, testnet_evm_glamsterdam_devnet_5],
 	]),
 	solana: new Map<bigint, NetworkInfo>([
 		[6302590918974934319n, testnet_solana_solana_testnet],
@@ -1862,9 +1820,7 @@ export const mainnetByNameByFamily = {
 		['bitcoin-merlin-mainnet', mainnet_evm_bitcoin_merlin_mainnet],
 		['tempo-mainnet', mainnet_evm_tempo_mainnet],
 		['megaeth-mainnet', mainnet_evm_megaeth_mainnet],
-		['robinhood-mainnet', mainnet_evm_robinhood_mainnet],
 		['ethereum-mainnet-mantle-1', mainnet_evm_ethereum_mainnet_mantle_1],
-		['arc-mainnet', mainnet_evm_arc_mainnet],
 		['superseed-mainnet', mainnet_evm_superseed_mainnet],
 		['nibiru-mainnet', mainnet_evm_nibiru_mainnet],
 		['zetachain-mainnet', mainnet_evm_zetachain_mainnet],
@@ -1898,7 +1854,6 @@ export const mainnetByNameByFamily = {
 		['codex-mainnet', mainnet_evm_codex_mainnet],
 		['ethereum-mainnet-blast-1', mainnet_evm_ethereum_mainnet_blast_1],
 		['plume-mainnet', mainnet_evm_plume_mainnet],
-		['creditcoin-mainnet', mainnet_evm_creditcoin_mainnet],
 		['ethereum-mainnet-taiko-1', mainnet_evm_ethereum_mainnet_taiko_1],
 		['bitcoin-mainnet-bitlayer-1', mainnet_evm_bitcoin_mainnet_bitlayer_1],
 		['avalanche-subnet-dexalot-mainnet', mainnet_evm_avalanche_subnet_dexalot_mainnet],
@@ -2045,7 +2000,6 @@ export const testnetByNameByFamily = {
 		['plume-devnet', testnet_evm_plume_devnet],
 		['plume-testnet-sepolia', testnet_evm_plume_testnet_sepolia],
 		['adi-testnet', testnet_evm_adi_testnet],
-		['creditcoin-testnet', testnet_evm_creditcoin_testnet],
 		['etherlink-testnet', testnet_evm_etherlink_testnet],
 		['polygon-testnet-tatara', testnet_evm_polygon_testnet_tatara],
 		['ethereum-testnet-holesky-taiko-1', testnet_evm_ethereum_testnet_holesky_taiko_1],
@@ -2090,12 +2044,9 @@ export const testnetByNameByFamily = {
 		['plume-testnet', testnet_evm_plume_testnet],
 		['ethereum-testnet-sepolia-blast-1', testnet_evm_ethereum_testnet_sepolia_blast_1],
 		['zora-testnet', testnet_evm_zora_testnet],
-		['private-testnet-rhyolite', testnet_evm_private_testnet_rhyolite],
-		['private-testnet-pumice', testnet_evm_private_testnet_pumice],
 		['tron-testnet-shasta-evm', testnet_evm_tron_testnet_shasta_evm],
 		['tron-devnet-evm', testnet_evm_tron_devnet_evm],
 		['tron-testnet-nile-evm', testnet_evm_tron_testnet_nile_evm],
-		['glamsterdam-devnet-5', testnet_evm_glamsterdam_devnet_5],
 	]),
 	solana: new Map<string, NetworkInfo>([
 		['solana-testnet', testnet_solana_solana_testnet],

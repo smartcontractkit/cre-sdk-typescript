@@ -26,6 +26,11 @@ import {
 	GetMultipleAccountsWithOptsReplySchema,
 	type GetMultipleAccountsWithOptsRequest,
 	GetMultipleAccountsWithOptsRequestSchema,
+	type GetProgramAccountsReply,
+	type GetProgramAccountsReplyJson,
+	GetProgramAccountsReplySchema,
+	type GetProgramAccountsRequest,
+	GetProgramAccountsRequestSchema,
 	type GetSignatureStatusesReply,
 	type GetSignatureStatusesReplyJson,
 	GetSignatureStatusesReplySchema,
@@ -80,6 +85,11 @@ export class SolanaMock {
 	getMultipleAccountsWithOpts?: (
 		input: GetMultipleAccountsWithOptsRequest,
 	) => GetMultipleAccountsWithOptsReply | GetMultipleAccountsWithOptsReplyJson
+
+	/** Set to define the return value for GetProgramAccounts. May return a plain object (GetProgramAccountsReplyJson) or the message type. */
+	getProgramAccounts?: (
+		input: GetProgramAccountsRequest,
+	) => GetProgramAccountsReply | GetProgramAccountsReplyJson
 
 	/** Set to define the return value for GetSignatureStatuses. May return a plain object (GetSignatureStatusesReplyJson) or the message type. */
 	getSignatureStatuses?: (
@@ -196,6 +206,25 @@ export class SolanaMock {
 								case: 'payload',
 								value: anyPack(GetMultipleAccountsWithOptsReplySchema, output),
 							},
+						}
+					}
+					case 'GetProgramAccounts': {
+						const input = anyUnpack(
+							req.payload,
+							GetProgramAccountsRequestSchema,
+						) as GetProgramAccountsRequest
+						const handler = self.getProgramAccounts
+						if (typeof handler !== 'function')
+							throw new Error(
+								"GetProgramAccounts: no implementation provided; set the mock's getProgramAccounts property to define the return value.",
+							)
+						const raw = handler(input)
+						const output =
+							raw && typeof (raw as unknown as { $typeName?: string }).$typeName === 'string'
+								? (raw as GetProgramAccountsReply)
+								: fromJson(GetProgramAccountsReplySchema, raw as GetProgramAccountsReplyJson)
+						return {
+							response: { case: 'payload', value: anyPack(GetProgramAccountsReplySchema, output) },
 						}
 					}
 					case 'GetSignatureStatuses': {
