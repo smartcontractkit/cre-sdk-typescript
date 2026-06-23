@@ -1,6 +1,6 @@
 {
 	"name": "@chainlink/cre-sdk",
-	"version": "1.13.0",
+	"version": "1.14.0-solana-alpha-1",
 	"type": "module",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -61,7 +61,7 @@
 	"dependencies": {
 		"@bufbuild/protobuf": "2.6.3",
 		"@bufbuild/protoc-gen-es": "2.6.3",
-		"@chainlink/cre-sdk-javy-plugin": "workspace:*",
+		"@chainlink/cre-sdk-javy-plugin": "1.8.0-solana-alpha-1",
 		"@noble/hashes": "1.8.0",
 		"@solana/addresses": "6.9.0",
 		"@solana/codecs": "6.9.0",
