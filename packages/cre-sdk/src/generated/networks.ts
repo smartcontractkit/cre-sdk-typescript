@@ -32,6 +32,7 @@ import mainnet_evm_corn_mainnet from './chain-selectors/mainnet/evm/corn-mainnet
 import mainnet_evm_creditcoin_mainnet from './chain-selectors/mainnet/evm/creditcoin-mainnet'
 import mainnet_evm_cronos_mainnet from './chain-selectors/mainnet/evm/cronos-mainnet'
 import mainnet_evm_cronos_zkevm_mainnet from './chain-selectors/mainnet/evm/cronos-zkevm-mainnet'
+import mainnet_evm_dtcc_mainnet_appchain from './chain-selectors/mainnet/evm/dtcc-mainnet-appchain'
 import mainnet_evm_edge_mainnet from './chain-selectors/mainnet/evm/edge-mainnet'
 // Import all individual network files
 import mainnet_evm_ethereum_mainnet from './chain-selectors/mainnet/evm/ethereum-mainnet'
@@ -563,6 +564,7 @@ export const allNetworks: NetworkInfo[] = [
 	testnet_evm_private_testnet_quartzite,
 	testnet_evm_private_testnet_rhyolite,
 	testnet_evm_private_testnet_pumice,
+	mainnet_evm_dtcc_mainnet_appchain,
 	testnet_evm_tron_testnet_shasta_evm,
 	testnet_evm_tron_devnet_evm,
 	testnet_evm_tron_testnet_nile_evm,
@@ -703,6 +705,7 @@ export const mainnet = {
 		mainnet_evm_zora_mainnet,
 		mainnet_evm_corn_mainnet,
 		mainnet_evm_tron_mainnet_evm,
+		mainnet_evm_dtcc_mainnet_appchain,
 	] as const,
 	solana: [mainnet_solana_solana_mainnet] as const,
 	aptos: [mainnet_aptos_aptos_mainnet] as const,
@@ -1000,6 +1003,7 @@ export const mainnetBySelector = new Map<bigint, NetworkInfo>([
 	[3555797439612589184n, mainnet_evm_zora_mainnet],
 	[9043146809313071210n, mainnet_evm_corn_mainnet],
 	[1546563616611573946n, mainnet_evm_tron_mainnet_evm],
+	[13879014182901017172n, mainnet_evm_dtcc_mainnet_appchain],
 	[124615329519749607n, mainnet_solana_solana_mainnet],
 	[4741433654826277614n, mainnet_aptos_aptos_mainnet],
 	[17529533435026248318n, mainnet_sui_sui_mainnet],
@@ -1296,6 +1300,7 @@ export const mainnetByName = new Map<string, NetworkInfo>([
 	['zora-mainnet', mainnet_evm_zora_mainnet],
 	['corn-mainnet', mainnet_evm_corn_mainnet],
 	['tron-mainnet-evm', mainnet_evm_tron_mainnet_evm],
+	['dtcc-mainnet-appchain', mainnet_evm_dtcc_mainnet_appchain],
 	['solana-mainnet', mainnet_solana_solana_mainnet],
 	['aptos-mainnet', mainnet_aptos_aptos_mainnet],
 	['sui-mainnet', mainnet_sui_sui_mainnet],
@@ -1608,6 +1613,7 @@ export const mainnetBySelectorByFamily = {
 		[3555797439612589184n, mainnet_evm_zora_mainnet],
 		[9043146809313071210n, mainnet_evm_corn_mainnet],
 		[1546563616611573946n, mainnet_evm_tron_mainnet_evm],
+		[13879014182901017172n, mainnet_evm_dtcc_mainnet_appchain],
 	]),
 	solana: new Map<bigint, NetworkInfo>([[124615329519749607n, mainnet_solana_solana_mainnet]]),
 	aptos: new Map<bigint, NetworkInfo>([[4741433654826277614n, mainnet_aptos_aptos_mainnet]]),
@@ -1918,6 +1924,7 @@ export const mainnetByNameByFamily = {
 		['zora-mainnet', mainnet_evm_zora_mainnet],
 		['corn-mainnet', mainnet_evm_corn_mainnet],
 		['tron-mainnet-evm', mainnet_evm_tron_mainnet_evm],
+		['dtcc-mainnet-appchain', mainnet_evm_dtcc_mainnet_appchain],
 	]),
 	solana: new Map<string, NetworkInfo>([['solana-mainnet', mainnet_solana_solana_mainnet]]),
 	aptos: new Map<string, NetworkInfo>([['aptos-mainnet', mainnet_aptos_aptos_mainnet]]),
