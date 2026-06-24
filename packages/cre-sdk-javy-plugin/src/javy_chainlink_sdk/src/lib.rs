@@ -1,22 +1,24 @@
 use cre_wasm_exports::{__clear_registry, extend_wasm_exports};
 use javy_plugin_api::{
-    import_namespace,
+    Config, import_namespace,
     javy::{Runtime, quickjs::prelude::*},
-    Config,
 };
 
+use base64::Engine;
 use javy_plugin_api::javy::quickjs::{
     ArrayBuffer, Ctx, Error, Exception, FromJs, TypedArray, Value,
 };
+use rand::{Rng, SeedableRng};
+use rand_chacha::ChaCha8Rng;
 use std::collections::HashMap;
 use std::env;
 use std::sync::{Mutex, OnceLock};
-use base64::Engine;
-use rand::{Rng, SeedableRng};
-use rand_chacha::ChaCha8Rng;
+use std::thread;
+use std::time::Duration;
 
 static CURRENT_MODE: Mutex<i32> = Mutex::new(0);
 static RANDOM_GENERATORS: OnceLock<Mutex<HashMap<i32, ChaCha8Rng>>> = OnceLock::new();
+const MAX_RESPONSE_LEN_BYTES: i32 = 64 * 1024 * 1024;
 
 // ✅ Host imports: implemented in Go
 #[link(wasm_import_module = "env")]
@@ -51,6 +53,8 @@ unsafe extern "C" {
     fn random_seed(mode: i32) -> i64;
 
     fn now(result_timestamp: *mut u8) -> i32;
+
+    fn emit_metric(data_ptr: *const u8, data_len: i32) -> i32;
 }
 
 import_namespace!("javy_chainlink_sdk");
@@ -96,8 +100,63 @@ pub fn config() -> Config {
     config
 }
 
-/// Applies CRE plugin globals and host bindings. Used by the default plugin build and by generated host crates that add `--cre-exports` extensions.
-///
+fn validate_max_response_len(max_len: i32) -> Result<usize, &'static str> {
+    if max_len < 0 {
+        return Err("maxLen < 0");
+    }
+
+    if max_len > MAX_RESPONSE_LEN_BYTES {
+        return Err("maxLen exceeds maximum allowed response size");
+    }
+
+    Ok(max_len as usize)
+}
+
+fn checked_response_buffer_len(ctx: &Ctx<'_>, max_len: i32) -> Result<usize, Error> {
+    validate_max_response_len(max_len).map_err(|message| Exception::throw_range(ctx, message))
+}
+
+/// Invokes a host fn with shape `(req_ptr, req_len, buf_ptr, max_len) -> i64`,
+/// validates `max_len`, returns the populated response slice or maps host errors
+/// to JS exceptions. `op_name` appears in the empty-error fallback; `capacity_msg`
+/// is static because `Error::new_into_js` requires `&'static str`.
+fn dispatch_host_call(
+    ctx: &Ctx<'_>,
+    req: ArgBytes,
+    max_len: i32,
+    op_name: &str,
+    capacity_msg: &'static str,
+    host_fn: unsafe extern "C" fn(*const u8, i32, *mut u8, i32) -> i64,
+) -> Result<Vec<u8>, Error> {
+    let max_len_usize = checked_response_buffer_len(ctx, max_len)?;
+    let req_bytes = req.0;
+    let mut buf = vec![0u8; max_len_usize];
+
+    let n = unsafe {
+        host_fn(
+            req_bytes.as_ptr(),
+            req_bytes.len() as i32,
+            buf.as_mut_ptr(),
+            max_len,
+        )
+    };
+    if n < 0 {
+        let error_len = (-n) as usize;
+        let error_msg =
+            String::from_utf8_lossy(&buf[..error_len.min(max_len_usize)]).into_owned();
+        let error_msg = if error_msg.is_empty() {
+            format!("{op_name} failed")
+        } else {
+            error_msg
+        };
+        return Err(Exception::throw_message(ctx, &error_msg));
+    }
+    if n > max_len_usize as i64 {
+        return Err(Error::new_into_js("Error", capacity_msg));
+    }
+    Ok(buf[..n as usize].to_vec())
+}
+
 /// Duplicate export names are caught eagerly by `extend_wasm_exports`.
 pub fn modify_runtime(runtime: Runtime) -> Runtime {
     __clear_registry();
@@ -118,36 +177,14 @@ pub fn modify_runtime(runtime: Runtime) -> Runtime {
             &ctx,
             "awaitCapabilities",
             Func::from(|ctx: Ctx<'_>, req: ArgBytes, max_len: i32| {
-                if max_len < 0 {
-                    return Err(Exception::throw_range(&ctx, "maxLen < 0"));
-                }
-                let req_bytes = req.0;
-                let mut buf = vec![0u8; max_len as usize];
-
-                let n = unsafe {
-                    await_capabilities(
-                        req_bytes.as_ptr(),
-                        req_bytes.len() as i32,
-                        buf.as_mut_ptr(),
-                        max_len,
-                    )
-                };
-                if n < 0 {
-                    let error_len = (-n) as usize;
-                    let error_msg =
-                        String::from_utf8_lossy(&buf[..error_len.min(max_len as usize)]).into_owned();
-                    let error_msg_static: &'static str = Box::leak(error_msg.into_boxed_str());
-                    return Err(Error::new_into_js("Error", error_msg_static));
-                }
-                if n > max_len as i64 {
-                    return Err(Error::new_into_js(
-                        "Error",
-                        "await_capabilities: host returned length exceeding buffer capacity",
-                    ));
-                }
-
-                let out = &buf[..n as usize];
-                Ok::<Vec<u8>, Error>(out.to_vec())
+                dispatch_host_call(
+                    &ctx,
+                    req,
+                    max_len,
+                    "await_capabilities",
+                    "await_capabilities: host returned length exceeding buffer capacity",
+                    await_capabilities,
+                )
             }),
         );
 
@@ -155,32 +192,14 @@ pub fn modify_runtime(runtime: Runtime) -> Runtime {
             &ctx,
             "getSecrets",
             Func::from(|ctx: Ctx<'_>, req: ArgBytes, max_len: i32| {
-                if max_len < 0 {
-                    return Err(Exception::throw_range(&ctx, "maxLen < 0"));
-                }
-                let req_bytes = req.0;
-                let mut buf = vec![0u8; max_len as usize];
-
-                let n = unsafe {
-                    get_secrets(
-                        req_bytes.as_ptr(),
-                        req_bytes.len() as i32,
-                        buf.as_mut_ptr(),
-                        max_len,
-                    )
-                };
-                if n < 0 {
-                    return Err(Error::new_into_js("Error", "get_secrets failed"));
-                }
-                if n > max_len as i64 {
-                    return Err(Error::new_into_js(
-                        "Error",
-                        "get_secrets: host returned length exceeding buffer capacity",
-                    ));
-                }
-
-                let out = &buf[..n as usize];
-                Ok::<Vec<u8>, Error>(out.to_vec())
+                dispatch_host_call(
+                    &ctx,
+                    req,
+                    max_len,
+                    "get_secrets",
+                    "get_secrets: host returned length exceeding buffer capacity",
+                    get_secrets,
+                )
             }),
         );
 
@@ -188,32 +207,14 @@ pub fn modify_runtime(runtime: Runtime) -> Runtime {
             &ctx,
             "awaitSecrets",
             Func::from(|ctx: Ctx<'_>, req: ArgBytes, max_len: i32| {
-                if max_len < 0 {
-                    return Err(Exception::throw_range(&ctx, "maxLen < 0"));
-                }
-                let req_bytes = req.0;
-                let mut buf = vec![0u8; max_len as usize];
-
-                let n = unsafe {
-                    await_secrets(
-                        req_bytes.as_ptr(),
-                        req_bytes.len() as i32,
-                        buf.as_mut_ptr(),
-                        max_len,
-                    )
-                };
-                if n < 0 {
-                    return Err(Error::new_into_js("Error", "await_secrets failed"));
-                }
-                if n > max_len as i64 {
-                    return Err(Error::new_into_js(
-                        "Error",
-                        "await_secrets: host returned length exceeding buffer capacity",
-                    ));
-                }
-
-                let out = &buf[..n as usize];
-                Ok::<Vec<u8>, Error>(out.to_vec())
+                dispatch_host_call(
+                    &ctx,
+                    req,
+                    max_len,
+                    "await_secrets",
+                    "await_secrets: host returned length exceeding buffer capacity",
+                    await_secrets,
+                )
             }),
         );
 
@@ -223,6 +224,16 @@ pub fn modify_runtime(runtime: Runtime) -> Runtime {
             Func::from(|message: String| {
                 let bytes = message.as_bytes();
                 unsafe { log(bytes.as_ptr(), bytes.len() as i32) };
+            }),
+        );
+
+        extend_wasm_exports(
+            &ctx,
+            "emitMetric",
+            Func::from(|_ctx: Ctx<'_>, data: ArgBytes| {
+                let bytes = data.0;
+                let rc = unsafe { emit_metric(bytes.as_ptr(), bytes.len() as i32) };
+                Ok::<i32, Error>(rc)
             }),
         );
 
@@ -296,9 +307,8 @@ pub fn modify_runtime(runtime: Runtime) -> Runtime {
             "getWasiArgs",
             Func::from(|_ctx: Ctx<'_>| -> Result<String, Error> {
                 let args: Vec<String> = env::args().collect();
-                let args_json = serde_json::to_string(&args).map_err(|_| {
-                    Error::new_into_js("Error", "Failed to serialize args to JSON")
-                })?;
+                let args_json = serde_json::to_string(&args)
+                    .map_err(|_| Error::new_into_js("Error", "Failed to serialize args to JSON"))?;
                 Ok(args_json)
             }),
         );
@@ -326,8 +336,43 @@ pub fn modify_runtime(runtime: Runtime) -> Runtime {
                 Ok(milliseconds as f64)
             }),
         );
+
+        extend_wasm_exports(
+            &ctx,
+            "sleep",
+            Func::from(|_ctx: Ctx<'_>, ms: u64| -> Result<(), Error> {
+                thread::sleep(Duration::from_millis(ms));
+                Ok(())
+            }),
+        );
     });
 
     runtime
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn validate_max_response_len_accepts_values_within_cap() {
+        assert_eq!(validate_max_response_len(0), Ok(0));
+        assert_eq!(
+            validate_max_response_len(MAX_RESPONSE_LEN_BYTES),
+            Ok(MAX_RESPONSE_LEN_BYTES as usize)
+        );
+    }
+
+    #[test]
+    fn validate_max_response_len_rejects_negative_values() {
+        assert_eq!(validate_max_response_len(-1), Err("maxLen < 0"));
+    }
+
+    #[test]
+    fn validate_max_response_len_rejects_values_above_cap() {
+        assert_eq!(
+            validate_max_response_len(MAX_RESPONSE_LEN_BYTES + 1),
+            Err("maxLen exceeds maximum allowed response size")
+        );
+    }
+}

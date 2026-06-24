@@ -1,5 +1,4 @@
 import type { Message } from '@bufbuild/protobuf'
-import { create } from '@bufbuild/protobuf'
 import type {
 	Requirements,
 	RestrictionsJson,
@@ -7,15 +6,28 @@ import type {
 	SecretRequest,
 	SecretRequestJson,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import {
-	RegionsSchema,
-	RequirementsSchema,
-	TeeSchema,
-	type TeeType,
-} from '@cre/generated/sdk/v1alpha/sdk_pb'
 import type { Runtime, TeeRuntime } from '@cre/sdk/runtime'
 import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 import type { CreSerializable } from './utils'
+
+export type {
+	AnyTeeConstraint,
+	NitroBinding,
+	NitroRegion,
+	OneOfTees,
+	Region,
+	TeeBinding,
+	TeeConstraint,
+} from './tee-constraints'
+export {
+	buildTeeRequirements,
+	NITRO_REGIONS,
+	REGIONS,
+	teeConstraintSchema,
+} from './tee-constraints'
+
+import type { TeeConstraint } from './tee-constraints'
+import { buildTeeRequirements } from './tee-constraints'
 
 export type HandlerFn<TConfig, TTriggerOutput, TResult, TRuntime = Runtime<TConfig>> = (
 	runtime: TRuntime,
@@ -57,10 +69,6 @@ export const handler = <
 	hooks,
 })
 
-export type TeeRequirement = { type: Exclude<TeeType, TeeType.UNSPECIFIED>; regions?: string[] }
-export type AnyTeeRequirement = { type: 'any'; regions?: string[] }
-export type AcceptedTees = TeeRequirement[] | AnyTeeRequirement
-
 export const handlerInTee = <
 	TRawTriggerOutput extends Message<string>,
 	TTriggerOutput,
@@ -69,34 +77,12 @@ export const handlerInTee = <
 >(
 	trigger: Trigger<TRawTriggerOutput, TTriggerOutput>,
 	fn: HandlerFn<TConfig, TTriggerOutput, TResult, TeeRuntime<TConfig>>,
-	tees: AcceptedTees,
+	tees: TeeConstraint,
 ): HandlerEntry<TConfig, TRawTriggerOutput, TTriggerOutput, TResult, TeeRuntime<TConfig>> => ({
 	trigger,
 	fn,
 	requirements: buildTeeRequirements(tees),
 })
-
-function buildTeeRequirements(tees: AcceptedTees): Requirements {
-	if (!Array.isArray(tees)) {
-		return create(RequirementsSchema, {
-			tee: create(TeeSchema, {
-				item: {
-					case: 'anyRegions',
-					value: create(RegionsSchema, { regions: tees.regions ?? [] }),
-				},
-			}),
-		})
-	}
-	const teeTypes = tees.map((tee) => ({
-		type: tee.type,
-		regions: tee.regions ?? [],
-	}))
-	return create(RequirementsSchema, {
-		tee: create(TeeSchema, {
-			item: { case: 'teeTypesAndRegions', value: { teeTypeAndRegions: teeTypes } },
-		}),
-	})
-}
 
 export type SecretsProvider = {
 	getSecret(request: SecretRequest | SecretRequestJson): {

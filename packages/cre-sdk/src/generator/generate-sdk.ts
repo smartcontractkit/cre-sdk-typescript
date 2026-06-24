@@ -5,7 +5,7 @@ import type { GenFile } from '@bufbuild/protobuf/codegenv2'
 import { Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import type { CapabilityMetadata } from '@cre/generated/tools/generator/v1alpha/cre_metadata_pb'
 import {
-	AdditionalEnironments,
+	AdditionalEnvironments,
 	capability,
 	method as methodOption,
 } from '@cre/generated/tools/generator/v1alpha/cre_metadata_pb'
@@ -93,9 +93,7 @@ export function generateSdk(file: GenFile, outputDir: string) {
 		})
 
 		const modePrefix = capOption.mode === Mode.NODE ? 'Node' : ''
-		const teeEnabled = capOption.additionalEnvironments.includes(
-			AdditionalEnironments.ADDITIONAL_ENVIRONMENTS_TEE,
-		)
+		const teeEnabled = capOption.additionalEnvironments.includes(AdditionalEnvironments.TEE)
 
 		// Build import statements
 		// Note: protobuf imports are deferred until after report wrappers are processed,
@@ -106,6 +104,18 @@ export function generateSdk(file: GenFile, outputDir: string) {
 		if (hasTriggers) {
 			imports.add(`import type { Trigger } from "@cre/sdk/utils/triggers/trigger-interface"`)
 			imports.add(`import { type Any, AnySchema, anyPack } from "@bufbuild/protobuf/wkt"`)
+		}
+
+		// Gate JSON input shapes at every capability boundary. Actions use the
+		// $typeName-aware CapabilityInput; triggers (JSON-only configs) use
+		// NoExcess directly. Import only what each file actually references.
+		const noExcessImports: string[] = []
+		if (hasActions) noExcessImports.push('CapabilityInput')
+		if (hasTriggers) noExcessImports.push('NoExcess')
+		if (noExcessImports.length > 0) {
+			imports.add(
+				`import type { ${noExcessImports.join(', ')} } from "@cre/sdk/utils/types/no-excess"`,
+			)
 		}
 
 		if (hasActions) {

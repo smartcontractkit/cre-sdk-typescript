@@ -2,10 +2,12 @@
  * Public API for the CRE SDK.
  */
 
+import { ClientCapability as AptosClient } from '@cre/generated-sdk/capabilities/blockchain/aptos/v1alpha/client_sdk_gen'
 import {
 	ClientCapability as EVMClient,
 	ClientRestrictor as EVMRestrictor,
 } from '@cre/generated-sdk/capabilities/blockchain/evm/v1alpha/client_sdk_gen'
+import { ClientCapability as SolanaClient } from '@cre/generated-sdk/capabilities/blockchain/solana/v1alpha/client_sdk_gen'
 import {
 	ClientCapability as ConfidentialHTTPClient,
 	ClientRestrictor as ConfidentialHTTPRestrictor,
@@ -33,9 +35,20 @@ export {
 	type Log as EVMLog,
 	TxStatus,
 } from '@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb'
+export {
+	ReceiverContractExecutionStatus as SolanaReceiverContractExecutionStatus,
+	TxStatus as SolanaTxStatus,
+} from '@cre/generated/capabilities/blockchain/solana/v1alpha/client_pb'
 export type { Payload as HTTPPayload } from '@cre/generated/capabilities/networking/http/v1alpha/trigger_pb'
 export type { Payload as CronPayload } from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
 export { TeeType } from '@cre/generated/sdk/v1alpha/sdk_pb'
+// Aptos Capability
+export {
+	ClientCapability as AptosClient,
+	type WriteCreReportRequest as AptosWriteCreReportRequest,
+	type WriteCreReportRequestJson as AptosWriteCreReportRequestJson,
+} from '@cre/generated-sdk/capabilities/blockchain/aptos/v1alpha/client_sdk_gen'
+
 // EVM Capability
 export {
 	ClientCapability as EVMClient,
@@ -43,6 +56,12 @@ export {
 	type WriteCreReportRequest,
 	type WriteCreReportRequestJson,
 } from '@cre/generated-sdk/capabilities/blockchain/evm/v1alpha/client_sdk_gen'
+// Solana Capability
+export {
+	ClientCapability as SolanaClient,
+	type WriteCreReportRequest as SolanaWriteCreReportRequest,
+	type WriteCreReportRequestJson as SolanaWriteCreReportRequestJson,
+} from '@cre/generated-sdk/capabilities/blockchain/solana/v1alpha/client_sdk_gen'
 // Confidential HTTP Capability
 export {
 	ClientCapability as ConfidentialHTTPClient,
@@ -68,7 +87,16 @@ export {
 
 // Runtime
 export type { NodeRuntime, Runtime, TeeRuntime } from '@cre/sdk/runtime'
-export { handler, handlerInTee } from '@cre/sdk/workflow'
+export type {
+	AnyTeeConstraint,
+	NitroBinding,
+	NitroRegion,
+	OneOfTees,
+	Region,
+	TeeBinding,
+	TeeConstraint,
+} from '@cre/sdk/workflow'
+export { handler, handlerInTee, NITRO_REGIONS, REGIONS } from '@cre/sdk/workflow'
 
 prepareRuntime()
 
@@ -79,6 +107,8 @@ export const cre = {
 		ConfidentialHTTPClient,
 		HTTPClient,
 		EVMClient,
+		AptosClient,
+		SolanaClient,
 	},
 	restrictors: {
 		CronRestrictor,

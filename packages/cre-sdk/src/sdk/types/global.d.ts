@@ -46,6 +46,14 @@ declare global {
 	function log(message: string): void
 
 	/**
+	 * Emits a user metric to the host. The payload is a protobuf-encoded
+	 * `workflows.v2.WorkflowUserMetric` message.
+	 * @param payload - protobuf-encoded WorkflowUserMetric bytes
+	 * @returns 0 on success, negative on error (rate-limited, oversized, invalid name, etc.)
+	 */
+	function emitMetric(payload: Uint8Array): number
+
+	/**
 	 * Sends a response back to the host
 	 * @param response - bytes response
 	 * @returns Status code (0 for success)
@@ -81,6 +89,12 @@ declare global {
 	 * @returns Unix timestamp in milliseconds
 	 */
 	function now(): number
+
+	/**
+	 * Sleeps for the specified duration.
+	 * @param ms - Duration in milliseconds
+	 */
+	function sleep(ms: number): void
 
 	/**
 	 * Console API available in the QuickJS runtime

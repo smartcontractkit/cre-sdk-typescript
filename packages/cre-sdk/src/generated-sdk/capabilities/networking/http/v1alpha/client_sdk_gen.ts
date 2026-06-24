@@ -10,14 +10,17 @@ import type { CapabilityRestrictionJson } from '@cre/generated/sdk/v1alpha/sdk_p
 import type { NodeRuntime, Runtime, TeeRuntime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import type { ConsensusAggregation, PrimitiveTypes, UnwrapOptions } from '@cre/sdk/utils'
+import type { CapabilityInput } from '@cre/sdk/utils/types/no-excess'
 
 export class SendRequester {
 	constructor(
 		private readonly runtime: NodeRuntime<unknown>,
 		private readonly client: ClientCapability,
 	) {}
-	sendRequest(input: Request | RequestJson): { result: () => Response } {
-		return this.client.sendRequest(this.runtime, input)
+	sendRequest<TInput>(input: CapabilityInput<TInput, Request, RequestJson>): {
+		result: () => Response
+	} {
+		return this.client.sendRequest<TInput>(this.runtime, input)
 	}
 }
 
@@ -35,17 +38,17 @@ export class ClientCapability {
 	static readonly CAPABILITY_NAME = 'http-actions'
 	static readonly CAPABILITY_VERSION = '1.0.0-alpha'
 
-	sendRequest(
+	sendRequest<TInput>(
 		runtime: TeeRuntime<unknown>,
-		input: Request | RequestJson,
+		input: CapabilityInput<TInput, Request, RequestJson>,
 	): { result: () => Response }
-	sendRequest(
+	sendRequest<TInput>(
 		runtime: NodeRuntime<unknown>,
-		input: Request | RequestJson,
+		input: CapabilityInput<TInput, Request, RequestJson>,
 	): { result: () => Response }
-	sendRequest(
+	sendRequest<TInput>(
 		runtime: NodeRuntime<unknown> | TeeRuntime<unknown>,
-		input: Request | RequestJson,
+		input: CapabilityInput<TInput, Request, RequestJson>,
 	): { result: () => Response }
 	sendRequest<TArgs extends unknown[], TOutput>(
 		runtime: Runtime<unknown>,

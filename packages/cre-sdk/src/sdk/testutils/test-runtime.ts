@@ -36,6 +36,7 @@ import {
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import type { Value as ProtoValue } from '@cre/generated/values/v1/values_pb'
 import { ValueSchema } from '@cre/generated/values/v1/values_pb'
+import type { WorkflowUserMetric } from '@cre/generated/workflows/v2/workflow_user_metric_pb'
 import type { RuntimeHelpers } from '../impl/runtime-impl'
 import { RuntimeImpl, TeeRuntimeImpl } from '../impl/runtime-impl'
 import { TestWriter } from './test-writer'
@@ -217,6 +218,10 @@ function createTestRuntimeHelpers(
 		return state.timeProvider ? state.timeProvider() : Date.now()
 	}
 
+	function sleep(ms: number): void {
+		return
+	}
+
 	return {
 		call(request: Parameters<RuntimeHelpers['call']>[0]): boolean {
 			const handler = registry.get(request.id)
@@ -266,7 +271,7 @@ function createTestRuntimeHelpers(
 			return response
 		},
 
-		getSecrets(req: GetSecretsRequest, _maxResponseSize: bigint): boolean {
+		getSecrets(req: GetSecretsRequest, _maxResponseSize: bigint): void {
 			const resp: SecretResponse[] = []
 			for (const secretReq of req.requests) {
 				const ns = secrets.get(secretReq.namespace || 'default')
@@ -301,7 +306,6 @@ function createTestRuntimeHelpers(
 				}
 			}
 			pendingSecrets.set(req.callbackId, resp)
-			return true
 		},
 
 		awaitSecrets(request: { ids: number[] }, _maxResponseSize: bigint): AwaitSecretsResponse {
@@ -321,8 +325,15 @@ function createTestRuntimeHelpers(
 
 		now,
 
+		sleep,
+
 		log(message: string): void {
 			testWriter.log(message)
+		},
+
+		emitMetric(payload: Uint8Array): boolean {
+			testWriter.emitMetric(payload)
+			return true
 		},
 	}
 }
@@ -388,7 +399,11 @@ export function newTestRuntime<T = unknown>(
 	const state: TestRuntimeState = {
 		timeProvider: options.timeProvider,
 	}
-	const maxResponseSize = BigInt(options.maxResponseSize ?? DEFAULT_MAX_RESPONSE_SIZE_BYTES)
+	const configuredMaxResponseSize = options.maxResponseSize ?? DEFAULT_MAX_RESPONSE_SIZE_BYTES
+	if (!Number.isSafeInteger(configuredMaxResponseSize) || configuredMaxResponseSize < 0) {
+		throw new Error('newTestRuntime maxResponseSize must be a non-negative safe integer number')
+	}
+	const maxResponseSize = BigInt(configuredMaxResponseSize)
 	const helpers = createTestRuntimeHelpers(registry, secretsMap, testWriter, state, maxResponseSize)
 
 	return new TestRuntime(helpers, maxResponseSize, testWriter, state, config)
@@ -435,6 +450,10 @@ export class TestTeeRuntime<T> extends TeeRuntimeImpl<T> {
 
 	getLogs(): string[] {
 		return this.testWriter.getLogs()
+	}
+
+	getMetrics(): WorkflowUserMetric[] {
+		return this.testWriter.getMetrics()
 	}
 
 	setTimeProvider(timeProvider: () => number): void {

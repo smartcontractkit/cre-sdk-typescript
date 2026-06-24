@@ -1,5 +1,6 @@
 node_modules
 src/javy_chainlink_sdk/target/
+src/cre_wasm_exports/target/
 .cargo-target/
 .turbo
 

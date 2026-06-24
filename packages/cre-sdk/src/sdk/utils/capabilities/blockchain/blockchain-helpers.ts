@@ -8,6 +8,7 @@ import type { ReportRequestJson } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { BigIntSchema, type BigInt as GeneratedBigInt } from '@cre/generated/values/v1/values_pb'
 import { EVMClient } from '@cre/sdk/cre'
 import { bigintToBytes, bytesToBigint, hexToBase64, hexToBytes } from '@cre/sdk/utils/hex-utils'
+import { assertSafeIntegerNumber } from '@cre/sdk/utils/safe-integer'
 import type { Address, Hex } from 'viem'
 
 /**
@@ -30,8 +31,8 @@ export type ProtoBigInt = Pick<GeneratedBigInt, 'absVal' | 'sign'>
  * @returns The protobuf BigInt JSON representation.
  */
 export const bigintToProtoBigInt = (n: number | bigint | string) => {
-	if (typeof n === 'number' && (!Number.isFinite(n) || !Number.isInteger(n))) {
-		throw new Error(`bigintToProtoBigInt requires an integer number, received ${n}`)
+	if (typeof n === 'number') {
+		assertSafeIntegerNumber(n, 'bigintToProtoBigInt')
 	}
 	const val = BigInt(n)
 	const abs = val < 0n ? -val : val

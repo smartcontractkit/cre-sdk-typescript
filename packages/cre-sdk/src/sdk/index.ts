@@ -1,3 +1,4 @@
+export * from '../capabilities/errors'
 export * from './cre'
 export * from './don-info'
 export * from './errors'
@@ -7,6 +8,7 @@ export * from './runtime'
 export * from './types/bufbuild-types'
 export * from './utils'
 // Export HTTP response helpers
+export * from './utils/capabilities/confidentialhttp/confidential-http-helpers'
 export * from './utils/capabilities/http/http-helpers'
 export * from './wasm'
 export * from './workflow'

@@ -1,5 +1,7 @@
 import { rmSync } from 'node:fs'
+import { file_capabilities_blockchain_aptos_v1alpha_client } from '@cre/generated/capabilities/blockchain/aptos/v1alpha/client_pb'
 import { file_capabilities_blockchain_evm_v1alpha_client } from '@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb'
+import { file_capabilities_blockchain_solana_v1alpha_client } from '@cre/generated/capabilities/blockchain/solana/v1alpha/client_pb'
 import { file_capabilities_internal_actionandtrigger_v1_action_and_trigger } from '@cre/generated/capabilities/internal/actionandtrigger/v1/action_and_trigger_pb'
 import { file_capabilities_internal_basicaction_v1_basic_action } from '@cre/generated/capabilities/internal/basicaction/v1/basic_action_pb'
 import { file_capabilities_internal_basictrigger_v1_basic_trigger } from '@cre/generated/capabilities/internal/basictrigger/v1/basic_trigger_pb'
@@ -61,6 +63,16 @@ export const main = () => {
 	generateSdk(file_capabilities_blockchain_evm_v1alpha_client, './src/generated-sdk')
 	allMockExports.push(
 		...generateMocks(file_capabilities_blockchain_evm_v1alpha_client, TEST_GENERATED_DIR),
+	)
+
+	generateSdk(file_capabilities_blockchain_aptos_v1alpha_client, './src/generated-sdk')
+	allMockExports.push(
+		...generateMocks(file_capabilities_blockchain_aptos_v1alpha_client, TEST_GENERATED_DIR),
+	)
+
+	generateSdk(file_capabilities_blockchain_solana_v1alpha_client, './src/generated-sdk')
+	allMockExports.push(
+		...generateMocks(file_capabilities_blockchain_solana_v1alpha_client, TEST_GENERATED_DIR),
 	)
 
 	generateSdk(file_capabilities_networking_http_v1alpha_client, './src/generated-sdk')

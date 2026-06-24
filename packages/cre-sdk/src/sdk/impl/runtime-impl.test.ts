@@ -2,13 +2,18 @@ import { afterEach, describe, expect, mock, test } from 'bun:test'
 import { create } from '@bufbuild/protobuf'
 import { type Any, anyPack, anyUnpack } from '@bufbuild/protobuf/wkt'
 import {
+	CapabilityExecutionError,
+	DeadlineExceeded,
+	isCapabilityExecutionError,
+	OriginUser,
+	VisibilityPublic,
+} from '@cre/capabilities/errors'
+import {
 	InputSchema,
 	OutputSchema,
 } from '@cre/generated/capabilities/internal/actionandtrigger/v1/action_and_trigger_pb'
 import {
-	type Inputs,
 	InputsSchema,
-	type Outputs,
 	OutputsSchema,
 } from '@cre/generated/capabilities/internal/basicaction/v1/basic_action_pb'
 import {
@@ -28,8 +33,6 @@ import {
 	ConsensusDescriptorSchema,
 	FieldsMapSchema,
 	Mode,
-	ReportRequestSchema,
-	ReportResponseSchema,
 	SecretRequestSchema,
 	SecretResponseSchema,
 	SecretResponsesSchema,
@@ -42,7 +45,6 @@ import { BasicActionCapability } from '@cre/generated-sdk/capabilities/internal/
 import { ConsensusCapability } from '@cre/generated-sdk/capabilities/internal/consensus/v1alpha/consensus_sdk_gen'
 import { BasicActionCapability as NodeActionCapability } from '@cre/generated-sdk/capabilities/internal/nodeaction/v1/basicaction_sdk_gen'
 import type { NodeRuntime, Runtime } from '@cre/sdk/cre'
-import { Report } from '@cre/sdk/report'
 import {
 	ConsensusAggregationByFields,
 	ConsensusFieldAggregation,
@@ -52,10 +54,9 @@ import {
 	median,
 	Value,
 } from '@cre/sdk/utils'
-import { CapabilityError } from '@cre/sdk/utils/capabilities/capability-error'
-import { DonModeError, NodeModeError, SecretsError } from '../errors'
+import { CapabilityRuntimeError, DonModeError, NodeModeError, SecretsError } from '../errors'
 import { RESPONSE_BUFFER_TOO_SMALL } from '../testutils/test-runtime'
-import { type RuntimeHelpers, RuntimeImpl, TeeRuntimeImpl } from './runtime-impl'
+import { type RuntimeHelpers, RuntimeImpl } from './runtime-impl'
 
 // Helper function to create a RuntimeHelpers mock with error-throwing defaults
 function createRuntimeHelpersMock(overrides: Partial<RuntimeHelpers> = {}): RuntimeHelpers {
@@ -78,7 +79,11 @@ function createRuntimeHelpersMock(overrides: Partial<RuntimeHelpers> = {}): Runt
 		now: mock(() => {
 			throw new Error('Method not implemented: now')
 		}),
+		sleep: mock(() => {
+			throw new Error('Method not implemented: sleep')
+		}),
 		log: mock(() => {}),
+		emitMetric: mock(() => true),
 	}
 
 	// Return a merged object with overrides taking precedence
@@ -89,7 +94,6 @@ const anyMaxSize = 1024n * 1024n
 
 // Store original prototypes for manual restoration
 const originalConsensusSimple = ConsensusCapability.prototype.simple
-const originalConsensusReport = ConsensusCapability.prototype.report
 const originalNodeActionPerformAction = NodeActionCapability.prototype.performAction
 
 afterEach(() => {
@@ -97,7 +101,6 @@ afterEach(() => {
 	mock.restore()
 	// Manually restore prototype methods
 	ConsensusCapability.prototype.simple = originalConsensusSimple
-	ConsensusCapability.prototype.report = originalConsensusReport
 	NodeActionCapability.prototype.performAction = originalNodeActionPerformAction
 })
 
@@ -187,7 +190,7 @@ describe('test runtime', () => {
 			)
 
 			expect(() => call1.result()).toThrow(
-				new CapabilityError(
+				new CapabilityRuntimeError(
 					`Capability '${BasicActionCapability.CAPABILITY_ID}' not found: the host rejected the call to method 'PerformAction'. Verify the capability ID is correct and the capability is available in this CRE environment`,
 					{
 						callbackId: 1,
@@ -223,16 +226,44 @@ describe('test runtime', () => {
 				create(InputsSchema, { inputThing: true }),
 			)
 
-			expect(() => call1.result()).toThrow(
-				new CapabilityError(
-					`Capability '${BasicActionCapability.CAPABILITY_ID}' method 'PerformAction' returned an error: ${anyError}`,
-					{
-						callbackId: 1,
-						capabilityId: BasicActionCapability.CAPABILITY_ID,
-						method: 'PerformAction',
-					},
-				),
+			expect(() => call1.result()).toThrow(new Error(anyError))
+		})
+
+		test('serialized capability errors are deserialized for the caller', () => {
+			const serializedError = 'Public:User:DeadlineExceeded:capability failed'
+			const helpers = createRuntimeHelpersMock({
+				call: mock((_: CapabilityRequest) => {
+					return true
+				}),
+				await: mock((request: AwaitCapabilitiesRequest) => {
+					expect(request.ids.length).toEqual(1)
+					return create(AwaitCapabilitiesResponseSchema, {
+						responses: {
+							[request.ids[0]]: create(CapabilityResponseSchema, {
+								response: { case: 'error', value: serializedError },
+							}),
+						},
+					})
+				}),
+			})
+
+			const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+			const workflowAction1 = new BasicActionCapability()
+			const call1 = workflowAction1.performAction(
+				runtime,
+				create(InputsSchema, { inputThing: true }),
 			)
+
+			try {
+				call1.result()
+				expect(false).toBe(true)
+			} catch (err) {
+				expect(isCapabilityExecutionError(err)).toBe(true)
+				const capErr = err as CapabilityExecutionError
+				expect(capErr.code).toBe(DeadlineExceeded)
+				expect(capErr.detail).toBe('capability failed')
+				expect(capErr.message).toBe('[4]DeadlineExceeded: capability failed')
+			}
 		})
 
 		test('await errors', () => {
@@ -254,7 +285,7 @@ describe('test runtime', () => {
 			)
 
 			expect(() => call1.result()).toThrow(
-				new CapabilityError(anyError, {
+				new CapabilityRuntimeError(anyError, {
 					callbackId: 1,
 					capabilityId: BasicActionCapability.CAPABILITY_ID,
 					method: 'PerformAction',
@@ -280,7 +311,7 @@ describe('test runtime', () => {
 			)
 
 			expect(() => call1.result()).toThrow(
-				new CapabilityError(
+				new CapabilityRuntimeError(
 					`No response found for capability '${BasicActionCapability.CAPABILITY_ID}' method 'PerformAction' (callback ID 1): the host returned a response map that does not contain an entry for this call`,
 					{
 						callbackId: 1,
@@ -309,7 +340,7 @@ describe('test runtime', () => {
 			expect(() => call1.result()).toThrow(RESPONSE_BUFFER_TOO_SMALL)
 		})
 
-		test('await returns unparsable payload throws CapabilityError', () => {
+		test('await returns unparsable payload throws CapabilityRuntimeError', () => {
 			// Any with correct type_url but invalid value bytes so fromBinary throws
 			const validAny = anyPack(OutputsSchema, create(OutputsSchema, { adaptedThing: 'x' }))
 			const corruptPayload = {
@@ -339,7 +370,7 @@ describe('test runtime', () => {
 			)
 
 			expect(() => call1.result()).toThrow(
-				new CapabilityError(
+				new CapabilityRuntimeError(
 					`Failed to deserialize response payload for capability '${BasicActionCapability.CAPABILITY_ID}' method 'PerformAction': the response could not be unpacked into the expected output schema`,
 					{
 						callbackId: 1,
@@ -364,6 +395,31 @@ describe('test now converts to date', () => {
 	})
 })
 
+describe('test sleep delegates to helpers', () => {
+	test('sleep calls helpers.sleep with the provided milliseconds', () => {
+		const sleepMock = mock(() => {})
+		const helpers = createRuntimeHelpersMock({
+			sleep: sleepMock,
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		runtime.sleep(500)
+		expect(sleepMock).toHaveBeenCalledTimes(1)
+		expect(sleepMock).toHaveBeenCalledWith(500)
+	})
+
+	test('sleep passes zero milliseconds to helpers.sleep', () => {
+		const sleepMock = mock(() => {})
+		const helpers = createRuntimeHelpersMock({
+			sleep: sleepMock,
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		runtime.sleep(0)
+		expect(sleepMock).toHaveBeenCalledWith(0)
+	})
+})
+
 describe('test getSecret', () => {
 	test('successfully gets secret with SecretRequest (proto message)', () => {
 		const secretRequest = create(SecretRequestSchema, {
@@ -375,7 +431,6 @@ describe('test getSecret', () => {
 			getSecrets: mock((request) => {
 				expect(request.callbackId).toEqual(1)
 				expect(request.requests.length).toEqual(1)
-				return true
 			}),
 			awaitSecrets: mock((request) => {
 				expect(request.ids.length).toEqual(1)
@@ -416,7 +471,6 @@ describe('test getSecret', () => {
 			getSecrets: mock((request) => {
 				expect(request.callbackId).toEqual(1)
 				expect(request.requests.length).toEqual(1)
-				return true
 			}),
 			awaitSecrets: mock((request) => {
 				expect(request.ids.length).toEqual(1)
@@ -450,19 +504,78 @@ describe('test getSecret', () => {
 		expect(result.value).toEqual('value-456')
 	})
 
-	test('getSecrets returns false', () => {
+	test('normalizes missing secret namespace to default for JSON and protobuf requests', () => {
+		const observedNamespaces: string[] = []
+		const helpers = createRuntimeHelpersMock({
+			getSecrets: mock((request) => {
+				expect(request.requests.length).toEqual(1)
+				observedNamespaces.push(request.requests[0].namespace)
+			}),
+			awaitSecrets: mock((request) => {
+				const id = request.ids[0]
+				return create(AwaitSecretsResponseSchema, {
+					responses: {
+						[id]: create(SecretResponsesSchema, {
+							responses: [
+								create(SecretResponseSchema, {
+									response: {
+										case: 'secret',
+										value: {
+											id: 'secret',
+											namespace: 'main',
+											owner: 'owner',
+											value: 'value',
+										},
+									},
+								}),
+							],
+						}),
+					},
+				})
+			}),
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		runtime.getSecret({ id: 'json-secret' }).result()
+		runtime.getSecret(create(SecretRequestSchema, { id: 'proto-secret' })).result()
+
+		expect(observedNamespaces).toEqual(['main', 'main'])
+	})
+
+	test('getSecrets throws → wrapped as SecretsError', () => {
 		const secretRequest = create(SecretRequestSchema, {
 			id: 'test-secret',
 			namespace: 'test-ns',
 		})
 
 		const helpers = createRuntimeHelpersMock({
-			getSecrets: mock(() => false),
+			getSecrets: mock(() => {
+				throw new Error('vault: signer unreachable')
+			}),
 		})
 
 		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
 		expect(() => runtime.getSecret(secretRequest).result()).toThrow(
-			new SecretsError(secretRequest, 'host is not making the secrets request'),
+			new SecretsError(secretRequest, 'vault: signer unreachable'),
+		)
+	})
+
+	test('awaitSecrets throws → wrapped as SecretsError', () => {
+		const secretRequest = create(SecretRequestSchema, {
+			id: 'test-secret',
+			namespace: 'test-ns',
+		})
+
+		const helpers = createRuntimeHelpersMock({
+			getSecrets: mock(() => undefined),
+			awaitSecrets: mock(() => {
+				throw new Error('vault: timeout fetching secret')
+			}),
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		expect(() => runtime.getSecret(secretRequest).result()).toThrow(
+			new SecretsError(secretRequest, 'vault: timeout fetching secret'),
 		)
 	})
 
@@ -473,7 +586,7 @@ describe('test getSecret', () => {
 		})
 
 		const helpers = createRuntimeHelpersMock({
-			getSecrets: mock(() => true),
+			getSecrets: mock(() => undefined),
 			awaitSecrets: mock(() => {
 				return create(AwaitSecretsResponseSchema, {
 					responses: {},
@@ -494,7 +607,7 @@ describe('test getSecret', () => {
 		})
 
 		const helpers = createRuntimeHelpersMock({
-			getSecrets: mock(() => true),
+			getSecrets: mock(() => undefined),
 			awaitSecrets: mock(() => {
 				return create(AwaitSecretsResponseSchema, {
 					responses: {
@@ -525,7 +638,7 @@ describe('test getSecret', () => {
 		}
 
 		const helpers = createRuntimeHelpersMock({
-			getSecrets: mock(() => true),
+			getSecrets: mock(() => undefined),
 			awaitSecrets: mock(() => {
 				return create(AwaitSecretsResponseSchema, {
 					responses: {
@@ -558,7 +671,7 @@ describe('test getSecret', () => {
 		const errorMessage = 'secret not found'
 
 		const helpers = createRuntimeHelpersMock({
-			getSecrets: mock(() => true),
+			getSecrets: mock(() => undefined),
 			awaitSecrets: mock(() => {
 				return create(AwaitSecretsResponseSchema, {
 					responses: {
@@ -587,7 +700,7 @@ describe('test getSecret', () => {
 		})
 
 		const helpers = createRuntimeHelpersMock({
-			getSecrets: mock(() => true),
+			getSecrets: mock(() => undefined),
 			awaitSecrets: mock(() => {
 				return create(AwaitSecretsResponseSchema, {
 					responses: {
@@ -621,7 +734,6 @@ describe('test getSecret', () => {
 		const helpers = createRuntimeHelpersMock({
 			getSecrets: mock((request) => {
 				callbackIds.push(request.callbackId)
-				return true
 			}),
 			awaitSecrets: mock((request) => {
 				const id = request.ids[0]
@@ -651,7 +763,7 @@ describe('test getSecret', () => {
 	test('getSecret in node mode throws DonModeError', () => {
 		const helpers = createRuntimeHelpersMock()
 
-		ConsensusCapability.prototype.simple = mock(() => {
+		;(ConsensusCapability.prototype as any).simple = mock(() => {
 			return { result: () => Value.from(0).proto() }
 		})
 
@@ -684,7 +796,7 @@ describe('test run in node mode', () => {
 			}),
 		})
 
-		ConsensusCapability.prototype.simple = mock(
+		;(ConsensusCapability.prototype as any).simple = mock(
 			(_: Runtime<unknown>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
 				expect(modes).toEqual([Mode.DON, Mode.NODE, Mode.DON])
 				expect(inputs.default).toBeUndefined()
@@ -759,7 +871,7 @@ describe('test run in node mode', () => {
 			switchModes: mock((_: Mode) => {}),
 		})
 
-		ConsensusCapability.prototype.simple = mock(
+		;(ConsensusCapability.prototype as any).simple = mock(
 			(_: Runtime<unknown>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
 				expect(inputs.default).toBeUndefined()
 				expect(inputs.descriptors).toEqual(
@@ -793,7 +905,7 @@ describe('test run in node mode', () => {
 			switchModes: mock((_: Mode) => {}),
 		})
 
-		ConsensusCapability.prototype.simple = mock(
+		;(ConsensusCapability.prototype as any).simple = mock(
 			(_: Runtime<unknown>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
 				const inputsProto = inputs as SimpleConsensusInputs
 				expect(inputsProto.observation.case).toEqual('value')
@@ -826,7 +938,7 @@ describe('test run in node mode', () => {
 			switchModes: mock((_: Mode) => {}),
 		})
 
-		ConsensusCapability.prototype.simple = mock(
+		;(ConsensusCapability.prototype as any).simple = mock(
 			(_: Runtime<unknown>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
 				const inputsProto = inputs as SimpleConsensusInputs
 				expect(inputsProto.observation.case).toEqual('error')
@@ -858,7 +970,7 @@ describe('test run in node mode', () => {
 			}),
 		})
 
-		ConsensusCapability.prototype.simple = mock(
+		;(ConsensusCapability.prototype as any).simple = mock(
 			(_: Runtime<unknown>, __: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
 				return { result: () => Value.from(0).proto() }
 			},
@@ -885,7 +997,7 @@ describe('test run in node mode', () => {
 			switchModes: mock((_: Mode) => {}),
 		})
 
-		ConsensusCapability.prototype.simple = mock(
+		;(ConsensusCapability.prototype as any).simple = mock(
 			(_: Runtime<unknown>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
 				expect(inputs.default).toBeUndefined()
 				expect(inputs.descriptors).toEqual(
@@ -937,7 +1049,7 @@ describe('test run in node mode', () => {
 			}),
 		})
 
-		ConsensusCapability.prototype.simple = mock(
+		;(ConsensusCapability.prototype as any).simple = mock(
 			(_: Runtime<unknown>, __: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
 				return {
 					result: () => Value.from(create(NodeOutputsSchema, { outputThing: 42 })).proto(),
@@ -1015,7 +1127,7 @@ describe('test run in node mode', () => {
 			switchModes: mock((_: Mode) => {}),
 		})
 
-		ConsensusCapability.prototype.simple = mock(
+		;(ConsensusCapability.prototype as any).simple = mock(
 			(_: Runtime<unknown>, inputs: SimpleConsensusInputs | SimpleConsensusInputsJson) => {
 				const inputsProto = inputs as SimpleConsensusInputs
 				if (inputsProto.observation.case === 'value') {
@@ -1099,179 +1211,5 @@ describe('test run in node mode', () => {
 		expect(result2.ignoredField).toBeUndefined()
 		expect(result2.nested.nestedIncluded).toEqual('default_nested_included')
 		expect(result2.nested.nestedIgnored).toBeUndefined()
-	})
-})
-
-describe('TeeRuntimeImpl', () => {
-	test('now delegates to RuntimeImpl.now', () => {
-		const fixedTime = 1716153600000
-
-		const runtimeHelpers = createRuntimeHelpersMock({ now: mock(() => fixedTime) })
-		const teeHelpers = createRuntimeHelpersMock({ now: mock(() => fixedTime) })
-
-		const runtimeImpl = new RuntimeImpl<unknown>({}, 1, runtimeHelpers, anyMaxSize)
-		const teeRuntime = new TeeRuntimeImpl<unknown>({}, 1, teeHelpers, anyMaxSize)
-
-		expect(teeRuntime.now()).toEqual(runtimeImpl.now())
-	})
-
-	test('log delegates to RuntimeImpl.log', () => {
-		const runtimeLogs: string[] = []
-		const teeLogs: string[] = []
-		const message = 'test message'
-
-		const runtimeHelpers = createRuntimeHelpersMock({
-			log: mock((msg: string) => runtimeLogs.push(msg)),
-		})
-		const teeHelpers = createRuntimeHelpersMock({ log: mock((msg: string) => teeLogs.push(msg)) })
-
-		new RuntimeImpl<unknown>({}, 1, runtimeHelpers, anyMaxSize).log(message)
-		new TeeRuntimeImpl<unknown>({}, 1, teeHelpers, anyMaxSize).log(message)
-
-		expect(teeLogs).toEqual(runtimeLogs)
-	})
-
-	test('callCapability delegates to RuntimeImpl.callCapability', () => {
-		const expectedOutput = 'test-output'
-		const input = create(InputsSchema, { inputThing: true })
-		const callCapabilityParams = {
-			capabilityId: BasicActionCapability.CAPABILITY_ID,
-			method: 'PerformAction',
-			payload: input,
-			inputSchema: InputsSchema,
-			outputSchema: OutputsSchema,
-		}
-
-		function makeHelpers() {
-			return createRuntimeHelpersMock({
-				call: mock((_: CapabilityRequest) => true),
-				await: mock((request: AwaitCapabilitiesRequest) => {
-					const id = request.ids[0]
-					return create(AwaitCapabilitiesResponseSchema, {
-						responses: {
-							[id]: create(CapabilityResponseSchema, {
-								response: {
-									case: 'payload',
-									value: anyPack(
-										OutputsSchema,
-										create(OutputsSchema, { adaptedThing: expectedOutput }),
-									),
-								},
-							}),
-						},
-					})
-				}),
-			})
-		}
-
-		const runtimeImpl = new RuntimeImpl<unknown>({}, 1, makeHelpers(), anyMaxSize)
-		const expectedResult = runtimeImpl
-			.callCapability<Inputs, Outputs>(callCapabilityParams)
-			.result()
-
-		const teeRuntime = new TeeRuntimeImpl<unknown>({}, 1, makeHelpers(), anyMaxSize)
-		const actualResult = teeRuntime.callCapability<Inputs, Outputs>(callCapabilityParams).result()
-
-		expect(actualResult).toEqual(expectedResult)
-	})
-
-	test('getSecret delegates to RuntimeImpl.getSecret', () => {
-		const secretValue = {
-			id: 'my-secret',
-			namespace: 'test-ns',
-			owner: 'owner',
-			value: 'secret123',
-		}
-		const secretRequest = create(SecretRequestSchema, { id: 'my-secret', namespace: 'test-ns' })
-
-		function makeHelpers() {
-			return createRuntimeHelpersMock({
-				getSecrets: mock(() => true),
-				awaitSecrets: mock((request) => {
-					const id = request.ids[0]
-					return create(AwaitSecretsResponseSchema, {
-						responses: {
-							[id]: create(SecretResponsesSchema, {
-								responses: [
-									create(SecretResponseSchema, {
-										response: { case: 'secret', value: secretValue },
-									}),
-								],
-							}),
-						},
-					})
-				}),
-			})
-		}
-
-		const runtimeImpl = new RuntimeImpl<unknown>({}, 1, makeHelpers(), anyMaxSize)
-		const expectedResult = runtimeImpl.getSecret(secretRequest).result()
-
-		const teeRuntime = new TeeRuntimeImpl<unknown>({}, 1, makeHelpers(), anyMaxSize)
-		const actualResult = teeRuntime.getSecret(secretRequest).result()
-
-		expect(actualResult).toEqual(expectedResult)
-	})
-
-	test('reportFromDon delegates to RuntimeImpl.report', () => {
-		const fakeReport = new Report(
-			create(ReportResponseSchema, {
-				configDigest: new Uint8Array(0),
-				seqNr: 0n,
-				reportContext: new Uint8Array(0),
-				rawReport: new Uint8Array([1, 2, 3]),
-				sigs: [],
-			}),
-		)
-
-		// biome-ignore lint/suspicious/noExplicitAny: Mock assignment requires any
-		;(ConsensusCapability.prototype as any).report = mock(() => ({ result: () => fakeReport }))
-
-		const reportInput = create(ReportRequestSchema, { encodedPayload: new Uint8Array([1, 2, 3]) })
-
-		const runtimeImpl = new RuntimeImpl<unknown>({}, 1, createRuntimeHelpersMock(), anyMaxSize)
-		const expectedResult = runtimeImpl.report(reportInput).result()
-
-		const teeRuntime = new TeeRuntimeImpl<unknown>({}, 1, createRuntimeHelpersMock(), anyMaxSize)
-		const actualResult = teeRuntime.reportFromDon(reportInput).result()
-
-		expect(actualResult).toEqual(expectedResult)
-	})
-
-	test('usingTheDons delegates to RuntimeImpl', () => {
-		const expectedOutput = 'result-from-dons'
-		const input = create(InputsSchema, { inputThing: true })
-
-		function makeHelpers() {
-			return createRuntimeHelpersMock({
-				call: mock((_: CapabilityRequest) => true),
-				await: mock((request: AwaitCapabilitiesRequest) => {
-					const id = request.ids[0]
-					return create(AwaitCapabilitiesResponseSchema, {
-						responses: {
-							[id]: create(CapabilityResponseSchema, {
-								response: {
-									case: 'payload',
-									value: anyPack(
-										OutputsSchema,
-										create(OutputsSchema, { adaptedThing: expectedOutput }),
-									),
-								},
-							}),
-						},
-					})
-				}),
-			})
-		}
-
-		const runtimeImpl = new RuntimeImpl<unknown>({}, 1, makeHelpers(), anyMaxSize)
-		const expectedResult = new BasicActionCapability().performAction(runtimeImpl, input).result()
-
-		const teeRuntime = new TeeRuntimeImpl<unknown>({}, 1, makeHelpers(), anyMaxSize)
-		const actualResult = new BasicActionCapability()
-			.performAction(teeRuntime.usingTheDons(), input)
-			.result()
-
-		expect(actualResult).toEqual(expectedResult)
 	})
 })

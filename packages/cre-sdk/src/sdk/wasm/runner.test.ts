@@ -121,6 +121,12 @@ const proxyHostBindings = {
 	now: () => {
 		throw new Error('now called unexpectedly in test')
 	},
+	emitMetric: (_payload: Uint8Array) => {
+		throw new Error('emitMetric called unexpectedly in test')
+	},
+	sleep: () => {
+		throw new Error('sleep called unexpectedly in test')
+	},
 }
 
 Object.assign(globalThis, proxyHostBindings)
@@ -540,7 +546,7 @@ describe('handlerInTee', () => {
 		await runner.run(async (_: string, secretsProvider: SecretsProvider) => {
 			return [
 				handlerInTee(basicTrigger.trigger({ name: 'foo', number: 10 }), (runtime, trigger) => 0, [
-					{ type: TeeType.AWS_NITRO, regions: ['us-west-2'] },
+					{ tee: 'nitro', regions: ['us-west-2'] },
 				]),
 			]
 		})
@@ -573,7 +579,6 @@ describe('handlerInTee', () => {
 		await runner.run(async (_: string, secretsProvider: SecretsProvider) => {
 			return [
 				handlerInTee(basicTrigger.trigger({ name: 'foo', number: 10 }), (runtime, trigger) => 0, {
-					type: 'any',
 					regions: ['us-west-2'],
 				}),
 			]
@@ -631,7 +636,7 @@ describe('handlerInTee', () => {
 						expect(typeof (runtime as any).reportFromDon).toBe('function')
 						return 0
 					},
-					[{ type: TeeType.AWS_NITRO, regions: ['us-west-2'] }],
+					[{ tee: 'nitro', regions: ['us-west-2'] }],
 				),
 			]
 		})
