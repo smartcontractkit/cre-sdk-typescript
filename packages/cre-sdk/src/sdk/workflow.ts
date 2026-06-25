@@ -70,10 +70,12 @@ export const handlerInTee = <
 	trigger: Trigger<TRawTriggerOutput, TTriggerOutput>,
 	fn: HandlerFn<TConfig, TTriggerOutput, TResult, TeeRuntime<TConfig>>,
 	tees: AcceptedTees,
+	hooks?: Hooks<TConfig, TTriggerOutput>,
 ): HandlerEntry<TConfig, TRawTriggerOutput, TTriggerOutput, TResult, TeeRuntime<TConfig>> => ({
 	trigger,
 	fn,
 	requirements: buildTeeRequirements(tees),
+	hooks,
 })
 
 function buildTeeRequirements(tees: AcceptedTees): Requirements {

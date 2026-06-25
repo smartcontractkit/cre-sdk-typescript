@@ -3,10 +3,17 @@
  */
 
 import {
+	ClientCapability as AptosClient,
+	ClientRestrictor as AptosRestrictor,
+} from '@cre/generated-sdk/capabilities/blockchain/aptos/v1alpha/client_sdk_gen'
+import {
 	ClientCapability as EVMClient,
 	ClientRestrictor as EVMRestrictor,
 } from '@cre/generated-sdk/capabilities/blockchain/evm/v1alpha/client_sdk_gen'
-import { ClientCapability as SolanaClient } from '@cre/generated-sdk/capabilities/blockchain/solana/v1alpha/client_sdk_gen'
+import {
+	ClientCapability as SolanaClient,
+	ClientRestrictor as SolanaRestrictor,
+} from '@cre/generated-sdk/capabilities/blockchain/solana/v1alpha/client_sdk_gen'
 import {
 	ClientCapability as ConfidentialHTTPClient,
 	ClientRestrictor as ConfidentialHTTPRestrictor,
@@ -41,6 +48,15 @@ export {
 export type { Payload as HTTPPayload } from '@cre/generated/capabilities/networking/http/v1alpha/trigger_pb'
 export type { Payload as CronPayload } from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
 export { TeeType } from '@cre/generated/sdk/v1alpha/sdk_pb'
+// Aptos Capability
+export {
+	ClientCapability as AptosClient,
+	ClientRestrictor as AptosRestrictor,
+	type WriteCreReportRequest as AptosWriteCreReportRequest,
+	type WriteCreReportRequestJson as AptosWriteCreReportRequestJson,
+} from '@cre/generated-sdk/capabilities/blockchain/aptos/v1alpha/client_sdk_gen'
+
+
 // EVM Capability
 export {
 	ClientCapability as EVMClient,
@@ -51,6 +67,7 @@ export {
 // Solana Capability
 export {
 	ClientCapability as SolanaClient,
+	ClientRestrictor as SolanaRestrictor,
 	type WriteCreReportRequest as SolanaWriteCreReportRequest,
 	type WriteCreReportRequestJson as SolanaWriteCreReportRequestJson,
 } from '@cre/generated-sdk/capabilities/blockchain/solana/v1alpha/client_sdk_gen'
@@ -98,6 +115,8 @@ export const cre = {
 		ConfidentialHTTPRestrictor,
 		HTTPClientRestrictor,
 		EVMRestrictor,
+		SolanaRestrictor,
+		AptosRestrictor,
 	},
 	handler,
 	handlerInTee,
