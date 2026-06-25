@@ -78,10 +78,12 @@ export const handlerInTee = <
 	trigger: Trigger<TRawTriggerOutput, TTriggerOutput>,
 	fn: HandlerFn<TConfig, TTriggerOutput, TResult, TeeRuntime<TConfig>>,
 	tees: TeeConstraint,
+	hooks?: Hooks<TConfig, TTriggerOutput>,
 ): HandlerEntry<TConfig, TRawTriggerOutput, TTriggerOutput, TResult, TeeRuntime<TConfig>> => ({
 	trigger,
 	fn,
 	requirements: buildTeeRequirements(tees),
+	hooks,
 })
 
 export type SecretsProvider = {
