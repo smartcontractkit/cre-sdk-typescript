@@ -1,6 +1,7 @@
 import type { Message } from '@bufbuild/protobuf'
 import type {
 	Requirements,
+	RestrictionsJson,
 	Secret,
 	SecretRequest,
 	SecretRequestJson,
@@ -33,6 +34,10 @@ export type HandlerFn<TConfig, TTriggerOutput, TResult, TRuntime = Runtime<TConf
 	triggerOutput: TTriggerOutput,
 ) => Promise<CreSerializable<TResult>> | CreSerializable<TResult>
 
+export interface Hooks<TConfig, TTriggerOutput> {
+	preHook?: (config: TConfig, triggerOutput: TTriggerOutput) => RestrictionsJson
+}
+
 export interface HandlerEntry<
 	TConfig,
 	TRawTriggerOutput extends Message<string>,
@@ -43,6 +48,7 @@ export interface HandlerEntry<
 	trigger: Trigger<TRawTriggerOutput, TTriggerOutput>
 	fn: HandlerFn<TConfig, TTriggerOutput, TResult, TRuntime>
 	requirements?: Requirements
+	hooks?: Hooks<TConfig, TTriggerOutput>
 }
 
 export type Workflow<TConfig> = ReadonlyArray<HandlerEntry<TConfig, any, any, any, any>>
@@ -56,9 +62,11 @@ export const handler = <
 >(
 	trigger: Trigger<TRawTriggerOutput, TTriggerOutput>,
 	fn: HandlerFn<TConfig, TTriggerOutput, TResult, TRuntime>,
+	hooks?: Hooks<TConfig, TTriggerOutput>,
 ): HandlerEntry<TConfig, TRawTriggerOutput, TTriggerOutput, TResult, TRuntime> => ({
 	trigger,
 	fn,
+	hooks,
 })
 
 export const handlerInTee = <
@@ -70,10 +78,12 @@ export const handlerInTee = <
 	trigger: Trigger<TRawTriggerOutput, TTriggerOutput>,
 	fn: HandlerFn<TConfig, TTriggerOutput, TResult, TeeRuntime<TConfig>>,
 	tees: TeeConstraint,
+	hooks?: Hooks<TConfig, TTriggerOutput>,
 ): HandlerEntry<TConfig, TRawTriggerOutput, TTriggerOutput, TResult, TeeRuntime<TConfig>> => ({
 	trigger,
 	fn,
 	requirements: buildTeeRequirements(tees),
+	hooks,
 })
 
 export type SecretsProvider = {

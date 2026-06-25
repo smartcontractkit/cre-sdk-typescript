@@ -16,7 +16,7 @@ import { file_values_v1_values } from '../../values/v1/values_pb'
 export const file_sdk_v1alpha_sdk: GenFile =
 	/*@__PURE__*/
 	fileDesc(
-		'ChVzZGsvdjFhbHBoYS9zZGsucHJvdG8SC3Nkay52MWFscGhhIrQBChVTaW1wbGVDb25zZW5zdXNJbnB1dHMSIQoFdmFsdWUYASABKAsyEC52YWx1ZXMudjEuVmFsdWVIABIPCgVlcnJvchgCIAEoCUgAEjUKC2Rlc2NyaXB0b3JzGAMgASgLMiAuc2RrLnYxYWxwaGEuQ29uc2Vuc3VzRGVzY3JpcHRvchIhCgdkZWZhdWx0GAQgASgLMhAudmFsdWVzLnYxLlZhbHVlQg0KC29ic2VydmF0aW9uIpABCglGaWVsZHNNYXASMgoGZmllbGRzGAEgAygLMiIuc2RrLnYxYWxwaGEuRmllbGRzTWFwLkZpZWxkc0VudHJ5Gk8KC0ZpZWxkc0VudHJ5EgsKA2tleRgBIAEoCRIvCgV2YWx1ZRgCIAEoCzIgLnNkay52MWFscGhhLkNvbnNlbnN1c0Rlc2NyaXB0b3I6AjgBIoYBChNDb25zZW5zdXNEZXNjcmlwdG9yEjMKC2FnZ3JlZ2F0aW9uGAEgASgOMhwuc2RrLnYxYWxwaGEuQWdncmVnYXRpb25UeXBlSAASLAoKZmllbGRzX21hcBgCIAEoCzIWLnNkay52MWFscGhhLkZpZWxkc01hcEgAQgwKCmRlc2NyaXB0b3IiagoNUmVwb3J0UmVxdWVzdBIXCg9lbmNvZGVkX3BheWxvYWQYASABKAwSFAoMZW5jb2Rlcl9uYW1lGAIgASgJEhQKDHNpZ25pbmdfYWxnbxgDIAEoCRIUCgxoYXNoaW5nX2FsZ28YBCABKAkilwEKDlJlcG9ydFJlc3BvbnNlEhUKDWNvbmZpZ19kaWdlc3QYASABKAwSEgoGc2VxX25yGAIgASgEQgIwABIWCg5yZXBvcnRfY29udGV4dBgDIAEoDBISCgpyYXdfcmVwb3J0GAQgASgMEi4KBHNpZ3MYBSADKAsyIC5zZGsudjFhbHBoYS5BdHRyaWJ1dGVkU2lnbmF0dXJlIjsKE0F0dHJpYnV0ZWRTaWduYXR1cmUSEQoJc2lnbmF0dXJlGAEgASgMEhEKCXNpZ25lcl9pZBgCIAEoDSJrChFDYXBhYmlsaXR5UmVxdWVzdBIKCgJpZBgBIAEoCRIlCgdwYXlsb2FkGAIgASgLMhQuZ29vZ2xlLnByb3RvYnVmLkFueRIOCgZtZXRob2QYAyABKAkSEwoLY2FsbGJhY2tfaWQYBCABKAUiWgoSQ2FwYWJpbGl0eVJlc3BvbnNlEicKB3BheWxvYWQYASABKAsyFC5nb29nbGUucHJvdG9idWYuQW55SAASDwoFZXJyb3IYAiABKAlIAEIKCghyZXNwb25zZSKJAQoTVHJpZ2dlclN1YnNjcmlwdGlvbhIKCgJpZBgBIAEoCRIlCgdwYXlsb2FkGAIgASgLMhQuZ29vZ2xlLnByb3RvYnVmLkFueRIOCgZtZXRob2QYAyABKAkSLwoMcmVxdWlyZW1lbnRzGAQgASgLMhkuc2RrLnYxYWxwaGEuUmVxdWlyZW1lbnRzIkgKEVRlZVR5cGVBbmRSZWdpb25zEiIKBHR5cGUYASABKA4yFC5zZGsudjFhbHBoYS5UZWVUeXBlEg8KB3JlZ2lvbnMYAyADKAkiVQoaVHJpZ2dlclN1YnNjcmlwdGlvblJlcXVlc3QSNwoNc3Vic2NyaXB0aW9ucxgBIAMoCzIgLnNkay52MWFscGhhLlRyaWdnZXJTdWJzY3JpcHRpb24iQAoHVHJpZ2dlchIOCgJpZBgBIAEoBEICMAASJQoHcGF5bG9hZBgCIAEoCzIULmdvb2dsZS5wcm90b2J1Zi5BbnkiGgoHUmVnaW9ucxIPCgdyZWdpb25zGAEgAygJIlIKElRlZVR5cGVzQW5kUmVnaW9ucxI8ChR0ZWVfdHlwZV9hbmRfcmVnaW9ucxgBIAMoCzIeLnNkay52MWFscGhhLlRlZVR5cGVBbmRSZWdpb25zInwKA1RlZRIrCgthbnlfcmVnaW9ucxgBIAEoCzIULnNkay52MWFscGhhLlJlZ2lvbnNIABJAChV0ZWVfdHlwZXNfYW5kX3JlZ2lvbnMYAiABKAsyHy5zZGsudjFhbHBoYS5UZWVUeXBlc0FuZFJlZ2lvbnNIAEIGCgRpdGVtIi0KDFJlcXVpcmVtZW50cxIdCgN0ZWUYASABKAsyEC5zZGsudjFhbHBoYS5UZWUiJwoYQXdhaXRDYXBhYmlsaXRpZXNSZXF1ZXN0EgsKA2lkcxgBIAMoBSK4AQoZQXdhaXRDYXBhYmlsaXRpZXNSZXNwb25zZRJICglyZXNwb25zZXMYASADKAsyNS5zZGsudjFhbHBoYS5Bd2FpdENhcGFiaWxpdGllc1Jlc3BvbnNlLlJlc3BvbnNlc0VudHJ5GlEKDlJlc3BvbnNlc0VudHJ5EgsKA2tleRgBIAEoBRIuCgV2YWx1ZRgCIAEoCzIfLnNkay52MWFscGhhLkNhcGFiaWxpdHlSZXNwb25zZToCOAEioAEKDkV4ZWN1dGVSZXF1ZXN0Eg4KBmNvbmZpZxgBIAEoDBIrCglzdWJzY3JpYmUYAiABKAsyFi5nb29nbGUucHJvdG9idWYuRW1wdHlIABInCgd0cmlnZ2VyGAMgASgLMhQuc2RrLnYxYWxwaGEuVHJpZ2dlckgAEh0KEW1heF9yZXNwb25zZV9zaXplGAQgASgEQgIwAEIJCgdyZXF1ZXN0IpkBCg9FeGVjdXRpb25SZXN1bHQSIQoFdmFsdWUYASABKAsyEC52YWx1ZXMudjEuVmFsdWVIABIPCgVlcnJvchgCIAEoCUgAEkgKFXRyaWdnZXJfc3Vic2NyaXB0aW9ucxgDIAEoCzInLnNkay52MWFscGhhLlRyaWdnZXJTdWJzY3JpcHRpb25SZXF1ZXN0SABCCAoGcmVzdWx0IlYKEUdldFNlY3JldHNSZXF1ZXN0EiwKCHJlcXVlc3RzGAEgAygLMhouc2RrLnYxYWxwaGEuU2VjcmV0UmVxdWVzdBITCgtjYWxsYmFja19pZBgCIAEoBSIiChNBd2FpdFNlY3JldHNSZXF1ZXN0EgsKA2lkcxgBIAMoBSKrAQoUQXdhaXRTZWNyZXRzUmVzcG9uc2USQwoJcmVzcG9uc2VzGAEgAygLMjAuc2RrLnYxYWxwaGEuQXdhaXRTZWNyZXRzUmVzcG9uc2UuUmVzcG9uc2VzRW50cnkaTgoOUmVzcG9uc2VzRW50cnkSCwoDa2V5GAEgASgFEisKBXZhbHVlGAIgASgLMhwuc2RrLnYxYWxwaGEuU2VjcmV0UmVzcG9uc2VzOgI4ASIuCg1TZWNyZXRSZXF1ZXN0EgoKAmlkGAEgASgJEhEKCW5hbWVzcGFjZRgCIAEoCSJFCgZTZWNyZXQSCgoCaWQYASABKAkSEQoJbmFtZXNwYWNlGAIgASgJEg0KBW93bmVyGAMgASgJEg0KBXZhbHVlGAQgASgJIkoKC1NlY3JldEVycm9yEgoKAmlkGAEgASgJEhEKCW5hbWVzcGFjZRgCIAEoCRINCgVvd25lchgDIAEoCRINCgVlcnJvchgEIAEoCSJuCg5TZWNyZXRSZXNwb25zZRIlCgZzZWNyZXQYASABKAsyEy5zZGsudjFhbHBoYS5TZWNyZXRIABIpCgVlcnJvchgCIAEoCzIYLnNkay52MWFscGhhLlNlY3JldEVycm9ySABCCgoIcmVzcG9uc2UiQQoPU2VjcmV0UmVzcG9uc2VzEi4KCXJlc3BvbnNlcxgBIAMoCzIbLnNkay52MWFscGhhLlNlY3JldFJlc3BvbnNlKrgBCg9BZ2dyZWdhdGlvblR5cGUSIAocQUdHUkVHQVRJT05fVFlQRV9VTlNQRUNJRklFRBAAEhsKF0FHR1JFR0FUSU9OX1RZUEVfTUVESUFOEAESHgoaQUdHUkVHQVRJT05fVFlQRV9JREVOVElDQUwQAhIiCh5BR0dSRUdBVElPTl9UWVBFX0NPTU1PTl9QUkVGSVgQAxIiCh5BR0dSRUdBVElPTl9UWVBFX0NPTU1PTl9TVUZGSVgQBCo5CgRNb2RlEhQKEE1PREVfVU5TUEVDSUZJRUQQABIMCghNT0RFX0RPThABEg0KCU1PREVfTk9ERRACKjsKB1RlZVR5cGUSGAoUVEVFX1RZUEVfVU5TUEVDSUZJRUQQABIWChJURUVfVFlQRV9BV1NfTklUUk8QAUJoCg9jb20uc2RrLnYxYWxwaGFCCFNka1Byb3RvUAGiAgNTWFiqAgtTZGsuVjFhbHBoYcoCC1Nka1xWMWFscGhh4gIXU2RrXFYxYWxwaGFcR1BCTWV0YWRhdGHqAgxTZGs6OlYxYWxwaGFiBnByb3RvMw',
+		'ChVzZGsvdjFhbHBoYS9zZGsucHJvdG8SC3Nkay52MWFscGhhIrQBChVTaW1wbGVDb25zZW5zdXNJbnB1dHMSIQoFdmFsdWUYASABKAsyEC52YWx1ZXMudjEuVmFsdWVIABIPCgVlcnJvchgCIAEoCUgAEjUKC2Rlc2NyaXB0b3JzGAMgASgLMiAuc2RrLnYxYWxwaGEuQ29uc2Vuc3VzRGVzY3JpcHRvchIhCgdkZWZhdWx0GAQgASgLMhAudmFsdWVzLnYxLlZhbHVlQg0KC29ic2VydmF0aW9uIpABCglGaWVsZHNNYXASMgoGZmllbGRzGAEgAygLMiIuc2RrLnYxYWxwaGEuRmllbGRzTWFwLkZpZWxkc0VudHJ5Gk8KC0ZpZWxkc0VudHJ5EgsKA2tleRgBIAEoCRIvCgV2YWx1ZRgCIAEoCzIgLnNkay52MWFscGhhLkNvbnNlbnN1c0Rlc2NyaXB0b3I6AjgBIoYBChNDb25zZW5zdXNEZXNjcmlwdG9yEjMKC2FnZ3JlZ2F0aW9uGAEgASgOMhwuc2RrLnYxYWxwaGEuQWdncmVnYXRpb25UeXBlSAASLAoKZmllbGRzX21hcBgCIAEoCzIWLnNkay52MWFscGhhLkZpZWxkc01hcEgAQgwKCmRlc2NyaXB0b3IiagoNUmVwb3J0UmVxdWVzdBIXCg9lbmNvZGVkX3BheWxvYWQYASABKAwSFAoMZW5jb2Rlcl9uYW1lGAIgASgJEhQKDHNpZ25pbmdfYWxnbxgDIAEoCRIUCgxoYXNoaW5nX2FsZ28YBCABKAkilwEKDlJlcG9ydFJlc3BvbnNlEhUKDWNvbmZpZ19kaWdlc3QYASABKAwSEgoGc2VxX25yGAIgASgEQgIwABIWCg5yZXBvcnRfY29udGV4dBgDIAEoDBISCgpyYXdfcmVwb3J0GAQgASgMEi4KBHNpZ3MYBSADKAsyIC5zZGsudjFhbHBoYS5BdHRyaWJ1dGVkU2lnbmF0dXJlIjsKE0F0dHJpYnV0ZWRTaWduYXR1cmUSEQoJc2lnbmF0dXJlGAEgASgMEhEKCXNpZ25lcl9pZBgCIAEoDSJrChFDYXBhYmlsaXR5UmVxdWVzdBIKCgJpZBgBIAEoCRIlCgdwYXlsb2FkGAIgASgLMhQuZ29vZ2xlLnByb3RvYnVmLkFueRIOCgZtZXRob2QYAyABKAkSEwoLY2FsbGJhY2tfaWQYBCABKAUiWgoSQ2FwYWJpbGl0eVJlc3BvbnNlEicKB3BheWxvYWQYASABKAsyFC5nb29nbGUucHJvdG9idWYuQW55SAASDwoFZXJyb3IYAiABKAlIAEIKCghyZXNwb25zZSKbAQoTVHJpZ2dlclN1YnNjcmlwdGlvbhIKCgJpZBgBIAEoCRIlCgdwYXlsb2FkGAIgASgLMhQuZ29vZ2xlLnByb3RvYnVmLkFueRIOCgZtZXRob2QYAyABKAkSLwoMcmVxdWlyZW1lbnRzGAQgASgLMhkuc2RrLnYxYWxwaGEuUmVxdWlyZW1lbnRzEhAKCHByZV9ob29rGAUgASgIIkgKEVRlZVR5cGVBbmRSZWdpb25zEiIKBHR5cGUYASABKA4yFC5zZGsudjFhbHBoYS5UZWVUeXBlEg8KB3JlZ2lvbnMYAyADKAkiVQoaVHJpZ2dlclN1YnNjcmlwdGlvblJlcXVlc3QSNwoNc3Vic2NyaXB0aW9ucxgBIAMoCzIgLnNkay52MWFscGhhLlRyaWdnZXJTdWJzY3JpcHRpb24iQAoHVHJpZ2dlchIOCgJpZBgBIAEoBEICMAASJQoHcGF5bG9hZBgCIAEoCzIULmdvb2dsZS5wcm90b2J1Zi5BbnkiGgoHUmVnaW9ucxIPCgdyZWdpb25zGAEgAygJIlIKElRlZVR5cGVzQW5kUmVnaW9ucxI8ChR0ZWVfdHlwZV9hbmRfcmVnaW9ucxgBIAMoCzIeLnNkay52MWFscGhhLlRlZVR5cGVBbmRSZWdpb25zInwKA1RlZRIrCgthbnlfcmVnaW9ucxgBIAEoCzIULnNkay52MWFscGhhLlJlZ2lvbnNIABJAChV0ZWVfdHlwZXNfYW5kX3JlZ2lvbnMYAiABKAsyHy5zZGsudjFhbHBoYS5UZWVUeXBlc0FuZFJlZ2lvbnNIAEIGCgRpdGVtIi0KDFJlcXVpcmVtZW50cxIdCgN0ZWUYASABKAsyEC5zZGsudjFhbHBoYS5UZWUiJwoYQXdhaXRDYXBhYmlsaXRpZXNSZXF1ZXN0EgsKA2lkcxgBIAMoBSK4AQoZQXdhaXRDYXBhYmlsaXRpZXNSZXNwb25zZRJICglyZXNwb25zZXMYASADKAsyNS5zZGsudjFhbHBoYS5Bd2FpdENhcGFiaWxpdGllc1Jlc3BvbnNlLlJlc3BvbnNlc0VudHJ5GlEKDlJlc3BvbnNlc0VudHJ5EgsKA2tleRgBIAEoBRIuCgV2YWx1ZRgCIAEoCzIfLnNkay52MWFscGhhLkNhcGFiaWxpdHlSZXNwb25zZToCOAEiygEKDkV4ZWN1dGVSZXF1ZXN0Eg4KBmNvbmZpZxgBIAEoDBIrCglzdWJzY3JpYmUYAiABKAsyFi5nb29nbGUucHJvdG9idWYuRW1wdHlIABInCgd0cmlnZ2VyGAMgASgLMhQuc2RrLnYxYWxwaGEuVHJpZ2dlckgAEigKCHByZV9ob29rGAUgASgLMhQuc2RrLnYxYWxwaGEuVHJpZ2dlckgAEh0KEW1heF9yZXNwb25zZV9zaXplGAQgASgEQgIwAEIJCgdyZXF1ZXN0IswBCg9FeGVjdXRpb25SZXN1bHQSIQoFdmFsdWUYASABKAsyEC52YWx1ZXMudjEuVmFsdWVIABIPCgVlcnJvchgCIAEoCUgAEkgKFXRyaWdnZXJfc3Vic2NyaXB0aW9ucxgDIAEoCzInLnNkay52MWFscGhhLlRyaWdnZXJTdWJzY3JpcHRpb25SZXF1ZXN0SAASMQoMcmVzdHJpY3Rpb25zGAQgASgLMhkuc2RrLnYxYWxwaGEuUmVzdHJpY3Rpb25zSABCCAoGcmVzdWx0IlYKEUdldFNlY3JldHNSZXF1ZXN0EiwKCHJlcXVlc3RzGAEgAygLMhouc2RrLnYxYWxwaGEuU2VjcmV0UmVxdWVzdBITCgtjYWxsYmFja19pZBgCIAEoBSIiChNBd2FpdFNlY3JldHNSZXF1ZXN0EgsKA2lkcxgBIAMoBSKrAQoUQXdhaXRTZWNyZXRzUmVzcG9uc2USQwoJcmVzcG9uc2VzGAEgAygLMjAuc2RrLnYxYWxwaGEuQXdhaXRTZWNyZXRzUmVzcG9uc2UuUmVzcG9uc2VzRW50cnkaTgoOUmVzcG9uc2VzRW50cnkSCwoDa2V5GAEgASgFEisKBXZhbHVlGAIgASgLMhwuc2RrLnYxYWxwaGEuU2VjcmV0UmVzcG9uc2VzOgI4ASIuCg1TZWNyZXRSZXF1ZXN0EgoKAmlkGAEgASgJEhEKCW5hbWVzcGFjZRgCIAEoCSJFCgZTZWNyZXQSCgoCaWQYASABKAkSEQoJbmFtZXNwYWNlGAIgASgJEg0KBW93bmVyGAMgASgJEg0KBXZhbHVlGAQgASgJIkoKC1NlY3JldEVycm9yEgoKAmlkGAEgASgJEhEKCW5hbWVzcGFjZRgCIAEoCRINCgVvd25lchgDIAEoCRINCgVlcnJvchgEIAEoCSJuCg5TZWNyZXRSZXNwb25zZRIlCgZzZWNyZXQYASABKAsyEy5zZGsudjFhbHBoYS5TZWNyZXRIABIpCgVlcnJvchgCIAEoCzIYLnNkay52MWFscGhhLlNlY3JldEVycm9ySABCCgoIcmVzcG9uc2UiQQoPU2VjcmV0UmVzcG9uc2VzEi4KCXJlc3BvbnNlcxgBIAMoCzIbLnNkay52MWFscGhhLlNlY3JldFJlc3BvbnNlIkIKEU1ldGhvZFJlc3RyaWN0aW9uEgoKAmlkGAEgASgJEg4KBm1ldGhvZBgCIAEoCRIRCgltYXhfY2FsbHMYAyABKAUiWAoVQ2FwYWJpbGl0eVJlc3RyaWN0aW9uEjAKBm1ldGhvZBgBIAEoCzIeLnNkay52MWFscGhhLk1ldGhvZFJlc3RyaWN0aW9uSABCDQoLcmVzdHJpY3Rpb24ioQEKFkNhcGFiaWxpdHlSZXN0cmljdGlvbnMSOAoMcmVzdHJpY3Rpb25zGAEgAygLMiIuc2RrLnYxYWxwaGEuQ2FwYWJpbGl0eVJlc3RyaWN0aW9uEhcKD21heF90b3RhbF9jYWxscxgCIAEoBRI0CgR0eXBlGAMgASgOMiYuc2RrLnYxYWxwaGEuQ2FwYWJpbGl0eVJlc3RyaWN0aW9uVHlwZSJRChdTZWNyZXRQcmVmaXhSZXN0cmljdGlvbhIOCgZwcmVmaXgYASABKAkSEQoJbmFtZXNwYWNlGAIgASgJEhMKC21heF9zZWNyZXRzGAMgASgFIpABChFTZWNyZXRSZXN0cmljdGlvbhIrCgxleGFjdF9zZWNyZXQYASABKAsyEy5zZGsudjFhbHBoYS5TZWNyZXRIABI/Cg9wcmVmaXhlZF9zZWNyZXQYAiABKAsyJC5zZGsudjFhbHBoYS5TZWNyZXRQcmVmaXhSZXN0cmljdGlvbkgAQg0KC3Jlc3RyaWN0aW9uIl8KElNlY3JldHNSZXN0cml0aW9ucxI0CgxyZXN0cmljdGlvbnMYASADKAsyHi5zZGsudjFhbHBoYS5TZWNyZXRSZXN0cmljdGlvbhITCgttYXhfc2VjcmV0cxgCIAEoBSJ7CgxSZXN0cmljdGlvbnMSMAoHc2VjcmV0cxgBIAEoCzIfLnNkay52MWFscGhhLlNlY3JldHNSZXN0cml0aW9ucxI5CgxjYXBhYmlsaXRpZXMYAiABKAsyIy5zZGsudjFhbHBoYS5DYXBhYmlsaXR5UmVzdHJpY3Rpb25zKrgBCg9BZ2dyZWdhdGlvblR5cGUSIAocQUdHUkVHQVRJT05fVFlQRV9VTlNQRUNJRklFRBAAEhsKF0FHR1JFR0FUSU9OX1RZUEVfTUVESUFOEAESHgoaQUdHUkVHQVRJT05fVFlQRV9JREVOVElDQUwQAhIiCh5BR0dSRUdBVElPTl9UWVBFX0NPTU1PTl9QUkVGSVgQAxIiCh5BR0dSRUdBVElPTl9UWVBFX0NPTU1PTl9TVUZGSVgQBCo5CgRNb2RlEhQKEE1PREVfVU5TUEVDSUZJRUQQABIMCghNT0RFX0RPThABEg0KCU1PREVfTk9ERRACKjsKB1RlZVR5cGUSGAoUVEVFX1RZUEVfVU5TUEVDSUZJRUQQABIWChJURUVfVFlQRV9BV1NfTklUUk8QASppChlDYXBhYmlsaXR5UmVzdHJpY3Rpb25UeXBlEiYKIkNBUEFCSUxJVFlfUkVTVFJJQ1RJT05fVFlQRV9DTE9TRUQQABIkCiBDQVBBQklMSVRZX1JFU1RSSUNUSU9OX1RZUEVfT1BFThABQmgKD2NvbS5zZGsudjFhbHBoYUIIU2RrUHJvdG9QAaICA1NYWKoCC1Nkay5WMWFscGhhygILU2RrXFYxYWxwaGHiAhdTZGtcVjFhbHBoYVxHUEJNZXRhZGF0YeoCDFNkazo6VjFhbHBoYWIGcHJvdG8z',
 		[file_google_protobuf_any, file_google_protobuf_empty, file_values_v1_values],
 	)
 
@@ -466,6 +466,11 @@ export type TriggerSubscription = Message<'sdk.v1alpha.TriggerSubscription'> & {
 	 * @generated from field: sdk.v1alpha.Requirements requirements = 4;
 	 */
 	requirements?: Requirements
+
+	/**
+	 * @generated from field: bool pre_hook = 5;
+	 */
+	preHook: boolean
 }
 
 /**
@@ -491,6 +496,11 @@ export type TriggerSubscriptionJson = {
 	 * @generated from field: sdk.v1alpha.Requirements requirements = 4;
 	 */
 	requirements?: RequirementsJson
+
+	/**
+	 * @generated from field: bool pre_hook = 5;
+	 */
+	preHook?: boolean
 }
 
 /**
@@ -826,6 +836,13 @@ export type ExecuteRequest = Message<'sdk.v1alpha.ExecuteRequest'> & {
 				value: Trigger
 				case: 'trigger'
 		  }
+		| {
+				/**
+				 * @generated from field: sdk.v1alpha.Trigger pre_hook = 5;
+				 */
+				value: Trigger
+				case: 'preHook'
+		  }
 		| { case: undefined; value?: undefined }
 
 	/**
@@ -852,6 +869,11 @@ export type ExecuteRequestJson = {
 	 * @generated from field: sdk.v1alpha.Trigger trigger = 3;
 	 */
 	trigger?: TriggerJson
+
+	/**
+	 * @generated from field: sdk.v1alpha.Trigger pre_hook = 5;
+	 */
+	preHook?: TriggerJson
 
 	/**
 	 * @generated from field: uint64 max_response_size = 4 [jstype = JS_NORMAL];
@@ -896,6 +918,13 @@ export type ExecutionResult = Message<'sdk.v1alpha.ExecutionResult'> & {
 				value: TriggerSubscriptionRequest
 				case: 'triggerSubscriptions'
 		  }
+		| {
+				/**
+				 * @generated from field: sdk.v1alpha.Restrictions restrictions = 4;
+				 */
+				value: Restrictions
+				case: 'restrictions'
+		  }
 		| { case: undefined; value?: undefined }
 }
 
@@ -917,6 +946,11 @@ export type ExecutionResultJson = {
 	 * @generated from field: sdk.v1alpha.TriggerSubscriptionRequest trigger_subscriptions = 3;
 	 */
 	triggerSubscriptions?: TriggerSubscriptionRequestJson
+
+	/**
+	 * @generated from field: sdk.v1alpha.Restrictions restrictions = 4;
+	 */
+	restrictions?: RestrictionsJson
 }
 
 /**
@@ -1255,6 +1289,316 @@ export const SecretResponsesSchema: GenMessage<SecretResponses, { jsonType: Secr
 	messageDesc(file_sdk_v1alpha_sdk, 27)
 
 /**
+ * @generated from message sdk.v1alpha.MethodRestriction
+ */
+export type MethodRestriction = Message<'sdk.v1alpha.MethodRestriction'> & {
+	/**
+	 * @generated from field: string id = 1;
+	 */
+	id: string
+
+	/**
+	 * @generated from field: string method = 2;
+	 */
+	method: string
+
+	/**
+	 * @generated from field: int32 max_calls = 3;
+	 */
+	maxCalls: number
+}
+
+/**
+ * @generated from message sdk.v1alpha.MethodRestriction
+ */
+export type MethodRestrictionJson = {
+	/**
+	 * @generated from field: string id = 1;
+	 */
+	id?: string
+
+	/**
+	 * @generated from field: string method = 2;
+	 */
+	method?: string
+
+	/**
+	 * @generated from field: int32 max_calls = 3;
+	 */
+	maxCalls?: number
+}
+
+/**
+ * Describes the message sdk.v1alpha.MethodRestriction.
+ * Use `create(MethodRestrictionSchema)` to create a new message.
+ */
+export const MethodRestrictionSchema: GenMessage<
+	MethodRestriction,
+	{ jsonType: MethodRestrictionJson }
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 28)
+
+/**
+ * @generated from message sdk.v1alpha.CapabilityRestriction
+ */
+export type CapabilityRestriction = Message<'sdk.v1alpha.CapabilityRestriction'> & {
+	/**
+	 * @generated from oneof sdk.v1alpha.CapabilityRestriction.restriction
+	 */
+	restriction:
+		| {
+				/**
+				 * @generated from field: sdk.v1alpha.MethodRestriction method = 1;
+				 */
+				value: MethodRestriction
+				case: 'method'
+		  }
+		| { case: undefined; value?: undefined }
+}
+
+/**
+ * @generated from message sdk.v1alpha.CapabilityRestriction
+ */
+export type CapabilityRestrictionJson = {
+	/**
+	 * @generated from field: sdk.v1alpha.MethodRestriction method = 1;
+	 */
+	method?: MethodRestrictionJson
+}
+
+/**
+ * Describes the message sdk.v1alpha.CapabilityRestriction.
+ * Use `create(CapabilityRestrictionSchema)` to create a new message.
+ */
+export const CapabilityRestrictionSchema: GenMessage<
+	CapabilityRestriction,
+	{ jsonType: CapabilityRestrictionJson }
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 29)
+
+/**
+ * @generated from message sdk.v1alpha.CapabilityRestrictions
+ */
+export type CapabilityRestrictions = Message<'sdk.v1alpha.CapabilityRestrictions'> & {
+	/**
+	 * @generated from field: repeated sdk.v1alpha.CapabilityRestriction restrictions = 1;
+	 */
+	restrictions: CapabilityRestriction[]
+
+	/**
+	 * @generated from field: int32 max_total_calls = 2;
+	 */
+	maxTotalCalls: number
+
+	/**
+	 * @generated from field: sdk.v1alpha.CapabilityRestrictionType type = 3;
+	 */
+	type: CapabilityRestrictionType
+}
+
+/**
+ * @generated from message sdk.v1alpha.CapabilityRestrictions
+ */
+export type CapabilityRestrictionsJson = {
+	/**
+	 * @generated from field: repeated sdk.v1alpha.CapabilityRestriction restrictions = 1;
+	 */
+	restrictions?: CapabilityRestrictionJson[]
+
+	/**
+	 * @generated from field: int32 max_total_calls = 2;
+	 */
+	maxTotalCalls?: number
+
+	/**
+	 * @generated from field: sdk.v1alpha.CapabilityRestrictionType type = 3;
+	 */
+	type?: CapabilityRestrictionTypeJson
+}
+
+/**
+ * Describes the message sdk.v1alpha.CapabilityRestrictions.
+ * Use `create(CapabilityRestrictionsSchema)` to create a new message.
+ */
+export const CapabilityRestrictionsSchema: GenMessage<
+	CapabilityRestrictions,
+	{ jsonType: CapabilityRestrictionsJson }
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 30)
+
+/**
+ * @generated from message sdk.v1alpha.SecretPrefixRestriction
+ */
+export type SecretPrefixRestriction = Message<'sdk.v1alpha.SecretPrefixRestriction'> & {
+	/**
+	 * @generated from field: string prefix = 1;
+	 */
+	prefix: string
+
+	/**
+	 * @generated from field: string namespace = 2;
+	 */
+	namespace: string
+
+	/**
+	 * @generated from field: int32 max_secrets = 3;
+	 */
+	maxSecrets: number
+}
+
+/**
+ * @generated from message sdk.v1alpha.SecretPrefixRestriction
+ */
+export type SecretPrefixRestrictionJson = {
+	/**
+	 * @generated from field: string prefix = 1;
+	 */
+	prefix?: string
+
+	/**
+	 * @generated from field: string namespace = 2;
+	 */
+	namespace?: string
+
+	/**
+	 * @generated from field: int32 max_secrets = 3;
+	 */
+	maxSecrets?: number
+}
+
+/**
+ * Describes the message sdk.v1alpha.SecretPrefixRestriction.
+ * Use `create(SecretPrefixRestrictionSchema)` to create a new message.
+ */
+export const SecretPrefixRestrictionSchema: GenMessage<
+	SecretPrefixRestriction,
+	{ jsonType: SecretPrefixRestrictionJson }
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 31)
+
+/**
+ * @generated from message sdk.v1alpha.SecretRestriction
+ */
+export type SecretRestriction = Message<'sdk.v1alpha.SecretRestriction'> & {
+	/**
+	 * @generated from oneof sdk.v1alpha.SecretRestriction.restriction
+	 */
+	restriction:
+		| {
+				/**
+				 * @generated from field: sdk.v1alpha.Secret exact_secret = 1;
+				 */
+				value: Secret
+				case: 'exactSecret'
+		  }
+		| {
+				/**
+				 * @generated from field: sdk.v1alpha.SecretPrefixRestriction prefixed_secret = 2;
+				 */
+				value: SecretPrefixRestriction
+				case: 'prefixedSecret'
+		  }
+		| { case: undefined; value?: undefined }
+}
+
+/**
+ * @generated from message sdk.v1alpha.SecretRestriction
+ */
+export type SecretRestrictionJson = {
+	/**
+	 * @generated from field: sdk.v1alpha.Secret exact_secret = 1;
+	 */
+	exactSecret?: SecretJson
+
+	/**
+	 * @generated from field: sdk.v1alpha.SecretPrefixRestriction prefixed_secret = 2;
+	 */
+	prefixedSecret?: SecretPrefixRestrictionJson
+}
+
+/**
+ * Describes the message sdk.v1alpha.SecretRestriction.
+ * Use `create(SecretRestrictionSchema)` to create a new message.
+ */
+export const SecretRestrictionSchema: GenMessage<
+	SecretRestriction,
+	{ jsonType: SecretRestrictionJson }
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 32)
+
+/**
+ * @generated from message sdk.v1alpha.SecretsRestritions
+ */
+export type SecretsRestritions = Message<'sdk.v1alpha.SecretsRestritions'> & {
+	/**
+	 * @generated from field: repeated sdk.v1alpha.SecretRestriction restrictions = 1;
+	 */
+	restrictions: SecretRestriction[]
+
+	/**
+	 * @generated from field: int32 max_secrets = 2;
+	 */
+	maxSecrets: number
+}
+
+/**
+ * @generated from message sdk.v1alpha.SecretsRestritions
+ */
+export type SecretsRestritionsJson = {
+	/**
+	 * @generated from field: repeated sdk.v1alpha.SecretRestriction restrictions = 1;
+	 */
+	restrictions?: SecretRestrictionJson[]
+
+	/**
+	 * @generated from field: int32 max_secrets = 2;
+	 */
+	maxSecrets?: number
+}
+
+/**
+ * Describes the message sdk.v1alpha.SecretsRestritions.
+ * Use `create(SecretsRestritionsSchema)` to create a new message.
+ */
+export const SecretsRestritionsSchema: GenMessage<
+	SecretsRestritions,
+	{ jsonType: SecretsRestritionsJson }
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 33)
+
+/**
+ * @generated from message sdk.v1alpha.Restrictions
+ */
+export type Restrictions = Message<'sdk.v1alpha.Restrictions'> & {
+	/**
+	 * @generated from field: sdk.v1alpha.SecretsRestritions secrets = 1;
+	 */
+	secrets?: SecretsRestritions
+
+	/**
+	 * @generated from field: sdk.v1alpha.CapabilityRestrictions capabilities = 2;
+	 */
+	capabilities?: CapabilityRestrictions
+}
+
+/**
+ * @generated from message sdk.v1alpha.Restrictions
+ */
+export type RestrictionsJson = {
+	/**
+	 * @generated from field: sdk.v1alpha.SecretsRestritions secrets = 1;
+	 */
+	secrets?: SecretsRestritionsJson
+
+	/**
+	 * @generated from field: sdk.v1alpha.CapabilityRestrictions capabilities = 2;
+	 */
+	capabilities?: CapabilityRestrictionsJson
+}
+
+/**
+ * Describes the message sdk.v1alpha.Restrictions.
+ * Use `create(RestrictionsSchema)` to create a new message.
+ */
+export const RestrictionsSchema: GenMessage<Restrictions, { jsonType: RestrictionsJson }> =
+	/*@__PURE__*/
+	messageDesc(file_sdk_v1alpha_sdk, 34)
+
+/**
  * @generated from enum sdk.v1alpha.AggregationType
  */
 export enum AggregationType {
@@ -1357,3 +1701,33 @@ export type TeeTypeJson = 'TEE_TYPE_UNSPECIFIED' | 'TEE_TYPE_AWS_NITRO'
 export const TeeTypeSchema: GenEnum<TeeType, TeeTypeJson> =
 	/*@__PURE__*/
 	enumDesc(file_sdk_v1alpha_sdk, 2)
+
+/**
+ * @generated from enum sdk.v1alpha.CapabilityRestrictionType
+ */
+export enum CapabilityRestrictionType {
+	/**
+	 * @generated from enum value: CAPABILITY_RESTRICTION_TYPE_CLOSED = 0;
+	 */
+	CLOSED = 0,
+
+	/**
+	 * @generated from enum value: CAPABILITY_RESTRICTION_TYPE_OPEN = 1;
+	 */
+	OPEN = 1,
+}
+
+/**
+ * @generated from enum sdk.v1alpha.CapabilityRestrictionType
+ */
+export type CapabilityRestrictionTypeJson =
+	| 'CAPABILITY_RESTRICTION_TYPE_CLOSED'
+	| 'CAPABILITY_RESTRICTION_TYPE_OPEN'
+
+/**
+ * Describes the enum sdk.v1alpha.CapabilityRestrictionType.
+ */
+export const CapabilityRestrictionTypeSchema: GenEnum<
+	CapabilityRestrictionType,
+	CapabilityRestrictionTypeJson
+> = /*@__PURE__*/ enumDesc(file_sdk_v1alpha_sdk, 3)

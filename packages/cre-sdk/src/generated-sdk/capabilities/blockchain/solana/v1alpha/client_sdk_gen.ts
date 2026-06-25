@@ -64,6 +64,7 @@ import {
 	WriteReportRequestSchema,
 } from '@cre/generated/capabilities/blockchain/solana/v1alpha/client_pb'
 import {
+	type CapabilityRestrictionJson,
 	type ReportResponse,
 	type ReportResponseJson,
 	ReportResponseSchema,
@@ -627,5 +628,138 @@ class ClientLogTrigger implements Trigger<Log, Log> {
 	 */
 	adapt(rawOutput: Log): Log {
 		return rawOutput
+	}
+}
+export class ClientRestrictor {
+	constructor(private readonly ChainSelector: bigint) {}
+
+	limitGetAccountInfoWithOpts(maxCalls: number): CapabilityRestrictionJson {
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'GetAccountInfoWithOpts',
+				maxCalls,
+			},
+		}
+	}
+
+	limitGetBalance(maxCalls: number): CapabilityRestrictionJson {
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'GetBalance',
+				maxCalls,
+			},
+		}
+	}
+
+	limitGetBlock(maxCalls: number): CapabilityRestrictionJson {
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'GetBlock',
+				maxCalls,
+			},
+		}
+	}
+
+	limitGetFeeForMessage(maxCalls: number): CapabilityRestrictionJson {
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'GetFeeForMessage',
+				maxCalls,
+			},
+		}
+	}
+
+	limitGetMultipleAccountsWithOpts(maxCalls: number): CapabilityRestrictionJson {
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'GetMultipleAccountsWithOpts',
+				maxCalls,
+			},
+		}
+	}
+
+	limitGetProgramAccounts(maxCalls: number): CapabilityRestrictionJson {
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'GetProgramAccounts',
+				maxCalls,
+			},
+		}
+	}
+
+	limitGetSignatureStatuses(maxCalls: number): CapabilityRestrictionJson {
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'GetSignatureStatuses',
+				maxCalls,
+			},
+		}
+	}
+
+	limitGetSlotHeight(maxCalls: number): CapabilityRestrictionJson {
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'GetSlotHeight',
+				maxCalls,
+			},
+		}
+	}
+
+	limitGetTransaction(maxCalls: number): CapabilityRestrictionJson {
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'GetTransaction',
+				maxCalls,
+			},
+		}
+	}
+
+	limitWriteReport(maxCalls: number): CapabilityRestrictionJson {
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'WriteReport',
+				maxCalls,
+			},
+		}
 	}
 }

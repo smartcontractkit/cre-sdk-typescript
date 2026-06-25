@@ -30,6 +30,7 @@ import {
 	WriteReportRequestSchema,
 } from '@cre/generated/capabilities/blockchain/aptos/v1alpha/client_pb'
 import {
+	type CapabilityRestrictionJson,
 	type ReportResponse,
 	type ReportResponseJson,
 	ReportResponseSchema,
@@ -310,6 +311,75 @@ export class ClientCapability {
 				const result = capabilityResponse.result()
 
 				return result
+			},
+		}
+	}
+}
+
+export class ClientRestrictor {
+	constructor(private readonly ChainSelector: bigint) {}
+
+	limitAccountAPTBalance(maxCalls: number): CapabilityRestrictionJson {
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'AccountAPTBalance',
+				maxCalls,
+			},
+		}
+	}
+
+	limitView(maxCalls: number): CapabilityRestrictionJson {
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'View',
+				maxCalls,
+			},
+		}
+	}
+
+	limitTransactionByHash(maxCalls: number): CapabilityRestrictionJson {
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'TransactionByHash',
+				maxCalls,
+			},
+		}
+	}
+
+	limitAccountTransactions(maxCalls: number): CapabilityRestrictionJson {
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'AccountTransactions',
+				maxCalls,
+			},
+		}
+	}
+
+	limitWriteReport(maxCalls: number): CapabilityRestrictionJson {
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'WriteReport',
+				maxCalls,
 			},
 		}
 	}
