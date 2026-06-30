@@ -62,9 +62,9 @@
 		"@bufbuild/protobuf": "2.6.3",
 		"@bufbuild/protoc-gen-es": "2.6.3",
 		"@chainlink/cre-sdk-javy-plugin": "workspace:*",
-		"@noble/hashes": "1.8.0",
-		"@solana/addresses": "6.9.0",
-		"@solana/codecs": "6.9.0",
+		"@noble/hashes": "2.2.0",
+		"@solana/addresses": "6.10.0",
+		"@solana/codecs": "6.10.0",
 		"@standard-schema/spec": "1.0.0",
 		"viem": "2.34.0",
 		"zod": "3.25.76"
@@ -77,7 +77,7 @@
 		"fast-glob": "3.3.3",
 		"ts-proto": "2.7.5",
 		"typescript": "5.9.3",
-		"yaml": "2.8.1"
+		"yaml": "2.9.0"
 	},
 	"publishConfig": {
 		"access": "public"
