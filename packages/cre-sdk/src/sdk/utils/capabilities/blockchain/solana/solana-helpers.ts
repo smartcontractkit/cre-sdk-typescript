@@ -4,8 +4,8 @@ import type {
 } from '@cre/generated/capabilities/blockchain/solana/v1alpha/client_pb'
 import type { ReportRequestJson } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { bytesToBase64 } from '@cre/sdk/utils/hex-utils'
-import { sha256 } from '@noble/hashes/sha2'
-import { concatBytes } from '@noble/hashes/utils'
+import { sha256 } from '@noble/hashes/sha2.js'
+import { concatBytes } from '@noble/hashes/utils.js'
 import { address, getAddressEncoder } from '@solana/addresses'
 import { prepareReportRequestFromBytes, type ReportEncoder } from '../report-helpers'
 
