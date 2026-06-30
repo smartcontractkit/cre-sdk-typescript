@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import { sha256 } from '@noble/hashes/sha2'
+import { sha256 } from '@noble/hashes/sha2.js'
 import {
 	calculateAccountsHash,
 	encodeBorshVecU32,
@@ -48,7 +48,10 @@ describe('encodeForwarderReport', () => {
 
 	test('rejects accountHash that is not 32 bytes', () => {
 		expect(() =>
-			encodeForwarderReport({ accountHash: new Uint8Array(31), payload: new Uint8Array() }),
+			encodeForwarderReport({
+				accountHash: new Uint8Array(31),
+				payload: new Uint8Array(),
+			}),
 		).toThrow('accountHash must be exactly 32 bytes')
 	})
 })
