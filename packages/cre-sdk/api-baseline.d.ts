@@ -177,3 +177,4 @@ export { type CapabilityHandler, DEFAULT_MAX_RESPONSE_SIZE_BYTES, getTestCapabil
 export { TestWriter } from '../testutils/test-writer';
 export { type AddContractMockOptions, addContractMock, type ContractMock, type WriteReportMockInput, } from './evm-contract-mock';
 export * from './generated';
+export { type AddSolanaContractMockOptions, addSolanaContractMock, type SolanaContractMock, type SolanaWriteReportMockInput, } from './solana-contract-mock';
