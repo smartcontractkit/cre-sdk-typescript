@@ -86,10 +86,10 @@ This TypeScript CRE SDK also includes some reference examples - [cre-sdk-example
 
 You can run and debug your TypeScript workflows locally using [the CRE CLI's](https://github.com/smartcontractkit/cre-cli) simulation functionality.
 
-Make sure you `cd` into the directory that contain's your workflow's TypeScript file and the associated `config.json`. Then:
+Make sure you `cd` into the directory that contain's your workflow's TypeScript file and the associated config file. Then:
 
 ```bash
-cre workflow simulate --target local-simulation --config config.json index.ts
+cre workflow simulate --target staging-settings --config config.staging.json main.ts
 ```
 
 When simulating workflows that write to the blockchain, remember to pass extra flag `--broadcast` to broadcast the transactions to the blockchain.

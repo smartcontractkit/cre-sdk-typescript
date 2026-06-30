@@ -1,24 +1,33 @@
 # ==========================================================================
 # CRE WORKFLOW SETTINGS FILE
 # ==========================================================================
-# This file defines environment-specific workflow settings used by the CRE CLI.
+# Workflow-specific settings for CRE CLI targets.
+# Each target defines user-workflow and workflow-artifacts groups.
+# Settings here override CRE Project Settings File values.
 #
-# Each top-level key is a target (e.g., `production`, `production-testnet`, etc.).
-# You can also define your own custom targets, such as `my-target`, and
-# point the CLI to it via an environment variable.
-#
-# Note: If any setting in this file conflicts with a setting in the CRE Project Settings File,
-# the value defined here in the workflow settings file will take precedence.
+# Example custom target:
+# my-target:
+#   user-workflow:
+#     workflow-name: "MyExampleWorkflow"    # Required: Workflow Registry name
+#   workflow-artifacts:
+#     workflow-path: "./main.ts"            # Path to workflow entry point
+#     config-path: "./config.yaml"          # Path to config file
+#     secrets-path: "../secrets.yaml"       # Path to secrets file (project root by default)
+
 # ==========================================================================
-local-simulation:
+staging-settings:
   user-workflow:
-    workflow-owner-address: "(optional) Multi-signature contract address"
     workflow-name: "solana-onchain-write"
   workflow-artifacts:
-    workflow-path: "./index.ts"
-    config-path: "./config.json"
+    workflow-path: "./main.ts"
+    config-path: "./config.staging.json"
+    secrets-path: ""
+
 # ==========================================================================
-production-testnet:
+production-settings:
   user-workflow:
-    workflow-owner-address: "(optional) Multi-signature contract address"
     workflow-name: "solana-onchain-write"
+  workflow-artifacts:
+    workflow-path: "./main.ts"
+    config-path: "./config.production.json"
+    secrets-path: ""

@@ -28,43 +28,43 @@ The setup is done in a way that treats `cre-sdk-examples` root directory as a CR
 
 **Examples**:
 
-[Hello World workflow](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/hello-world/index.ts):
+[Hello World workflow](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/hello-world/main.ts):
 
 ```zsh
 cre workflow simulate ./src/workflows/hello-world
 ```
 
-[Http Fetch workflow](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/http-fetch/index.ts):
+[Http Fetch workflow](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/http-fetch/main.ts):
 
 ```zsh
 cre workflow simulate ./src/workflows/http-fetch
 ```
 
-[On Chain Read workflow](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/on-chain/index.ts):
+[On Chain Read workflow](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/on-chain/main.ts):
 
 ```zsh
 cre workflow simulate ./src/workflows/on-chain
 ```
 
-[On Chain Write workflow](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/on-chain-write/index.ts):
+[On Chain Write workflow](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/on-chain-write/main.ts):
 
 ```zsh
 cre workflow simulate ./src/workflows/on-chain-write
 ```
 
-[Solana On-Chain Write workflow](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/solana-onchain-write/index.ts):
+[Solana On-Chain Write workflow](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/solana-onchain-write/main.ts):
 
 ```zsh
 cre workflow simulate ./src/workflows/solana-onchain-write
 ```
 
-[Proof of Reserve workflow](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/proof-of-reserve/index.ts):
+[Proof of Reserve workflow](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/proof-of-reserve/main.ts):
 
 ```zsh
 cre workflow simulate ./src/workflows/proof-of-reserve
 ```
 
-[Star Wars character example](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/star-wars/index.ts):
+[Star Wars character example](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/star-wars/main.ts):
 
 ```zsh
 cre workflow simulate ./src/workflows/star-wars
@@ -81,5 +81,5 @@ bun x cre-compile <input.ts> <output.wasm>
 Example:
 
 ```bash
-bun cre-compile src/workflows/hello-world/index.ts dist/hello-world.wasm
+bun cre-compile src/workflows/hello-world/main.ts dist/hello-world.wasm
 ```
