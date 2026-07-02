@@ -25,3 +25,9 @@ export {
 	type WriteReportMockInput,
 } from './evm-contract-mock'
 export * from './generated'
+export {
+	type AddSolanaContractMockOptions,
+	addSolanaContractMock,
+	type SolanaContractMock,
+	type SolanaWriteReportMockInput,
+} from './solana-contract-mock'

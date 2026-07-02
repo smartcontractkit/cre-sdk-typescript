@@ -17,6 +17,8 @@
 	"dependencies": {
 		"@bufbuild/protobuf": "2.6.3",
 		"@chainlink/cre-sdk": "workspace:*",
+		"@solana/addresses": "6.10.0",
+		"@solana/codecs": "6.10.0",
 		"viem": "2.34.0",
 		"zod": "3.25.76"
 	},

@@ -10,6 +10,7 @@ import { EVMClient } from '@cre/sdk/cre'
 import { bigintToBytes, bytesToBigint, hexToBase64, hexToBytes } from '@cre/sdk/utils/hex-utils'
 import { assertSafeIntegerNumber } from '@cre/sdk/utils/safe-integer'
 import type { Address, Hex } from 'viem'
+import { prepareReportRequestFromBytes, type ReportEncoder } from '../report-helpers'
 
 /**
  * Protobuf BigInt structure returned by SDK methods (e.g., headerByNumber).
@@ -148,7 +149,7 @@ export const EVM_DEFAULT_REPORT_ENCODER = {
 	encoderName: 'evm',
 	signingAlgo: 'ecdsa',
 	hashingAlgo: 'keccak256',
-}
+} satisfies ReportEncoder
 
 /**
  * Prepares a report request for the EVM capability to pass to `.report()` function.
@@ -159,11 +160,8 @@ export const EVM_DEFAULT_REPORT_ENCODER = {
  */
 export const prepareReportRequest = (
 	hexEncodedPayload: Hex,
-	reportEncoder: Omit<ReportRequestJson, 'encodedPayload'> = EVM_DEFAULT_REPORT_ENCODER,
-): ReportRequestJson => ({
-	encodedPayload: hexToBase64(hexEncodedPayload),
-	...reportEncoder,
-})
+	reportEncoder: ReportEncoder = EVM_DEFAULT_REPORT_ENCODER,
+): ReportRequestJson => prepareReportRequestFromBytes(hexToBytes(hexEncodedPayload), reportEncoder)
 
 /**
  * Validates a hex string and checks that the decoded bytes have the expected length.
