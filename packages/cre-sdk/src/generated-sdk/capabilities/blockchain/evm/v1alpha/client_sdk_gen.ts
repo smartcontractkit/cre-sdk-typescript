@@ -134,6 +134,7 @@ export class ClientCapability {
 		'celo-mainnet': 1346049177634351622n,
 		'celo-sepolia': 3761762704474186180n,
 		'cronos-testnet': 2995292832068775165n,
+		'dtcc-mainnet-appchain': 13879014182901017172n,
 		'dtcc-testnet-andesite': 15513093881969820114n,
 		'ethereum-mainnet': 5009297550715157269n,
 		'ethereum-mainnet-arbitrum-1': 4949039107694359620n,
