@@ -1100,6 +1100,11 @@ export enum AggregationType {
 	 * @generated from enum value: AGGREGATION_TYPE_COMMON_SUFFIX = 4;
 	 */
 	COMMON_SUFFIX = 4,
+
+	/**
+	 * @generated from enum value: AGGREGATION_TYPE_FREQUENCY_LIST = 5;
+	 */
+	FREQUENCY_LIST = 5,
 }
 
 /**
@@ -1111,6 +1116,7 @@ export type AggregationTypeJson =
 	| 'AGGREGATION_TYPE_IDENTICAL'
 	| 'AGGREGATION_TYPE_COMMON_PREFIX'
 	| 'AGGREGATION_TYPE_COMMON_SUFFIX'
+	| 'AGGREGATION_TYPE_FREQUENCY_LIST'
 
 /**
  * Describes the enum sdk.v1alpha.AggregationType.

@@ -7,6 +7,7 @@ import {
 	FieldsMapSchema,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import type { CreSerializable, NumericType, TypeVerifier } from './serializer_types'
+import { Int64 } from './value'
 
 export type ConsensusAggregation<T, U> = {
 	readonly descriptor: ConsensusDescriptor
@@ -44,6 +45,20 @@ export function consensusCommonSuffixAggregation<T>(): ConsensusAggregation<
 	TypeVerifier<T[], CreSerializable<T[]>>
 > {
 	return simpleConsensus<T[]>(AggregationType.COMMON_SUFFIX)
+}
+
+export class FrequencyListEntry<T> {
+	constructor(
+		public value: T,
+		public count: Int64,
+	) {}
+}
+
+export function consensusFrequencyListAggregation<T>(): ConsensusAggregation<
+	FrequencyListEntry<T>[],
+	TypeVerifier<FrequencyListEntry<T>[], CreSerializable<FrequencyListEntry<T>[]>>
+> {
+	return simpleConsensus<FrequencyListEntry<T>[]>(AggregationType.FREQUENCY_LIST)
 }
 
 class ConsensusImpl<T, U> implements ConsensusAggregation<T, U> {
@@ -93,6 +108,13 @@ export function commonSuffix<T>(): ConsensusFieldAggregation<
 	TypeVerifier<T[], CreSerializable<T[]>>
 > {
 	return new ConsensusFieldAggregation(simpleDescriptor(AggregationType.COMMON_SUFFIX))
+}
+
+export function frequencyList<T>(): ConsensusFieldAggregation<
+	T,
+	TypeVerifier<T, CreSerializable<T>>
+> {
+	return new ConsensusFieldAggregation(simpleDescriptor(AggregationType.FREQUENCY_LIST))
 }
 
 export function ignore<T>(): ConsensusFieldAggregation<T, true> {

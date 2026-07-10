@@ -8,8 +8,11 @@ import {
 	commonSuffix,
 	consensusCommonPrefixAggregation,
 	consensusCommonSuffixAggregation,
+	consensusFrequencyListAggregation,
 	consensusIdenticalAggregation,
 	consensusMedianAggregation,
+	FrequencyListEntry,
+	frequencyList,
 	identical,
 	ignore,
 	median,
@@ -47,7 +50,7 @@ describe('test consensus', () => {
 		usableForConsensus<RegExp[], false>(consensusCommonPrefixAggregation())
 	})
 
-	test('common prefix', () => {
+	test('common suffix', () => {
 		assertSimpleConsensus(consensusCommonSuffixAggregation<number>(), AggregationType.COMMON_SUFFIX)
 		usableForConsensus<number[], true>(consensusCommonSuffixAggregation<number>())
 		usableForConsensus<bigint[], true>(consensusCommonSuffixAggregation<bigint>())
@@ -55,6 +58,16 @@ describe('test consensus', () => {
 		usableForConsensus<string[], true>(consensusCommonSuffixAggregation<string>())
 		usableForConsensus<boolean[], true>(consensusCommonSuffixAggregation<boolean>())
 		usableForConsensus<RegExp[], false>(consensusCommonSuffixAggregation<RegExp>())
+	})
+
+	test('frequency list', () => {
+		assertSimpleConsensus(
+			consensusFrequencyListAggregation<number>(),
+			AggregationType.FREQUENCY_LIST,
+		)
+		usableForConsensus<FrequencyListEntry<number>[], true>(
+			consensusFrequencyListAggregation<number>(),
+		)
 	})
 
 	test('with default adds default', () => {
@@ -132,6 +145,15 @@ describe('test consensus', () => {
 			usableForFieldConsensus<string[], true>(commonSuffix)
 			usableForFieldConsensus<boolean[], true>(commonSuffix)
 			usableForFieldConsensus<RegExp[], false>(commonSuffix)
+		})
+
+		test('frequency list', () => {
+			const consensusAggregation = ConsensusAggregationByFields<SimpleFieldType<Uint8Array>>({
+				f1: frequencyList,
+				f2: frequencyList,
+			})
+			assertFieldConsensus(consensusAggregation, AggregationType.FREQUENCY_LIST)
+			usableForFieldConsensus<Uint8Array, true>(frequencyList)
 		})
 
 		test('ignore', () => {
