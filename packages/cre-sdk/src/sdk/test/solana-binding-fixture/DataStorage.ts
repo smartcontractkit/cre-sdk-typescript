@@ -1,17 +1,28 @@
 // Code generated — DO NOT EDIT.
 
 import {
+	adaptTrigger,
+	anchorCPILogTriggerConfig,
+	bytesToBase64,
 	bytesToHex,
 	calculateAccountsHash,
 	encodeBorshVecU32,
 	encodeForwarderReport,
 	prepareSolanaReportRequest,
+	prepareSubkeyValue,
 	type Runtime,
 	type SolanaAccountMeta,
 	SolanaClient,
 	type SolanaComputeConfig,
+	type SolanaDecodedLog,
+	type SolanaFilterLogTriggerRequestJson,
+	type SolanaLog,
+	type SolanaLogTriggerOptions,
+	type SolanaSubkeyConfigJson,
+	type SolanaValueComparatorJson,
 	solanaAccountMetasToJson,
 	solanaAddressToBytes,
+	type Trigger,
 } from '@cre/sdk'
 import { type Address, getAddressCodec } from '@solana/addresses'
 import {
@@ -208,6 +219,10 @@ export const DATA_STORAGE_IDL = {
 	],
 } as const
 
+// Base64 of the compact IDL JSON, passed to log triggers as contractIdlJson.
+const DATA_STORAGE_IDL_BASE64 =
+	'eyJhZGRyZXNzIjoiRUNMODE0MmoyWVFBdnM5UjlnZVNzUm5rVkgyd0xFaTdzb0pDUnlKNzRjZkwiLCJtZXRhZGF0YSI6eyJuYW1lIjoiZGF0YV9zdG9yYWdlIiwidmVyc2lvbiI6IjAuMS4wIiwic3BlYyI6IjAuMS4wIiwiZGVzY3JpcHRpb24iOiJDcmVhdGVkIHdpdGggQW5jaG9yIn0sImluc3RydWN0aW9ucyI6W3sibmFtZSI6ImdldF9tdWx0aXBsZV9yZXNlcnZlcyIsImRpc2NyaW1pbmF0b3IiOlsxMDQsMTIyLDE0MCwxMDQsMTc1LDE1MSw3MCw0Ml0sImFjY291bnRzIjpbXSwiYXJncyI6W10sInJldHVybnMiOnsidmVjIjp7ImRlZmluZWQiOnsibmFtZSI6IlVwZGF0ZVJlc2VydmVzIn19fX0seyJuYW1lIjoiZ2V0X3Jlc2VydmVzIiwiZGlzY3JpbWluYXRvciI6WzEyMSwxNDAsMjM3LDg0LDIxOCwxMDUsNDgsMTddLCJhY2NvdW50cyI6W10sImFyZ3MiOltdLCJyZXR1cm5zIjp7ImRlZmluZWQiOnsibmFtZSI6IlVwZGF0ZVJlc2VydmVzIn19fSx7Im5hbWUiOiJnZXRfdHVwbGVfcmVzZXJ2ZXMiLCJkaXNjcmltaW5hdG9yIjpbMTg5LDgzLDE4NiwyMCwxMjcsODAsMTA5LDQ5XSwiYWNjb3VudHMiOltdLCJhcmdzIjpbXX0seyJuYW1lIjoiaW5pdGlhbGl6ZV9kYXRhX2FjY291bnQiLCJkaXNjcmltaW5hdG9yIjpbOSw2NCw3OCw0OSw3MSwxOTMsMTUsMjUwXSwiYWNjb3VudHMiOlt7Im5hbWUiOiJkYXRhX2FjY291bnQiLCJ3cml0YWJsZSI6dHJ1ZSwicGRhIjp7InNlZWRzIjpbeyJraW5kIjoiY29uc3QiLCJ2YWx1ZSI6WzEwMCw5NywxMTYsOTcsOTUsOTcsOTksOTksMTExLDExNywxMTAsMTE2XX0seyJraW5kIjoiYWNjb3VudCIsInBhdGgiOiJ1c2VyIn1dfX0seyJuYW1lIjoidXNlciIsIndyaXRhYmxlIjp0cnVlLCJzaWduZXIiOnRydWV9LHsibmFtZSI6InN5c3RlbV9wcm9ncmFtIiwiYWRkcmVzcyI6IjExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExIn1dLCJhcmdzIjpbeyJuYW1lIjoiaW5wdXQiLCJ0eXBlIjp7ImRlZmluZWQiOnsibmFtZSI6IlVzZXJEYXRhIn19fV19LHsibmFtZSI6ImxvZ19hY2Nlc3MiLCJkaXNjcmltaW5hdG9yIjpbMTk2LDU1LDE5NCwyNCw1LDIyNCwxNjEsMjA0XSwiYWNjb3VudHMiOlt7Im5hbWUiOiJ1c2VyIiwic2lnbmVyIjp0cnVlfV0sImFyZ3MiOlt7Im5hbWUiOiJtZXNzYWdlIiwidHlwZSI6InN0cmluZyJ9XX0seyJuYW1lIjoib25fcmVwb3J0IiwiZGlzY3JpbWluYXRvciI6WzIxNCwxNzMsMTgsMjIxLDE3MywxNDgsMTUxLDIwOF0sImFjY291bnRzIjpbeyJuYW1lIjoidXNlciIsIndyaXRhYmxlIjp0cnVlLCJzaWduZXIiOnRydWV9LHsibmFtZSI6ImRhdGFfYWNjb3VudCIsIndyaXRhYmxlIjp0cnVlLCJwZGEiOnsic2VlZHMiOlt7ImtpbmQiOiJjb25zdCIsInZhbHVlIjpbMTAwLDk3LDExNiw5Nyw5NSw5Nyw5OSw5OSwxMTEsMTE3LDExMCwxMTZdfSx7ImtpbmQiOiJhY2NvdW50IiwicGF0aCI6InVzZXIifV19fSx7Im5hbWUiOiJzeXN0ZW1fcHJvZ3JhbSIsImFkZHJlc3MiOiIxMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMSJ9XSwiYXJncyI6W3sibmFtZSI6Il9tZXRhZGF0YSIsInR5cGUiOiJieXRlcyJ9LHsibmFtZSI6InBheWxvYWQiLCJ0eXBlIjoiYnl0ZXMifV19LHsibmFtZSI6InVwZGF0ZV9rZXlfdmFsdWVfZGF0YSIsImRpc2NyaW1pbmF0b3IiOls2NywxMzcsMTQ0LDM1LDIxMCwxMjYsMjU0LDc5XSwiYWNjb3VudHMiOlt7Im5hbWUiOiJ1c2VyIiwid3JpdGFibGUiOnRydWUsInNpZ25lciI6dHJ1ZX0seyJuYW1lIjoiZGF0YV9hY2NvdW50Iiwid3JpdGFibGUiOnRydWUsInBkYSI6eyJzZWVkcyI6W3sia2luZCI6ImNvbnN0IiwidmFsdWUiOlsxMDAsOTcsMTE2LDk3LDk1LDk3LDk5LDk5LDExMSwxMTcsMTEwLDExNl19LHsia2luZCI6ImFjY291bnQiLCJwYXRoIjoidXNlciJ9XX19XSwiYXJncyI6W3sibmFtZSI6ImtleSIsInR5cGUiOiJzdHJpbmcifSx7Im5hbWUiOiJ2YWx1ZSIsInR5cGUiOiJzdHJpbmcifV19LHsibmFtZSI6InVwZGF0ZV91c2VyX2RhdGEiLCJkaXNjcmltaW5hdG9yIjpbMTEsMTMsMTE0LDE1MCwxOTQsMjI0LDE5Miw3OF0sImFjY291bnRzIjpbeyJuYW1lIjoidXNlciIsIndyaXRhYmxlIjp0cnVlLCJzaWduZXIiOnRydWV9LHsibmFtZSI6ImRhdGFfYWNjb3VudCIsIndyaXRhYmxlIjp0cnVlLCJwZGEiOnsic2VlZHMiOlt7ImtpbmQiOiJjb25zdCIsInZhbHVlIjpbMTAwLDk3LDExNiw5Nyw5NSw5Nyw5OSw5OSwxMTEsMTE3LDExMCwxMTZdfSx7ImtpbmQiOiJhY2NvdW50IiwicGF0aCI6InVzZXIifV19fV0sImFyZ3MiOlt7Im5hbWUiOiJpbnB1dCIsInR5cGUiOnsiZGVmaW5lZCI6eyJuYW1lIjoiVXNlckRhdGEifX19XX1dLCJhY2NvdW50cyI6W3sibmFtZSI6IkRhdGFBY2NvdW50IiwiZGlzY3JpbWluYXRvciI6Wzg1LDI0MCwxODIsMTU4LDc2LDcsMTgsMjMzXX1dLCJldmVudHMiOlt7Im5hbWUiOiJBY2Nlc3NMb2dnZWQiLCJkaXNjcmltaW5hdG9yIjpbMjQzLDUzLDIyNSw3MSw2NCwxMjAsMTA5LDI1XX0seyJuYW1lIjoiRHluYW1pY0V2ZW50IiwiZGlzY3JpbWluYXRvciI6WzIzNiwxNDUsMjI0LDE2MSw5LDIyMiwyMTgsMjM3XX0seyJuYW1lIjoiTm9GaWVsZHMiLCJkaXNjcmltaW5hdG9yIjpbMTYwLDE1Niw5NCw4NSw3NywxMjIsOTgsMjQwXX1dLCJlcnJvcnMiOlt7ImNvZGUiOjYwMDAsIm5hbWUiOiJEYXRhTm90Rm91bmQiLCJtc2ciOiJkYXRhIG5vdCBmb3VuZCJ9XSwidHlwZXMiOlt7Im5hbWUiOiJBY2Nlc3NMb2dnZWQiLCJ0eXBlIjp7ImtpbmQiOiJzdHJ1Y3QiLCJmaWVsZHMiOlt7Im5hbWUiOiJjYWxsZXIiLCJ0eXBlIjoicHVia2V5In0seyJuYW1lIjoibWVzc2FnZSIsInR5cGUiOiJzdHJpbmcifV19fSx7Im5hbWUiOiJEYXRhQWNjb3VudCIsInR5cGUiOnsia2luZCI6InN0cnVjdCIsImZpZWxkcyI6W3sibmFtZSI6InNlbmRlciIsInR5cGUiOiJzdHJpbmcifSx7Im5hbWUiOiJrZXkiLCJ0eXBlIjoic3RyaW5nIn0seyJuYW1lIjoidmFsdWUiLCJ0eXBlIjoic3RyaW5nIn1dfX0seyJuYW1lIjoiRHluYW1pY0V2ZW50IiwidHlwZSI6eyJraW5kIjoic3RydWN0IiwiZmllbGRzIjpbeyJuYW1lIjoia2V5IiwidHlwZSI6InN0cmluZyJ9LHsibmFtZSI6InVzZXJfZGF0YSIsInR5cGUiOnsiZGVmaW5lZCI6eyJuYW1lIjoiVXNlckRhdGEifX19LHsibmFtZSI6InNlbmRlciIsInR5cGUiOiJzdHJpbmcifSx7Im5hbWUiOiJtZXRhZGF0YSIsInR5cGUiOiJieXRlcyJ9LHsibmFtZSI6Im1ldGFkYXRhX2FycmF5IiwidHlwZSI6eyJ2ZWMiOiJieXRlcyJ9fV19fSx7Im5hbWUiOiJOb0ZpZWxkcyIsInR5cGUiOnsia2luZCI6InN0cnVjdCIsImZpZWxkcyI6W119fSx7Im5hbWUiOiJVcGRhdGVSZXNlcnZlcyIsInR5cGUiOnsia2luZCI6InN0cnVjdCIsImZpZWxkcyI6W3sibmFtZSI6InRvdGFsX21pbnRlZCIsInR5cGUiOiJ1NjQifSx7Im5hbWUiOiJ0b3RhbF9yZXNlcnZlIiwidHlwZSI6InU2NCJ9XX19LHsibmFtZSI6IlVzZXJEYXRhIiwidHlwZSI6eyJraW5kIjoic3RydWN0IiwiZmllbGRzIjpbeyJuYW1lIjoia2V5IiwidHlwZSI6InN0cmluZyJ9LHsibmFtZSI6InZhbHVlIiwidHlwZSI6InN0cmluZyJ9XX19XX0='
+
 const DISCRIMINATOR_SIZE = 8
 
 const expectDiscriminator = (label: string, expected: Uint8Array, data: Uint8Array): Uint8Array => {
@@ -333,6 +348,123 @@ export const decodeNoFieldsEvent = (data: Uint8Array): NoFields =>
 	noFieldsCodec.decode(
 		expectDiscriminator('event NoFields', EVENT_NO_FIELDS_DISCRIMINATOR, data),
 	) as NoFields
+
+export const parseAnyAccount = (data: Uint8Array): DataAccount => {
+	const disc = data.subarray(0, DISCRIMINATOR_SIZE)
+	const matches = (expected: Uint8Array) => expected.every((b, i) => disc[i] === b)
+	if (matches(ACCOUNT_DATA_ACCOUNT_DISCRIMINATOR)) return decodeDataAccountAccount(data)
+	throw new Error(`unknown account discriminator: [${Array.from(disc).join(', ')}]`)
+}
+
+export const parseAnyEvent = (data: Uint8Array): AccessLogged | DynamicEvent | NoFields => {
+	const disc = data.subarray(0, DISCRIMINATOR_SIZE)
+	const matches = (expected: Uint8Array) => expected.every((b, i) => disc[i] === b)
+	if (matches(EVENT_ACCESS_LOGGED_DISCRIMINATOR)) return decodeAccessLoggedEvent(data)
+	if (matches(EVENT_DYNAMIC_EVENT_DISCRIMINATOR)) return decodeDynamicEventEvent(data)
+	if (matches(EVENT_NO_FIELDS_DISCRIMINATOR)) return decodeNoFieldsEvent(data)
+	throw new Error(`unknown event discriminator: [${Array.from(disc).join(', ')}]`)
+}
+
+/**
+ * Optional filter values for AccessLogged log triggers. Set a field to filter on
+ * that value (OR across filter rows). Leave unset for wildcard. Only top-level
+ * scalar fields with supported subkey encodings are auto-filterable — nested
+ * structs, vecs, arrays, bool, u128, and i128 need a manual SubkeyConfig.
+ */
+export type AccessLoggedFilters = {
+	caller?: Address | null
+	message?: string | null
+}
+
+export const encodeAccessLoggedSubkeys = (
+	filters: AccessLoggedFilters[],
+): SolanaSubkeyConfigJson[] => {
+	const callerComparers: SolanaValueComparatorJson[] = []
+	const messageComparers: SolanaValueComparatorJson[] = []
+	for (const f of filters) {
+		if (f.caller != null) {
+			callerComparers.push({
+				operator: 'COMPARISON_OPERATOR_EQ',
+				value: bytesToBase64(solanaAddressToBytes(f.caller)),
+			})
+		}
+		if (f.message != null) {
+			messageComparers.push({
+				operator: 'COMPARISON_OPERATOR_EQ',
+				value: bytesToBase64(prepareSubkeyValue(f.message)),
+			})
+		}
+	}
+	const subkeys: SolanaSubkeyConfigJson[] = []
+	if (callerComparers.length > 0) {
+		subkeys.push({ path: ['Caller'], comparers: callerComparers })
+	}
+	if (messageComparers.length > 0) {
+		subkeys.push({ path: ['Message'], comparers: messageComparers })
+	}
+	return subkeys
+}
+
+/**
+ * Optional filter values for DynamicEvent log triggers. Set a field to filter on
+ * that value (OR across filter rows). Leave unset for wildcard. Only top-level
+ * scalar fields with supported subkey encodings are auto-filterable — nested
+ * structs, vecs, arrays, bool, u128, and i128 need a manual SubkeyConfig.
+ */
+export type DynamicEventFilters = {
+	key?: string | null
+	sender?: string | null
+	metadata?: Uint8Array | null
+}
+
+export const encodeDynamicEventSubkeys = (
+	filters: DynamicEventFilters[],
+): SolanaSubkeyConfigJson[] => {
+	const keyComparers: SolanaValueComparatorJson[] = []
+	const senderComparers: SolanaValueComparatorJson[] = []
+	const metadataComparers: SolanaValueComparatorJson[] = []
+	for (const f of filters) {
+		if (f.key != null) {
+			keyComparers.push({
+				operator: 'COMPARISON_OPERATOR_EQ',
+				value: bytesToBase64(prepareSubkeyValue(f.key)),
+			})
+		}
+		if (f.sender != null) {
+			senderComparers.push({
+				operator: 'COMPARISON_OPERATOR_EQ',
+				value: bytesToBase64(prepareSubkeyValue(f.sender)),
+			})
+		}
+		if (f.metadata != null) {
+			metadataComparers.push({
+				operator: 'COMPARISON_OPERATOR_EQ',
+				value: bytesToBase64(prepareSubkeyValue(f.metadata)),
+			})
+		}
+	}
+	const subkeys: SolanaSubkeyConfigJson[] = []
+	if (keyComparers.length > 0) {
+		subkeys.push({ path: ['Key'], comparers: keyComparers })
+	}
+	if (senderComparers.length > 0) {
+		subkeys.push({ path: ['Sender'], comparers: senderComparers })
+	}
+	if (metadataComparers.length > 0) {
+		subkeys.push({ path: ['Metadata'], comparers: metadataComparers })
+	}
+	return subkeys
+}
+
+/**
+ * Optional filter values for NoFields log triggers. Set a field to filter on
+ * that value (OR across filter rows). Leave unset for wildcard. Only top-level
+ * scalar fields with supported subkey encodings are auto-filterable — nested
+ * structs, vecs, arrays, bool, u128, and i128 need a manual SubkeyConfig.
+ */
+export type NoFieldsFilters = Record<string, never>
+
+export const encodeNoFieldsSubkeys = (_filters: NoFieldsFilters[]): SolanaSubkeyConfigJson[] => []
 
 export class DataStorage {
 	readonly programId: Uint8Array
@@ -572,5 +704,83 @@ export class DataStorage {
 			remainingAccounts,
 			computeConfig,
 		)
+	}
+
+	/**
+	 * Registers a typed log trigger for AccessLogged events. The trigger
+	 * output is adapted to the decoded AccessLogged data alongside the raw log.
+	 * Pass opts.cpi for events emitted via Anchor's emit_cpi!.
+	 */
+	logTriggerAccessLoggedLog(
+		filterName: string,
+		filters: AccessLoggedFilters[] = [],
+		opts?: SolanaLogTriggerOptions,
+	): Trigger<SolanaLog, SolanaDecodedLog<AccessLogged>> {
+		const config: SolanaFilterLogTriggerRequestJson = {
+			name: filterName,
+			address: bytesToBase64(this.programId),
+			eventName: 'AccessLogged',
+			contractIdlJson: DATA_STORAGE_IDL_BASE64,
+			subkeys: encodeAccessLoggedSubkeys(filters),
+		}
+		if (opts?.cpi) {
+			config.cpiFilterConfig = anchorCPILogTriggerConfig(this.programId)
+		}
+		return adaptTrigger(this.client.logTrigger(config), (log) => ({
+			log,
+			data: decodeAccessLoggedEvent(log.data),
+		}))
+	}
+
+	/**
+	 * Registers a typed log trigger for DynamicEvent events. The trigger
+	 * output is adapted to the decoded DynamicEvent data alongside the raw log.
+	 * Pass opts.cpi for events emitted via Anchor's emit_cpi!.
+	 */
+	logTriggerDynamicEventLog(
+		filterName: string,
+		filters: DynamicEventFilters[] = [],
+		opts?: SolanaLogTriggerOptions,
+	): Trigger<SolanaLog, SolanaDecodedLog<DynamicEvent>> {
+		const config: SolanaFilterLogTriggerRequestJson = {
+			name: filterName,
+			address: bytesToBase64(this.programId),
+			eventName: 'DynamicEvent',
+			contractIdlJson: DATA_STORAGE_IDL_BASE64,
+			subkeys: encodeDynamicEventSubkeys(filters),
+		}
+		if (opts?.cpi) {
+			config.cpiFilterConfig = anchorCPILogTriggerConfig(this.programId)
+		}
+		return adaptTrigger(this.client.logTrigger(config), (log) => ({
+			log,
+			data: decodeDynamicEventEvent(log.data),
+		}))
+	}
+
+	/**
+	 * Registers a typed log trigger for NoFields events. The trigger
+	 * output is adapted to the decoded NoFields data alongside the raw log.
+	 * Pass opts.cpi for events emitted via Anchor's emit_cpi!.
+	 */
+	logTriggerNoFieldsLog(
+		filterName: string,
+		filters: NoFieldsFilters[] = [],
+		opts?: SolanaLogTriggerOptions,
+	): Trigger<SolanaLog, SolanaDecodedLog<NoFields>> {
+		const config: SolanaFilterLogTriggerRequestJson = {
+			name: filterName,
+			address: bytesToBase64(this.programId),
+			eventName: 'NoFields',
+			contractIdlJson: DATA_STORAGE_IDL_BASE64,
+			subkeys: encodeNoFieldsSubkeys(filters),
+		}
+		if (opts?.cpi) {
+			config.cpiFilterConfig = anchorCPILogTriggerConfig(this.programId)
+		}
+		return adaptTrigger(this.client.logTrigger(config), (log) => ({
+			log,
+			data: decodeNoFieldsEvent(log.data),
+		}))
 	}
 }
