@@ -240,9 +240,9 @@ describe('TestRuntime / helper layer', () => {
 	})
 
 	test('newTestRuntime rejects unsafe maxResponseSize values', () => {
-		expect(() =>
-			newTestRuntime(null, { maxResponseSize: Number.MAX_SAFE_INTEGER + 1 }),
-		).toThrow('newTestRuntime maxResponseSize must be a non-negative safe integer number')
+		expect(() => newTestRuntime(null, { maxResponseSize: Number.MAX_SAFE_INTEGER + 1 })).toThrow(
+			'newTestRuntime maxResponseSize must be a non-negative safe integer number',
+		)
 	})
 
 	test('newTestRuntime with null/undefined secrets uses empty map', () => {

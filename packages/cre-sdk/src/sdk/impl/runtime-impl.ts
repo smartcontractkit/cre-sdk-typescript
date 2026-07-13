@@ -40,7 +40,13 @@ import {
 	type UnwrapOptions,
 	Value,
 } from '@cre/sdk/utils'
-import { CapabilityRuntimeError, DonModeError, NodeModeError, SecretsBatchError, SecretsError } from '../errors'
+import {
+	CapabilityRuntimeError,
+	DonModeError,
+	NodeModeError,
+	SecretsBatchError,
+	SecretsError,
+} from '../errors'
 
 const DEFAULT_SECRET_NAMESPACE = 'main'
 
@@ -367,9 +373,7 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 			(request as unknown as { $typeName?: string }).$typeName
 				? create(SecretRequestSchema, {
 						id: (request as SecretRequest).id,
-						namespace:
-							(request as SecretRequest).namespace ||
-							DEFAULT_SECRET_NAMESPACE,
+						namespace: (request as SecretRequest).namespace || DEFAULT_SECRET_NAMESPACE,
 					})
 				: create(SecretRequestSchema, {
 						id: request.id,

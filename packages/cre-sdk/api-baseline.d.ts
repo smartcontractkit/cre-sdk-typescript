@@ -73,8 +73,8 @@ export interface Runtime<C> extends BaseRuntime<C>, SecretsProvider {
     };
 }
 import type { Message } from '@bufbuild/protobuf';
-import type { Secret, SecretRequest, SecretRequestJson } from '@cre/generated/sdk/v1alpha/sdk_pb';
-import { type Runtime } from '@cre/sdk/runtime';
+import type { Secret, SecretRequest, SecretRequestJson, SecretResponse } from '@cre/generated/sdk/v1alpha/sdk_pb';
+import type { Runtime } from '@cre/sdk/runtime';
 import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface';
 import type { CreSerializable } from './utils';
 export type HandlerFn<TConfig, TTriggerOutput, TResult> = (runtime: Runtime<TConfig>, triggerOutput: TTriggerOutput) => Promise<CreSerializable<TResult>> | CreSerializable<TResult>;
@@ -85,6 +85,9 @@ export interface HandlerEntry<TConfig, TRawTriggerOutput extends Message<string>
 export type Workflow<TConfig> = ReadonlyArray<HandlerEntry<TConfig, any, any, any>>;
 export declare const handler: <TRawTriggerOutput extends Message<string>, TTriggerOutput, TConfig, TResult>(trigger: Trigger<TRawTriggerOutput, TTriggerOutput>, fn: HandlerFn<TConfig, TTriggerOutput, TResult>) => HandlerEntry<TConfig, TRawTriggerOutput, TTriggerOutput, TResult>;
 export type SecretsProvider = {
+    getSecrets(requests: Array<SecretRequest | SecretRequestJson>): {
+        result: () => SecretResponse[];
+    };
     getSecret(request: SecretRequest | SecretRequestJson): {
         result: () => Secret;
     };
@@ -101,6 +104,11 @@ export declare class SecretsError extends Error {
     secretRequest: SecretRequest;
     error: string;
     constructor(secretRequest: SecretRequest, error: string);
+}
+export declare class SecretsBatchError extends Error {
+    readonly secretRequests: SecretRequest[];
+    readonly error: string;
+    constructor(secretRequests: SecretRequest[], error: string);
 }
 export declare class NullReportError extends Error {
     constructor();
