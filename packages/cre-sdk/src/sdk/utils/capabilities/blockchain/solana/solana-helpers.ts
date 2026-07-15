@@ -208,7 +208,7 @@ export const prepareSubkeyValue = (value: SolanaSubkeyValue): Uint8Array => {
 		return u64BE(value)
 	}
 	if (typeof value === 'number') {
-		if (!Number.isInteger(value)) {
+		if (!Number.isSafeInteger(value)) {
 			throw new Error(
 				'prepareSubkeyValue: non-integer number; use prepareSubkeyFloatValue for f32/f64 values',
 			)
