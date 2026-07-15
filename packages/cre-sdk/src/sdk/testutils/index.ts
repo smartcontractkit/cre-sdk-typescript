@@ -15,6 +15,7 @@ export {
 	type Secrets,
 	TestRuntime,
 	type TestRuntimeState,
+	TestTeeRuntime,
 	test,
 } from './test-runtime'
 export { TestWriter } from './test-writer'

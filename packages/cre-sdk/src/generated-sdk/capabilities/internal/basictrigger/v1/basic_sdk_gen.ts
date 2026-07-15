@@ -70,3 +70,4 @@ class BasicTrigger implements Trigger<Outputs, Outputs> {
 		return rawOutput
 	}
 }
+export class BasicRestrictor {}

@@ -1,5 +1,6 @@
 /** Auto-generated barrel of capability mocks. Do not edit. */
 
+export { AptosMock } from './capabilities/blockchain/aptos/v1alpha/aptos_mock_gen'
 export { EvmMock } from './capabilities/blockchain/evm/v1alpha/evm_mock_gen'
 export { SolanaMock } from './capabilities/blockchain/solana/v1alpha/solana_mock_gen'
 export { BasicTestActionTriggerMock } from './capabilities/internal/actionandtrigger/v1/basic_test_action_trigger_mock_gen'

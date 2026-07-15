@@ -1,30 +1,34 @@
-import { create, fromBinary, toBinary } from '@bufbuild/protobuf'
+import { create, fromBinary, fromJson, toBinary } from '@bufbuild/protobuf'
 import {
 	type ExecuteRequest,
 	ExecuteRequestSchema,
 	type ExecutionResult,
 	ExecutionResultSchema,
+	RestrictionsSchema,
+	type SecretRequest,
+	type SecretRequestJson,
 	TriggerSubscriptionRequestSchema,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { type ConfigHandlerParams, configHandler } from '@cre/sdk/utils/config'
 import type { SecretsProvider, Workflow } from '@cre/sdk/workflow'
 import { Value } from '../utils'
 import { hostBindings } from './host-bindings'
-import { Runtime } from './runtime'
+import { Runtime, TeeRuntime } from './runtime'
 
-export class Runner<TConfig> {
-	private constructor(
+class RunnerBase<TConfig> {
+	protected constructor(
 		private readonly config: TConfig,
 		private readonly request: ExecuteRequest,
 	) {}
 
-	static async newRunner<TConfig, TIntermediateConfig = TConfig>(
+	protected static async newRunnerHelper<TConfig, TIntermediateConfig, TRunner>(
+		newRunner: (config: TConfig, request: ExecuteRequest) => TRunner,
 		configHandlerParams?: ConfigHandlerParams<TConfig, TIntermediateConfig>,
-	): Promise<Runner<TConfig>> {
+	): Promise<TRunner> {
 		hostBindings.versionV2()
-		const request = Runner.getRequest()
+		const request = RunnerBase.getRequest()
 		const config = await configHandler<TConfig, TIntermediateConfig>(request, configHandlerParams)
-		return new Runner<TConfig>(config, request)
+		return newRunner(config, request)
 	}
 
 	private static getRequest(): ExecuteRequest {
@@ -61,11 +65,16 @@ export class Runner<TConfig> {
 	) {
 		const runtime = new Runtime(this.config, 0, this.request.maxResponseSize)
 
+		// wrap runtime's getSecret so other methods cannot be used
+		const sp = {
+			getSecret: (request: SecretRequest | SecretRequestJson) => {
+				return runtime.getSecret(request)
+			},
+		}
+
 		let result: Promise<ExecutionResult> | ExecutionResult
 		try {
-			const workflow = await initFn(this.config, {
-				getSecret: runtime.getSecret.bind(runtime),
-			})
+			const workflow = await initFn(this.config, sp)
 
 			switch (this.request.request.case) {
 				case 'subscribe':
@@ -74,9 +83,12 @@ export class Runner<TConfig> {
 				case 'trigger':
 					result = this.handleExecutionPhase(this.request, workflow, runtime)
 					break
+				case 'preHook':
+					result = this.handlePreHookPhase(this.request, workflow)
+					break
 				default:
 					throw new Error(
-						`Unknown request type '${this.request.request.case}': expected 'subscribe' or 'trigger'. This may indicate a version mismatch between the SDK and the CRE runtime`,
+						`Unknown request type '${this.request.request.case}': expected 'subscribe', 'trigger', or 'preHook'. This may indicate a version mismatch between the SDK and the CRE runtime`,
 					)
 			}
 		} catch (e) {
@@ -90,7 +102,7 @@ export class Runner<TConfig> {
 		hostBindings.sendResponse(toBinary(ExecutionResultSchema, awaitedResult))
 	}
 
-	async handleExecutionPhase<TConfig>(
+	async handleExecutionPhase(
 		req: ExecuteRequest,
 		workflow: Workflow<TConfig>,
 		runtime: Runtime<TConfig>,
@@ -137,8 +149,12 @@ export class Runner<TConfig> {
 			const decoded = fromBinary(schema, payloadAny.value)
 			const adapted = entry.trigger.adapt(decoded)
 
+			// If the handler has requirements (e.g. TEE), use TeeRuntime; otherwise use the default runtime.
+			const handlerRuntime =
+				entry.requirements != null ? new TeeRuntime(this.config, 0, req.maxResponseSize) : runtime
+
 			try {
-				const result = await entry.fn(runtime, adapted)
+				const result = await entry.fn(handlerRuntime as any, adapted)
 				const wrapped = Value.wrap(result)
 				return create(ExecutionResultSchema, {
 					result: { case: 'value', value: wrapped.proto() },
@@ -159,6 +175,70 @@ export class Runner<TConfig> {
 		})
 	}
 
+	handlePreHookPhase(req: ExecuteRequest, workflow: Workflow<TConfig>): ExecutionResult {
+		if (req.request.case !== 'preHook') {
+			return create(ExecutionResultSchema, {
+				result: {
+					case: 'error',
+					value: `preHook request expected but received '${req.request.case}' in handlePreHookPhase. This is an internal SDK error`,
+				},
+			})
+		}
+
+		const triggerMsg = req.request.value
+
+		const id = BigInt(triggerMsg.id)
+		if (id > BigInt(Number.MAX_SAFE_INTEGER)) {
+			return create(ExecutionResultSchema, {
+				result: {
+					case: 'error',
+					value: `Trigger ID ${id} exceeds JavaScript safe integer range (Number.MAX_SAFE_INTEGER = ${Number.MAX_SAFE_INTEGER}). This trigger ID cannot be safely represented as a number`,
+				},
+			})
+		}
+
+		const index = Number(triggerMsg.id)
+		if (!Number.isFinite(index) || index < 0 || index >= workflow.length) {
+			return create(ExecutionResultSchema, {
+				result: {
+					case: 'error',
+					value: `trigger not found: no workflow handler registered at index ${index} (trigger ID ${triggerMsg.id}). The workflow has ${workflow.length} handler(s) registered. Verify the trigger subscription matches a registered handler`,
+				},
+			})
+		}
+
+		const entry = workflow[index]
+
+		if (!entry.hooks?.preHook) {
+			return create(ExecutionResultSchema, {
+				result: {
+					case: 'error',
+					value: `no preHook registered for handler at index ${index} (trigger ID ${triggerMsg.id}). The handler was subscribed with preHook enabled but no preHook function was provided`,
+				},
+			})
+		}
+
+		if (!triggerMsg.payload) {
+			return create(ExecutionResultSchema, {
+				result: {
+					case: 'error',
+					value: `trigger payload is missing for preHook at index ${index} (trigger ID ${triggerMsg.id}). The trigger event must include a payload`,
+				},
+			})
+		}
+
+		const schema = entry.trigger.outputSchema()
+		const decoded = fromBinary(schema, triggerMsg.payload.value)
+		const adapted = entry.trigger.adapt(decoded)
+
+		const restrictionsJson = entry.hooks.preHook(this.config, adapted)
+		const restrictions = fromJson(RestrictionsSchema, restrictionsJson)
+
+		return create(ExecutionResultSchema, {
+			result: { case: 'restrictions', value: restrictions },
+		})
+	}
+
 	handleSubscribePhase(req: ExecuteRequest, workflow: Workflow<TConfig>): ExecutionResult {
 		if (req.request.case !== 'subscribe') {
 			return create(ExecutionResultSchema, {
@@ -169,11 +249,13 @@ export class Runner<TConfig> {
 			})
 		}
 
-		// Build TriggerSubscriptionRequest from the workflow entries
+		// Build TriggerSubscriptionRequest from the workflow entries, including any per-handler requirements.
 		const subscriptions = workflow.map((entry) => ({
 			id: entry.trigger.capabilityId(),
 			method: entry.trigger.method(),
 			payload: entry.trigger.configAsAny(),
+			requirements: entry.requirements,
+			preHook: !!entry.hooks?.preHook,
 		}))
 
 		const subscriptionRequest = create(TriggerSubscriptionRequestSchema, {
@@ -183,5 +265,20 @@ export class Runner<TConfig> {
 		return create(ExecutionResultSchema, {
 			result: { case: 'triggerSubscriptions', value: subscriptionRequest },
 		})
+	}
+}
+
+export class Runner<TConfig> extends RunnerBase<TConfig> {
+	private constructor(config: TConfig, request: ExecuteRequest) {
+		super(config, request)
+	}
+
+	static async newRunner<TConfig, TIntermediateConfig = TConfig>(
+		configHandlerParams?: ConfigHandlerParams<TConfig, TIntermediateConfig>,
+	): Promise<Runner<TConfig>> {
+		return RunnerBase.newRunnerHelper(
+			(config, request) => new Runner(config, request),
+			configHandlerParams,
+		)
 	}
 }
