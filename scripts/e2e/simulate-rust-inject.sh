@@ -49,11 +49,15 @@ if [ ! -f "./wasm/workflow.wasm" ]; then
   exit 1
 fi
 
+SIM_EXIT_5A=0
 cre workflow simulate . \
   --non-interactive \
   --trigger-index 0 \
-  > "$OUTPUT_5A" 2>&1 || true
+  > "$OUTPUT_5A" 2>&1 || SIM_EXIT_5A=$?
 cat "$OUTPUT_5A"
+if [ "$SIM_EXIT_5A" -ne 0 ]; then
+  echo "⚠️  WARNING: cre workflow simulate exited with code $SIM_EXIT_5A"
+fi
 
 echo ""
 echo "Validating prebuilt-plugin output..."
@@ -74,11 +78,15 @@ if [ ! -f "./wasm/workflow.wasm" ]; then
   exit 1
 fi
 
+SIM_EXIT_5B=0
 cre workflow simulate . \
   --non-interactive \
   --trigger-index 0 \
-  > "$OUTPUT_5B" 2>&1 || true
+  > "$OUTPUT_5B" 2>&1 || SIM_EXIT_5B=$?
 cat "$OUTPUT_5B"
+if [ "$SIM_EXIT_5B" -ne 0 ]; then
+  echo "⚠️  WARNING: cre workflow simulate exited with code $SIM_EXIT_5B"
+fi
 
 echo ""
 echo "Validating source-extensions output..."
