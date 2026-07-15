@@ -1,0 +1,6 @@
+[install]
+# Without this, newer bun versions install workspace packages in a way that
+# breaks TypeScript's ability to find the types for built-in globals like
+# Response and Request. Setting "hoisted" keeps all packages in one shared
+# node_modules folder (the classic layout), which fixes the lookup.
+linker = "hoisted"

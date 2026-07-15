@@ -86,10 +86,10 @@ This TypeScript CRE SDK also includes some reference examples - [cre-sdk-example
 
 You can run and debug your TypeScript workflows locally using [the CRE CLI's](https://github.com/smartcontractkit/cre-cli) simulation functionality.
 
-Make sure you `cd` into the directory that contain's your workflow's TypeScript file and the associated `config.json`. Then:
+Make sure you `cd` into the directory that contain's your workflow's TypeScript file and the associated config file. Then:
 
 ```bash
-cre workflow simulate --target local-simulation --config config.json index.ts
+cre workflow simulate --target staging-settings --config config.staging.json main.ts
 ```
 
 When simulating workflows that write to the blockchain, remember to pass extra flag `--broadcast` to broadcast the transactions to the blockchain.
@@ -235,6 +235,66 @@ const onCronTrigger = (runtime: Runtime<Config>) => {
   runtime.log(`Successfully read onchain value: ${onchainValue}`);
   return onchainValue;
 };
+```
+
+### Solana Write Reports
+
+The Solana capability is **write-only**: reports are delivered through the
+keystone-forwarder to a receiver program's `on_report` entrypoint as a bare
+Borsh-encoded struct. The SDK ships the write plumbing under
+`utils/capabilities/blockchain/solana`:
+
+- `calculateAccountsHash(accounts)` — sha256 of the concatenated account
+  public keys (the forwarder's on-chain account verification),
+- `encodeForwarderReport({ accountHash, payload })` — the
+  `[32-byte hash][u32-LE len][payload]` forwarder envelope,
+- `encodeBorshVecU32(elements)` — Borsh `Vec` of pre-encoded elements,
+- `prepareSolanaReportRequest(payload)` — report request with the Solana
+  encoder (`solana`/`ecdsa`/`keccak256`),
+- `solanaAccountMeta(publicKey, isWritable)` / `solanaAddressToBytes(base58)`.
+
+The wire format is byte-identical to the Go SDK's
+`capabilities/blockchain/solana/bindings` package.
+
+Generate typed per-program bindings from an Anchor IDL with the CRE CLI:
+
+```bash
+cre generate-bindings solana --language typescript
+```
+
+```typescript
+import { cre, type Runtime, solanaAccountMeta, SolanaClient } from "@chainlink/cre-sdk";
+import { DataStorage } from "../contracts/solana/ts/generated";
+
+const onTrigger = (runtime: Runtime<Config>) => {
+  const client = new SolanaClient(SolanaClient.SUPPORTED_CHAIN_SELECTORS["solana-devnet"]);
+  const dataStorage = new DataStorage(client); // program ID baked in from the IDL
+
+  // remainingAccounts: forwarderState, forwarderAuthority PDA, then receiver accounts
+  const remainingAccounts = [
+    solanaAccountMeta(forwarderState),
+    solanaAccountMeta(forwarderAuthority),
+    solanaAccountMeta(receiverDataAccount, true),
+  ];
+
+  const reply = dataStorage.writeReportFromUserData(
+    runtime,
+    { key: "answer", value: "42" },
+    remainingAccounts,
+  );
+  runtime.log(`tx status: ${reply.txStatus}`);
+};
+```
+
+In tests, intercept writes with the generated mock:
+
+```typescript
+import { SolanaMock } from "@chainlink/cre-sdk/test";
+import { newDataStorageMock } from "../contracts/solana/ts/generated";
+
+const solanaMock = SolanaMock.testInstance(chainSelector);
+const dataStorage = newDataStorageMock(solanaMock);
+dataStorage.writeReport = ({ report }) => ({ txStatus: "TX_STATUS_SUCCESS" });
 ```
 
 ## Configuration & Type Safety
