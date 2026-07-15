@@ -6,3 +6,19 @@ local-simulation:
   workflow-artifacts:
     workflow-path: "./wasm/workflow.wasm"
     config-path: "./config.json"
+
+staging-settings:
+  user-workflow:
+    workflow-name: "rust-inject-source-extensions"
+  workflow-artifacts:
+    workflow-path: "./wasm/workflow.wasm"
+    config-path: "./config.json"
+    secrets-path: ""
+
+production-settings:
+  user-workflow:
+    workflow-name: "rust-inject-source-extensions"
+  workflow-artifacts:
+    workflow-path: "./wasm/workflow.wasm"
+    config-path: "./config.json"
+    secrets-path: ""
