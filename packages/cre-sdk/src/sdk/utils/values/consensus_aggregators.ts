@@ -9,17 +9,15 @@ import {
 import type { CreSerializable, NumericType, TypeVerifier } from './serializer_types'
 import { Int64 } from './value'
 
-export type ConsensusAggregation<T, U> = {
+export type ConsensusAggregation<TInput, TOutput, U> = {
 	readonly descriptor: ConsensusDescriptor
-	readonly defaultValue?: T
-	withDefault(t: T): ConsensusAggregation<T, U>
+	readonly defaultValue?: TInput
+	withDefault(t: TInput): ConsensusAggregation<TInput, TOutput, U>
 	_usesUToForceShape(u: U): void
 }
-// Maybe make ConsensusAggregation take a second parameter, and it'll be true or false, then make anything using it require true
-// Only take one type, but make the return type ConsensusAggregation<T, TypeVerifier<T, CreSerializable<T>>
-// Similar for fields, but ignore would always return ConsensusAggregationFields<T, true> instead of ConsensusAggregationFields<T, CreSerializable<T>>, and so would ConsensusAggregationByFields :D
 
 export function consensusMedianAggregation<T extends NumericType>(): ConsensusAggregation<
+	T,
 	T,
 	TypeVerifier<T, CreSerializable<T>>
 > {
@@ -28,6 +26,7 @@ export function consensusMedianAggregation<T extends NumericType>(): ConsensusAg
 
 export function consensusIdenticalAggregation<T>(): ConsensusAggregation<
 	T,
+	T,
 	TypeVerifier<T, CreSerializable<T>>
 > {
 	return simpleConsensus(AggregationType.IDENTICAL)
@@ -35,16 +34,18 @@ export function consensusIdenticalAggregation<T>(): ConsensusAggregation<
 
 export function consensusCommonPrefixAggregation<T>(): ConsensusAggregation<
 	T[],
+	T[],
 	TypeVerifier<T[], CreSerializable<T[]>>
 > {
-	return simpleConsensus<T[]>(AggregationType.COMMON_PREFIX)
+	return simpleConsensus<T[], T[]>(AggregationType.COMMON_PREFIX)
 }
 
 export function consensusCommonSuffixAggregation<T>(): ConsensusAggregation<
 	T[],
+	T[],
 	TypeVerifier<T[], CreSerializable<T[]>>
 > {
-	return simpleConsensus<T[]>(AggregationType.COMMON_SUFFIX)
+	return simpleConsensus<T[], T[]>(AggregationType.COMMON_SUFFIX)
 }
 
 export class FrequencyListEntry<T> {
@@ -55,27 +56,30 @@ export class FrequencyListEntry<T> {
 }
 
 export function consensusFrequencyListAggregation<T>(): ConsensusAggregation<
+	T[],
 	FrequencyListEntry<T>[],
-	TypeVerifier<FrequencyListEntry<T>[], CreSerializable<FrequencyListEntry<T>[]>>
+	TypeVerifier<T[], CreSerializable<T[]>>
 > {
-	return simpleConsensus<FrequencyListEntry<T>[]>(AggregationType.FREQUENCY_LIST)
+	return simpleConsensus<T[], FrequencyListEntry<T>[]>(AggregationType.FREQUENCY_LIST)
 }
 
-class ConsensusImpl<T, U> implements ConsensusAggregation<T, U> {
+class ConsensusImpl<TInput, TOutput, U> implements ConsensusAggregation<TInput, TOutput, U> {
 	constructor(
 		readonly descriptor: ConsensusDescriptor,
-		readonly defaultValue?: T,
+		readonly defaultValue?: TInput,
 	) {}
-	withDefault(t: T): ConsensusAggregation<T, U> {
+	withDefault(t: TInput): ConsensusAggregation<TInput, TOutput, U> {
 		return new ConsensusImpl(this.descriptor, t)
 	}
 	_usesUToForceShape(_: U): void {}
 }
 
-function simpleConsensus<T>(
+function simpleConsensus<TInput, TOutput = TInput>(
 	agg: AggregationType,
-): ConsensusAggregation<T, TypeVerifier<T, CreSerializable<T>>> {
-	return new ConsensusImpl<T, TypeVerifier<T, CreSerializable<T>>>(simpleDescriptor(agg))
+): ConsensusAggregation<TInput, TOutput, TypeVerifier<TInput, CreSerializable<TInput>>> {
+	return new ConsensusImpl<TInput, TOutput, TypeVerifier<TInput, CreSerializable<TInput>>>(
+		simpleDescriptor(agg),
+	)
 }
 
 function simpleDescriptor(agg: AggregationType): ConsensusDescriptor {
@@ -135,9 +139,9 @@ export type ConsensusAggregationFields<T extends object> = {
 	[K in keyof T as K extends '$typeName' ? never : K]: () => ConsensusFieldAggregation<T[K], true>
 }
 
-export function ConsensusAggregationByFields<T extends object>(
+export function ConsensusAggregationByFields<T extends object, TOutput = T>(
 	aggregation: ConsensusAggregationFields<T>,
-): ConsensusAggregation<T, true> {
+): ConsensusAggregation<T, TOutput, true> {
 	const fieldMap = create(FieldsMapSchema)
 
 	Object.keys(aggregation).forEach((key) => {
@@ -148,7 +152,7 @@ export function ConsensusAggregationByFields<T extends object>(
 		}
 	})
 
-	return new ConsensusImpl<T, true>(
+	return new ConsensusImpl<T, TOutput, true>(
 		create(ConsensusDescriptorSchema, {
 			descriptor: {
 				case: 'fieldsMap',
