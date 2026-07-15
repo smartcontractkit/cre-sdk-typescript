@@ -47,12 +47,12 @@ const handler = (runtime: Runtime<Uint8Array>) => {
 					encoder.encode(`sig-${nodeResponse.outputThing}`),
 				)
 			},
-			ConsensusAggregationByFields<NodeObservation>({
+			ConsensusAggregationByFields<NodeObservation, ConsensusResult>({
 				payload: identical,
 				signatures: frequencyList,
 			}),
 		)()
-		.result() as unknown as ConsensusResult
+		.result()
 
 	return formatResult(result)
 }

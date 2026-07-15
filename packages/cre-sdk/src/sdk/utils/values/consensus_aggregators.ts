@@ -139,6 +139,11 @@ export type ConsensusAggregationFields<T extends object> = {
 	[K in keyof T as K extends '$typeName' ? never : K]: () => ConsensusFieldAggregation<T[K], true>
 }
 
+// TOutput lets the consensus result type differ from the observed input type. It defaults to T
+// (most field aggregators return the same shape they consume), but aggregators that reshape a
+// field — e.g. `frequencyList`, which turns a field of type F into FrequencyListEntry<F>[] —
+// change the result. Pass TOutput explicitly in that case so `.result()` is typed correctly
+// instead of forcing callers to cast (`.result() as unknown as ...`).
 export function ConsensusAggregationByFields<T extends object, TOutput = T>(
 	aggregation: ConsensusAggregationFields<T>,
 ): ConsensusAggregation<T, TOutput, true> {
