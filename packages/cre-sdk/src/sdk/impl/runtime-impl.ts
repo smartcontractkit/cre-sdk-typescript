@@ -279,7 +279,7 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 			}
 
 			// Step 5: Run consensus and return lazy result
-			return this.runConsensusAndWrap<TOutput>(consensusInput, unwrapOptions)
+			return this.runConsensusAndWrap<TInput, TOutput>(consensusInput, unwrapOptions)
 		}
 	}
 
@@ -330,9 +330,9 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 		this.helpers.switchModes(Mode.DON)
 	}
 
-	private runConsensusAndWrap<TOutput>(
+	private runConsensusAndWrap<TInput, TOutput>(
 		consensusInput: any,
-		unwrapOptions?: any,
+		unwrapOptions?: TInput extends PrimitiveTypes ? never : UnwrapOptions<TInput>,
 	): { result: () => TOutput } {
 		const consensus = new ConsensusCapability()
 		const call = consensus.simple(this, consensusInput)
@@ -342,9 +342,9 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 				const result = call.result()
 				const wrappedValue = Value.wrap(result)
 
-				return unwrapOptions
-					? wrappedValue.unwrapToType(unwrapOptions)
-					: (wrappedValue.unwrap() as TOutput)
+				return (
+					unwrapOptions ? wrappedValue.unwrapToType(unwrapOptions) : wrappedValue.unwrap()
+				) as TOutput
 			},
 		}
 	}
