@@ -75,7 +75,10 @@ export const DATA_STORAGE_IDL = {
 					writable: true,
 					pda: {
 						seeds: [
-							{ kind: 'const', value: [100, 97, 116, 97, 95, 97, 99, 99, 111, 117, 110, 116] },
+							{
+								kind: 'const',
+								value: [100, 97, 116, 97, 95, 97, 99, 99, 111, 117, 110, 116],
+							},
 							{ kind: 'account', path: 'user' },
 						],
 					},
@@ -101,7 +104,10 @@ export const DATA_STORAGE_IDL = {
 					writable: true,
 					pda: {
 						seeds: [
-							{ kind: 'const', value: [100, 97, 116, 97, 95, 97, 99, 99, 111, 117, 110, 116] },
+							{
+								kind: 'const',
+								value: [100, 97, 116, 97, 95, 97, 99, 99, 111, 117, 110, 116],
+							},
 							{ kind: 'account', path: 'user' },
 						],
 					},
@@ -123,7 +129,10 @@ export const DATA_STORAGE_IDL = {
 					writable: true,
 					pda: {
 						seeds: [
-							{ kind: 'const', value: [100, 97, 116, 97, 95, 97, 99, 99, 111, 117, 110, 116] },
+							{
+								kind: 'const',
+								value: [100, 97, 116, 97, 95, 97, 99, 99, 111, 117, 110, 116],
+							},
 							{ kind: 'account', path: 'user' },
 						],
 					},
@@ -144,7 +153,10 @@ export const DATA_STORAGE_IDL = {
 					writable: true,
 					pda: {
 						seeds: [
-							{ kind: 'const', value: [100, 97, 116, 97, 95, 97, 99, 99, 111, 117, 110, 116] },
+							{
+								kind: 'const',
+								value: [100, 97, 116, 97, 95, 97, 99, 99, 111, 117, 110, 116],
+							},
 							{ kind: 'account', path: 'user' },
 						],
 					},
@@ -155,8 +167,14 @@ export const DATA_STORAGE_IDL = {
 	],
 	accounts: [{ name: 'DataAccount', discriminator: [85, 240, 182, 158, 76, 7, 18, 233] }],
 	events: [
-		{ name: 'AccessLogged', discriminator: [243, 53, 225, 71, 64, 120, 109, 25] },
-		{ name: 'DynamicEvent', discriminator: [236, 145, 224, 161, 9, 222, 218, 237] },
+		{
+			name: 'AccessLogged',
+			discriminator: [243, 53, 225, 71, 64, 120, 109, 25],
+		},
+		{
+			name: 'DynamicEvent',
+			discriminator: [236, 145, 224, 161, 9, 222, 218, 237],
+		},
 		{ name: 'NoFields', discriminator: [160, 156, 94, 85, 77, 122, 98, 240] },
 	],
 	errors: [{ code: 6000, name: 'DataNotFound', msg: 'data not found' }],
@@ -284,7 +302,9 @@ export const dynamicEventCodec = getStructCodec([
 	['metadata', addCodecSizePrefix(getBytesCodec(), getU32Codec())],
 	[
 		'metadataArray',
-		getArrayCodec(addCodecSizePrefix(getBytesCodec(), getU32Codec()), { size: getU32Codec() }),
+		getArrayCodec(addCodecSizePrefix(getBytesCodec(), getU32Codec()), {
+			size: getU32Codec(),
+		}),
 	],
 ])
 
@@ -465,7 +485,6 @@ export const encodeDynamicEventSubkeys = (
 export type NoFieldsFilters = Record<string, never>
 
 export const encodeNoFieldsSubkeys = (_filters: NoFieldsFilters[]): SolanaSubkeyConfigJson[] => []
-
 export class DataStorage {
 	readonly programId: Uint8Array
 
