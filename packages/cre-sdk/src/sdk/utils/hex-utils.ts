@@ -42,6 +42,15 @@ export const bytesToHex = (bytes: Uint8Array): Hex => {
 }
 
 /**
+ * Encode raw bytes as base64 string
+ * @param bytes
+ * @returns
+ */
+export const bytesToBase64 = (bytes: Uint8Array): string => {
+	return Buffer.from(bytes).toString('base64')
+}
+
+/**
  * Encode hex as base64 string
  * @param hex
  * @returns
