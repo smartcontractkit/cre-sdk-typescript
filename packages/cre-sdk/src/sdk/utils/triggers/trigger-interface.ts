@@ -27,3 +27,20 @@ export interface Trigger<
 	/** Transform the raw trigger output to the adapted type */
 	adapt(rawOutput: TRawTriggerOutput): TTriggerOutput
 }
+
+/**
+ * Wraps a trigger with an extra output transformation, delegating everything
+ * else to the wrapped trigger. The TypeScript analog of Go bindings embedding
+ * `cre.Trigger` and overriding only `Adapt` — generated bindings use this to
+ * decode raw trigger outputs into typed data.
+ */
+export const adaptTrigger = <TRaw extends Message<string>, TIn, TOut>(
+	trigger: Trigger<TRaw, TIn>,
+	adapt: (output: TIn) => TOut,
+): Trigger<TRaw, TOut> => ({
+	capabilityId: () => trigger.capabilityId(),
+	method: () => trigger.method(),
+	outputSchema: () => trigger.outputSchema(),
+	configAsAny: () => trigger.configAsAny(),
+	adapt: (rawOutput) => adapt(trigger.adapt(rawOutput)),
+})

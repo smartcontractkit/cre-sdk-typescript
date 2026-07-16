@@ -42,8 +42,14 @@ export {
 	TxStatus,
 } from '@cre/generated/capabilities/blockchain/evm/v1alpha/client_pb'
 export {
+	ComparisonOperator as SolanaComparisonOperator,
+	type CPIFilterConfigJson as SolanaCPIFilterConfigJson,
+	type FilterLogTriggerRequestJson as SolanaFilterLogTriggerRequestJson,
+	type Log as SolanaLog,
 	ReceiverContractExecutionStatus as SolanaReceiverContractExecutionStatus,
+	type SubkeyConfigJson as SolanaSubkeyConfigJson,
 	TxStatus as SolanaTxStatus,
+	type ValueComparatorJson as SolanaValueComparatorJson,
 } from '@cre/generated/capabilities/blockchain/solana/v1alpha/client_pb'
 export type { Payload as HTTPPayload } from '@cre/generated/capabilities/networking/http/v1alpha/trigger_pb'
 export type { Payload as CronPayload } from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'

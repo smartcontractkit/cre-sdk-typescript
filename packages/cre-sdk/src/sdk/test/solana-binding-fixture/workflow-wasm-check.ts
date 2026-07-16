@@ -7,9 +7,12 @@
  */
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
 import { cre, type Runtime, SolanaClient } from '@cre/sdk/cre'
-import { solanaAccountMeta } from '@cre/sdk/utils/capabilities/blockchain/solana/solana-helpers'
+import {
+	type SolanaDecodedLog,
+	solanaAccountMeta,
+} from '@cre/sdk/utils/capabilities/blockchain/solana/solana-helpers'
 import { Runner } from '@cre/sdk/wasm'
-import { DataStorage, type UserData } from './DataStorage'
+import { type AccessLogged, DataStorage, type UserData } from './DataStorage'
 
 const CHAIN_SELECTOR = SolanaClient.SUPPORTED_CHAIN_SELECTORS['solana-devnet']
 
@@ -27,9 +30,23 @@ const writeUserData = (runtime: Runtime<Uint8Array>) => {
 	return 'ok'
 }
 
+const onAccessLogged = (runtime: Runtime<Uint8Array>, decoded: SolanaDecodedLog<AccessLogged>) => {
+	runtime.log(`caller=${decoded.data.caller} slot=${decoded.log.blockNumber}`)
+	return 'ok'
+}
+
 const initWorkflow = () => {
 	const basicTrigger = new BasicTriggerCapability()
-	return [cre.handler(basicTrigger.trigger({}), writeUserData)]
+	const binding = new DataStorage(new SolanaClient(CHAIN_SELECTOR))
+	return [
+		cre.handler(basicTrigger.trigger({}), writeUserData),
+		cre.handler(
+			binding.logTriggerAccessLoggedLog('access-logged-filter', [{ message: 'hello' }], {
+				cpi: true,
+			}),
+			onAccessLogged,
+		),
+	]
 }
 
 export async function main() {

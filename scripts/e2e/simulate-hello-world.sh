@@ -13,7 +13,11 @@ cd "$EXAMPLES_DIR"
 cp -n .env.example .env 2>/dev/null || true
 
 echo "Running hello-world workflow simulation..."
-cre workflow simulate ./src/workflows/hello-world > "$OUTPUT_FILE" 2>&1
+if ! cre workflow simulate ./src/workflows/hello-world > "$OUTPUT_FILE" 2>&1; then
+  echo "❌ ERROR: cre workflow simulate failed. Output:"
+  cat "$OUTPUT_FILE"
+  exit 1
+fi
 cat "$OUTPUT_FILE"
 
 # --- Validation ---
