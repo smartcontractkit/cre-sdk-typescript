@@ -42,11 +42,11 @@ export class BasicActionCapability {
 		runtime: NodeRuntime<unknown>,
 		input: CapabilityInput<TInput, NodeInputs, NodeInputsJson>,
 	): { result: () => NodeOutputs }
-	performAction<TArgs extends unknown[], TOutput>(
+	performAction<TArgs extends unknown[], TInput, TOutput = TInput>(
 		runtime: Runtime<unknown>,
-		fn: (performActioner: PerformActioner, ...args: TArgs) => TOutput,
-		consensusAggregation: ConsensusAggregation<TOutput, true>,
-		unwrapOptions?: TOutput extends PrimitiveTypes ? never : UnwrapOptions<TOutput>,
+		fn: (performActioner: PerformActioner, ...args: TArgs) => TInput,
+		consensusAggregation: ConsensusAggregation<TInput, TOutput, true>,
+		unwrapOptions?: TInput extends PrimitiveTypes ? never : UnwrapOptions<TInput>,
 	): (...args: TArgs) => { result: () => TOutput }
 	performAction(...args: unknown[]): unknown {
 		// Check if this is the sugar syntax overload (has function parameter)
@@ -54,7 +54,7 @@ export class BasicActionCapability {
 			const [runtime, fn, consensusAggregation, unwrapOptions] = args as [
 				Runtime<unknown>,
 				(performActioner: PerformActioner, ...args: unknown[]) => unknown,
-				ConsensusAggregation<unknown, true>,
+				ConsensusAggregation<unknown, unknown, true>,
 				UnwrapOptions<unknown> | undefined,
 			]
 			return this.performActionSugarHelper(runtime, fn, consensusAggregation, unwrapOptions)
@@ -96,11 +96,11 @@ export class BasicActionCapability {
 			},
 		}
 	}
-	private performActionSugarHelper<TArgs extends unknown[], TOutput>(
+	private performActionSugarHelper<TArgs extends unknown[], TInput, TOutput = TInput>(
 		runtime: Runtime<unknown>,
-		fn: (performActioner: PerformActioner, ...args: TArgs) => TOutput,
-		consensusAggregation: ConsensusAggregation<TOutput, true>,
-		unwrapOptions?: TOutput extends PrimitiveTypes ? never : UnwrapOptions<TOutput>,
+		fn: (performActioner: PerformActioner, ...args: TArgs) => TInput,
+		consensusAggregation: ConsensusAggregation<TInput, TOutput, true>,
+		unwrapOptions?: TInput extends PrimitiveTypes ? never : UnwrapOptions<TInput>,
 	): (...args: TArgs) => { result: () => TOutput } {
 		const wrappedFn = (runtime: NodeRuntime<unknown>, ...args: TArgs) => {
 			const performActioner = new PerformActioner(runtime, this)

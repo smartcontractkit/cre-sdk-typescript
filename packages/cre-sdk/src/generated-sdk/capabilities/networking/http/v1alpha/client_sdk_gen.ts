@@ -50,11 +50,11 @@ export class ClientCapability {
 		runtime: NodeRuntime<unknown> | TeeRuntime<unknown>,
 		input: CapabilityInput<TInput, Request, RequestJson>,
 	): { result: () => Response }
-	sendRequest<TArgs extends unknown[], TOutput>(
+	sendRequest<TArgs extends unknown[], TInput, TOutput = TInput>(
 		runtime: Runtime<unknown>,
-		fn: (sendRequester: SendRequester, ...args: TArgs) => TOutput,
-		consensusAggregation: ConsensusAggregation<TOutput, true>,
-		unwrapOptions?: TOutput extends PrimitiveTypes ? never : UnwrapOptions<TOutput>,
+		fn: (sendRequester: SendRequester, ...args: TArgs) => TInput,
+		consensusAggregation: ConsensusAggregation<TInput, TOutput, true>,
+		unwrapOptions?: TInput extends PrimitiveTypes ? never : UnwrapOptions<TInput>,
 	): (...args: TArgs) => { result: () => TOutput }
 	sendRequest(...args: unknown[]): unknown {
 		// Check if this is the sugar syntax overload (has function parameter)
@@ -62,7 +62,7 @@ export class ClientCapability {
 			const [runtime, fn, consensusAggregation, unwrapOptions] = args as [
 				Runtime<unknown>,
 				(sendRequester: SendRequester, ...args: unknown[]) => unknown,
-				ConsensusAggregation<unknown, true>,
+				ConsensusAggregation<unknown, unknown, true>,
 				UnwrapOptions<unknown> | undefined,
 			]
 			return this.sendRequestSugarHelper(runtime, fn, consensusAggregation, unwrapOptions)
@@ -107,11 +107,11 @@ export class ClientCapability {
 			},
 		}
 	}
-	private sendRequestSugarHelper<TArgs extends unknown[], TOutput>(
+	private sendRequestSugarHelper<TArgs extends unknown[], TInput, TOutput = TInput>(
 		runtime: Runtime<unknown>,
-		fn: (sendRequester: SendRequester, ...args: TArgs) => TOutput,
-		consensusAggregation: ConsensusAggregation<TOutput, true>,
-		unwrapOptions?: TOutput extends PrimitiveTypes ? never : UnwrapOptions<TOutput>,
+		fn: (sendRequester: SendRequester, ...args: TArgs) => TInput,
+		consensusAggregation: ConsensusAggregation<TInput, TOutput, true>,
+		unwrapOptions?: TInput extends PrimitiveTypes ? never : UnwrapOptions<TInput>,
 	): (...args: TArgs) => { result: () => TOutput } {
 		const wrappedFn = (runtime: NodeRuntime<unknown>, ...args: TArgs) => {
 			const sendRequester = new SendRequester(runtime, this)

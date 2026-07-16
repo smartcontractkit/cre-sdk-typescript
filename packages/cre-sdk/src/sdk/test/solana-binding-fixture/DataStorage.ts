@@ -129,10 +129,7 @@ export const DATA_STORAGE_IDL = {
 					writable: true,
 					pda: {
 						seeds: [
-							{
-								kind: 'const',
-								value: [100, 97, 116, 97, 95, 97, 99, 99, 111, 117, 110, 116],
-							},
+							{ kind: 'const', value: [100, 97, 116, 97, 95, 97, 99, 99, 111, 117, 110, 116] },
 							{ kind: 'account', path: 'user' },
 						],
 					},
