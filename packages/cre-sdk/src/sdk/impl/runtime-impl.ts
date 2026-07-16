@@ -249,10 +249,10 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 	 * 5. Runs consensus to aggregate observations
 	 * 6. Returns aggregated result
 	 */
-	runInNodeMode<TArgs extends unknown[], TOutput>(
-		fn: (nodeRuntime: NodeRuntime<C>, ...args: TArgs) => TOutput,
-		consensusAggregation: ConsensusAggregation<TOutput, true>,
-		unwrapOptions?: TOutput extends PrimitiveTypes ? never : UnwrapOptions<TOutput>,
+	runInNodeMode<TArgs extends unknown[], TInput, TOutput = TInput>(
+		fn: (nodeRuntime: NodeRuntime<C>, ...args: TArgs) => TInput,
+		consensusAggregation: ConsensusAggregation<TInput, TOutput, true>,
+		unwrapOptions?: TInput extends PrimitiveTypes ? never : UnwrapOptions<TInput>,
 	): (...args: TArgs) => { result: () => TOutput } {
 		return (...args: TArgs): { result: () => TOutput } => {
 			// Step 1: Create node runtime and prevent DON operations
@@ -279,21 +279,21 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 			}
 
 			// Step 5: Run consensus and return lazy result
-			return this.runConsensusAndWrap(consensusInput, unwrapOptions)
+			return this.runConsensusAndWrap<TInput, TOutput>(consensusInput, unwrapOptions)
 		}
 	}
 
-	private prepareConsensusInput<TOutput>(
-		consensusAggregation: ConsensusAggregation<TOutput, true>,
+	private prepareConsensusInput<TInput, TOutput>(
+		consensusAggregation: ConsensusAggregation<TInput, TOutput, true>,
 	) {
 		const consensusInput = create(SimpleConsensusInputsSchema, {
 			descriptors: consensusAggregation.descriptor,
 		})
 
 		if (consensusAggregation.defaultValue) {
-			// Safe cast: ConsensusAggregation<T, true> implies T extends CreSerializable
+			// Safe cast: ConsensusAggregation<TInput, TOutput, true> implies TInput extends CreSerializable
 			const defaultValue = Value.from(
-				consensusAggregation.defaultValue as CreSerializable<TOutput>,
+				consensusAggregation.defaultValue as CreSerializable<TInput>,
 			).proto()
 			clearIgnoredFields(defaultValue, consensusAggregation.descriptor)
 			consensusInput.default = defaultValue
@@ -302,13 +302,13 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 		return consensusInput
 	}
 
-	private captureObservation<TOutput>(
+	private captureObservation<TInput>(
 		consensusInput: any,
-		observation: TOutput,
+		observation: TInput,
 		descriptor: ConsensusDescriptor,
 	) {
-		// Safe cast: ConsensusAggregation<T, true> implies T extends CreSerializable
-		const observationValue = Value.from(observation as CreSerializable<TOutput>).proto()
+		// Safe cast: ConsensusAggregation<TInput, TOutput, true> implies TInput extends CreSerializable
+		const observationValue = Value.from(observation as CreSerializable<TInput>).proto()
 		clearIgnoredFields(observationValue, descriptor)
 		consensusInput.observation = {
 			case: 'value',
@@ -330,9 +330,9 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 		this.helpers.switchModes(Mode.DON)
 	}
 
-	private runConsensusAndWrap<TOutput>(
+	private runConsensusAndWrap<TInput, TOutput>(
 		consensusInput: any,
-		unwrapOptions?: TOutput extends PrimitiveTypes ? never : UnwrapOptions<TOutput>,
+		unwrapOptions?: TInput extends PrimitiveTypes ? never : UnwrapOptions<TInput>,
 	): { result: () => TOutput } {
 		const consensus = new ConsensusCapability()
 		const call = consensus.simple(this, consensusInput)
@@ -342,9 +342,9 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 				const result = call.result()
 				const wrappedValue = Value.wrap(result)
 
-				return unwrapOptions
-					? wrappedValue.unwrapToType(unwrapOptions)
-					: (wrappedValue.unwrap() as TOutput)
+				return (
+					unwrapOptions ? wrappedValue.unwrapToType(unwrapOptions) : wrappedValue.unwrap()
+				) as TOutput
 			},
 		}
 	}
