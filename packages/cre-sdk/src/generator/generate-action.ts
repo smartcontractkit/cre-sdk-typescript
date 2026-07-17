@@ -121,13 +121,13 @@ export function generateActionMethod(
 
 	if (modePrefix === 'Node') {
 		const sugarClassName = `${methodName.charAt(0).toUpperCase() + methodName.slice(1)}er`
-		const sugarSig = `<TArgs extends unknown[], TOutput>(
+		const sugarSig = `<TArgs extends unknown[], TInput, TOutput = TInput>(
     runtime: Runtime<unknown>,
-    fn: (${methodName}er: ${sugarClassName}, ...args: TArgs) => TOutput,
-    consensusAggregation: ConsensusAggregation<TOutput, true>,
-    unwrapOptions?: TOutput extends PrimitiveTypes
+    fn: (${methodName}er: ${sugarClassName}, ...args: TArgs) => TInput,
+    consensusAggregation: ConsensusAggregation<TInput, TOutput, true>,
+    unwrapOptions?: TInput extends PrimitiveTypes
       ? never
-      : UnwrapOptions<TOutput>,
+      : UnwrapOptions<TInput>,
   ): (...args: TArgs) => { result: () => TOutput }`
 		return `
   ${nameAndPublicSigs}
@@ -135,7 +135,7 @@ export function generateActionMethod(
   ${methodName}(...args: unknown[]): unknown {
     // Check if this is the sugar syntax overload (has function parameter)
     if (typeof args[1] === 'function') {
-      const [runtime, fn, consensusAggregation, unwrapOptions] = args as [Runtime<unknown>, (${methodName}er: ${sugarClassName}, ...args: unknown[]) => unknown, ConsensusAggregation<unknown, true>, UnwrapOptions<unknown> | undefined]
+      const [runtime, fn, consensusAggregation, unwrapOptions] = args as [Runtime<unknown>, (${methodName}er: ${sugarClassName}, ...args: unknown[]) => unknown, ConsensusAggregation<unknown, unknown, true>, UnwrapOptions<unknown> | undefined]
       return this.${methodName}SugarHelper(runtime, fn, consensusAggregation, unwrapOptions)
     }
     // Otherwise, this is the basic call overload

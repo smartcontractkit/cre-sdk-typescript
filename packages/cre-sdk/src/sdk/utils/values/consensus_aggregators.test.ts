@@ -8,8 +8,11 @@ import {
 	commonSuffix,
 	consensusCommonPrefixAggregation,
 	consensusCommonSuffixAggregation,
+	consensusFrequencyListAggregation,
 	consensusIdenticalAggregation,
 	consensusMedianAggregation,
+	type FrequencyListEntry,
+	frequencyList,
 	identical,
 	ignore,
 	median,
@@ -21,40 +24,56 @@ import {
 describe('test consensus', () => {
 	test('median', () => {
 		assertSimpleConsensus(consensusMedianAggregation<number>(), AggregationType.MEDIAN)
-		usableForConsensus<number, true>(consensusMedianAggregation<number>())
-		usableForConsensus<bigint, true>(consensusMedianAggregation<bigint>())
-		usableForConsensus<Date, true>(consensusMedianAggregation<Date>())
+		usableForConsensus<number, number, true>(consensusMedianAggregation<number>())
+		usableForConsensus<bigint, bigint, true>(consensusMedianAggregation<bigint>())
+		usableForConsensus<Date, Date, true>(consensusMedianAggregation<Date>())
 		// Restrictions on consensusMedianAggregation won't allow other types
 	})
 
 	test('identical', () => {
 		assertSimpleConsensus(consensusIdenticalAggregation<number>(), AggregationType.IDENTICAL)
-		usableForConsensus<number, true>(consensusIdenticalAggregation<number>())
-		usableForConsensus<bigint, true>(consensusIdenticalAggregation<bigint>())
-		usableForConsensus<Date, true>(consensusIdenticalAggregation<Date>())
-		usableForConsensus<string, true>(consensusIdenticalAggregation<string>())
-		usableForConsensus<boolean, true>(consensusIdenticalAggregation<boolean>())
-		usableForConsensus<RegExp, false>(consensusIdenticalAggregation<RegExp>())
+		usableForConsensus<number, number, true>(consensusIdenticalAggregation<number>())
+		usableForConsensus<bigint, bigint, true>(consensusIdenticalAggregation<bigint>())
+		usableForConsensus<Date, Date, true>(consensusIdenticalAggregation<Date>())
+		usableForConsensus<string, string, true>(consensusIdenticalAggregation<string>())
+		usableForConsensus<boolean, boolean, true>(consensusIdenticalAggregation<boolean>())
+		usableForConsensus<RegExp, RegExp, false>(consensusIdenticalAggregation<RegExp>())
 	})
 
 	test('common prefix', () => {
 		assertSimpleConsensus(consensusCommonPrefixAggregation<number>(), AggregationType.COMMON_PREFIX)
-		usableForConsensus<number[], true>(consensusCommonPrefixAggregation())
-		usableForConsensus<bigint[], true>(consensusCommonPrefixAggregation())
-		usableForConsensus<Date[], true>(consensusCommonPrefixAggregation())
-		usableForConsensus<string[], true>(consensusCommonPrefixAggregation())
-		usableForConsensus<boolean[], true>(consensusCommonPrefixAggregation())
-		usableForConsensus<RegExp[], false>(consensusCommonPrefixAggregation())
+		usableForConsensus<number[], number[], true>(consensusCommonPrefixAggregation())
+		usableForConsensus<bigint[], bigint[], true>(consensusCommonPrefixAggregation())
+		usableForConsensus<Date[], Date[], true>(consensusCommonPrefixAggregation())
+		usableForConsensus<string[], string[], true>(consensusCommonPrefixAggregation())
+		usableForConsensus<boolean[], boolean[], true>(consensusCommonPrefixAggregation())
+		usableForConsensus<RegExp[], RegExp[], false>(consensusCommonPrefixAggregation())
 	})
 
-	test('common prefix', () => {
+	test('common suffix', () => {
 		assertSimpleConsensus(consensusCommonSuffixAggregation<number>(), AggregationType.COMMON_SUFFIX)
-		usableForConsensus<number[], true>(consensusCommonSuffixAggregation<number>())
-		usableForConsensus<bigint[], true>(consensusCommonSuffixAggregation<bigint>())
-		usableForConsensus<Date[], true>(consensusCommonSuffixAggregation<Date>())
-		usableForConsensus<string[], true>(consensusCommonSuffixAggregation<string>())
-		usableForConsensus<boolean[], true>(consensusCommonSuffixAggregation<boolean>())
-		usableForConsensus<RegExp[], false>(consensusCommonSuffixAggregation<RegExp>())
+		usableForConsensus<number[], number[], true>(consensusCommonSuffixAggregation<number>())
+		usableForConsensus<bigint[], bigint[], true>(consensusCommonSuffixAggregation<bigint>())
+		usableForConsensus<Date[], Date[], true>(consensusCommonSuffixAggregation<Date>())
+		usableForConsensus<string[], string[], true>(consensusCommonSuffixAggregation<string>())
+		usableForConsensus<boolean[], boolean[], true>(consensusCommonSuffixAggregation<boolean>())
+		usableForConsensus<RegExp[], RegExp[], false>(consensusCommonSuffixAggregation<RegExp>())
+	})
+
+	test('frequency list', () => {
+		assertSimpleConsensus(
+			consensusFrequencyListAggregation<number>(),
+			AggregationType.FREQUENCY_LIST,
+		)
+		usableForConsensus<number[], FrequencyListEntry<number>[], true>(
+			consensusFrequencyListAggregation<number>(),
+		)
+		usableForConsensus<string[], FrequencyListEntry<string>[], true>(
+			consensusFrequencyListAggregation<string>(),
+		)
+		usableForConsensus<RegExp[], FrequencyListEntry<RegExp>[], false>(
+			consensusFrequencyListAggregation<RegExp>(),
+		)
 	})
 
 	test('with default adds default', () => {
@@ -134,6 +153,15 @@ describe('test consensus', () => {
 			usableForFieldConsensus<RegExp[], false>(commonSuffix)
 		})
 
+		test('frequency list', () => {
+			const consensusAggregation = ConsensusAggregationByFields<SimpleFieldType<Uint8Array>>({
+				f1: frequencyList,
+				f2: frequencyList,
+			})
+			assertFieldConsensus(consensusAggregation, AggregationType.FREQUENCY_LIST)
+			usableForFieldConsensus<Uint8Array, true>(frequencyList)
+		})
+
 		test('ignore', () => {
 			const consensusAggregation = ConsensusAggregationByFields<InvalidFieldType>({
 				f1: identical,
@@ -146,13 +174,16 @@ describe('test consensus', () => {
 	})
 })
 
-function assertSimpleConsensus<T>(c: ConsensusAggregation<T, true>, expected: AggregationType) {
+function assertSimpleConsensus<T>(
+	c: ConsensusAggregation<T, any, true>,
+	expected: AggregationType,
+) {
 	expect(c.defaultValue).toBeUndefined()
 	const actual = expectCase(c.descriptor, 'aggregation')
 	expect(actual).toEqual(expected)
 }
 
-function assertFieldConsensus<T>(c: ConsensusAggregation<T, true>, expected: AggregationType) {
+function assertFieldConsensus<T>(c: ConsensusAggregation<T, any, true>, expected: AggregationType) {
 	expect(c.defaultValue).toBeUndefined()
 	const actual = expectCase(c.descriptor, 'fieldsMap').fields
 	const entries = Object.entries(actual)
@@ -198,7 +229,9 @@ class InvalidFieldType {
 	) {}
 }
 
-function usableForConsensus<T, U>(a: ConsensusAggregation<T, U>): ConsensusAggregation<T, U> {
+function usableForConsensus<TInput, TOutput, U>(
+	a: ConsensusAggregation<TInput, TOutput, U>,
+): ConsensusAggregation<TInput, TOutput, U> {
 	return a
 }
 

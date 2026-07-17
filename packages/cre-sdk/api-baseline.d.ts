@@ -87,7 +87,7 @@ export interface Runtime<C> extends BaseRuntime<C>, SecretsProvider {
      * @param unwrapOptions - Optional unwrapping config for complex return types
      * @returns Wrapped function that returns aggregated result
      */
-    runInNodeMode<TArgs extends unknown[], TOutput>(fn: (nodeRuntime: NodeRuntime<C>, ...args: TArgs) => TOutput, consensusAggregation: ConsensusAggregation<TOutput, true>, unwrapOptions?: TOutput extends PrimitiveTypes ? never : UnwrapOptions<TOutput>): (...args: TArgs) => {
+    runInNodeMode<TArgs extends unknown[], TInput, TOutput = TInput>(fn: (nodeRuntime: NodeRuntime<C>, ...args: TArgs) => TInput, consensusAggregation: ConsensusAggregation<TInput, TOutput, true>, unwrapOptions?: TInput extends PrimitiveTypes ? never : UnwrapOptions<TInput>): (...args: TArgs) => {
         result: () => TOutput;
     };
     report(input: ReportRequest | ReportRequestJson): {

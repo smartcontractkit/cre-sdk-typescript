@@ -1,7 +1,7 @@
 import type { Decimal, Int64, UInt64 } from './value'
 
 export type NumericType = number | bigint | Date | Decimal | Int64 | UInt64
-export type PrimitiveTypes = NumericType | boolean | string
+export type PrimitiveTypes = NumericType | boolean | string | Uint8Array
 export type NonSerializable =
 	| null
 	| Map<unknown, unknown>
