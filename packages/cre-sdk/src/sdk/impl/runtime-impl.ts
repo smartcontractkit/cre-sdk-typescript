@@ -19,6 +19,7 @@ import {
 	type SecretRequest,
 	type SecretRequestJson,
 	SecretRequestSchema,
+	type SecretResponse,
 	SimpleConsensusInputsSchema,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import type { Value as ProtoValue } from '@cre/generated/values/v1/values_pb'
@@ -39,7 +40,13 @@ import {
 	type UnwrapOptions,
 	Value,
 } from '@cre/sdk/utils'
-import { CapabilityRuntimeError, DonModeError, NodeModeError, SecretsError } from '../errors'
+import {
+	CapabilityRuntimeError,
+	DonModeError,
+	NodeModeError,
+	SecretsBatchError,
+	SecretsError,
+} from '../errors'
 
 const DEFAULT_SECRET_NAMESPACE = 'main'
 
@@ -349,8 +356,8 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 		}
 	}
 
-	getSecret(request: SecretRequest | SecretRequestJson): {
-		result: () => Secret
+	getSecrets(requests: Array<SecretRequest | SecretRequestJson>): {
+		result: () => Record<string, Secret>
 	} {
 		// Enforce mode restrictions
 		if (this.modeError) {
@@ -361,17 +368,46 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 			}
 		}
 
-		const secretRequest = create(SecretRequestSchema, {
-			id: request.id,
-			namespace: request.namespace || DEFAULT_SECRET_NAMESPACE,
-		})
+		// Normalize requests (accept both protobuf and JSON formats)
+		const normalizedRequests = requests.map((request) =>
+			(request as unknown as { $typeName?: string }).$typeName
+				? create(SecretRequestSchema, {
+						id: (request as SecretRequest).id,
+						namespace: (request as SecretRequest).namespace || DEFAULT_SECRET_NAMESPACE,
+					})
+				: create(SecretRequestSchema, {
+						id: request.id,
+						namespace: request.namespace || DEFAULT_SECRET_NAMESPACE,
+					}),
+		)
+		if (normalizedRequests.length === 0) {
+			return {
+				result: () => ({}),
+			}
+		}
+
+		// Reject duplicate ids since the response is keyed by id
+		const seenIds = new Set<string>()
+		for (const request of normalizedRequests) {
+			if (seenIds.has(request.id)) {
+				return {
+					result: () => {
+						throw new SecretsBatchError(
+							normalizedRequests,
+							`duplicate secret id requested: ${request.id}`,
+						)
+					},
+				}
+			}
+			seenIds.add(request.id)
+		}
 
 		// Allocate callback ID and send request
 		const id = this.nextCallId
 		this.nextCallId++
 		const secretsReq = create(GetSecretsRequestSchema, {
 			callbackId: id,
-			requests: [secretRequest],
+			requests: normalizedRequests,
 		})
 
 		try {
@@ -380,46 +416,95 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 			const message = err instanceof Error ? err.message : String(err)
 			return {
 				result: () => {
-					throw new SecretsError(secretRequest, message)
+					throw new SecretsBatchError(normalizedRequests, message)
 				},
 			}
 		}
 
 		// Return lazy result
 		return {
-			result: () => this.awaitAndUnwrapSecret(id, secretRequest),
+			result: () => this.awaitAndUnwrapSecrets(id, normalizedRequests),
 		}
 	}
 
-	private awaitAndUnwrapSecret(id: number, secretRequest: SecretRequest): Secret {
+	getSecret(request: SecretRequest | SecretRequestJson): {
+		result: () => Secret
+	} {
+		const secretRequest = (request as unknown as { $typeName?: string }).$typeName
+			? (request as SecretRequest)
+			: create(SecretRequestSchema, request)
+
+		const getSecretsCall = this.getSecrets([secretRequest])
+		return {
+			result: () => {
+				let secretMap: Record<string, Secret>
+				try {
+					secretMap = getSecretsCall.result()
+				} catch (err) {
+					if (err instanceof SecretsBatchError) {
+						throw new SecretsError(secretRequest, err.error)
+					}
+					throw err
+				}
+
+				return this.unwrapSingleSecretResult(secretMap, secretRequest)
+			},
+		}
+	}
+
+	private awaitAndUnwrapSecrets(id: number, requests: SecretRequest[]): Record<string, Secret> {
 		const awaitRequest = create(AwaitSecretsRequestSchema, { ids: [id] })
 		let awaitResponse: AwaitSecretsResponse
 		try {
 			awaitResponse = this.helpers.awaitSecrets(awaitRequest, this.maxResponseSize)
 		} catch (err) {
 			const message = err instanceof Error ? err.message : String(err)
-			throw new SecretsError(secretRequest, message)
+			throw new SecretsBatchError(requests, message)
 		}
 		const secretsResponse = awaitResponse.responses[id]
 
 		if (!secretsResponse) {
-			throw new SecretsError(secretRequest, 'no response')
+			throw new SecretsBatchError(requests, 'no response')
 		}
 
-		const responses = secretsResponse.responses
-		if (responses.length !== 1) {
-			throw new SecretsError(secretRequest, 'invalid value returned from host')
+		if (secretsResponse.responses.length !== requests.length) {
+			throw new SecretsBatchError(requests, 'invalid value returned from host')
 		}
 
-		const response = responses[0].response
-		switch (response.case) {
-			case 'secret':
-				return response.value
-			case 'error':
-				throw new SecretsError(secretRequest, response.value.error)
-			default:
-				throw new SecretsError(secretRequest, 'cannot unmarshal returned value from host')
+		const failedResponses = secretsResponse.responses.filter(
+			(response) => response.response.case === 'error',
+		)
+		if (failedResponses.length > 0) {
+			const errorMessages = failedResponses.map((response) => {
+				if (response.response.case !== 'error') {
+					return 'unknown: unknown error'
+				}
+				const { id, error } = response.response.value
+				return `${id || 'unknown'}: ${error || 'unknown error'}`
+			})
+			throw new SecretsBatchError(requests, errorMessages.join('\n'))
 		}
+
+		const result: Record<string, Secret> = {}
+		for (let i = 0; i < requests.length; i++) {
+			const response = secretsResponse.responses[i]
+			if (response.response.case !== 'secret') {
+				throw new SecretsBatchError(requests, 'cannot unmarshal returned value from host')
+			}
+			result[requests[i].id] = response.response.value
+		}
+		return result
+	}
+
+	private unwrapSingleSecretResult(
+		secretMap: Record<string, Secret>,
+		request: SecretRequest,
+	): Secret {
+		const secret = secretMap[request.id]
+		if (!secret) {
+			throw new SecretsError(request, 'invalid value returned from host')
+		}
+		return secret
 	}
 
 	/**

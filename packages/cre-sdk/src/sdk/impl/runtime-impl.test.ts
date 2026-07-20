@@ -54,7 +54,13 @@ import {
 	median,
 	Value,
 } from '@cre/sdk/utils'
-import { CapabilityRuntimeError, DonModeError, NodeModeError, SecretsError } from '../errors'
+import {
+	CapabilityRuntimeError,
+	DonModeError,
+	NodeModeError,
+	SecretsBatchError,
+	SecretsError,
+} from '../errors'
 import { RESPONSE_BUFFER_TOO_SMALL } from '../testutils/test-runtime'
 import { type RuntimeHelpers, RuntimeImpl } from './runtime-impl'
 
@@ -420,6 +426,273 @@ describe('test sleep delegates to helpers', () => {
 })
 
 describe('test getSecret', () => {
+	test('getSecrets returns dict of secrets keyed by id', () => {
+		const helpers = createRuntimeHelpersMock({
+			getSecrets: mock((request) => {
+				expect(request.callbackId).toEqual(1)
+				expect(request.requests.length).toEqual(2)
+				expect(request.requests[0].id).toEqual('secret-1')
+				expect(request.requests[1].id).toEqual('secret-2')
+			}),
+			awaitSecrets: mock((request) => {
+				expect(request.ids.length).toEqual(1)
+				expect(request.ids[0]).toEqual(1)
+				return create(AwaitSecretsResponseSchema, {
+					responses: {
+						1: create(SecretResponsesSchema, {
+							responses: [
+								create(SecretResponseSchema, {
+									response: {
+										case: 'secret',
+										value: {
+											id: 'secret-1',
+											namespace: 'ns',
+											owner: 'owner-1',
+											value: 'value-1',
+										},
+									},
+								}),
+								create(SecretResponseSchema, {
+									response: {
+										case: 'secret',
+										value: {
+											id: 'secret-2',
+											namespace: 'ns',
+											owner: 'owner-2',
+											value: 'value-2',
+										},
+									},
+								}),
+							],
+						}),
+					},
+				})
+			}),
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		const secrets = runtime
+			.getSecrets([
+				{ id: 'secret-1', namespace: 'ns' },
+				{ id: 'secret-2', namespace: 'ns' },
+			])
+			.result()
+
+		expect(Object.keys(secrets)).toHaveLength(2)
+		expect(secrets['secret-1'].id).toEqual('secret-1')
+		expect(secrets['secret-1'].value).toEqual('value-1')
+		expect(secrets['secret-2'].id).toEqual('secret-2')
+		expect(secrets['secret-2'].value).toEqual('value-2')
+	})
+
+	test('getSecrets throws SecretsBatchError for duplicate secret ids', () => {
+		const helpers = createRuntimeHelpersMock({
+			getSecrets: mock(() => {
+				throw new Error('host should not be called for duplicate ids')
+			}),
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		expect(() =>
+			runtime
+				.getSecrets([
+					{ id: 'same-id', namespace: 'ns1' },
+					{ id: 'same-id', namespace: 'ns2' },
+				])
+				.result(),
+		).toThrow(SecretsBatchError)
+		expect(() =>
+			runtime
+				.getSecrets([
+					{ id: 'same-id', namespace: 'ns1' },
+					{ id: 'same-id', namespace: 'ns2' },
+				])
+				.result(),
+		).toThrow('duplicate secret id requested: same-id')
+	})
+
+	test('getSecrets throws SecretsBatchError when any secret fails', () => {
+		const helpers = createRuntimeHelpersMock({
+			getSecrets: mock(() => undefined),
+			awaitSecrets: mock(() => {
+				return create(AwaitSecretsResponseSchema, {
+					responses: {
+						1: create(SecretResponsesSchema, {
+							responses: [
+								create(SecretResponseSchema, {
+									response: {
+										case: 'secret',
+										value: {
+											id: 'ok-secret',
+											namespace: 'ns',
+											owner: 'owner',
+											value: 'ok-value',
+										},
+									},
+								}),
+								create(SecretResponseSchema, {
+									response: {
+										case: 'error',
+										value: {
+											id: 'missing-secret',
+											namespace: 'ns',
+											owner: 'owner',
+											error: 'secret not found',
+										},
+									},
+								}),
+							],
+						}),
+					},
+				})
+			}),
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		try {
+			runtime
+				.getSecrets([
+					{ id: 'ok-secret', namespace: 'ns' },
+					{ id: 'missing-secret', namespace: 'ns' },
+				])
+				.result()
+			throw new Error('expected getSecrets to throw')
+		} catch (err) {
+			expect(err).toBeInstanceOf(SecretsBatchError)
+			expect((err as SecretsBatchError).message).toContain('missing-secret: secret not found')
+		}
+	})
+
+	test('getSecrets throws SecretsBatchError with all error messages when multiple secrets fail', () => {
+		const helpers = createRuntimeHelpersMock({
+			getSecrets: mock(() => undefined),
+			awaitSecrets: mock(() => {
+				return create(AwaitSecretsResponseSchema, {
+					responses: {
+						1: create(SecretResponsesSchema, {
+							responses: [
+								create(SecretResponseSchema, {
+									response: {
+										case: 'error',
+										value: {
+											id: 'missing-a',
+											namespace: 'ns',
+											owner: 'owner',
+											error: 'not found',
+										},
+									},
+								}),
+								create(SecretResponseSchema, {
+									response: {
+										case: 'error',
+										value: {
+											id: 'missing-b',
+											namespace: 'ns',
+											owner: 'owner',
+											error: 'access denied',
+										},
+									},
+								}),
+							],
+						}),
+					},
+				})
+			}),
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		try {
+			runtime
+				.getSecrets([
+					{ id: 'missing-a', namespace: 'ns' },
+					{ id: 'missing-b', namespace: 'ns' },
+				])
+				.result()
+			throw new Error('expected getSecrets to throw')
+		} catch (err) {
+			expect(err).toBeInstanceOf(SecretsBatchError)
+			expect((err as SecretsBatchError).message).toContain('missing-a: not found')
+			expect((err as SecretsBatchError).message).toContain('missing-b: access denied')
+		}
+	})
+
+	test('normalizes missing secret namespace to default for JSON and protobuf requests', () => {
+		const observedNamespaces: string[] = []
+		const helpers = createRuntimeHelpersMock({
+			getSecrets: mock((request) => {
+				expect(request.requests.length).toEqual(1)
+				observedNamespaces.push(request.requests[0].namespace)
+			}),
+			awaitSecrets: mock((request) => {
+				const id = request.ids[0]
+				return create(AwaitSecretsResponseSchema, {
+					responses: {
+						[id]: create(SecretResponsesSchema, {
+							responses: [
+								create(SecretResponseSchema, {
+									response: {
+										case: 'secret',
+										value: {
+											id: 'secret',
+											namespace: 'main',
+											owner: 'owner',
+											value: 'value',
+										},
+									},
+								}),
+							],
+						}),
+					},
+				})
+			}),
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		runtime.getSecret({ id: 'json-secret' }).result()
+		runtime.getSecret(create(SecretRequestSchema, { id: 'proto-secret' })).result()
+
+		expect(observedNamespaces).toEqual(['main', 'main'])
+	})
+
+	test('getSecrets throws SecretsBatchError when host getSecrets call fails', () => {
+		const helpers = createRuntimeHelpersMock({
+			getSecrets: mock(() => {
+				throw new Error('vault: signer unreachable')
+			}),
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		expect(() =>
+			runtime
+				.getSecrets([
+					{ id: 'secret-a', namespace: 'ns' },
+					{ id: 'secret-b', namespace: 'ns' },
+				])
+				.result(),
+		).toThrow(SecretsBatchError)
+	})
+
+	test('getSecrets throws SecretsBatchError for malformed batched response envelope', () => {
+		const helpers = createRuntimeHelpersMock({
+			getSecrets: mock(() => undefined),
+			awaitSecrets: mock(() =>
+				create(AwaitSecretsResponseSchema, {
+					responses: {},
+				}),
+			),
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		expect(() =>
+			runtime
+				.getSecrets([
+					{ id: 'secret-a', namespace: 'ns' },
+					{ id: 'secret-b', namespace: 'ns' },
+				])
+				.result(),
+		).toThrow(SecretsBatchError)
+	})
+
 	test('successfully gets secret with SecretRequest (proto message)', () => {
 		const secretRequest = create(SecretRequestSchema, {
 			id: 'my-secret',
@@ -501,44 +774,6 @@ describe('test getSecret', () => {
 		expect(result.id).toEqual('another-secret')
 		expect(result.namespace).toEqual('another-ns')
 		expect(result.value).toEqual('value-456')
-	})
-
-	test('normalizes missing secret namespace to default for JSON and protobuf requests', () => {
-		const observedNamespaces: string[] = []
-		const helpers = createRuntimeHelpersMock({
-			getSecrets: mock((request) => {
-				expect(request.requests.length).toEqual(1)
-				observedNamespaces.push(request.requests[0].namespace)
-			}),
-			awaitSecrets: mock((request) => {
-				const id = request.ids[0]
-				return create(AwaitSecretsResponseSchema, {
-					responses: {
-						[id]: create(SecretResponsesSchema, {
-							responses: [
-								create(SecretResponseSchema, {
-									response: {
-										case: 'secret',
-										value: {
-											id: 'secret',
-											namespace: 'main',
-											owner: 'owner',
-											value: 'value',
-										},
-									},
-								}),
-							],
-						}),
-					},
-				})
-			}),
-		})
-
-		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
-		runtime.getSecret({ id: 'json-secret' }).result()
-		runtime.getSecret(create(SecretRequestSchema, { id: 'proto-secret' })).result()
-
-		expect(observedNamespaces).toEqual(['main', 'main'])
 	})
 
 	test('getSecrets throws → wrapped as SecretsError', () => {
@@ -677,7 +912,10 @@ describe('test getSecret', () => {
 						1: create(SecretResponsesSchema, {
 							responses: [
 								create(SecretResponseSchema, {
-									response: { case: 'error', value: { error: errorMessage } },
+									response: {
+										case: 'error',
+										value: { id: 'test-secret', error: errorMessage },
+									},
 								}),
 							],
 						}),
@@ -688,7 +926,7 @@ describe('test getSecret', () => {
 
 		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
 		expect(() => runtime.getSecret(secretRequest).result()).toThrow(
-			new SecretsError(secretRequest, errorMessage),
+			new SecretsError(secretRequest, 'test-secret: secret not found'),
 		)
 	})
 

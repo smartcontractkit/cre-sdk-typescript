@@ -29,7 +29,7 @@ export class Runner<TConfig> {
 
 	private static getRequest(): ExecuteRequest {
 		const argsString = hostBindings.getWasiArgs()
-		let args
+		let args: any
 		try {
 			args = JSON.parse(argsString)
 		} catch (e) {
@@ -64,6 +64,7 @@ export class Runner<TConfig> {
 		let result: Promise<ExecutionResult> | ExecutionResult
 		try {
 			const workflow = await initFn(this.config, {
+				getSecrets: runtime.getSecrets.bind(runtime),
 				getSecret: runtime.getSecret.bind(runtime),
 			})
 

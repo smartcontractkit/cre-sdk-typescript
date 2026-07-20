@@ -298,11 +298,19 @@ describe('runner', () => {
 
 		const dr = getTestRunner(subscribeRequest)
 		await (await dr).run(async (_: string, secretsProvider: SecretsProvider) => {
-			const secret = await secretsProvider.getSecret({ namespace: 'Foo', id: 'Bar' }).result()
-			expect(secret.namespace).toBe('Foo')
-			expect(secret.id).toBe('Bar')
-			expect(secret.owner).toBe('Baz')
-			expect(secret.value).toBe('Qux')
+			const batched = await secretsProvider.getSecrets([{ namespace: 'Foo', id: 'Bar' }]).result()
+			expect(Object.keys(batched)).toHaveLength(1)
+			expect(batched['Bar'].namespace).toBe('Foo')
+			expect(batched['Bar'].id).toBe('Bar')
+			expect(batched['Bar'].owner).toBe('Baz')
+			expect(batched['Bar'].value).toBe('Qux')
+
+			// Keep compatibility coverage for single-secret API.
+			const single = await secretsProvider.getSecret({ namespace: 'Foo', id: 'Bar' }).result()
+			expect(single.namespace).toBe('Foo')
+			expect(single.id).toBe('Bar')
+			expect(single.owner).toBe('Baz')
+			expect(single.value).toBe('Qux')
 			return [cre.handler(basicTrigger.trigger({}), () => 10)]
 		})
 		expect(true).toBe(true)
