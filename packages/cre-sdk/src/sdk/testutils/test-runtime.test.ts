@@ -202,6 +202,28 @@ describe('TestRuntime / helper layer', () => {
 		expect(result.namespace).toBe('ns1')
 	})
 
+	test('helper getSecrets: batched call returns secrets keyed by id', () => {
+		const secrets = new Map<string, Map<string, string>>()
+		secrets.set(
+			'ns1',
+			new Map([
+				['id1', 'val1'],
+				['id2', 'val2'],
+			]),
+		)
+		const rt = newTestRuntime(secrets)
+
+		const result = rt
+			.getSecrets([
+				{ id: 'id1', namespace: 'ns1' },
+				{ id: 'id2', namespace: 'ns1' },
+			])
+			.result()
+		expect(Object.keys(result)).toHaveLength(2)
+		expect(result['id1'].value).toBe('val1')
+		expect(result['id2'].value).toBe('val2')
+	})
+
 	test('helper getSecrets: batched call throws SecretsBatchError when any secret fails', () => {
 		const secrets = new Map<string, Map<string, string>>()
 		secrets.set('ns1', new Map([['id1', 'val1']]))

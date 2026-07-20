@@ -426,7 +426,7 @@ describe('test sleep delegates to helpers', () => {
 })
 
 describe('test getSecret', () => {
-	test('getSecrets returns ordered batched responses', () => {
+	test('getSecrets returns dict of secrets keyed by id', () => {
 		const helpers = createRuntimeHelpersMock({
 			getSecrets: mock((request) => {
 				expect(request.callbackId).toEqual(1)
@@ -471,22 +471,44 @@ describe('test getSecret', () => {
 		})
 
 		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
-		const responses = runtime
+		const secrets = runtime
 			.getSecrets([
 				{ id: 'secret-1', namespace: 'ns' },
 				{ id: 'secret-2', namespace: 'ns' },
 			])
 			.result()
 
-		expect(responses.length).toEqual(2)
-		expect(responses[0].response.case).toEqual('secret')
-		expect(responses[1].response.case).toEqual('secret')
-		if (responses[0].response.case === 'secret') {
-			expect(responses[0].response.value.id).toEqual('secret-1')
-		}
-		if (responses[1].response.case === 'secret') {
-			expect(responses[1].response.value.id).toEqual('secret-2')
-		}
+		expect(Object.keys(secrets)).toHaveLength(2)
+		expect(secrets['secret-1'].id).toEqual('secret-1')
+		expect(secrets['secret-1'].value).toEqual('value-1')
+		expect(secrets['secret-2'].id).toEqual('secret-2')
+		expect(secrets['secret-2'].value).toEqual('value-2')
+	})
+
+	test('getSecrets throws SecretsBatchError for duplicate secret ids', () => {
+		const helpers = createRuntimeHelpersMock({
+			getSecrets: mock(() => {
+				throw new Error('host should not be called for duplicate ids')
+			}),
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		expect(() =>
+			runtime
+				.getSecrets([
+					{ id: 'same-id', namespace: 'ns1' },
+					{ id: 'same-id', namespace: 'ns2' },
+				])
+				.result(),
+		).toThrow(SecretsBatchError)
+		expect(() =>
+			runtime
+				.getSecrets([
+					{ id: 'same-id', namespace: 'ns1' },
+					{ id: 'same-id', namespace: 'ns2' },
+				])
+				.result(),
+		).toThrow('duplicate secret id requested: same-id')
 	})
 
 	test('getSecrets throws SecretsBatchError when any secret fails', () => {

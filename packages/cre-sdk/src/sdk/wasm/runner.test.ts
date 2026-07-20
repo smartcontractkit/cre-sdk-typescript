@@ -299,14 +299,11 @@ describe('runner', () => {
 		const dr = getTestRunner(subscribeRequest)
 		await (await dr).run(async (_: string, secretsProvider: SecretsProvider) => {
 			const batched = await secretsProvider.getSecrets([{ namespace: 'Foo', id: 'Bar' }]).result()
-			expect(batched.length).toBe(1)
-			expect(batched[0].response.case).toBe('secret')
-			if (batched[0].response.case === 'secret') {
-				expect(batched[0].response.value.namespace).toBe('Foo')
-				expect(batched[0].response.value.id).toBe('Bar')
-				expect(batched[0].response.value.owner).toBe('Baz')
-				expect(batched[0].response.value.value).toBe('Qux')
-			}
+			expect(Object.keys(batched)).toHaveLength(1)
+			expect(batched['Bar'].namespace).toBe('Foo')
+			expect(batched['Bar'].id).toBe('Bar')
+			expect(batched['Bar'].owner).toBe('Baz')
+			expect(batched['Bar'].value).toBe('Qux')
 
 			// Keep compatibility coverage for single-secret API.
 			const single = await secretsProvider.getSecret({ namespace: 'Foo', id: 'Bar' }).result()

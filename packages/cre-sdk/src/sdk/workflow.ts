@@ -1,10 +1,5 @@
 import type { Message } from '@bufbuild/protobuf'
-import type {
-	Secret,
-	SecretRequest,
-	SecretRequestJson,
-	SecretResponse,
-} from '@cre/generated/sdk/v1alpha/sdk_pb'
+import type { Secret, SecretRequest, SecretRequestJson } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import type { Runtime } from '@cre/sdk/runtime'
 import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 import type { CreSerializable } from './utils'
@@ -41,7 +36,7 @@ export const handler = <
 
 export type SecretsProvider = {
 	getSecrets(requests: Array<SecretRequest | SecretRequestJson>): {
-		result: () => SecretResponse[]
+		result: () => Record<string, Secret>
 	}
 	getSecret(request: SecretRequest | SecretRequestJson): {
 		result: () => Secret

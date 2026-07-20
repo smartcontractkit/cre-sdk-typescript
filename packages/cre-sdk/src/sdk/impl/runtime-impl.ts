@@ -357,7 +357,7 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 	}
 
 	getSecrets(requests: Array<SecretRequest | SecretRequestJson>): {
-		result: () => SecretResponse[]
+		result: () => Record<string, Secret>
 	} {
 		// Enforce mode restrictions
 		if (this.modeError) {
@@ -382,8 +382,24 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 		)
 		if (normalizedRequests.length === 0) {
 			return {
-				result: () => [],
+				result: () => ({}),
 			}
+		}
+
+		// Reject duplicate ids since the response is keyed by id
+		const seenIds = new Set<string>()
+		for (const request of normalizedRequests) {
+			if (seenIds.has(request.id)) {
+				return {
+					result: () => {
+						throw new SecretsBatchError(
+							normalizedRequests,
+							`duplicate secret id requested: ${request.id}`,
+						)
+					},
+				}
+			}
+			seenIds.add(request.id)
 		}
 
 		// Allocate callback ID and send request
@@ -421,9 +437,9 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 		const getSecretsCall = this.getSecrets([secretRequest])
 		return {
 			result: () => {
-				let responseList: SecretResponse[]
+				let secretMap: Record<string, Secret>
 				try {
-					responseList = getSecretsCall.result()
+					secretMap = getSecretsCall.result()
 				} catch (err) {
 					if (err instanceof SecretsBatchError) {
 						throw new SecretsError(secretRequest, err.error)
@@ -431,12 +447,12 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 					throw err
 				}
 
-				return this.unwrapSingleSecretResult(responseList, secretRequest)
+				return this.unwrapSingleSecretResult(secretMap, secretRequest)
 			},
 		}
 	}
 
-	private awaitAndUnwrapSecrets(id: number, requests: SecretRequest[]): SecretResponse[] {
+	private awaitAndUnwrapSecrets(id: number, requests: SecretRequest[]): Record<string, Secret> {
 		const awaitRequest = create(AwaitSecretsRequestSchema, { ids: [id] })
 		let awaitResponse: AwaitSecretsResponse
 		try {
@@ -469,23 +485,26 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 			throw new SecretsBatchError(requests, errorMessages.join('\n'))
 		}
 
-		return secretsResponse.responses
+		const result: Record<string, Secret> = {}
+		for (let i = 0; i < requests.length; i++) {
+			const response = secretsResponse.responses[i]
+			if (response.response.case !== 'secret') {
+				throw new SecretsBatchError(requests, 'cannot unmarshal returned value from host')
+			}
+			result[requests[i].id] = response.response.value
+		}
+		return result
 	}
 
-	private unwrapSingleSecretResult(responseList: SecretResponse[], request: SecretRequest): Secret {
-		if (responseList.length !== 1) {
+	private unwrapSingleSecretResult(
+		secretMap: Record<string, Secret>,
+		request: SecretRequest,
+	): Secret {
+		const secret = secretMap[request.id]
+		if (!secret) {
 			throw new SecretsError(request, 'invalid value returned from host')
 		}
-
-		const response = responseList[0].response
-		switch (response.case) {
-			case 'secret':
-				return response.value
-			case 'error':
-				throw new SecretsError(request, response.value.error)
-			default:
-				throw new SecretsError(request, 'cannot unmarshal returned value from host')
-		}
+		return secret
 	}
 
 	/**
