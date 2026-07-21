@@ -56,11 +56,11 @@ export class FrequencyListEntry<T> {
 }
 
 export function consensusFrequencyListAggregation<T>(): ConsensusAggregation<
-	T[],
+	T,
 	FrequencyListEntry<T>[],
-	TypeVerifier<T[], CreSerializable<T[]>>
+	TypeVerifier<T, CreSerializable<T>>
 > {
-	return simpleConsensus<T[], FrequencyListEntry<T>[]>(AggregationType.FREQUENCY_LIST)
+	return simpleConsensus<T, FrequencyListEntry<T>[]>(AggregationType.FREQUENCY_LIST)
 }
 
 class ConsensusImpl<TInput, TOutput, U> implements ConsensusAggregation<TInput, TOutput, U> {

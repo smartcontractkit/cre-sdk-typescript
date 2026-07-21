@@ -4,6 +4,7 @@ import { cre, type Runtime } from '@cre/sdk/cre'
 import type { NodeRuntime } from '@cre/sdk/runtime'
 import {
 	ConsensusAggregationByFields,
+	consensusFrequencyListAggregation,
 	type FrequencyListEntry,
 	frequencyList,
 	identical,
@@ -35,7 +36,10 @@ const formatResult = (result: ConsensusResult): string =>
 
 const handler = (runtime: Runtime<Uint8Array>) => {
 	const encoder = new TextEncoder()
-	const result = runtime
+
+	// Field-level frequency_list: each node observes a struct; the
+	// `signatures` field is aggregated as a frequency list across nodes.
+	const byField = runtime
 		.runInNodeMode(
 			(nodeRuntime: NodeRuntime<Uint8Array>): NodeObservation => {
 				const nodeResponse = new NodeActionCapability()
@@ -54,7 +58,20 @@ const handler = (runtime: Runtime<Uint8Array>) => {
 		)()
 		.result()
 
-	return formatResult(result)
+	// Top-level frequency_list: each node observes a single value T;
+	// consensus counts occurrences across nodes to produce
+	// FrequencyListEntry<T>[].
+	const topLevel = runtime
+		.runInNodeMode((nodeRuntime: NodeRuntime<Uint8Array>): Uint8Array => {
+			const nodeResponse = new NodeActionCapability()
+				.performAction(nodeRuntime, { inputThing: true })
+				.result()
+
+			return encoder.encode(`sig-${nodeResponse.outputThing}`)
+		}, consensusFrequencyListAggregation<Uint8Array>())()
+		.result()
+
+	return `${formatResult(byField)}|${formatFrequencyList(topLevel)}`
 }
 
 const initWorkflow = () => {
