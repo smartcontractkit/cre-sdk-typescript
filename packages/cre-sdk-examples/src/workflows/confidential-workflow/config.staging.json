@@ -1,0 +1,4 @@
+{
+	"schedule": "0 */1 * * * *",
+	"url": "https://postman-echo.com/headers"
+}

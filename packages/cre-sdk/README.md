@@ -29,6 +29,7 @@ The Chainlink Runtime Environment (CRE) SDK for TypeScript enables developers to
   - [3. On-Chain Data Integration](#3-on-chain-data-integration)
   - [4. Proof of Reserve](#4-proof-of-reserve)
   - [5. Star Wars API](#5-star-wars-api)
+  - [6. Confidential Workflow (TEE + HTTP + Secrets)](#6-confidential-workflow-tee--http--secrets)
 - [API Reference](#api-reference)
   - [Core Functions](#core-functions)
   - [Capabilities](#capabilities)
@@ -463,6 +464,10 @@ See the [proof-of-reserve example](https://github.com/smartcontractkit/cre-sdk-t
 ### 5. Star Wars API
 
 See the [star-wars example](https://github.com/smartcontractkit/cre-sdk-typescript/tree/main/packages/cre-sdk-examples/src/workflows/star-wars) for an easy-to-follow example, known for being the default code used in [Chainlink Functions' Playground](https://functions.chain.link/playground).
+
+### 6. Confidential Workflow (TEE + HTTP + Secrets)
+
+See the [confidential-workflow example](https://github.com/smartcontractkit/cre-sdk-typescript/tree/main/packages/cre-sdk-examples/src/workflows/confidential-workflow) for a minimal TEE workflow that uses `handlerInTee`, the standard `HTTPClient`, and `runtime.getSecret` for authenticated API calls.
 
 ## API Reference
 

@@ -40,6 +40,12 @@ cre workflow simulate ./src/workflows/hello-world
 cre workflow simulate ./src/workflows/http-fetch
 ```
 
+[Confidential workflow (TEE + HTTP + secrets)](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/confidential-workflow/main.ts):
+
+```zsh
+cre workflow simulate ./src/workflows/confidential-workflow
+```
+
 [On Chain Read workflow](https://github.com/smartcontractkit/cre-sdk-typescript/blob/main/packages/cre-sdk-examples/src/workflows/on-chain/main.ts):
 
 ```zsh
