@@ -1,13 +1,7 @@
 import type { Message } from '@bufbuild/protobuf'
-import type {
-	CapabilityResponse,
-	Secret,
-	SecretRequest,
-	SecretRequestJson,
-} from '@cre/generated/sdk/v1alpha/sdk_pb'
-import { type Runtime } from '@cre/sdk/runtime'
+import type { Secret, SecretRequest, SecretRequestJson } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import type { Runtime } from '@cre/sdk/runtime'
 import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
-import type { SecretsError } from './errors'
 import type { CreSerializable } from './utils'
 
 export type HandlerFn<TConfig, TTriggerOutput, TResult> = (
@@ -41,6 +35,9 @@ export const handler = <
 })
 
 export type SecretsProvider = {
+	getSecrets(requests: Array<SecretRequest | SecretRequestJson>): {
+		result: () => Record<string, Secret>
+	}
 	getSecret(request: SecretRequest | SecretRequestJson): {
 		result: () => Secret
 	}

@@ -8,7 +8,7 @@ import { create } from '@bufbuild/protobuf'
 import { AnySchema } from '@bufbuild/protobuf/wkt'
 import { BasicActionCapability } from '@cre/generated-sdk/capabilities/internal/basicaction/v1/basicaction_sdk_gen'
 import { consensusMedianAggregation } from '@cre/sdk/utils'
-import { CapabilityRuntimeError, SecretsError } from '../errors'
+import { CapabilityRuntimeError, SecretsBatchError, SecretsError } from '../errors'
 import { BasicTestActionMock } from '../test/generated/capabilities/internal/basicaction/v1/basic_test_action_mock_gen'
 import {
 	__testOnlyRegistryStore,
@@ -200,6 +200,51 @@ describe('TestRuntime / helper layer', () => {
 		expect(result.value).toBe('val1')
 		expect(result.id).toBe('id1')
 		expect(result.namespace).toBe('ns1')
+	})
+
+	test('helper getSecrets: batched call returns secrets keyed by id', () => {
+		const secrets = new Map<string, Map<string, string>>()
+		secrets.set(
+			'ns1',
+			new Map([
+				['id1', 'val1'],
+				['id2', 'val2'],
+			]),
+		)
+		const rt = newTestRuntime(secrets)
+
+		const result = rt
+			.getSecrets([
+				{ id: 'id1', namespace: 'ns1' },
+				{ id: 'id2', namespace: 'ns1' },
+			])
+			.result()
+		expect(Object.keys(result)).toHaveLength(2)
+		expect(result['id1'].value).toBe('val1')
+		expect(result['id2'].value).toBe('val2')
+	})
+
+	test('helper getSecrets: batched call throws SecretsBatchError when any secret fails', () => {
+		const secrets = new Map<string, Map<string, string>>()
+		secrets.set('ns1', new Map([['id1', 'val1']]))
+		const rt = newTestRuntime(secrets)
+
+		expect(() =>
+			rt
+				.getSecrets([
+					{ id: 'id1', namespace: 'ns1' },
+					{ id: 'missing', namespace: 'ns1' },
+				])
+				.result(),
+		).toThrow(SecretsBatchError)
+		expect(() =>
+			rt
+				.getSecrets([
+					{ id: 'id1', namespace: 'ns1' },
+					{ id: 'missing', namespace: 'ns1' },
+				])
+				.result(),
+		).toThrow('missing:')
 	})
 
 	test('helper getSecrets: secret not found returns error response', () => {

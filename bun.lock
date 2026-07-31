@@ -237,7 +237,7 @@
 
     "case-anything": ["case-anything@2.1.13", "", {}, "sha512-zlOQ80VrQ2Ue+ymH5OuM/DlDq64mEm+B9UTdHULv5osUMD6HalNTblf2b1u/m6QecjsnOkBpqVZ+XPwIVsy7Ng=="],
 
-    "chain-selectors": ["chain-selectors@github:smartcontractkit/chain-selectors#3e718d1", {}, "smartcontractkit-chain-selectors-3e718d1"],
+    "chain-selectors": ["chain-selectors@github:smartcontractkit/chain-selectors#3e718d1", {}, "smartcontractkit-chain-selectors-3e718d1", "sha512-es+RbSudxuwfaxCBtfLLVxfO/Hd/aJ14FFHWH2ZshOISkAwcxyBcT5gZx08/sXK5NXiofxgZZEQCKmbBQFF4Dw=="],
 
     "chalk": ["chalk@5.6.2", "", {}, "sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA=="],
 
