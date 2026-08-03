@@ -87,6 +87,9 @@ export const handlerInTee = <
 })
 
 export type SecretsProvider = {
+	getSecrets(requests: Array<SecretRequest | SecretRequestJson>): {
+		result: () => Record<string, Secret>
+	}
 	getSecret(request: SecretRequest | SecretRequestJson): {
 		result: () => Secret
 	}

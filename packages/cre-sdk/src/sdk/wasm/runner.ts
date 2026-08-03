@@ -33,7 +33,7 @@ class RunnerBase<TConfig> {
 
 	private static getRequest(): ExecuteRequest {
 		const argsString = hostBindings.getWasiArgs()
-		let args
+		let args: any
 		try {
 			args = JSON.parse(argsString)
 		} catch (e) {
@@ -65,16 +65,12 @@ class RunnerBase<TConfig> {
 	) {
 		const runtime = new Runtime(this.config, 0, this.request.maxResponseSize)
 
-		// wrap runtime's getSecret so other methods cannot be used
-		const sp = {
-			getSecret: (request: SecretRequest | SecretRequestJson) => {
-				return runtime.getSecret(request)
-			},
-		}
-
 		let result: Promise<ExecutionResult> | ExecutionResult
 		try {
-			const workflow = await initFn(this.config, sp)
+			const workflow = await initFn(this.config, {
+				getSecrets: runtime.getSecrets.bind(runtime),
+				getSecret: runtime.getSecret.bind(runtime),
+			})
 
 			switch (this.request.request.case) {
 				case 'subscribe':

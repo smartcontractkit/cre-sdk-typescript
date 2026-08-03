@@ -11,9 +11,7 @@ import {
 } from '@chainlink/cre-sdk'
 import { z } from 'zod'
 
-const configSchema = z.object({
-	url: z.string(),
-})
+const configSchema = z.object({})
 
 type Config = z.infer<typeof configSchema>
 
@@ -40,10 +38,10 @@ type StarWarsCharacter = z.infer<typeof responseSchema>
 
 const fetchStarWarsCharacter = (
 	sendRequester: HTTPSendRequester,
-	config: Config,
+	urlTemplate: string,
 	characterId: string,
 ): StarWarsCharacter => {
-	const url = config.url.replace('{characterId}', characterId)
+	const url = urlTemplate.replace('{characterId}', characterId)
 	const response = sendRequester.sendRequest({ url, method: 'GET' }).result()
 
 	// Check if the response is successful using the helper function
@@ -58,14 +56,24 @@ const fetchStarWarsCharacter = (
 
 const onHTTPTrigger = async (runtime: Runtime<Config>) => {
 	const httpCapability = new HTTPClient()
-	const characterId = runtime.getSecret({ id: 'CHARACTER_ID' }).result().value
+	// Fetch a single secret
+	const secretUrlValue = runtime.getSecret({ id: 'SECRET_URL' }).result().value
+
+	// Fetch multiple secrets — throws if any secret fails
+	const secretsToFetch = [{ id: 'CHARACTER_ID1' }, { id: 'CHARACTER_ID2' }, { id: 'CHARACTER_ID3' }]
+	const secrets = runtime.getSecrets(secretsToFetch).result()
+	const characterIds = secretsToFetch.map((secretRequest) => secrets[secretRequest.id].value)
+
+	// choose a random character id
+	// Math.random() is safe to use in the workflow
+	const characterId = characterIds[Math.floor(Math.random() * characterIds.length)]
 
 	const result: StarWarsCharacter = httpCapability
 		.sendRequest(
 			runtime,
 			fetchStarWarsCharacter,
 			consensusIdenticalAggregation(),
-		)(runtime.config, characterId)
+		)(secretUrlValue, characterId)
 		.result()
 
 	return result
