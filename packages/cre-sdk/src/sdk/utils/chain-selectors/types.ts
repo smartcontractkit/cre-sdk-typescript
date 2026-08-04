@@ -1,4 +1,4 @@
-export type ChainFamily = 'evm' | 'solana' | 'aptos' | 'sui' | 'ton' | 'tron'
+export type ChainFamily = 'evm' | 'solana' | 'aptos' | 'stellar' | 'sui' | 'ton' | 'tron'
 export type NetworkType = 'mainnet' | 'testnet'
 
 export interface ChainSelector {

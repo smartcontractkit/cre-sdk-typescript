@@ -122,6 +122,7 @@ import mainnet_evm_zetachain_mainnet from './chain-selectors/mainnet/evm/zetacha
 import mainnet_evm_zklink_nova_mainnet from './chain-selectors/mainnet/evm/zklink.nova-mainnet'
 import mainnet_evm_zora_mainnet from './chain-selectors/mainnet/evm/zora-mainnet'
 import mainnet_solana_solana_mainnet from './chain-selectors/mainnet/solana/solana-mainnet'
+import mainnet_stellar_stellar_mainnet from './chain-selectors/mainnet/stellar/stellar-mainnet'
 import mainnet_sui_sui_mainnet from './chain-selectors/mainnet/sui/sui-mainnet'
 import mainnet_ton_ton_mainnet from './chain-selectors/mainnet/ton/ton-mainnet'
 import mainnet_tron_tron_mainnet from './chain-selectors/mainnet/tron/tron-mainnet'
@@ -286,6 +287,8 @@ import testnet_evm_zklink_nova_testnet from './chain-selectors/testnet/evm/zklin
 import testnet_evm_zora_testnet from './chain-selectors/testnet/evm/zora-testnet'
 import testnet_solana_solana_devnet from './chain-selectors/testnet/solana/solana-devnet'
 import testnet_solana_solana_testnet from './chain-selectors/testnet/solana/solana-testnet'
+import testnet_stellar_stellar_localnet from './chain-selectors/testnet/stellar/stellar-localnet'
+import testnet_stellar_stellar_testnet from './chain-selectors/testnet/stellar/stellar-testnet'
 import testnet_sui_sui_localnet from './chain-selectors/testnet/sui/sui-localnet'
 import testnet_sui_sui_testnet from './chain-selectors/testnet/sui/sui-testnet'
 import testnet_ton_ton_localnet from './chain-selectors/testnet/ton/ton-localnet'
@@ -575,6 +578,9 @@ export const allNetworks: NetworkInfo[] = [
 	mainnet_aptos_aptos_mainnet,
 	testnet_aptos_aptos_testnet,
 	testnet_aptos_aptos_localnet,
+	testnet_stellar_stellar_localnet,
+	testnet_stellar_stellar_testnet,
+	mainnet_stellar_stellar_mainnet,
 	mainnet_sui_sui_mainnet,
 	testnet_sui_sui_testnet,
 	testnet_sui_sui_localnet,
@@ -709,6 +715,7 @@ export const mainnet = {
 	] as const,
 	solana: [mainnet_solana_solana_mainnet] as const,
 	aptos: [mainnet_aptos_aptos_mainnet] as const,
+	stellar: [mainnet_stellar_stellar_mainnet] as const,
 	sui: [mainnet_sui_sui_mainnet] as const,
 	ton: [mainnet_ton_ton_mainnet] as const,
 	tron: [mainnet_tron_tron_mainnet] as const,
@@ -876,6 +883,7 @@ export const testnet = {
 	] as const,
 	solana: [testnet_solana_solana_testnet, testnet_solana_solana_devnet] as const,
 	aptos: [testnet_aptos_aptos_testnet, testnet_aptos_aptos_localnet] as const,
+	stellar: [testnet_stellar_stellar_localnet, testnet_stellar_stellar_testnet] as const,
 	sui: [testnet_sui_sui_testnet, testnet_sui_sui_localnet] as const,
 	ton: [testnet_ton_ton_testnet, testnet_ton_ton_localnet] as const,
 	tron: [
@@ -1006,6 +1014,7 @@ export const mainnetBySelector = new Map<bigint, NetworkInfo>([
 	[13879014182901017172n, mainnet_evm_dtcc_mainnet_appchain],
 	[124615329519749607n, mainnet_solana_solana_mainnet],
 	[4741433654826277614n, mainnet_aptos_aptos_mainnet],
+	[17783245649066640917n, mainnet_stellar_stellar_mainnet],
 	[17529533435026248318n, mainnet_sui_sui_mainnet],
 	[16448340667252469081n, mainnet_ton_ton_mainnet],
 	[1546563616611573945n, mainnet_tron_tron_mainnet],
@@ -1173,6 +1182,8 @@ export const testnetBySelector = new Map<bigint, NetworkInfo>([
 	[16423721717087811551n, testnet_solana_solana_devnet],
 	[743186221051783445n, testnet_aptos_aptos_testnet],
 	[4457093679053095497n, testnet_aptos_aptos_localnet],
+	[17301180955411967724n, testnet_stellar_stellar_localnet],
+	[4894814558906953166n, testnet_stellar_stellar_testnet],
 	[9762610643973837292n, testnet_sui_sui_testnet],
 	[18395503381733958356n, testnet_sui_sui_localnet],
 	[1399300952838017768n, testnet_ton_ton_testnet],
@@ -1303,6 +1314,7 @@ export const mainnetByName = new Map<string, NetworkInfo>([
 	['dtcc-mainnet-appchain', mainnet_evm_dtcc_mainnet_appchain],
 	['solana-mainnet', mainnet_solana_solana_mainnet],
 	['aptos-mainnet', mainnet_aptos_aptos_mainnet],
+	['stellar-mainnet', mainnet_stellar_stellar_mainnet],
 	['sui-mainnet', mainnet_sui_sui_mainnet],
 	['ton-mainnet', mainnet_ton_ton_mainnet],
 	['tron-mainnet', mainnet_tron_tron_mainnet],
@@ -1485,6 +1497,8 @@ export const testnetByName = new Map<string, NetworkInfo>([
 	['solana-devnet', testnet_solana_solana_devnet],
 	['aptos-testnet', testnet_aptos_aptos_testnet],
 	['aptos-localnet', testnet_aptos_aptos_localnet],
+	['stellar-localnet', testnet_stellar_stellar_localnet],
+	['stellar-testnet', testnet_stellar_stellar_testnet],
 	['sui-testnet', testnet_sui_sui_testnet],
 	['sui-localnet', testnet_sui_sui_localnet],
 	['ton-testnet', testnet_ton_ton_testnet],
@@ -1617,6 +1631,7 @@ export const mainnetBySelectorByFamily = {
 	]),
 	solana: new Map<bigint, NetworkInfo>([[124615329519749607n, mainnet_solana_solana_mainnet]]),
 	aptos: new Map<bigint, NetworkInfo>([[4741433654826277614n, mainnet_aptos_aptos_mainnet]]),
+	stellar: new Map<bigint, NetworkInfo>([[17783245649066640917n, mainnet_stellar_stellar_mainnet]]),
 	sui: new Map<bigint, NetworkInfo>([[17529533435026248318n, mainnet_sui_sui_mainnet]]),
 	ton: new Map<bigint, NetworkInfo>([[16448340667252469081n, mainnet_ton_ton_mainnet]]),
 	tron: new Map<bigint, NetworkInfo>([[1546563616611573945n, mainnet_tron_tron_mainnet]]),
@@ -1790,6 +1805,10 @@ export const testnetBySelectorByFamily = {
 		[743186221051783445n, testnet_aptos_aptos_testnet],
 		[4457093679053095497n, testnet_aptos_aptos_localnet],
 	]),
+	stellar: new Map<bigint, NetworkInfo>([
+		[17301180955411967724n, testnet_stellar_stellar_localnet],
+		[4894814558906953166n, testnet_stellar_stellar_testnet],
+	]),
 	sui: new Map<bigint, NetworkInfo>([
 		[9762610643973837292n, testnet_sui_sui_testnet],
 		[18395503381733958356n, testnet_sui_sui_localnet],
@@ -1928,6 +1947,7 @@ export const mainnetByNameByFamily = {
 	]),
 	solana: new Map<string, NetworkInfo>([['solana-mainnet', mainnet_solana_solana_mainnet]]),
 	aptos: new Map<string, NetworkInfo>([['aptos-mainnet', mainnet_aptos_aptos_mainnet]]),
+	stellar: new Map<string, NetworkInfo>([['stellar-mainnet', mainnet_stellar_stellar_mainnet]]),
 	sui: new Map<string, NetworkInfo>([['sui-mainnet', mainnet_sui_sui_mainnet]]),
 	ton: new Map<string, NetworkInfo>([['ton-mainnet', mainnet_ton_ton_mainnet]]),
 	tron: new Map<string, NetworkInfo>([['tron-mainnet', mainnet_tron_tron_mainnet]]),
@@ -2118,6 +2138,10 @@ export const testnetByNameByFamily = {
 	aptos: new Map<string, NetworkInfo>([
 		['aptos-testnet', testnet_aptos_aptos_testnet],
 		['aptos-localnet', testnet_aptos_aptos_localnet],
+	]),
+	stellar: new Map<string, NetworkInfo>([
+		['stellar-localnet', testnet_stellar_stellar_localnet],
+		['stellar-testnet', testnet_stellar_stellar_testnet],
 	]),
 	sui: new Map<string, NetworkInfo>([
 		['sui-testnet', testnet_sui_sui_testnet],

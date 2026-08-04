@@ -26,7 +26,7 @@ const NonEvmSelectorsSchema = z.object({
 	selectors: z.record(z.string(), NonEvmSelectorSchema),
 })
 
-type ChainFamily = 'evm' | 'solana' | 'aptos' | 'sui' | 'ton' | 'tron'
+type ChainFamily = 'evm' | 'solana' | 'aptos' | 'stellar' | 'sui' | 'ton' | 'tron'
 type NetworkType = 'mainnet' | 'testnet'
 
 interface NetworkInfo {
@@ -59,6 +59,11 @@ const CHAIN_CONFIGS: ChainSelectorConfig[] = [
 	{
 		family: 'aptos',
 		filename: 'selectors_aptos.yml',
+		schema: NonEvmSelectorsSchema,
+	},
+	{
+		family: 'stellar',
+		filename: 'selectors_stellar.yml',
 		schema: NonEvmSelectorsSchema,
 	},
 	{
