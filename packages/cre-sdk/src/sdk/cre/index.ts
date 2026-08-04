@@ -15,6 +15,10 @@ import {
 	ClientRestrictor as SolanaRestrictor,
 } from '@cre/generated-sdk/capabilities/blockchain/solana/v1alpha/client_sdk_gen'
 import {
+	ClientCapability as StellarClient,
+	ClientRestrictor as StellarRestrictor,
+} from '@cre/generated-sdk/capabilities/blockchain/stellar/v1alpha/client_sdk_gen'
+import {
 	ClientCapability as ConfidentialHTTPClient,
 	ClientRestrictor as ConfidentialHTTPRestrictor,
 } from '@cre/generated-sdk/capabilities/networking/confidentialhttp/v1alpha/client_sdk_gen'
@@ -51,6 +55,16 @@ export {
 	TxStatus as SolanaTxStatus,
 	type ValueComparatorJson as SolanaValueComparatorJson,
 } from '@cre/generated/capabilities/blockchain/solana/v1alpha/client_pb'
+export {
+	ReceiverContractExecutionStatus as StellarReceiverContractExecutionStatus,
+	TxStatus as StellarTxStatus,
+} from '@cre/generated/capabilities/blockchain/stellar/v1alpha/client_pb'
+// Soroban typed contract arguments. Required to build ReadContract args; there is
+// no equivalent on the other families, which take raw bytes or ABI-encoded input.
+export {
+	type ScVal as StellarScVal,
+	type ScValJson as StellarScValJson,
+} from '@cre/generated/capabilities/blockchain/stellar/v1alpha/scval_pb'
 export type { Payload as HTTPPayload } from '@cre/generated/capabilities/networking/http/v1alpha/trigger_pb'
 export type { Payload as CronPayload } from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
 export { TeeType } from '@cre/generated/sdk/v1alpha/sdk_pb'
@@ -76,6 +90,13 @@ export {
 	type WriteCreReportRequest as SolanaWriteCreReportRequest,
 	type WriteCreReportRequestJson as SolanaWriteCreReportRequestJson,
 } from '@cre/generated-sdk/capabilities/blockchain/solana/v1alpha/client_sdk_gen'
+// Stellar Capability
+export {
+	ClientCapability as StellarClient,
+	ClientRestrictor as StellarRestrictor,
+	type WriteCreReportRequest as StellarWriteCreReportRequest,
+	type WriteCreReportRequestJson as StellarWriteCreReportRequestJson,
+} from '@cre/generated-sdk/capabilities/blockchain/stellar/v1alpha/client_sdk_gen'
 // Confidential HTTP Capability
 export {
 	ClientCapability as ConfidentialHTTPClient,
@@ -123,6 +144,7 @@ export const cre = {
 		EVMClient,
 		AptosClient,
 		SolanaClient,
+		StellarClient,
 	},
 	restrictors: {
 		CronRestrictor,
@@ -132,6 +154,7 @@ export const cre = {
 		EVMRestrictor,
 		SolanaRestrictor,
 		AptosRestrictor,
+		StellarRestrictor,
 	},
 	handler,
 	handlerInTee,
