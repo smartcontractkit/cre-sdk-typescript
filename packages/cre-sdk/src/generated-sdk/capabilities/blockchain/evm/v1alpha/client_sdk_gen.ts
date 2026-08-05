@@ -166,6 +166,7 @@ export class ClientCapability {
 		'jovay-testnet': 945045181441419236n,
 		'megaeth-mainnet': 6093540873831549674n,
 		'megaeth-testnet-2': 18241817625092392675n,
+		'monad-mainnet': 8481857512324358265n,
 		'pharos-atlantic-testnet': 16098325658947243212n,
 		'pharos-mainnet': 7801139999541420232n,
 		'plasma-mainnet': 9335212494177455608n,
