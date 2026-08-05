@@ -54,6 +54,26 @@ export interface NodeRuntime<C> extends BaseRuntime<C> {
     readonly _isNodeRuntime: true;
 }
 /**
+ * Runtime for Tee mode execution.
+ */
+export interface TeeRuntime<C> extends BaseRuntime<C>, SecretsProvider {
+    /**
+     * Generates a report from the DON.
+     * Data requestsed throught this method will be routed outside of the TEE.
+     *
+     * @param input - Report request to generate a report from the DON
+     * @returns Report generated from the DON
+     */
+    reportFromDon(input: ReportRequest | ReportRequestJson): {
+        result: () => Report;
+    };
+    /**
+     * Returns the runtime that makes requests to the CRE DONs.
+     * Requests made through this runtime will therefore be routed outside of the TEE
+     */
+    usingTheDons(): Runtime<C>;
+}
+/**
  * Runtime for DON mode execution.
  */
 export interface Runtime<C> extends BaseRuntime<C>, SecretsProvider {
@@ -73,17 +93,33 @@ export interface Runtime<C> extends BaseRuntime<C>, SecretsProvider {
     };
 }
 import type { Message } from '@bufbuild/protobuf';
-import type { Secret, SecretRequest, SecretRequestJson } from '@cre/generated/sdk/v1alpha/sdk_pb';
-import type { Runtime } from '@cre/sdk/runtime';
+import type { Requirements, RestrictionsJson, Secret, SecretRequest, SecretRequestJson } from '@cre/generated/sdk/v1alpha/sdk_pb';
+import { TeeType } from '@cre/generated/sdk/v1alpha/sdk_pb';
+import type { Runtime, TeeRuntime } from '@cre/sdk/runtime';
 import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface';
 import type { CreSerializable } from './utils';
-export type HandlerFn<TConfig, TTriggerOutput, TResult> = (runtime: Runtime<TConfig>, triggerOutput: TTriggerOutput) => Promise<CreSerializable<TResult>> | CreSerializable<TResult>;
-export interface HandlerEntry<TConfig, TRawTriggerOutput extends Message<string>, TTriggerOutput, TResult> {
-    trigger: Trigger<TRawTriggerOutput, TTriggerOutput>;
-    fn: HandlerFn<TConfig, TTriggerOutput, TResult>;
+export type HandlerFn<TConfig, TTriggerOutput, TResult, TRuntime = Runtime<TConfig>> = (runtime: TRuntime, triggerOutput: TTriggerOutput) => Promise<CreSerializable<TResult>> | CreSerializable<TResult>;
+export interface Hooks<TConfig, TTriggerOutput> {
+    preHook?: (config: TConfig, triggerOutput: TTriggerOutput) => RestrictionsJson;
 }
-export type Workflow<TConfig> = ReadonlyArray<HandlerEntry<TConfig, any, any, any>>;
-export declare const handler: <TRawTriggerOutput extends Message<string>, TTriggerOutput, TConfig, TResult>(trigger: Trigger<TRawTriggerOutput, TTriggerOutput>, fn: HandlerFn<TConfig, TTriggerOutput, TResult>) => HandlerEntry<TConfig, TRawTriggerOutput, TTriggerOutput, TResult>;
+export interface HandlerEntry<TConfig, TRawTriggerOutput extends Message<string>, TTriggerOutput, TResult, TRuntime = Runtime<TConfig>> {
+    trigger: Trigger<TRawTriggerOutput, TTriggerOutput>;
+    fn: HandlerFn<TConfig, TTriggerOutput, TResult, TRuntime>;
+    hooks?: Hooks<TConfig, TTriggerOutput>;
+    requirements?: Requirements;
+}
+export type Workflow<TConfig> = ReadonlyArray<HandlerEntry<TConfig, any, any, any, any>>;
+export declare const handler: <TRawTriggerOutput extends Message<string>, TTriggerOutput, TConfig, TResult, TRuntime = Runtime<TConfig>>(trigger: Trigger<TRawTriggerOutput, TTriggerOutput>, fn: HandlerFn<TConfig, TTriggerOutput, TResult, TRuntime>, hooks?: Hooks<TConfig, TTriggerOutput>) => HandlerEntry<TConfig, TRawTriggerOutput, TTriggerOutput, TResult, TRuntime>;
+export type TeeRequirement = {
+    type: Exclude<TeeType, TeeType.UNSPECIFIED>;
+    regions?: string[];
+};
+export type AnyTeeRequirement = {
+    type: 'any';
+    regions?: string[];
+};
+export type AcceptedTees = TeeRequirement[] | AnyTeeRequirement;
+export declare const handlerInTee: <TRawTriggerOutput extends Message<string>, TTriggerOutput, TConfig, TResult>(trigger: Trigger<TRawTriggerOutput, TTriggerOutput>, fn: HandlerFn<TConfig, TTriggerOutput, TResult, TeeRuntime<TConfig>>, tees: AcceptedTees, hooks?: Hooks<TConfig, TTriggerOutput>) => HandlerEntry<TConfig, TRawTriggerOutput, TTriggerOutput, TResult, TeeRuntime<TConfig>>;
 export type SecretsProvider = {
     getSecrets(requests: Array<SecretRequest | SecretRequestJson>): {
         result: () => Record<string, Secret>;

@@ -93,9 +93,7 @@ export function generateSdk(file: GenFile, outputDir: string) {
 		})
 
 		const modePrefix = capOption.mode === Mode.NODE ? 'Node' : ''
-		const teeEnabled = capOption.additionalEnvironments.includes(
-			AdditionalEnvironments.TEE,
-		)
+		const teeEnabled = capOption.additionalEnvironments.includes(AdditionalEnvironments.TEE)
 
 		// Build import statements
 		// Note: protobuf imports are deferred until after report wrappers are processed,
