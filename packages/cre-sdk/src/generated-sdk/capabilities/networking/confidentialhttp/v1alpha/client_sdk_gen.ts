@@ -7,7 +7,7 @@ import {
 	HTTPResponseSchema,
 } from '@cre/generated/capabilities/networking/confidentialhttp/v1alpha/client_pb'
 import type { CapabilityRestrictionJson } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import type { Runtime, TeeRuntime } from '@cre/sdk'
+import type { Runtime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import { hexToBytes } from '@cre/sdk/utils/hex-utils'
 import type { CapabilityInput } from '@cre/sdk/utils/types/no-excess'
@@ -31,15 +31,7 @@ export class ClientCapability {
 		input: CapabilityInput<TInput, ConfidentialHTTPRequest, ConfidentialHTTPRequestJson>,
 	): { result: () => HTTPResponse }
 	sendRequest(
-		runtime: TeeRuntime<unknown>,
-		input: ConfidentialHTTPRequest | ConfidentialHTTPRequestJson,
-	): { result: () => HTTPResponse }
-	sendRequest(
 		runtime: Runtime<unknown>,
-		input: ConfidentialHTTPRequest | ConfidentialHTTPRequestJson,
-	): { result: () => HTTPResponse }
-	sendRequest(
-		runtime: Runtime<unknown> | TeeRuntime<unknown>,
 		input: ConfidentialHTTPRequest | ConfidentialHTTPRequestJson,
 	): { result: () => HTTPResponse } {
 		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed

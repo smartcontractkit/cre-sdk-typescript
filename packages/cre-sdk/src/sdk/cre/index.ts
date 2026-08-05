@@ -3,10 +3,6 @@
  */
 
 import {
-	ClientCapability as AptosClient,
-	ClientRestrictor as AptosRestrictor,
-} from '@cre/generated-sdk/capabilities/blockchain/aptos/v1alpha/client_sdk_gen'
-import {
 	ClientCapability as EVMClient,
 	ClientRestrictor as EVMRestrictor,
 } from '@cre/generated-sdk/capabilities/blockchain/evm/v1alpha/client_sdk_gen'
@@ -48,15 +44,6 @@ export {
 export type { Payload as HTTPPayload } from '@cre/generated/capabilities/networking/http/v1alpha/trigger_pb'
 export type { Payload as CronPayload } from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
 export { TeeType } from '@cre/generated/sdk/v1alpha/sdk_pb'
-// Aptos Capability
-export {
-	ClientCapability as AptosClient,
-	ClientRestrictor as AptosRestrictor,
-	type WriteCreReportRequest as AptosWriteCreReportRequest,
-	type WriteCreReportRequestJson as AptosWriteCreReportRequestJson,
-} from '@cre/generated-sdk/capabilities/blockchain/aptos/v1alpha/client_sdk_gen'
-
-
 // EVM Capability
 export {
 	ClientCapability as EVMClient,
@@ -116,7 +103,6 @@ export const cre = {
 		HTTPClientRestrictor,
 		EVMRestrictor,
 		SolanaRestrictor,
-		AptosRestrictor,
 	},
 	handler,
 	handlerInTee,
