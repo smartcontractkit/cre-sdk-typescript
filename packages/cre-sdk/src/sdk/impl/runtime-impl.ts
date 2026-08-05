@@ -531,6 +531,11 @@ export class TeeRuntimeImpl<C> implements TeeRuntime<C> {
 	) {
 		this.runtime = new RuntimeImpl(config, nextCallId, helpers, maxResponseSize)
 	}
+	getSecrets(requests: Array<SecretRequest | SecretRequestJson>): {
+		result: () => Record<string, Secret>
+	} {
+		return this.runtime.getSecrets(requests)
+	}
 	getSecret(request: SecretRequest | SecretRequestJson): { result: () => Secret } {
 		return this.runtime.getSecret(request)
 	}

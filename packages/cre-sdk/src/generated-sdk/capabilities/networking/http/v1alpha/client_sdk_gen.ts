@@ -7,17 +7,20 @@ import {
 	ResponseSchema,
 } from '@cre/generated/capabilities/networking/http/v1alpha/client_pb'
 import type { CapabilityRestrictionJson } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import type { NodeRuntime, Runtime } from '@cre/sdk'
+import type { NodeRuntime, Runtime, TeeRuntime } from '@cre/sdk'
 import { Report } from '@cre/sdk/report'
 import type { ConsensusAggregation, PrimitiveTypes, UnwrapOptions } from '@cre/sdk/utils'
+import type { CapabilityInput } from '@cre/sdk/utils/types/no-excess'
 
 export class SendRequester {
 	constructor(
 		private readonly runtime: NodeRuntime<unknown>,
 		private readonly client: ClientCapability,
 	) {}
-	sendRequest(input: Request | RequestJson): { result: () => Response } {
-		return this.client.sendRequest(this.runtime, input)
+	sendRequest<TInput>(input: CapabilityInput<TInput, Request, RequestJson>): {
+		result: () => Response
+	} {
+		return this.client.sendRequest<TInput>(this.runtime, input)
 	}
 }
 
@@ -35,15 +38,23 @@ export class ClientCapability {
 	static readonly CAPABILITY_NAME = 'http-actions'
 	static readonly CAPABILITY_VERSION = '1.0.0-alpha'
 
-	sendRequest(
-		runtime: NodeRuntime<unknown>,
-		input: Request | RequestJson,
+	sendRequest<TInput>(
+		runtime: TeeRuntime<unknown>,
+		input: CapabilityInput<TInput, Request, RequestJson>,
 	): { result: () => Response }
-	sendRequest<TArgs extends unknown[], TOutput>(
+	sendRequest<TInput>(
+		runtime: NodeRuntime<unknown>,
+		input: CapabilityInput<TInput, Request, RequestJson>,
+	): { result: () => Response }
+	sendRequest<TInput>(
+		runtime: NodeRuntime<unknown> | TeeRuntime<unknown>,
+		input: CapabilityInput<TInput, Request, RequestJson>,
+	): { result: () => Response }
+	sendRequest<TArgs extends unknown[], TInput, TOutput = TInput>(
 		runtime: Runtime<unknown>,
-		fn: (sendRequester: SendRequester, ...args: TArgs) => TOutput,
-		consensusAggregation: ConsensusAggregation<TOutput, true>,
-		unwrapOptions?: TOutput extends PrimitiveTypes ? never : UnwrapOptions<TOutput>,
+		fn: (sendRequester: SendRequester, ...args: TArgs) => TInput,
+		consensusAggregation: ConsensusAggregation<TInput, TOutput, true>,
+		unwrapOptions?: TInput extends PrimitiveTypes ? never : UnwrapOptions<TInput>,
 	): (...args: TArgs) => { result: () => TOutput }
 	sendRequest(...args: unknown[]): unknown {
 		// Check if this is the sugar syntax overload (has function parameter)
@@ -51,17 +62,20 @@ export class ClientCapability {
 			const [runtime, fn, consensusAggregation, unwrapOptions] = args as [
 				Runtime<unknown>,
 				(sendRequester: SendRequester, ...args: unknown[]) => unknown,
-				ConsensusAggregation<unknown, true>,
+				ConsensusAggregation<unknown, unknown, true>,
 				UnwrapOptions<unknown> | undefined,
 			]
 			return this.sendRequestSugarHelper(runtime, fn, consensusAggregation, unwrapOptions)
 		}
 		// Otherwise, this is the basic call overload
-		const [runtime, input] = args as [NodeRuntime<unknown>, Request | RequestJson]
+		const [runtime, input] = args as [
+			NodeRuntime<unknown> | TeeRuntime<unknown>,
+			Request | RequestJson,
+		]
 		return this.sendRequestCallHelper(runtime, input)
 	}
 	private sendRequestCallHelper(
-		runtime: NodeRuntime<unknown>,
+		runtime: NodeRuntime<unknown> | TeeRuntime<unknown>,
 		input: Request | RequestJson,
 	): { result: () => Response } {
 		// Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
@@ -93,11 +107,11 @@ export class ClientCapability {
 			},
 		}
 	}
-	private sendRequestSugarHelper<TArgs extends unknown[], TOutput>(
+	private sendRequestSugarHelper<TArgs extends unknown[], TInput, TOutput = TInput>(
 		runtime: Runtime<unknown>,
-		fn: (sendRequester: SendRequester, ...args: TArgs) => TOutput,
-		consensusAggregation: ConsensusAggregation<TOutput, true>,
-		unwrapOptions?: TOutput extends PrimitiveTypes ? never : UnwrapOptions<TOutput>,
+		fn: (sendRequester: SendRequester, ...args: TArgs) => TInput,
+		consensusAggregation: ConsensusAggregation<TInput, TOutput, true>,
+		unwrapOptions?: TInput extends PrimitiveTypes ? never : UnwrapOptions<TInput>,
 	): (...args: TArgs) => { result: () => TOutput } {
 		const wrappedFn = (runtime: NodeRuntime<unknown>, ...args: TArgs) => {
 			const sendRequester = new SendRequester(runtime, this)
