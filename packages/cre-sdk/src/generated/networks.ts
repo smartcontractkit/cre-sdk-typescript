@@ -84,6 +84,7 @@ import mainnet_evm_mind_mainnet from './chain-selectors/mainnet/evm/mind-mainnet
 import mainnet_evm_mint_mainnet from './chain-selectors/mainnet/evm/mint-mainnet'
 import mainnet_evm_monad_mainnet from './chain-selectors/mainnet/evm/monad-mainnet'
 import mainnet_evm_morph_mainnet from './chain-selectors/mainnet/evm/morph-mainnet'
+import mainnet_evm_mova_mainnet from './chain-selectors/mainnet/evm/mova-mainnet'
 import mainnet_evm_near_mainnet from './chain-selectors/mainnet/evm/near-mainnet'
 import mainnet_evm_neonlink_mainnet from './chain-selectors/mainnet/evm/neonlink-mainnet'
 import mainnet_evm_neox_mainnet from './chain-selectors/mainnet/evm/neox-mainnet'
@@ -217,6 +218,7 @@ import testnet_evm_gate_chain_testnet_meteora from './chain-selectors/testnet/ev
 import testnet_evm_gate_layer_testnet from './chain-selectors/testnet/evm/gate-layer-testnet'
 import testnet_evm_geth_testnet from './chain-selectors/testnet/evm/geth-testnet'
 import testnet_evm_glamsterdam_devnet_5 from './chain-selectors/testnet/evm/glamsterdam-devnet-5'
+import testnet_evm_glamsterdam_devnet_6 from './chain-selectors/testnet/evm/glamsterdam-devnet-6'
 import testnet_evm_gnosis_chain_testnet_chiado from './chain-selectors/testnet/evm/gnosis.chain-testnet-chiado'
 import testnet_evm_hedera_testnet from './chain-selectors/testnet/evm/hedera-testnet'
 import testnet_evm_hemi_testnet_sepolia from './chain-selectors/testnet/evm/hemi-testnet-sepolia'
@@ -233,6 +235,7 @@ import testnet_evm_metal_testnet from './chain-selectors/testnet/evm/metal-testn
 import testnet_evm_mind_testnet from './chain-selectors/testnet/evm/mind-testnet'
 import testnet_evm_mint_testnet from './chain-selectors/testnet/evm/mint-testnet'
 import testnet_evm_monad_testnet from './chain-selectors/testnet/evm/monad-testnet'
+import testnet_evm_mova_testnet from './chain-selectors/testnet/evm/mova-testnet'
 import testnet_evm_near_testnet from './chain-selectors/testnet/evm/near-testnet'
 import testnet_evm_neonlink_testnet from './chain-selectors/testnet/evm/neonlink-testnet'
 import testnet_evm_neox_testnet_t4 from './chain-selectors/testnet/evm/neox-testnet-t4'
@@ -269,6 +272,7 @@ import testnet_evm_sonic_testnet_blaze from './chain-selectors/testnet/evm/sonic
 import testnet_evm_stable_testnet from './chain-selectors/testnet/evm/stable-testnet'
 import testnet_evm_story_testnet from './chain-selectors/testnet/evm/story-testnet'
 import testnet_evm_superseed_testnet from './chain-selectors/testnet/evm/superseed-testnet'
+import testnet_evm_t_rex_testnet from './chain-selectors/testnet/evm/t-rex-testnet'
 import testnet_evm_tac_testnet from './chain-selectors/testnet/evm/tac-testnet'
 import testnet_evm_telos_evm_testnet from './chain-selectors/testnet/evm/telos-evm-testnet'
 import testnet_evm_tempo_testnet from './chain-selectors/testnet/evm/tempo-testnet'
@@ -448,6 +452,7 @@ export const allNetworks: NetworkInfo[] = [
 	mainnet_evm_gate_layer_mainnet,
 	testnet_evm_monad_testnet,
 	testnet_evm_gnosis_chain_testnet_chiado,
+	testnet_evm_mova_testnet,
 	testnet_evm_abstract_testnet,
 	mainnet_evm_ethereum_mainnet_arbitrum_1_l3x_1,
 	testnet_evm_ethereum_testnet_sepolia_arbitrum_1_l3x_1,
@@ -495,6 +500,7 @@ export const allNetworks: NetworkInfo[] = [
 	mainnet_evm_nexon_mainnet_lith,
 	mainnet_evm_bitcoin_mainnet_bob_1,
 	mainnet_evm_treasure_mainnet,
+	mainnet_evm_mova_mainnet,
 	mainnet_evm_nexon_mainnet_henesys,
 	testnet_evm_polygon_testnet_mumbai,
 	testnet_evm_polygon_testnet_amoy,
@@ -523,6 +529,7 @@ export const allNetworks: NetworkInfo[] = [
 	testnet_evm_bitcoin_testnet_bitlayer_1,
 	mainnet_evm_bitcoin_mainnet_bitlayer_1,
 	testnet_evm_ethereum_testnet_sepolia_ronin_1,
+	testnet_evm_t_rex_testnet,
 	testnet_evm_ethereum_testnet_goerli_arbitrum_1,
 	testnet_evm_ethereum_testnet_sepolia_arbitrum_1,
 	testnet_evm_private_testnet_mica,
@@ -571,6 +578,7 @@ export const allNetworks: NetworkInfo[] = [
 	testnet_evm_tron_testnet_shasta_evm,
 	testnet_evm_tron_devnet_evm,
 	testnet_evm_tron_testnet_nile_evm,
+	testnet_evm_glamsterdam_devnet_6,
 	testnet_evm_glamsterdam_devnet_5,
 	mainnet_solana_solana_mainnet,
 	testnet_solana_solana_testnet,
@@ -692,6 +700,7 @@ export const mainnet = {
 		mainnet_evm_nexon_mainnet_lith,
 		mainnet_evm_bitcoin_mainnet_bob_1,
 		mainnet_evm_treasure_mainnet,
+		mainnet_evm_mova_mainnet,
 		mainnet_evm_nexon_mainnet_henesys,
 		mainnet_evm_berachain_mainnet,
 		mainnet_evm_codex_mainnet,
@@ -797,6 +806,7 @@ export const testnet = {
 		testnet_evm_gate_layer_testnet,
 		testnet_evm_monad_testnet,
 		testnet_evm_gnosis_chain_testnet_chiado,
+		testnet_evm_mova_testnet,
 		testnet_evm_abstract_testnet,
 		testnet_evm_ethereum_testnet_sepolia_arbitrum_1_l3x_1,
 		testnet_evm_ethereum_testnet_sepolia_immutable_zkevm_1,
@@ -843,6 +853,7 @@ export const testnet = {
 		testnet_evm_mind_testnet,
 		testnet_evm_bitcoin_testnet_bitlayer_1,
 		testnet_evm_ethereum_testnet_sepolia_ronin_1,
+		testnet_evm_t_rex_testnet,
 		testnet_evm_ethereum_testnet_goerli_arbitrum_1,
 		testnet_evm_ethereum_testnet_sepolia_arbitrum_1,
 		testnet_evm_private_testnet_mica,
@@ -879,6 +890,7 @@ export const testnet = {
 		testnet_evm_tron_testnet_shasta_evm,
 		testnet_evm_tron_devnet_evm,
 		testnet_evm_tron_testnet_nile_evm,
+		testnet_evm_glamsterdam_devnet_6,
 		testnet_evm_glamsterdam_devnet_5,
 	] as const,
 	solana: [testnet_solana_solana_testnet, testnet_solana_solana_devnet] as const,
@@ -992,6 +1004,7 @@ export const mainnetBySelector = new Map<bigint, NetworkInfo>([
 	[15758750456714168963n, mainnet_evm_nexon_mainnet_lith],
 	[3849287863852499584n, mainnet_evm_bitcoin_mainnet_bob_1],
 	[5214452172935136222n, mainnet_evm_treasure_mainnet],
+	[3314641565992046393n, mainnet_evm_mova_mainnet],
 	[12657445206920369324n, mainnet_evm_nexon_mainnet_henesys],
 	[1294465214383781161n, mainnet_evm_berachain_mainnet],
 	[9478124434908827753n, mainnet_evm_codex_mainnet],
@@ -1095,6 +1108,7 @@ export const testnetBySelector = new Map<bigint, NetworkInfo>([
 	[3667207123485082040n, testnet_evm_gate_layer_testnet],
 	[2183018362218727504n, testnet_evm_monad_testnet],
 	[8871595565390010547n, testnet_evm_gnosis_chain_testnet_chiado],
+	[9211758560309513668n, testnet_evm_mova_testnet],
 	[16235373811196386733n, testnet_evm_abstract_testnet],
 	[3486622437121596122n, testnet_evm_ethereum_testnet_sepolia_arbitrum_1_l3x_1],
 	[4526165231216331901n, testnet_evm_ethereum_testnet_sepolia_immutable_zkevm_1],
@@ -1141,6 +1155,7 @@ export const testnetBySelector = new Map<bigint, NetworkInfo>([
 	[7189150270347329685n, testnet_evm_mind_testnet],
 	[3789623672476206327n, testnet_evm_bitcoin_testnet_bitlayer_1],
 	[1091131740251125869n, testnet_evm_ethereum_testnet_sepolia_ronin_1],
+	[17611928792452358269n, testnet_evm_t_rex_testnet],
 	[6101244977088475029n, testnet_evm_ethereum_testnet_goerli_arbitrum_1],
 	[3478487238524512106n, testnet_evm_ethereum_testnet_sepolia_arbitrum_1],
 	[4489326297382772450n, testnet_evm_private_testnet_mica],
@@ -1177,6 +1192,7 @@ export const testnetBySelector = new Map<bigint, NetworkInfo>([
 	[13231703482326770598n, testnet_evm_tron_testnet_shasta_evm],
 	[13231703482326770600n, testnet_evm_tron_devnet_evm],
 	[2052925811360307749n, testnet_evm_tron_testnet_nile_evm],
+	[410896468069059699n, testnet_evm_glamsterdam_devnet_6],
 	[10073034426865795585n, testnet_evm_glamsterdam_devnet_5],
 	[6302590918974934319n, testnet_solana_solana_testnet],
 	[16423721717087811551n, testnet_solana_solana_devnet],
@@ -1292,6 +1308,7 @@ export const mainnetByName = new Map<string, NetworkInfo>([
 	['nexon-mainnet-lith', mainnet_evm_nexon_mainnet_lith],
 	['bitcoin-mainnet-bob-1', mainnet_evm_bitcoin_mainnet_bob_1],
 	['treasure-mainnet', mainnet_evm_treasure_mainnet],
+	['mova-mainnet', mainnet_evm_mova_mainnet],
 	['nexon-mainnet-henesys', mainnet_evm_nexon_mainnet_henesys],
 	['berachain-mainnet', mainnet_evm_berachain_mainnet],
 	['codex-mainnet', mainnet_evm_codex_mainnet],
@@ -1398,6 +1415,7 @@ export const testnetByName = new Map<string, NetworkInfo>([
 	['gate-layer-testnet', testnet_evm_gate_layer_testnet],
 	['monad-testnet', testnet_evm_monad_testnet],
 	['gnosis_chain-testnet-chiado', testnet_evm_gnosis_chain_testnet_chiado],
+	['mova-testnet', testnet_evm_mova_testnet],
 	['abstract-testnet', testnet_evm_abstract_testnet],
 	[
 		'ethereum-testnet-sepolia-arbitrum-1-l3x-1',
@@ -1450,6 +1468,7 @@ export const testnetByName = new Map<string, NetworkInfo>([
 	['mind-testnet', testnet_evm_mind_testnet],
 	['bitcoin-testnet-bitlayer-1', testnet_evm_bitcoin_testnet_bitlayer_1],
 	['ethereum-testnet-sepolia-ronin-1', testnet_evm_ethereum_testnet_sepolia_ronin_1],
+	['t-rex-testnet', testnet_evm_t_rex_testnet],
 	['ethereum-testnet-goerli-arbitrum-1', testnet_evm_ethereum_testnet_goerli_arbitrum_1],
 	['ethereum-testnet-sepolia-arbitrum-1', testnet_evm_ethereum_testnet_sepolia_arbitrum_1],
 	['private-testnet-mica', testnet_evm_private_testnet_mica],
@@ -1492,6 +1511,7 @@ export const testnetByName = new Map<string, NetworkInfo>([
 	['tron-testnet-shasta-evm', testnet_evm_tron_testnet_shasta_evm],
 	['tron-devnet-evm', testnet_evm_tron_devnet_evm],
 	['tron-testnet-nile-evm', testnet_evm_tron_testnet_nile_evm],
+	['glamsterdam-devnet-6', testnet_evm_glamsterdam_devnet_6],
 	['glamsterdam-devnet-5', testnet_evm_glamsterdam_devnet_5],
 	['solana-testnet', testnet_solana_solana_testnet],
 	['solana-devnet', testnet_solana_solana_devnet],
@@ -1608,6 +1628,7 @@ export const mainnetBySelectorByFamily = {
 		[15758750456714168963n, mainnet_evm_nexon_mainnet_lith],
 		[3849287863852499584n, mainnet_evm_bitcoin_mainnet_bob_1],
 		[5214452172935136222n, mainnet_evm_treasure_mainnet],
+		[3314641565992046393n, mainnet_evm_mova_mainnet],
 		[12657445206920369324n, mainnet_evm_nexon_mainnet_henesys],
 		[1294465214383781161n, mainnet_evm_berachain_mainnet],
 		[9478124434908827753n, mainnet_evm_codex_mainnet],
@@ -1713,6 +1734,7 @@ export const testnetBySelectorByFamily = {
 		[3667207123485082040n, testnet_evm_gate_layer_testnet],
 		[2183018362218727504n, testnet_evm_monad_testnet],
 		[8871595565390010547n, testnet_evm_gnosis_chain_testnet_chiado],
+		[9211758560309513668n, testnet_evm_mova_testnet],
 		[16235373811196386733n, testnet_evm_abstract_testnet],
 		[3486622437121596122n, testnet_evm_ethereum_testnet_sepolia_arbitrum_1_l3x_1],
 		[4526165231216331901n, testnet_evm_ethereum_testnet_sepolia_immutable_zkevm_1],
@@ -1759,6 +1781,7 @@ export const testnetBySelectorByFamily = {
 		[7189150270347329685n, testnet_evm_mind_testnet],
 		[3789623672476206327n, testnet_evm_bitcoin_testnet_bitlayer_1],
 		[1091131740251125869n, testnet_evm_ethereum_testnet_sepolia_ronin_1],
+		[17611928792452358269n, testnet_evm_t_rex_testnet],
 		[6101244977088475029n, testnet_evm_ethereum_testnet_goerli_arbitrum_1],
 		[3478487238524512106n, testnet_evm_ethereum_testnet_sepolia_arbitrum_1],
 		[4489326297382772450n, testnet_evm_private_testnet_mica],
@@ -1795,6 +1818,7 @@ export const testnetBySelectorByFamily = {
 		[13231703482326770598n, testnet_evm_tron_testnet_shasta_evm],
 		[13231703482326770600n, testnet_evm_tron_devnet_evm],
 		[2052925811360307749n, testnet_evm_tron_testnet_nile_evm],
+		[410896468069059699n, testnet_evm_glamsterdam_devnet_6],
 		[10073034426865795585n, testnet_evm_glamsterdam_devnet_5],
 	]),
 	solana: new Map<bigint, NetworkInfo>([
@@ -1924,6 +1948,7 @@ export const mainnetByNameByFamily = {
 		['nexon-mainnet-lith', mainnet_evm_nexon_mainnet_lith],
 		['bitcoin-mainnet-bob-1', mainnet_evm_bitcoin_mainnet_bob_1],
 		['treasure-mainnet', mainnet_evm_treasure_mainnet],
+		['mova-mainnet', mainnet_evm_mova_mainnet],
 		['nexon-mainnet-henesys', mainnet_evm_nexon_mainnet_henesys],
 		['berachain-mainnet', mainnet_evm_berachain_mainnet],
 		['codex-mainnet', mainnet_evm_codex_mainnet],
@@ -2035,6 +2060,7 @@ export const testnetByNameByFamily = {
 		['gate-layer-testnet', testnet_evm_gate_layer_testnet],
 		['monad-testnet', testnet_evm_monad_testnet],
 		['gnosis_chain-testnet-chiado', testnet_evm_gnosis_chain_testnet_chiado],
+		['mova-testnet', testnet_evm_mova_testnet],
 		['abstract-testnet', testnet_evm_abstract_testnet],
 		[
 			'ethereum-testnet-sepolia-arbitrum-1-l3x-1',
@@ -2087,6 +2113,7 @@ export const testnetByNameByFamily = {
 		['mind-testnet', testnet_evm_mind_testnet],
 		['bitcoin-testnet-bitlayer-1', testnet_evm_bitcoin_testnet_bitlayer_1],
 		['ethereum-testnet-sepolia-ronin-1', testnet_evm_ethereum_testnet_sepolia_ronin_1],
+		['t-rex-testnet', testnet_evm_t_rex_testnet],
 		['ethereum-testnet-goerli-arbitrum-1', testnet_evm_ethereum_testnet_goerli_arbitrum_1],
 		['ethereum-testnet-sepolia-arbitrum-1', testnet_evm_ethereum_testnet_sepolia_arbitrum_1],
 		['private-testnet-mica', testnet_evm_private_testnet_mica],
@@ -2129,6 +2156,7 @@ export const testnetByNameByFamily = {
 		['tron-testnet-shasta-evm', testnet_evm_tron_testnet_shasta_evm],
 		['tron-devnet-evm', testnet_evm_tron_devnet_evm],
 		['tron-testnet-nile-evm', testnet_evm_tron_testnet_nile_evm],
+		['glamsterdam-devnet-6', testnet_evm_glamsterdam_devnet_6],
 		['glamsterdam-devnet-5', testnet_evm_glamsterdam_devnet_5],
 	]),
 	solana: new Map<string, NetworkInfo>([
