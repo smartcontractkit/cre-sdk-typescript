@@ -65,13 +65,13 @@ describe('test consensus', () => {
 			consensusFrequencyListAggregation<number>(),
 			AggregationType.FREQUENCY_LIST,
 		)
-		usableForConsensus<number[], FrequencyListEntry<number>[], true>(
+		usableForConsensus<number, FrequencyListEntry<number>[], true>(
 			consensusFrequencyListAggregation<number>(),
 		)
-		usableForConsensus<string[], FrequencyListEntry<string>[], true>(
+		usableForConsensus<string, FrequencyListEntry<string>[], true>(
 			consensusFrequencyListAggregation<string>(),
 		)
-		usableForConsensus<RegExp[], FrequencyListEntry<RegExp>[], false>(
+		usableForConsensus<RegExp, FrequencyListEntry<RegExp>[], false>(
 			consensusFrequencyListAggregation<RegExp>(),
 		)
 	})
