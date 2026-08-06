@@ -123,6 +123,12 @@ Use `runtime.runInNodeMode()` to execute functions that require individual node 
 
 The SDK wires runtime safety internally; you can call `main()` directly as shown in the examples.
 
+### Confidential Workflows
+
+A Confidential Workflow is a CRE workflow that designates part of its logic to run inside a secure [enclave](https://docs.chain.link/cre/key-terms#enclave)—a running instance of a [Trusted Execution Environment (TEE)](https://docs.chain.link/cre/key-terms#tee-trusted-execution-environment), a hardware-isolated environment designed to keep the computation and data it processes confidential from the machine's own operator during execution—instead of on Workflow DON nodes.
+
+Confidential Workflows are fundamentally standard CRE workflows with an explicit confidential execution path added where you need it, composing freely with standard workflow logic in the same application. Secrets fetched inside the enclave, and any computation you mark as confidential, are intended to remain confidential from node operators during execution. You decide what stays inside the enclave and what crosses back out to the Workflow DON for consensus-verified execution, such as generating a report to submit onchain.
+
 ## Available Capabilities
 
 ### Scheduling
@@ -470,6 +476,7 @@ See the [star-wars example](https://github.com/smartcontractkit/cre-sdk-typescri
 
 - `Runner.newRunner<T>(options?)`: Create a new workflow runner
 - `cre.handler(trigger, handler)`: Create a trigger-handler pair
+- `cre.handlerInTee(trigger, handler, tees)`: Registers a handler whose callback runs inside a TEE.
 - `runtime.runInNodeMode(fn, aggregator)`: Execute function in node mode with consensus
 
 ### Capabilities
