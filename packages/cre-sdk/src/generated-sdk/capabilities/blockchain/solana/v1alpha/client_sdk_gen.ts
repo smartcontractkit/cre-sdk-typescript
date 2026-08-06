@@ -13,6 +13,7 @@ import {
 	WriteReportRequestSchema,
 } from '@cre/generated/capabilities/blockchain/solana/v1alpha/client_pb'
 import {
+	type CapabilityRestrictionJson,
 	type ReportResponse,
 	type ReportResponseJson,
 	ReportResponseSchema,
@@ -135,6 +136,23 @@ export class ClientCapability {
 				const result = capabilityResponse.result()
 
 				return result
+			},
+		}
+	}
+}
+
+export class ClientRestrictor {
+	constructor(private readonly ChainSelector: bigint) {}
+
+	limitWriteReport(maxCalls: number): CapabilityRestrictionJson {
+		// Include all labels in capability ID for routing when specified
+		const capabilityId = `${ClientCapability.CAPABILITY_NAME}:ChainSelector:${this.ChainSelector}@${ClientCapability.CAPABILITY_VERSION}`
+
+		return {
+			method: {
+				id: capabilityId,
+				method: 'WriteReport',
+				maxCalls,
 			},
 		}
 	}
