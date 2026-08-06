@@ -54,6 +54,16 @@ jobs:
           echo "Current commit: $(git rev-parse HEAD)"
           echo "Current commit short: $(git rev-parse --short HEAD)"
 
+      - name: Reject cd-line tags
+        if: ${{ github.event.inputs.tag != '' }}
+        run: |
+          INPUT_TAG="${{ github.event.inputs.tag }}"
+          if [[ "$INPUT_TAG" == *-cd* ]]; then
+            echo "::error::Refusing to publish '$INPUT_TAG' through this workflow."
+            echo "::error::cd-line tags must be published via cd-release.yml, not the main-line publish workflow."
+            exit 1
+          fi
+
       - name: Setup Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
