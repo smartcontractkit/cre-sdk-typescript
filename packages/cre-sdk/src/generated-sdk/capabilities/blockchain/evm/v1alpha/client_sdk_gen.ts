@@ -168,6 +168,7 @@ export class ClientCapability {
 		'megaeth-mainnet': 6093540873831549674n,
 		'megaeth-testnet-2': 18241817625092392675n,
 		'monad-mainnet': 8481857512324358265n,
+		'monad-testnet': 2183018362218727504n,
 		'pharos-atlantic-testnet': 16098325658947243212n,
 		'pharos-mainnet': 7801139999541420232n,
 		'plasma-mainnet': 9335212494177455608n,
@@ -178,9 +179,13 @@ export class ClientCapability {
 		'private-testnet-pumice': 1564738277398880633n,
 		'private-testnet-quartzite': 4175996748267305081n,
 		'private-testnet-rhyolite': 604447335222770945n,
+		'robinhood-testnet': 2032988798112970440n,
 		'sonic-mainnet': 1673871237479749969n,
 		'sonic-testnet': 1763698235108410440n,
+		'stable-testnet': 11793402411494852765n,
+		't-rex-testnet': 17611928792452358269n,
 		'tac-testnet': 9488606126177218005n,
+		'tempo-testnet-moderato': 8457817439310187923n,
 		'xlayer-testnet': 10212741611335999305n,
 	} as const
 
