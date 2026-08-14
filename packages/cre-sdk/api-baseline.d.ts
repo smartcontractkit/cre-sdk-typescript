@@ -115,9 +115,10 @@ export interface Runtime<C> extends BaseRuntime<C>, SecretsProvider {
 		result: () => Report;
 	};
 }
-
 import type { Message } from "@bufbuild/protobuf";
 import type {
+	Requirements,
+	RestrictionsJson,
 	Secret,
 	SecretRequest,
 	SecretRequestJson,
@@ -152,6 +153,9 @@ export type HandlerFn<
 	runtime: TRuntime,
 	triggerOutput: TTriggerOutput,
 ) => Promise<CreSerializable<TResult>> | CreSerializable<TResult>;
+export interface Hooks<TConfig, TTriggerOutput> {
+	preHook?: (config: TConfig, triggerOutput: TTriggerOutput) => RestrictionsJson;
+}
 export interface HandlerEntry<
 	TConfig,
 	TRawTriggerOutput extends Message<string>,
@@ -161,6 +165,7 @@ export interface HandlerEntry<
 > {
 	trigger: Trigger<TRawTriggerOutput, TTriggerOutput>;
 	fn: HandlerFn<TConfig, TTriggerOutput, TResult, TRuntime>;
+	hooks?: Hooks<TConfig, TTriggerOutput>;
 	requirements?: Requirements;
 }
 export type Workflow<TConfig> = ReadonlyArray<
@@ -175,6 +180,7 @@ export declare const handler: <
 >(
 	trigger: Trigger<TRawTriggerOutput, TTriggerOutput>,
 	fn: HandlerFn<TConfig, TTriggerOutput, TResult, TRuntime>,
+	hooks?: Hooks<TConfig, TTriggerOutput>,
 ) => HandlerEntry<
 	TConfig,
 	TRawTriggerOutput,
@@ -191,6 +197,7 @@ export declare const handlerInTee: <
 	trigger: Trigger<TRawTriggerOutput, TTriggerOutput>,
 	fn: HandlerFn<TConfig, TTriggerOutput, TResult, TeeRuntime<TConfig>>,
 	tees: TeeConstraint,
+	hooks?: Hooks<TConfig, TTriggerOutput>,
 ) => HandlerEntry<
 	TConfig,
 	TRawTriggerOutput,
