@@ -63,7 +63,7 @@
     },
     "packages/cre-sdk": {
       "name": "@chainlink/cre-sdk",
-      "version": "1.19.0",
+      "version": "1.19.1",
       "bin": {
         "cre-compile": "bin/cre-compile.ts",
       },
@@ -75,7 +75,7 @@
         "@solana/addresses": "6.10.0",
         "@solana/codecs": "6.10.0",
         "@standard-schema/spec": "1.0.0",
-        "viem": ">=2.54.2",
+        "viem": "^2.54.2",
         "zod": "3.25.76",
       },
       "devDependencies": {
@@ -91,7 +91,7 @@
     },
     "packages/cre-sdk-examples": {
       "name": "@chainlink/cre-sdk-examples",
-      "version": "1.19.0",
+      "version": "1.19.1",
       "dependencies": {
         "@bufbuild/protobuf": "2.6.3",
         "@chainlink/cre-sdk": "workspace:*",
@@ -237,7 +237,7 @@
 
     "case-anything": ["case-anything@2.1.13", "", {}, "sha512-zlOQ80VrQ2Ue+ymH5OuM/DlDq64mEm+B9UTdHULv5osUMD6HalNTblf2b1u/m6QecjsnOkBpqVZ+XPwIVsy7Ng=="],
 
-    "chain-selectors": ["chain-selectors@github:smartcontractkit/chain-selectors#dc9eee6", {}, "smartcontractkit-chain-selectors-dc9eee6"],
+    "chain-selectors": ["chain-selectors@github:smartcontractkit/chain-selectors#dc9eee6", {}, "smartcontractkit-chain-selectors-dc9eee6", "sha512-LapthRTXAnliJGSx3DS8MGyns6dRWmEqel7sYW1AWBC1m5Oy7r7qNgPwtKk/n93T4+gSoZH4y7cPZSUA/O7t8g=="],
 
     "chalk": ["chalk@5.6.2", "", {}, "sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA=="],
 
