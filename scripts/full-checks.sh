@@ -5,6 +5,12 @@ set -e
 
 echo "🚀 Running full checks for CRE SDK TypeScript packages..."
 
+# Re-install dependencies so that git-based packages (e.g. chain-selectors)
+# are refreshed to the exact commit pinned in bun.lock. Without this, stale
+# node_modules can cause generators to emit different output than CI.
+echo "📦 Ensuring dependencies match the lockfile..."
+bun install --force --frozen-lockfile
+
 # Function to run command in a package directory
 run_in_package() {
   local package_dir=$1
