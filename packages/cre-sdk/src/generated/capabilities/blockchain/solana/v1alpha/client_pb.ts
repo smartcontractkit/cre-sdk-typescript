@@ -8,6 +8,8 @@ import { enumDesc, fileDesc, messageDesc, serviceDesc } from '@bufbuild/protobuf
 import type { ReportResponse, ReportResponseJson } from '../../../../sdk/v1alpha/sdk_pb'
 import { file_sdk_v1alpha_sdk } from '../../../../sdk/v1alpha/sdk_pb'
 import { file_tools_generator_v1alpha_cre_metadata } from '../../../../tools/generator/v1alpha/cre_metadata_pb'
+import type { BigInt, BigIntJson } from '../../../../values/v1/values_pb'
+import { file_values_v1_values } from '../../../../values/v1/values_pb'
 
 /**
  * Describes the file capabilities/blockchain/solana/v1alpha/client.proto.
@@ -15,9 +17,115 @@ import { file_tools_generator_v1alpha_cre_metadata } from '../../../../tools/gen
 export const file_capabilities_blockchain_solana_v1alpha_client: GenFile =
 	/*@__PURE__*/
 	fileDesc(
-		'CjNjYXBhYmlsaXRpZXMvYmxvY2tjaGFpbi9zb2xhbmEvdjFhbHBoYS9jbGllbnQucHJvdG8SJmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhIiYKDUNvbXB1dGVDb25maWcSFQoNY29tcHV0ZV9saW1pdBgBIAEoDSI2CgtBY2NvdW50TWV0YRISCgpwdWJsaWNfa2V5GAEgASgMEhMKC2lzX3dyaXRhYmxlGAIgASgIIosCChJXcml0ZVJlcG9ydFJlcXVlc3QSTwoScmVtYWluaW5nX2FjY291bnRzGAEgAygLMjMuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uc29sYW5hLnYxYWxwaGEuQWNjb3VudE1ldGESEAoIcmVjZWl2ZXIYAiABKAwSUgoOY29tcHV0ZV9jb25maWcYAyABKAsyNS5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5zb2xhbmEudjFhbHBoYS5Db21wdXRlQ29uZmlnSACIAQESKwoGcmVwb3J0GAQgASgLMhsuc2RrLnYxYWxwaGEuUmVwb3J0UmVzcG9uc2VCEQoPX2NvbXB1dGVfY29uZmlnIogDChBXcml0ZVJlcG9ydFJlcGx5EkMKCXR4X3N0YXR1cxgBIAEoDjIwLmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLlR4U3RhdHVzEngKInJlY2VpdmVyX2NvbnRyYWN0X2V4ZWN1dGlvbl9zdGF0dXMYAiABKA4yRy5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5zb2xhbmEudjFhbHBoYS5SZWNlaXZlckNvbnRyYWN0RXhlY3V0aW9uU3RhdHVzSACIAQESGQoMdHhfc2lnbmF0dXJlGAMgASgMSAGIAQESIAoPdHJhbnNhY3Rpb25fZmVlGAQgASgEQgIwAEgCiAEBEhoKDWVycm9yX21lc3NhZ2UYBSABKAlIA4gBAUIlCiNfcmVjZWl2ZXJfY29udHJhY3RfZXhlY3V0aW9uX3N0YXR1c0IPCg1fdHhfc2lnbmF0dXJlQhIKEF90cmFuc2FjdGlvbl9mZWVCEAoOX2Vycm9yX21lc3NhZ2UqTQoIVHhTdGF0dXMSEwoPVFhfU1RBVFVTX0ZBVEFMEAASFQoRVFhfU1RBVFVTX0FCT1JURUQQARIVChFUWF9TVEFUVVNfU1VDQ0VTUxACKoIBCh9SZWNlaXZlckNvbnRyYWN0RXhlY3V0aW9uU3RhdHVzEi4KKlJFQ0VJVkVSX0NPTlRSQUNUX0VYRUNVVElPTl9TVEFUVVNfU1VDQ0VTUxAAEi8KK1JFQ0VJVkVSX0NPTlRSQUNUX0VYRUNVVElPTl9TVEFUVVNfUkVWRVJURUQQATLxAQoGQ2xpZW50EoMBCgtXcml0ZVJlcG9ydBI6LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLldyaXRlUmVwb3J0UmVxdWVzdBo4LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLldyaXRlUmVwb3J0UmVwbHkaYYK1GF0IARIMc29sYW5hQDEuMC4wGksKDUNoYWluU2VsZWN0b3ISOhI4ChoKDXNvbGFuYS1kZXZuZXQQ3++Mp6n8sfbjAQoaCg5zb2xhbmEtbWFpbm5ldBDnk9+Mtp+u3QFC9AEKKmNvbS5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5zb2xhbmEudjFhbHBoYUILQ2xpZW50UHJvdG9QAaICA0NCU6oCJkNhcGFiaWxpdGllcy5CbG9ja2NoYWluLlNvbGFuYS5WMWFscGhhygImQ2FwYWJpbGl0aWVzXEJsb2NrY2hhaW5cU29sYW5hXFYxYWxwaGHiAjJDYXBhYmlsaXRpZXNcQmxvY2tjaGFpblxTb2xhbmFcVjFhbHBoYVxHUEJNZXRhZGF0YeoCKUNhcGFiaWxpdGllczo6QmxvY2tjaGFpbjo6U29sYW5hOjpWMWFscGhhYgZwcm90bzM',
-		[file_sdk_v1alpha_sdk, file_tools_generator_v1alpha_cre_metadata],
+		'CjNjYXBhYmlsaXRpZXMvYmxvY2tjaGFpbi9zb2xhbmEvdjFhbHBoYS9jbGllbnQucHJvdG8SJmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhIsMBCgdBY2NvdW50EhQKCGxhbXBvcnRzGAEgASgEQgIwABINCgVvd25lchgCIAEoDBJFCgRkYXRhGAMgASgLMjcuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uc29sYW5hLnYxYWxwaGEuRGF0YUJ5dGVzT3JKU09OEhIKCmV4ZWN1dGFibGUYBCABKAgSJQoKcmVudF9lcG9jaBgFIAEoCzIRLnZhbHVlcy52MS5CaWdJbnQSEQoFc3BhY2UYBiABKARCAjAAIiYKDUNvbXB1dGVDb25maWcSFQoNY29tcHV0ZV9saW1pdBgBIAEoDSKAAQoPRGF0YUJ5dGVzT3JKU09OEkYKCGVuY29kaW5nGAEgASgOMjQuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uc29sYW5hLnYxYWxwaGEuRW5jb2RpbmdUeXBlEg0KA3JhdxgCIAEoDEgAEg4KBGpzb24YAyABKAxIAEIGCgRib2R5IjMKCURhdGFTbGljZRISCgZvZmZzZXQYASABKARCAjAAEhIKBmxlbmd0aBgCIAEoBEICMAAijQIKEkdldEFjY291bnRJbmZvT3B0cxJGCghlbmNvZGluZxgBIAEoDjI0LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLkVuY29kaW5nVHlwZRJKCgpjb21taXRtZW50GAIgASgOMjYuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uc29sYW5hLnYxYWxwaGEuQ29tbWl0bWVudFR5cGUSRQoKZGF0YV9zbGljZRgDIAEoCzIxLmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLkRhdGFTbGljZRIcChBtaW5fY29udGV4dF9zbG90GAQgASgEQgIwACJsChtHZXRBY2NvdW50SW5mb1dpdGhPcHRzUmVwbHkSQwoFdmFsdWUYAiABKAsyLy5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5zb2xhbmEudjFhbHBoYS5BY2NvdW50SACIAQFCCAoGX3ZhbHVlInoKHUdldEFjY291bnRJbmZvV2l0aE9wdHNSZXF1ZXN0Eg8KB2FjY291bnQYASABKAwSSAoEb3B0cxgCIAEoCzI6LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLkdldEFjY291bnRJbmZvT3B0cyIkCg9HZXRCYWxhbmNlUmVwbHkSEQoFdmFsdWUYASABKARCAjAAIm0KEUdldEJhbGFuY2VSZXF1ZXN0EgwKBGFkZHIYASABKAwSSgoKY29tbWl0bWVudBgCIAEoDjI2LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLkNvbW1pdG1lbnRUeXBlIloKDEdldEJsb2NrT3B0cxJKCgpjb21taXRtZW50GAQgASgOMjYuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uc29sYW5hLnYxYWxwaGEuQ29tbWl0bWVudFR5cGUinQEKDUdldEJsb2NrUmVwbHkSEQoJYmxvY2toYXNoGAEgASgMEhoKEnByZXZpb3VzX2Jsb2NraGFzaBgCIAEoDBIXCgtwYXJlbnRfc2xvdBgDIAEoBEICMAASGwoKYmxvY2tfdGltZRgEIAEoA0ICMABIAIgBARIYCgxibG9ja19oZWlnaHQYBSABKARCAjAAQg0KC19ibG9ja190aW1lImcKD0dldEJsb2NrUmVxdWVzdBIQCgRzbG90GAEgASgEQgIwABJCCgRvcHRzGAIgASgLMjQuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uc29sYW5hLnYxYWxwaGEuR2V0QmxvY2tPcHRzIigKFUdldEZlZUZvck1lc3NhZ2VSZXBseRIPCgNmZWUYASABKARCAjAAInYKF0dldEZlZUZvck1lc3NhZ2VSZXF1ZXN0Eg8KB21lc3NhZ2UYASABKAkSSgoKY29tbWl0bWVudBgCIAEoDjI2LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLkNvbW1pdG1lbnRUeXBlIpICChdHZXRNdWx0aXBsZUFjY291bnRzT3B0cxJGCghlbmNvZGluZxgBIAEoDjI0LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLkVuY29kaW5nVHlwZRJKCgpjb21taXRtZW50GAIgASgOMjYuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uc29sYW5hLnYxYWxwaGEuQ29tbWl0bWVudFR5cGUSRQoKZGF0YV9zbGljZRgDIAEoCzIxLmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLkRhdGFTbGljZRIcChBtaW5fY29udGV4dF9zbG90GAQgASgEQgIwACJrChZPcHRpb25hbEFjY291bnRXcmFwcGVyEkUKB2FjY291bnQYASABKAsyLy5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5zb2xhbmEudjFhbHBoYS5BY2NvdW50SACIAQFCCgoIX2FjY291bnQicQogR2V0TXVsdGlwbGVBY2NvdW50c1dpdGhPcHRzUmVwbHkSTQoFdmFsdWUYAiADKAsyPi5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5zb2xhbmEudjFhbHBoYS5PcHRpb25hbEFjY291bnRXcmFwcGVyIoUBCiJHZXRNdWx0aXBsZUFjY291bnRzV2l0aE9wdHNSZXF1ZXN0EhAKCGFjY291bnRzGAEgAygMEk0KBG9wdHMYAiABKAsyPy5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5zb2xhbmEudjFhbHBoYS5HZXRNdWx0aXBsZUFjY291bnRzT3B0cyI0Cg9SUENGaWx0ZXJNZW1jbXASEgoGb2Zmc2V0GAEgASgEQgIwABINCgVieXRlcxgCIAEoDCJrCglSUENGaWx0ZXISRwoGbWVtY21wGAEgASgLMjcuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uc29sYW5hLnYxYWxwaGEuUlBDRmlsdGVyTWVtY21wEhUKCWRhdGFfc2l6ZRgCIAEoBEICMAAitwIKFkdldFByb2dyYW1BY2NvdW50c09wdHMSRgoIZW5jb2RpbmcYASABKA4yNC5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5zb2xhbmEudjFhbHBoYS5FbmNvZGluZ1R5cGUSSgoKY29tbWl0bWVudBgCIAEoDjI2LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLkNvbW1pdG1lbnRUeXBlEkUKCmRhdGFfc2xpY2UYAyABKAsyMS5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5zb2xhbmEudjFhbHBoYS5EYXRhU2xpY2USQgoHZmlsdGVycxgEIAMoCzIxLmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLlJQQ0ZpbHRlciJgCgxLZXllZEFjY291bnQSDgoGcHVia2V5GAEgASgMEkAKB2FjY291bnQYAiABKAsyLy5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5zb2xhbmEudjFhbHBoYS5BY2NvdW50Il4KF0dldFByb2dyYW1BY2NvdW50c1JlcGx5EkMKBXZhbHVlGAEgAygLMjQuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uc29sYW5hLnYxYWxwaGEuS2V5ZWRBY2NvdW50InoKGUdldFByb2dyYW1BY2NvdW50c1JlcXVlc3QSDwoHcHJvZ3JhbRgBIAEoDBJMCgRvcHRzGAIgASgLMj4uY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uc29sYW5hLnYxYWxwaGEuR2V0UHJvZ3JhbUFjY291bnRzT3B0cyJwChlHZXRTaWduYXR1cmVTdGF0dXNlc1JlcGx5ElMKB3Jlc3VsdHMYASADKAsyQi5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5zb2xhbmEudjFhbHBoYS5HZXRTaWduYXR1cmVTdGF0dXNlc1Jlc3VsdCIrChtHZXRTaWduYXR1cmVTdGF0dXNlc1JlcXVlc3QSDAoEc2lncxgBIAMoDCLKAQoaR2V0U2lnbmF0dXJlU3RhdHVzZXNSZXN1bHQSEAoEc2xvdBgBIAEoBEICMAASHgoNY29uZmlybWF0aW9ucxgCIAEoBEICMABIAIgBARILCgNlcnIYAyABKAkSWwoTY29uZmlybWF0aW9uX3N0YXR1cxgEIAEoDjI+LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLkNvbmZpcm1hdGlvblN0YXR1c1R5cGVCEAoOX2NvbmZpcm1hdGlvbnMiKAoSR2V0U2xvdEhlaWdodFJlcGx5EhIKBmhlaWdodBgBIAEoBEICMAAiYgoUR2V0U2xvdEhlaWdodFJlcXVlc3QSSgoKY29tbWl0bWVudBgBIAEoDjI2LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLkNvbW1pdG1lbnRUeXBlIn4KDU1lc3NhZ2VIZWFkZXISHwoXbnVtX3JlcXVpcmVkX3NpZ25hdHVyZXMYASABKA0SJAocbnVtX3JlYWRvbmx5X3NpZ25lZF9hY2NvdW50cxgCIAEoDRImCh5udW1fcmVhZG9ubHlfdW5zaWduZWRfYWNjb3VudHMYAyABKA0i2QEKDVBhcnNlZE1lc3NhZ2USGAoQcmVjZW50X2Jsb2NraGFzaBgBIAEoDBIUCgxhY2NvdW50X2tleXMYAiADKAwSRQoGaGVhZGVyGAMgASgLMjUuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uc29sYW5hLnYxYWxwaGEuTWVzc2FnZUhlYWRlchJRCgxpbnN0cnVjdGlvbnMYBCADKAsyOy5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5zb2xhbmEudjFhbHBoYS5Db21waWxlZEluc3RydWN0aW9uIm8KEVBhcnNlZFRyYW5zYWN0aW9uEhIKCnNpZ25hdHVyZXMYASADKAwSRgoHbWVzc2FnZRgCIAEoCzI1LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLlBhcnNlZE1lc3NhZ2UiSwoNVWlUb2tlbkFtb3VudBIOCgZhbW91bnQYASABKAkSEAoIZGVjaW1hbHMYAiABKA0SGAoQdWlfYW1vdW50X3N0cmluZxgEIAEoCSK8AQoMVG9rZW5CYWxhbmNlEhUKDWFjY291bnRfaW5kZXgYASABKA0SEgoFb3duZXIYAiABKAxIAIgBARIXCgpwcm9ncmFtX2lkGAMgASgMSAGIAQESDAoEbWludBgEIAEoDBJBCgJ1aRgFIAEoCzI1LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLlVpVG9rZW5BbW91bnRCCAoGX293bmVyQg0KC19wcm9ncmFtX2lkInQKEElubmVySW5zdHJ1Y3Rpb24SDQoFaW5kZXgYASABKA0SUQoMaW5zdHJ1Y3Rpb25zGAIgAygLMjsuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uc29sYW5hLnYxYWxwaGEuQ29tcGlsZWRJbnN0cnVjdGlvbiI1Cg9Mb2FkZWRBZGRyZXNzZXMSEAoIcmVhZG9ubHkYASADKAwSEAoId3JpdGFibGUYAiADKAwiZQoTQ29tcGlsZWRJbnN0cnVjdGlvbhIYChBwcm9ncmFtX2lkX2luZGV4GAEgASgNEhAKCGFjY291bnRzGAIgAygNEgwKBGRhdGEYAyABKAwSFAoMc3RhY2tfaGVpZ2h0GAQgASgNIl8KBERhdGESDwoHY29udGVudBgBIAEoDBJGCghlbmNvZGluZxgCIAEoDjI0LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLkVuY29kaW5nVHlwZSJcCgpSZXR1cm5EYXRhEhIKCnByb2dyYW1faWQYASABKAwSOgoEZGF0YRgCIAEoCzIsLmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLkRhdGEi2gQKD1RyYW5zYWN0aW9uTWV0YRIQCghlcnJfanNvbhgBIAEoCRIPCgNmZWUYAiABKARCAjAAEhgKDHByZV9iYWxhbmNlcxgDIAMoBEICMAASGQoNcG9zdF9iYWxhbmNlcxgEIAMoBEICMAASFAoMbG9nX21lc3NhZ2VzGAUgAygJElAKEnByZV90b2tlbl9iYWxhbmNlcxgGIAMoCzI0LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLlRva2VuQmFsYW5jZRJRChNwb3N0X3Rva2VuX2JhbGFuY2VzGAcgAygLMjQuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uc29sYW5hLnYxYWxwaGEuVG9rZW5CYWxhbmNlElQKEmlubmVyX2luc3RydWN0aW9ucxgIIAMoCzI4LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLklubmVySW5zdHJ1Y3Rpb24SUQoQbG9hZGVkX2FkZHJlc3NlcxgJIAEoCzI3LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLkxvYWRlZEFkZHJlc3NlcxJHCgtyZXR1cm5fZGF0YRgKIAEoCzIyLmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLlJldHVybkRhdGESJwoWY29tcHV0ZV91bml0c19jb25zdW1lZBgLIAEoBEICMABIAIgBAUIZChdfY29tcHV0ZV91bml0c19jb25zdW1lZCKAAQoTVHJhbnNhY3Rpb25FbnZlbG9wZRINCgNyYXcYASABKAxIABJLCgZwYXJzZWQYAiABKAsyOS5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5zb2xhbmEudjFhbHBoYS5QYXJzZWRUcmFuc2FjdGlvbkgAQg0KC3RyYW5zYWN0aW9uIo8CChNHZXRUcmFuc2FjdGlvblJlcGx5EhAKBHNsb3QYASABKARCAjAAEhsKCmJsb2NrX3RpbWUYAiABKANCAjAASACIAQESVQoLdHJhbnNhY3Rpb24YAyABKAsyOy5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5zb2xhbmEudjFhbHBoYS5UcmFuc2FjdGlvbkVudmVsb3BlSAGIAQESSgoEbWV0YRgEIAEoCzI3LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLlRyYW5zYWN0aW9uTWV0YUgCiAEBQg0KC19ibG9ja190aW1lQg4KDF90cmFuc2FjdGlvbkIHCgVfbWV0YSIqChVHZXRUcmFuc2FjdGlvblJlcXVlc3QSEQoJc2lnbmF0dXJlGAEgASgMIu0BCg5TaW11bGF0ZVRYT3B0cxISCgpzaWdfdmVyaWZ5GAEgASgIEkoKCmNvbW1pdG1lbnQYAiABKA4yNi5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5zb2xhbmEudjFhbHBoYS5Db21taXRtZW50VHlwZRIgChhyZXBsYWNlX3JlY2VudF9ibG9ja2hhc2gYAyABKAgSWQoIYWNjb3VudHMYBCABKAsyRy5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5zb2xhbmEudjFhbHBoYS5TaW11bGF0ZVRyYW5zYWN0aW9uQWNjb3VudHNPcHRzIosBCg9TaW11bGF0ZVRYUmVwbHkSCwoDZXJyGAEgASgJEgwKBGxvZ3MYAiADKAkSQQoIYWNjb3VudHMYAyADKAsyLy5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5zb2xhbmEudjFhbHBoYS5BY2NvdW50EhoKDnVuaXRzX2NvbnN1bWVkGAQgASgEQgIwACKIAQoRU2ltdWxhdGVUWFJlcXVlc3QSEAoIcmVjZWl2ZXIYASABKAwSGwoTZW5jb2RlZF90cmFuc2FjdGlvbhgCIAEoCRJECgRvcHRzGAMgASgLMjYuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uc29sYW5hLnYxYWxwaGEuU2ltdWxhdGVUWE9wdHMifAofU2ltdWxhdGVUcmFuc2FjdGlvbkFjY291bnRzT3B0cxJGCghlbmNvZGluZxgBIAEoDjI0LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLkVuY29kaW5nVHlwZRIRCglhZGRyZXNzZXMYAiADKAwibgoPVmFsdWVDb21wYXJhdG9yEg0KBXZhbHVlGAEgASgMEkwKCG9wZXJhdG9yGAIgASgOMjouY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uc29sYW5hLnYxYWxwaGEuQ29tcGFyaXNvbk9wZXJhdG9yImgKDFN1YmtleUNvbmZpZxIMCgRwYXRoGAEgAygJEkoKCWNvbXBhcmVycxgCIAMoCzI3LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLlZhbHVlQ29tcGFyYXRvciI8Cg9DUElGaWx0ZXJDb25maWcSFAoMZGVzdF9hZGRyZXNzGAEgASgMEhMKC21ldGhvZF9uYW1lGAIgASgMIp0CChdGaWx0ZXJMb2dUcmlnZ2VyUmVxdWVzdBIMCgRuYW1lGAEgASgJEg8KB2FkZHJlc3MYAiABKAwSEgoKZXZlbnRfbmFtZRgDIAEoCRIZChFjb250cmFjdF9pZGxfanNvbhgEIAEoDBJFCgdzdWJrZXlzGAUgAygLMjQuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uc29sYW5hLnYxYWxwaGEuU3Via2V5Q29uZmlnElcKEWNwaV9maWx0ZXJfY29uZmlnGAYgASgLMjcuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uc29sYW5hLnYxYWxwaGEuQ1BJRmlsdGVyQ29uZmlnSACIAQFCFAoSX2NwaV9maWx0ZXJfY29uZmlnIvQBCgNMb2cSEAoIY2hhaW5faWQYASABKAkSFQoJbG9nX2luZGV4GAIgASgDQgIwABISCgpibG9ja19oYXNoGAMgASgMEhgKDGJsb2NrX251bWJlchgEIAEoA0ICMAASGwoPYmxvY2tfdGltZXN0YW1wGAUgASgEQgIwABIPCgdhZGRyZXNzGAYgASgMEhEKCWV2ZW50X3NpZxgHIAEoDBIPCgd0eF9oYXNoGAggASgMEgwKBGRhdGEYCSABKAwSGAoMc2VxdWVuY2VfbnVtGAogASgDQgIwABISCgVlcnJvchgLIAEoCUgAiAEBQggKBl9lcnJvciI2CgtBY2NvdW50TWV0YRISCgpwdWJsaWNfa2V5GAEgASgMEhMKC2lzX3dyaXRhYmxlGAIgASgIIosCChJXcml0ZVJlcG9ydFJlcXVlc3QSTwoScmVtYWluaW5nX2FjY291bnRzGAEgAygLMjMuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uc29sYW5hLnYxYWxwaGEuQWNjb3VudE1ldGESEAoIcmVjZWl2ZXIYAiABKAwSUgoOY29tcHV0ZV9jb25maWcYAyABKAsyNS5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5zb2xhbmEudjFhbHBoYS5Db21wdXRlQ29uZmlnSACIAQESKwoGcmVwb3J0GAQgASgLMhsuc2RrLnYxYWxwaGEuUmVwb3J0UmVzcG9uc2VCEQoPX2NvbXB1dGVfY29uZmlnIogDChBXcml0ZVJlcG9ydFJlcGx5EkMKCXR4X3N0YXR1cxgBIAEoDjIwLmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLlR4U3RhdHVzEngKInJlY2VpdmVyX2NvbnRyYWN0X2V4ZWN1dGlvbl9zdGF0dXMYAiABKA4yRy5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5zb2xhbmEudjFhbHBoYS5SZWNlaXZlckNvbnRyYWN0RXhlY3V0aW9uU3RhdHVzSACIAQESGQoMdHhfc2lnbmF0dXJlGAMgASgMSAGIAQESIAoPdHJhbnNhY3Rpb25fZmVlGAQgASgEQgIwAEgCiAEBEhoKDWVycm9yX21lc3NhZ2UYBSABKAlIA4gBAUIlCiNfcmVjZWl2ZXJfY29udHJhY3RfZXhlY3V0aW9uX3N0YXR1c0IPCg1fdHhfc2lnbmF0dXJlQhIKEF90cmFuc2FjdGlvbl9mZWVCEAoOX2Vycm9yX21lc3NhZ2UqsAEKDEVuY29kaW5nVHlwZRIWChJFTkNPRElOR19UWVBFX05PTkUQABIYChRFTkNPRElOR19UWVBFX0JBU0U1OBABEhgKFEVOQ09ESU5HX1RZUEVfQkFTRTY0EAISHQoZRU5DT0RJTkdfVFlQRV9CQVNFNjRfWlNURBADEh0KGUVOQ09ESU5HX1RZUEVfSlNPTl9QQVJTRUQQBBIWChJFTkNPRElOR19UWVBFX0pTT04QBSqHAQoOQ29tbWl0bWVudFR5cGUSGAoUQ09NTUlUTUVOVF9UWVBFX05PTkUQABIdChlDT01NSVRNRU5UX1RZUEVfRklOQUxJWkVEEAESHQoZQ09NTUlUTUVOVF9UWVBFX0NPTkZJUk1FRBACEh0KGUNPTU1JVE1FTlRfVFlQRV9QUk9DRVNTRUQQAyqzAQoWQ29uZmlybWF0aW9uU3RhdHVzVHlwZRIhCh1DT05GSVJNQVRJT05fU1RBVFVTX1RZUEVfTk9ORRAAEiYKIkNPTkZJUk1BVElPTl9TVEFUVVNfVFlQRV9QUk9DRVNTRUQQARImCiJDT05GSVJNQVRJT05fU1RBVFVTX1RZUEVfQ09ORklSTUVEEAISJgoiQ09ORklSTUFUSU9OX1NUQVRVU19UWVBFX0ZJTkFMSVpFRBADKk0KCFR4U3RhdHVzEhMKD1RYX1NUQVRVU19GQVRBTBAAEhUKEVRYX1NUQVRVU19BQk9SVEVEEAESFQoRVFhfU1RBVFVTX1NVQ0NFU1MQAiq/AQoSQ29tcGFyaXNvbk9wZXJhdG9yEhoKFkNPTVBBUklTT05fT1BFUkFUT1JfRVEQABIbChdDT01QQVJJU09OX09QRVJBVE9SX05FURABEhoKFkNPTVBBUklTT05fT1BFUkFUT1JfR1QQAhIaChZDT01QQVJJU09OX09QRVJBVE9SX0xUEAMSGwoXQ09NUEFSSVNPTl9PUEVSQVRPUl9HVEUQBBIbChdDT01QQVJJU09OX09QRVJBVE9SX0xURRAFKoIBCh9SZWNlaXZlckNvbnRyYWN0RXhlY3V0aW9uU3RhdHVzEi4KKlJFQ0VJVkVSX0NPTlRSQUNUX0VYRUNVVElPTl9TVEFUVVNfU1VDQ0VTUxAAEi8KK1JFQ0VJVkVSX0NPTlRSQUNUX0VYRUNVVElPTl9TVEFUVVNfUkVWRVJURUQQATK3DQoGQ2xpZW50EqQBChZHZXRBY2NvdW50SW5mb1dpdGhPcHRzEkUuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uc29sYW5hLnYxYWxwaGEuR2V0QWNjb3VudEluZm9XaXRoT3B0c1JlcXVlc3QaQy5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5zb2xhbmEudjFhbHBoYS5HZXRBY2NvdW50SW5mb1dpdGhPcHRzUmVwbHkSgAEKCkdldEJhbGFuY2USOS5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5zb2xhbmEudjFhbHBoYS5HZXRCYWxhbmNlUmVxdWVzdBo3LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLkdldEJhbGFuY2VSZXBseRJ6CghHZXRCbG9jaxI3LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLkdldEJsb2NrUmVxdWVzdBo1LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLkdldEJsb2NrUmVwbHkSkgEKEEdldEZlZUZvck1lc3NhZ2USPy5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5zb2xhbmEudjFhbHBoYS5HZXRGZWVGb3JNZXNzYWdlUmVxdWVzdBo9LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLkdldEZlZUZvck1lc3NhZ2VSZXBseRKzAQobR2V0TXVsdGlwbGVBY2NvdW50c1dpdGhPcHRzEkouY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uc29sYW5hLnYxYWxwaGEuR2V0TXVsdGlwbGVBY2NvdW50c1dpdGhPcHRzUmVxdWVzdBpILmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLkdldE11bHRpcGxlQWNjb3VudHNXaXRoT3B0c1JlcGx5EpgBChJHZXRQcm9ncmFtQWNjb3VudHMSQS5jYXBhYmlsaXRpZXMuYmxvY2tjaGFpbi5zb2xhbmEudjFhbHBoYS5HZXRQcm9ncmFtQWNjb3VudHNSZXF1ZXN0Gj8uY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uc29sYW5hLnYxYWxwaGEuR2V0UHJvZ3JhbUFjY291bnRzUmVwbHkSngEKFEdldFNpZ25hdHVyZVN0YXR1c2VzEkMuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uc29sYW5hLnYxYWxwaGEuR2V0U2lnbmF0dXJlU3RhdHVzZXNSZXF1ZXN0GkEuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uc29sYW5hLnYxYWxwaGEuR2V0U2lnbmF0dXJlU3RhdHVzZXNSZXBseRKJAQoNR2V0U2xvdEhlaWdodBI8LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLkdldFNsb3RIZWlnaHRSZXF1ZXN0GjouY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uc29sYW5hLnYxYWxwaGEuR2V0U2xvdEhlaWdodFJlcGx5EowBCg5HZXRUcmFuc2FjdGlvbhI9LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLkdldFRyYW5zYWN0aW9uUmVxdWVzdBo7LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLkdldFRyYW5zYWN0aW9uUmVwbHkSfAoKTG9nVHJpZ2dlchI/LmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhLkZpbHRlckxvZ1RyaWdnZXJSZXF1ZXN0GisuY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uc29sYW5hLnYxYWxwaGEuTG9nMAESgwEKC1dyaXRlUmVwb3J0EjouY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uc29sYW5hLnYxYWxwaGEuV3JpdGVSZXBvcnRSZXF1ZXN0GjguY2FwYWJpbGl0aWVzLmJsb2NrY2hhaW4uc29sYW5hLnYxYWxwaGEuV3JpdGVSZXBvcnRSZXBseRphgrUYXQgBEgxzb2xhbmFAMS4wLjAaSwoNQ2hhaW5TZWxlY3RvchI6EjgKGgoNc29sYW5hLWRldm5ldBDf74ynqfyx9uMBChoKDnNvbGFuYS1tYWlubmV0EOeT34y2n67dAUL0AQoqY29tLmNhcGFiaWxpdGllcy5ibG9ja2NoYWluLnNvbGFuYS52MWFscGhhQgtDbGllbnRQcm90b1ABogIDQ0JTqgImQ2FwYWJpbGl0aWVzLkJsb2NrY2hhaW4uU29sYW5hLlYxYWxwaGHKAiZDYXBhYmlsaXRpZXNcQmxvY2tjaGFpblxTb2xhbmFcVjFhbHBoYeICMkNhcGFiaWxpdGllc1xCbG9ja2NoYWluXFNvbGFuYVxWMWFscGhhXEdQQk1ldGFkYXRh6gIpQ2FwYWJpbGl0aWVzOjpCbG9ja2NoYWluOjpTb2xhbmE6OlYxYWxwaGFiBnByb3RvMw',
+		[file_sdk_v1alpha_sdk, file_tools_generator_v1alpha_cre_metadata, file_values_v1_values],
 	)
+
+/**
+ * On-chain account state.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.Account
+ */
+export type Account = Message<'capabilities.blockchain.solana.v1alpha.Account'> & {
+	/**
+	 * balance in lamports (1e-9 SOL)
+	 *
+	 * @generated from field: uint64 lamports = 1 [jstype = JS_NORMAL];
+	 */
+	lamports: bigint
+
+	/**
+	 * 32-byte program id (Pubkey)
+	 *
+	 * @generated from field: bytes owner = 2;
+	 */
+	owner: Uint8Array
+
+	/**
+	 * account data (encoded or JSON)
+	 *
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.DataBytesOrJSON data = 3;
+	 */
+	data?: DataBytesOrJSON
+
+	/**
+	 * true if this is a program account
+	 *
+	 * @generated from field: bool executable = 4;
+	 */
+	executable: boolean
+
+	/**
+	 * next rent epoch
+	 *
+	 * @generated from field: values.v1.BigInt rent_epoch = 5;
+	 */
+	rentEpoch?: BigInt
+
+	/**
+	 * data length in bytes
+	 *
+	 * @generated from field: uint64 space = 6 [jstype = JS_NORMAL];
+	 */
+	space: bigint
+}
+
+/**
+ * On-chain account state.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.Account
+ */
+export type AccountJson = {
+	/**
+	 * balance in lamports (1e-9 SOL)
+	 *
+	 * @generated from field: uint64 lamports = 1 [jstype = JS_NORMAL];
+	 */
+	lamports?: string
+
+	/**
+	 * 32-byte program id (Pubkey)
+	 *
+	 * @generated from field: bytes owner = 2;
+	 */
+	owner?: string
+
+	/**
+	 * account data (encoded or JSON)
+	 *
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.DataBytesOrJSON data = 3;
+	 */
+	data?: DataBytesOrJSONJson
+
+	/**
+	 * true if this is a program account
+	 *
+	 * @generated from field: bool executable = 4;
+	 */
+	executable?: boolean
+
+	/**
+	 * next rent epoch
+	 *
+	 * @generated from field: values.v1.BigInt rent_epoch = 5;
+	 */
+	rentEpoch?: BigIntJson
+
+	/**
+	 * data length in bytes
+	 *
+	 * @generated from field: uint64 space = 6 [jstype = JS_NORMAL];
+	 */
+	space?: string
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.Account.
+ * Use `create(AccountSchema)` to create a new message.
+ */
+export const AccountSchema: GenMessage<Account, { jsonType: AccountJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 0)
 
 /**
  * Compute budget configuration when submitting txs.
@@ -53,7 +161,2921 @@ export type ComputeConfigJson = {
  */
 export const ComputeConfigSchema: GenMessage<ComputeConfig, { jsonType: ComputeConfigJson }> =
 	/*@__PURE__*/
-	messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 0)
+	messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 1)
+
+/**
+ * Raw bytes vs parsed JSON (as returned by RPC).
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.DataBytesOrJSON
+ */
+export type DataBytesOrJSON = Message<'capabilities.blockchain.solana.v1alpha.DataBytesOrJSON'> & {
+	/**
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.EncodingType encoding = 1;
+	 */
+	encoding: EncodingType
+
+	/**
+	 * @generated from oneof capabilities.blockchain.solana.v1alpha.DataBytesOrJSON.body
+	 */
+	body:
+		| {
+				/**
+				 * program data (node’s base64/base58 decoded)
+				 *
+				 * @generated from field: bytes raw = 2;
+				 */
+				value: Uint8Array
+				case: 'raw'
+		  }
+		| {
+				/**
+				 * json: UTF-8 bytes of the jsonParsed payload.
+				 *
+				 * @generated from field: bytes json = 3;
+				 */
+				value: Uint8Array
+				case: 'json'
+		  }
+		| { case: undefined; value?: undefined }
+}
+
+/**
+ * Raw bytes vs parsed JSON (as returned by RPC).
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.DataBytesOrJSON
+ */
+export type DataBytesOrJSONJson = {
+	/**
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.EncodingType encoding = 1;
+	 */
+	encoding?: EncodingTypeJson
+
+	/**
+	 * program data (node’s base64/base58 decoded)
+	 *
+	 * @generated from field: bytes raw = 2;
+	 */
+	raw?: string
+
+	/**
+	 * json: UTF-8 bytes of the jsonParsed payload.
+	 *
+	 * @generated from field: bytes json = 3;
+	 */
+	json?: string
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.DataBytesOrJSON.
+ * Use `create(DataBytesOrJSONSchema)` to create a new message.
+ */
+export const DataBytesOrJSONSchema: GenMessage<DataBytesOrJSON, { jsonType: DataBytesOrJSONJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 2)
+
+/**
+ * Return a slice of account data.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.DataSlice
+ */
+export type DataSlice = Message<'capabilities.blockchain.solana.v1alpha.DataSlice'> & {
+	/**
+	 * start byte
+	 *
+	 * @generated from field: uint64 offset = 1 [jstype = JS_NORMAL];
+	 */
+	offset: bigint
+
+	/**
+	 * number of bytes
+	 *
+	 * @generated from field: uint64 length = 2 [jstype = JS_NORMAL];
+	 */
+	length: bigint
+}
+
+/**
+ * Return a slice of account data.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.DataSlice
+ */
+export type DataSliceJson = {
+	/**
+	 * start byte
+	 *
+	 * @generated from field: uint64 offset = 1 [jstype = JS_NORMAL];
+	 */
+	offset?: string
+
+	/**
+	 * number of bytes
+	 *
+	 * @generated from field: uint64 length = 2 [jstype = JS_NORMAL];
+	 */
+	length?: string
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.DataSlice.
+ * Use `create(DataSliceSchema)` to create a new message.
+ */
+export const DataSliceSchema: GenMessage<DataSlice, { jsonType: DataSliceJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 3)
+
+/**
+ * Options for GetAccountInfo.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetAccountInfoOpts
+ */
+export type GetAccountInfoOpts =
+	Message<'capabilities.blockchain.solana.v1alpha.GetAccountInfoOpts'> & {
+		/**
+		 * data encoding
+		 *
+		 * @generated from field: capabilities.blockchain.solana.v1alpha.EncodingType encoding = 1;
+		 */
+		encoding: EncodingType
+
+		/**
+		 * read consistency
+		 *
+		 * @generated from field: capabilities.blockchain.solana.v1alpha.CommitmentType commitment = 2;
+		 */
+		commitment: CommitmentType
+
+		/**
+		 * optional slice window
+		 *
+		 * @generated from field: capabilities.blockchain.solana.v1alpha.DataSlice data_slice = 3;
+		 */
+		dataSlice?: DataSlice
+
+		/**
+		 * lower bound slot
+		 *
+		 * @generated from field: uint64 min_context_slot = 4 [jstype = JS_NORMAL];
+		 */
+		minContextSlot: bigint
+	}
+
+/**
+ * Options for GetAccountInfo.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetAccountInfoOpts
+ */
+export type GetAccountInfoOptsJson = {
+	/**
+	 * data encoding
+	 *
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.EncodingType encoding = 1;
+	 */
+	encoding?: EncodingTypeJson
+
+	/**
+	 * read consistency
+	 *
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.CommitmentType commitment = 2;
+	 */
+	commitment?: CommitmentTypeJson
+
+	/**
+	 * optional slice window
+	 *
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.DataSlice data_slice = 3;
+	 */
+	dataSlice?: DataSliceJson
+
+	/**
+	 * lower bound slot
+	 *
+	 * @generated from field: uint64 min_context_slot = 4 [jstype = JS_NORMAL];
+	 */
+	minContextSlot?: string
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.GetAccountInfoOpts.
+ * Use `create(GetAccountInfoOptsSchema)` to create a new message.
+ */
+export const GetAccountInfoOptsSchema: GenMessage<
+	GetAccountInfoOpts,
+	{ jsonType: GetAccountInfoOptsJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 4)
+
+/**
+ * Reply for GetAccountInfoWithOpts.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetAccountInfoWithOptsReply
+ */
+export type GetAccountInfoWithOptsReply =
+	Message<'capabilities.blockchain.solana.v1alpha.GetAccountInfoWithOptsReply'> & {
+		/**
+		 * account (may be empty)
+		 *
+		 * @generated from field: optional capabilities.blockchain.solana.v1alpha.Account value = 2;
+		 */
+		value?: Account
+	}
+
+/**
+ * Reply for GetAccountInfoWithOpts.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetAccountInfoWithOptsReply
+ */
+export type GetAccountInfoWithOptsReplyJson = {
+	/**
+	 * account (may be empty)
+	 *
+	 * @generated from field: optional capabilities.blockchain.solana.v1alpha.Account value = 2;
+	 */
+	value?: AccountJson
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.GetAccountInfoWithOptsReply.
+ * Use `create(GetAccountInfoWithOptsReplySchema)` to create a new message.
+ */
+export const GetAccountInfoWithOptsReplySchema: GenMessage<
+	GetAccountInfoWithOptsReply,
+	{ jsonType: GetAccountInfoWithOptsReplyJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 5)
+
+/**
+ * Request for GetAccountInfoWithOpts.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetAccountInfoWithOptsRequest
+ */
+export type GetAccountInfoWithOptsRequest =
+	Message<'capabilities.blockchain.solana.v1alpha.GetAccountInfoWithOptsRequest'> & {
+		/**
+		 * 32-byte Pubkey
+		 *
+		 * @generated from field: bytes account = 1;
+		 */
+		account: Uint8Array
+
+		/**
+		 * @generated from field: capabilities.blockchain.solana.v1alpha.GetAccountInfoOpts opts = 2;
+		 */
+		opts?: GetAccountInfoOpts
+	}
+
+/**
+ * Request for GetAccountInfoWithOpts.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetAccountInfoWithOptsRequest
+ */
+export type GetAccountInfoWithOptsRequestJson = {
+	/**
+	 * 32-byte Pubkey
+	 *
+	 * @generated from field: bytes account = 1;
+	 */
+	account?: string
+
+	/**
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.GetAccountInfoOpts opts = 2;
+	 */
+	opts?: GetAccountInfoOptsJson
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.GetAccountInfoWithOptsRequest.
+ * Use `create(GetAccountInfoWithOptsRequestSchema)` to create a new message.
+ */
+export const GetAccountInfoWithOptsRequestSchema: GenMessage<
+	GetAccountInfoWithOptsRequest,
+	{ jsonType: GetAccountInfoWithOptsRequestJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 6)
+
+/**
+ * Reply for GetBalance.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetBalanceReply
+ */
+export type GetBalanceReply = Message<'capabilities.blockchain.solana.v1alpha.GetBalanceReply'> & {
+	/**
+	 * lamports
+	 *
+	 * @generated from field: uint64 value = 1 [jstype = JS_NORMAL];
+	 */
+	value: bigint
+}
+
+/**
+ * Reply for GetBalance.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetBalanceReply
+ */
+export type GetBalanceReplyJson = {
+	/**
+	 * lamports
+	 *
+	 * @generated from field: uint64 value = 1 [jstype = JS_NORMAL];
+	 */
+	value?: string
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.GetBalanceReply.
+ * Use `create(GetBalanceReplySchema)` to create a new message.
+ */
+export const GetBalanceReplySchema: GenMessage<GetBalanceReply, { jsonType: GetBalanceReplyJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 7)
+
+/**
+ * Request for GetBalance.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetBalanceRequest
+ */
+export type GetBalanceRequest =
+	Message<'capabilities.blockchain.solana.v1alpha.GetBalanceRequest'> & {
+		/**
+		 * 32-byte Pubkey
+		 *
+		 * @generated from field: bytes addr = 1;
+		 */
+		addr: Uint8Array
+
+		/**
+		 * read consistency
+		 *
+		 * @generated from field: capabilities.blockchain.solana.v1alpha.CommitmentType commitment = 2;
+		 */
+		commitment: CommitmentType
+	}
+
+/**
+ * Request for GetBalance.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetBalanceRequest
+ */
+export type GetBalanceRequestJson = {
+	/**
+	 * 32-byte Pubkey
+	 *
+	 * @generated from field: bytes addr = 1;
+	 */
+	addr?: string
+
+	/**
+	 * read consistency
+	 *
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.CommitmentType commitment = 2;
+	 */
+	commitment?: CommitmentTypeJson
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.GetBalanceRequest.
+ * Use `create(GetBalanceRequestSchema)` to create a new message.
+ */
+export const GetBalanceRequestSchema: GenMessage<
+	GetBalanceRequest,
+	{ jsonType: GetBalanceRequestJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 8)
+
+/**
+ * Options for GetBlock.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetBlockOpts
+ */
+export type GetBlockOpts = Message<'capabilities.blockchain.solana.v1alpha.GetBlockOpts'> & {
+	/**
+	 * read consistency
+	 *
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.CommitmentType commitment = 4;
+	 */
+	commitment: CommitmentType
+}
+
+/**
+ * Options for GetBlock.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetBlockOpts
+ */
+export type GetBlockOptsJson = {
+	/**
+	 * read consistency
+	 *
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.CommitmentType commitment = 4;
+	 */
+	commitment?: CommitmentTypeJson
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.GetBlockOpts.
+ * Use `create(GetBlockOptsSchema)` to create a new message.
+ */
+export const GetBlockOptsSchema: GenMessage<GetBlockOpts, { jsonType: GetBlockOptsJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 9)
+
+/**
+ * Block response.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetBlockReply
+ */
+export type GetBlockReply = Message<'capabilities.blockchain.solana.v1alpha.GetBlockReply'> & {
+	/**
+	 * 32-byte block hash
+	 *
+	 * @generated from field: bytes blockhash = 1;
+	 */
+	blockhash: Uint8Array
+
+	/**
+	 * 32-byte parent hash
+	 *
+	 * @generated from field: bytes previous_blockhash = 2;
+	 */
+	previousBlockhash: Uint8Array
+
+	/**
+	 * @generated from field: uint64 parent_slot = 3 [jstype = JS_NORMAL];
+	 */
+	parentSlot: bigint
+
+	/**
+	 * unix seconds, node may not report it
+	 *
+	 * @generated from field: optional int64 block_time = 4 [jstype = JS_NORMAL];
+	 */
+	blockTime?: bigint
+
+	/**
+	 * chain height
+	 *
+	 * @generated from field: uint64 block_height = 5 [jstype = JS_NORMAL];
+	 */
+	blockHeight: bigint
+}
+
+/**
+ * Block response.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetBlockReply
+ */
+export type GetBlockReplyJson = {
+	/**
+	 * 32-byte block hash
+	 *
+	 * @generated from field: bytes blockhash = 1;
+	 */
+	blockhash?: string
+
+	/**
+	 * 32-byte parent hash
+	 *
+	 * @generated from field: bytes previous_blockhash = 2;
+	 */
+	previousBlockhash?: string
+
+	/**
+	 * @generated from field: uint64 parent_slot = 3 [jstype = JS_NORMAL];
+	 */
+	parentSlot?: string
+
+	/**
+	 * unix seconds, node may not report it
+	 *
+	 * @generated from field: optional int64 block_time = 4 [jstype = JS_NORMAL];
+	 */
+	blockTime?: string
+
+	/**
+	 * chain height
+	 *
+	 * @generated from field: uint64 block_height = 5 [jstype = JS_NORMAL];
+	 */
+	blockHeight?: string
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.GetBlockReply.
+ * Use `create(GetBlockReplySchema)` to create a new message.
+ */
+export const GetBlockReplySchema: GenMessage<GetBlockReply, { jsonType: GetBlockReplyJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 10)
+
+/**
+ * Request for GetBlock.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetBlockRequest
+ */
+export type GetBlockRequest = Message<'capabilities.blockchain.solana.v1alpha.GetBlockRequest'> & {
+	/**
+	 * target slot
+	 *
+	 * @generated from field: uint64 slot = 1 [jstype = JS_NORMAL];
+	 */
+	slot: bigint
+
+	/**
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.GetBlockOpts opts = 2;
+	 */
+	opts?: GetBlockOpts
+}
+
+/**
+ * Request for GetBlock.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetBlockRequest
+ */
+export type GetBlockRequestJson = {
+	/**
+	 * target slot
+	 *
+	 * @generated from field: uint64 slot = 1 [jstype = JS_NORMAL];
+	 */
+	slot?: string
+
+	/**
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.GetBlockOpts opts = 2;
+	 */
+	opts?: GetBlockOptsJson
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.GetBlockRequest.
+ * Use `create(GetBlockRequestSchema)` to create a new message.
+ */
+export const GetBlockRequestSchema: GenMessage<GetBlockRequest, { jsonType: GetBlockRequestJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 11)
+
+/**
+ * Fee quote for a base58-encoded Message.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetFeeForMessageReply
+ */
+export type GetFeeForMessageReply =
+	Message<'capabilities.blockchain.solana.v1alpha.GetFeeForMessageReply'> & {
+		/**
+		 * lamports
+		 *
+		 * @generated from field: uint64 fee = 1 [jstype = JS_NORMAL];
+		 */
+		fee: bigint
+	}
+
+/**
+ * Fee quote for a base58-encoded Message.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetFeeForMessageReply
+ */
+export type GetFeeForMessageReplyJson = {
+	/**
+	 * lamports
+	 *
+	 * @generated from field: uint64 fee = 1 [jstype = JS_NORMAL];
+	 */
+	fee?: string
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.GetFeeForMessageReply.
+ * Use `create(GetFeeForMessageReplySchema)` to create a new message.
+ */
+export const GetFeeForMessageReplySchema: GenMessage<
+	GetFeeForMessageReply,
+	{ jsonType: GetFeeForMessageReplyJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 12)
+
+/**
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetFeeForMessageRequest
+ */
+export type GetFeeForMessageRequest =
+	Message<'capabilities.blockchain.solana.v1alpha.GetFeeForMessageRequest'> & {
+		/**
+		 * must be base58-encoded Message
+		 *
+		 * @generated from field: string message = 1;
+		 */
+		message: string
+
+		/**
+		 * read consistency
+		 *
+		 * @generated from field: capabilities.blockchain.solana.v1alpha.CommitmentType commitment = 2;
+		 */
+		commitment: CommitmentType
+	}
+
+/**
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetFeeForMessageRequest
+ */
+export type GetFeeForMessageRequestJson = {
+	/**
+	 * must be base58-encoded Message
+	 *
+	 * @generated from field: string message = 1;
+	 */
+	message?: string
+
+	/**
+	 * read consistency
+	 *
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.CommitmentType commitment = 2;
+	 */
+	commitment?: CommitmentTypeJson
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.GetFeeForMessageRequest.
+ * Use `create(GetFeeForMessageRequestSchema)` to create a new message.
+ */
+export const GetFeeForMessageRequestSchema: GenMessage<
+	GetFeeForMessageRequest,
+	{ jsonType: GetFeeForMessageRequestJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 13)
+
+/**
+ * Options for GetMultipleAccounts.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetMultipleAccountsOpts
+ */
+export type GetMultipleAccountsOpts =
+	Message<'capabilities.blockchain.solana.v1alpha.GetMultipleAccountsOpts'> & {
+		/**
+		 * @generated from field: capabilities.blockchain.solana.v1alpha.EncodingType encoding = 1;
+		 */
+		encoding: EncodingType
+
+		/**
+		 * @generated from field: capabilities.blockchain.solana.v1alpha.CommitmentType commitment = 2;
+		 */
+		commitment: CommitmentType
+
+		/**
+		 * @generated from field: capabilities.blockchain.solana.v1alpha.DataSlice data_slice = 3;
+		 */
+		dataSlice?: DataSlice
+
+		/**
+		 * @generated from field: uint64 min_context_slot = 4 [jstype = JS_NORMAL];
+		 */
+		minContextSlot: bigint
+	}
+
+/**
+ * Options for GetMultipleAccounts.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetMultipleAccountsOpts
+ */
+export type GetMultipleAccountsOptsJson = {
+	/**
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.EncodingType encoding = 1;
+	 */
+	encoding?: EncodingTypeJson
+
+	/**
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.CommitmentType commitment = 2;
+	 */
+	commitment?: CommitmentTypeJson
+
+	/**
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.DataSlice data_slice = 3;
+	 */
+	dataSlice?: DataSliceJson
+
+	/**
+	 * @generated from field: uint64 min_context_slot = 4 [jstype = JS_NORMAL];
+	 */
+	minContextSlot?: string
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.GetMultipleAccountsOpts.
+ * Use `create(GetMultipleAccountsOptsSchema)` to create a new message.
+ */
+export const GetMultipleAccountsOptsSchema: GenMessage<
+	GetMultipleAccountsOpts,
+	{ jsonType: GetMultipleAccountsOptsJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 14)
+
+/**
+ * @generated from message capabilities.blockchain.solana.v1alpha.OptionalAccountWrapper
+ */
+export type OptionalAccountWrapper =
+	Message<'capabilities.blockchain.solana.v1alpha.OptionalAccountWrapper'> & {
+		/**
+		 * @generated from field: optional capabilities.blockchain.solana.v1alpha.Account account = 1;
+		 */
+		account?: Account
+	}
+
+/**
+ * @generated from message capabilities.blockchain.solana.v1alpha.OptionalAccountWrapper
+ */
+export type OptionalAccountWrapperJson = {
+	/**
+	 * @generated from field: optional capabilities.blockchain.solana.v1alpha.Account account = 1;
+	 */
+	account?: AccountJson
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.OptionalAccountWrapper.
+ * Use `create(OptionalAccountWrapperSchema)` to create a new message.
+ */
+export const OptionalAccountWrapperSchema: GenMessage<
+	OptionalAccountWrapper,
+	{ jsonType: OptionalAccountWrapperJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 15)
+
+/**
+ * Reply for GetMultipleAccountsWithOpts.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetMultipleAccountsWithOptsReply
+ */
+export type GetMultipleAccountsWithOptsReply =
+	Message<'capabilities.blockchain.solana.v1alpha.GetMultipleAccountsWithOptsReply'> & {
+		/**
+		 * accounts (nil entries allowed)
+		 *
+		 * @generated from field: repeated capabilities.blockchain.solana.v1alpha.OptionalAccountWrapper value = 2;
+		 */
+		value: OptionalAccountWrapper[]
+	}
+
+/**
+ * Reply for GetMultipleAccountsWithOpts.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetMultipleAccountsWithOptsReply
+ */
+export type GetMultipleAccountsWithOptsReplyJson = {
+	/**
+	 * accounts (nil entries allowed)
+	 *
+	 * @generated from field: repeated capabilities.blockchain.solana.v1alpha.OptionalAccountWrapper value = 2;
+	 */
+	value?: OptionalAccountWrapperJson[]
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.GetMultipleAccountsWithOptsReply.
+ * Use `create(GetMultipleAccountsWithOptsReplySchema)` to create a new message.
+ */
+export const GetMultipleAccountsWithOptsReplySchema: GenMessage<
+	GetMultipleAccountsWithOptsReply,
+	{ jsonType: GetMultipleAccountsWithOptsReplyJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 16)
+
+/**
+ * Request for GetMultipleAccountsWithOpts.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetMultipleAccountsWithOptsRequest
+ */
+export type GetMultipleAccountsWithOptsRequest =
+	Message<'capabilities.blockchain.solana.v1alpha.GetMultipleAccountsWithOptsRequest'> & {
+		/**
+		 * list of 32-byte Pubkeys
+		 *
+		 * @generated from field: repeated bytes accounts = 1;
+		 */
+		accounts: Uint8Array[]
+
+		/**
+		 * @generated from field: capabilities.blockchain.solana.v1alpha.GetMultipleAccountsOpts opts = 2;
+		 */
+		opts?: GetMultipleAccountsOpts
+	}
+
+/**
+ * Request for GetMultipleAccountsWithOpts.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetMultipleAccountsWithOptsRequest
+ */
+export type GetMultipleAccountsWithOptsRequestJson = {
+	/**
+	 * list of 32-byte Pubkeys
+	 *
+	 * @generated from field: repeated bytes accounts = 1;
+	 */
+	accounts?: string[]
+
+	/**
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.GetMultipleAccountsOpts opts = 2;
+	 */
+	opts?: GetMultipleAccountsOptsJson
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.GetMultipleAccountsWithOptsRequest.
+ * Use `create(GetMultipleAccountsWithOptsRequestSchema)` to create a new message.
+ */
+export const GetMultipleAccountsWithOptsRequestSchema: GenMessage<
+	GetMultipleAccountsWithOptsRequest,
+	{ jsonType: GetMultipleAccountsWithOptsRequestJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 17)
+
+/**
+ * Memcmp filter for getProgramAccounts.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.RPCFilterMemcmp
+ */
+export type RPCFilterMemcmp = Message<'capabilities.blockchain.solana.v1alpha.RPCFilterMemcmp'> & {
+	/**
+	 * byte offset into account data
+	 *
+	 * @generated from field: uint64 offset = 1 [jstype = JS_NORMAL];
+	 */
+	offset: bigint
+
+	/**
+	 * data to match (RPC encodes as base58)
+	 *
+	 * @generated from field: bytes bytes = 2;
+	 */
+	bytes: Uint8Array
+}
+
+/**
+ * Memcmp filter for getProgramAccounts.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.RPCFilterMemcmp
+ */
+export type RPCFilterMemcmpJson = {
+	/**
+	 * byte offset into account data
+	 *
+	 * @generated from field: uint64 offset = 1 [jstype = JS_NORMAL];
+	 */
+	offset?: string
+
+	/**
+	 * data to match (RPC encodes as base58)
+	 *
+	 * @generated from field: bytes bytes = 2;
+	 */
+	bytes?: string
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.RPCFilterMemcmp.
+ * Use `create(RPCFilterMemcmpSchema)` to create a new message.
+ */
+export const RPCFilterMemcmpSchema: GenMessage<RPCFilterMemcmp, { jsonType: RPCFilterMemcmpJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 18)
+
+/**
+ * Account filter for getProgramAccounts (memcmp or data size).
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.RPCFilter
+ */
+export type RPCFilter = Message<'capabilities.blockchain.solana.v1alpha.RPCFilter'> & {
+	/**
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.RPCFilterMemcmp memcmp = 1;
+	 */
+	memcmp?: RPCFilterMemcmp
+
+	/**
+	 * match accounts with this data length
+	 *
+	 * @generated from field: uint64 data_size = 2 [jstype = JS_NORMAL];
+	 */
+	dataSize: bigint
+}
+
+/**
+ * Account filter for getProgramAccounts (memcmp or data size).
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.RPCFilter
+ */
+export type RPCFilterJson = {
+	/**
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.RPCFilterMemcmp memcmp = 1;
+	 */
+	memcmp?: RPCFilterMemcmpJson
+
+	/**
+	 * match accounts with this data length
+	 *
+	 * @generated from field: uint64 data_size = 2 [jstype = JS_NORMAL];
+	 */
+	dataSize?: string
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.RPCFilter.
+ * Use `create(RPCFilterSchema)` to create a new message.
+ */
+export const RPCFilterSchema: GenMessage<RPCFilter, { jsonType: RPCFilterJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 19)
+
+/**
+ * Options for GetProgramAccounts.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetProgramAccountsOpts
+ */
+export type GetProgramAccountsOpts =
+	Message<'capabilities.blockchain.solana.v1alpha.GetProgramAccountsOpts'> & {
+		/**
+		 * @generated from field: capabilities.blockchain.solana.v1alpha.EncodingType encoding = 1;
+		 */
+		encoding: EncodingType
+
+		/**
+		 * @generated from field: capabilities.blockchain.solana.v1alpha.CommitmentType commitment = 2;
+		 */
+		commitment: CommitmentType
+
+		/**
+		 * @generated from field: capabilities.blockchain.solana.v1alpha.DataSlice data_slice = 3;
+		 */
+		dataSlice?: DataSlice
+
+		/**
+		 * @generated from field: repeated capabilities.blockchain.solana.v1alpha.RPCFilter filters = 4;
+		 */
+		filters: RPCFilter[]
+	}
+
+/**
+ * Options for GetProgramAccounts.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetProgramAccountsOpts
+ */
+export type GetProgramAccountsOptsJson = {
+	/**
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.EncodingType encoding = 1;
+	 */
+	encoding?: EncodingTypeJson
+
+	/**
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.CommitmentType commitment = 2;
+	 */
+	commitment?: CommitmentTypeJson
+
+	/**
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.DataSlice data_slice = 3;
+	 */
+	dataSlice?: DataSliceJson
+
+	/**
+	 * @generated from field: repeated capabilities.blockchain.solana.v1alpha.RPCFilter filters = 4;
+	 */
+	filters?: RPCFilterJson[]
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.GetProgramAccountsOpts.
+ * Use `create(GetProgramAccountsOptsSchema)` to create a new message.
+ */
+export const GetProgramAccountsOptsSchema: GenMessage<
+	GetProgramAccountsOpts,
+	{ jsonType: GetProgramAccountsOptsJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 20)
+
+/**
+ * Program-owned account with its pubkey.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.KeyedAccount
+ */
+export type KeyedAccount = Message<'capabilities.blockchain.solana.v1alpha.KeyedAccount'> & {
+	/**
+	 * 32-byte Pubkey
+	 *
+	 * @generated from field: bytes pubkey = 1;
+	 */
+	pubkey: Uint8Array
+
+	/**
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.Account account = 2;
+	 */
+	account?: Account
+}
+
+/**
+ * Program-owned account with its pubkey.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.KeyedAccount
+ */
+export type KeyedAccountJson = {
+	/**
+	 * 32-byte Pubkey
+	 *
+	 * @generated from field: bytes pubkey = 1;
+	 */
+	pubkey?: string
+
+	/**
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.Account account = 2;
+	 */
+	account?: AccountJson
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.KeyedAccount.
+ * Use `create(KeyedAccountSchema)` to create a new message.
+ */
+export const KeyedAccountSchema: GenMessage<KeyedAccount, { jsonType: KeyedAccountJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 21)
+
+/**
+ * Reply for GetProgramAccounts.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetProgramAccountsReply
+ */
+export type GetProgramAccountsReply =
+	Message<'capabilities.blockchain.solana.v1alpha.GetProgramAccountsReply'> & {
+		/**
+		 * @generated from field: repeated capabilities.blockchain.solana.v1alpha.KeyedAccount value = 1;
+		 */
+		value: KeyedAccount[]
+	}
+
+/**
+ * Reply for GetProgramAccounts.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetProgramAccountsReply
+ */
+export type GetProgramAccountsReplyJson = {
+	/**
+	 * @generated from field: repeated capabilities.blockchain.solana.v1alpha.KeyedAccount value = 1;
+	 */
+	value?: KeyedAccountJson[]
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.GetProgramAccountsReply.
+ * Use `create(GetProgramAccountsReplySchema)` to create a new message.
+ */
+export const GetProgramAccountsReplySchema: GenMessage<
+	GetProgramAccountsReply,
+	{ jsonType: GetProgramAccountsReplyJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 22)
+
+/**
+ * Request for GetProgramAccounts.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetProgramAccountsRequest
+ */
+export type GetProgramAccountsRequest =
+	Message<'capabilities.blockchain.solana.v1alpha.GetProgramAccountsRequest'> & {
+		/**
+		 * 32-byte program Pubkey
+		 *
+		 * @generated from field: bytes program = 1;
+		 */
+		program: Uint8Array
+
+		/**
+		 * @generated from field: capabilities.blockchain.solana.v1alpha.GetProgramAccountsOpts opts = 2;
+		 */
+		opts?: GetProgramAccountsOpts
+	}
+
+/**
+ * Request for GetProgramAccounts.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetProgramAccountsRequest
+ */
+export type GetProgramAccountsRequestJson = {
+	/**
+	 * 32-byte program Pubkey
+	 *
+	 * @generated from field: bytes program = 1;
+	 */
+	program?: string
+
+	/**
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.GetProgramAccountsOpts opts = 2;
+	 */
+	opts?: GetProgramAccountsOptsJson
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.GetProgramAccountsRequest.
+ * Use `create(GetProgramAccountsRequestSchema)` to create a new message.
+ */
+export const GetProgramAccountsRequestSchema: GenMessage<
+	GetProgramAccountsRequest,
+	{ jsonType: GetProgramAccountsRequestJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 23)
+
+/**
+ * Reply for GetSignatureStatuses.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetSignatureStatusesReply
+ */
+export type GetSignatureStatusesReply =
+	Message<'capabilities.blockchain.solana.v1alpha.GetSignatureStatusesReply'> & {
+		/**
+		 * 1:1 with input
+		 *
+		 * @generated from field: repeated capabilities.blockchain.solana.v1alpha.GetSignatureStatusesResult results = 1;
+		 */
+		results: GetSignatureStatusesResult[]
+	}
+
+/**
+ * Reply for GetSignatureStatuses.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetSignatureStatusesReply
+ */
+export type GetSignatureStatusesReplyJson = {
+	/**
+	 * 1:1 with input
+	 *
+	 * @generated from field: repeated capabilities.blockchain.solana.v1alpha.GetSignatureStatusesResult results = 1;
+	 */
+	results?: GetSignatureStatusesResultJson[]
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.GetSignatureStatusesReply.
+ * Use `create(GetSignatureStatusesReplySchema)` to create a new message.
+ */
+export const GetSignatureStatusesReplySchema: GenMessage<
+	GetSignatureStatusesReply,
+	{ jsonType: GetSignatureStatusesReplyJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 24)
+
+/**
+ * Request for GetSignatureStatuses.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetSignatureStatusesRequest
+ */
+export type GetSignatureStatusesRequest =
+	Message<'capabilities.blockchain.solana.v1alpha.GetSignatureStatusesRequest'> & {
+		/**
+		 * 64-byte signatures
+		 *
+		 * @generated from field: repeated bytes sigs = 1;
+		 */
+		sigs: Uint8Array[]
+	}
+
+/**
+ * Request for GetSignatureStatuses.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetSignatureStatusesRequest
+ */
+export type GetSignatureStatusesRequestJson = {
+	/**
+	 * 64-byte signatures
+	 *
+	 * @generated from field: repeated bytes sigs = 1;
+	 */
+	sigs?: string[]
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.GetSignatureStatusesRequest.
+ * Use `create(GetSignatureStatusesRequestSchema)` to create a new message.
+ */
+export const GetSignatureStatusesRequestSchema: GenMessage<
+	GetSignatureStatusesRequest,
+	{ jsonType: GetSignatureStatusesRequestJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 25)
+
+/**
+ * Per-signature status.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetSignatureStatusesResult
+ */
+export type GetSignatureStatusesResult =
+	Message<'capabilities.blockchain.solana.v1alpha.GetSignatureStatusesResult'> & {
+		/**
+		 * processed slot
+		 *
+		 * @generated from field: uint64 slot = 1 [jstype = JS_NORMAL];
+		 */
+		slot: bigint
+
+		/**
+		 * null->0 here
+		 *
+		 * @generated from field: optional uint64 confirmations = 2 [jstype = JS_NORMAL];
+		 */
+		confirmations?: bigint
+
+		/**
+		 * error JSON string (empty on success)
+		 *
+		 * @generated from field: string err = 3;
+		 */
+		err: string
+
+		/**
+		 * @generated from field: capabilities.blockchain.solana.v1alpha.ConfirmationStatusType confirmation_status = 4;
+		 */
+		confirmationStatus: ConfirmationStatusType
+	}
+
+/**
+ * Per-signature status.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetSignatureStatusesResult
+ */
+export type GetSignatureStatusesResultJson = {
+	/**
+	 * processed slot
+	 *
+	 * @generated from field: uint64 slot = 1 [jstype = JS_NORMAL];
+	 */
+	slot?: string
+
+	/**
+	 * null->0 here
+	 *
+	 * @generated from field: optional uint64 confirmations = 2 [jstype = JS_NORMAL];
+	 */
+	confirmations?: string
+
+	/**
+	 * error JSON string (empty on success)
+	 *
+	 * @generated from field: string err = 3;
+	 */
+	err?: string
+
+	/**
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.ConfirmationStatusType confirmation_status = 4;
+	 */
+	confirmationStatus?: ConfirmationStatusTypeJson
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.GetSignatureStatusesResult.
+ * Use `create(GetSignatureStatusesResultSchema)` to create a new message.
+ */
+export const GetSignatureStatusesResultSchema: GenMessage<
+	GetSignatureStatusesResult,
+	{ jsonType: GetSignatureStatusesResultJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 26)
+
+/**
+ * Current “height” (blocks below latest).
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetSlotHeightReply
+ */
+export type GetSlotHeightReply =
+	Message<'capabilities.blockchain.solana.v1alpha.GetSlotHeightReply'> & {
+		/**
+		 * @generated from field: uint64 height = 1 [jstype = JS_NORMAL];
+		 */
+		height: bigint
+	}
+
+/**
+ * Current “height” (blocks below latest).
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetSlotHeightReply
+ */
+export type GetSlotHeightReplyJson = {
+	/**
+	 * @generated from field: uint64 height = 1 [jstype = JS_NORMAL];
+	 */
+	height?: string
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.GetSlotHeightReply.
+ * Use `create(GetSlotHeightReplySchema)` to create a new message.
+ */
+export const GetSlotHeightReplySchema: GenMessage<
+	GetSlotHeightReply,
+	{ jsonType: GetSlotHeightReplyJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 27)
+
+/**
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetSlotHeightRequest
+ */
+export type GetSlotHeightRequest =
+	Message<'capabilities.blockchain.solana.v1alpha.GetSlotHeightRequest'> & {
+		/**
+		 * read consistency
+		 *
+		 * @generated from field: capabilities.blockchain.solana.v1alpha.CommitmentType commitment = 1;
+		 */
+		commitment: CommitmentType
+	}
+
+/**
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetSlotHeightRequest
+ */
+export type GetSlotHeightRequestJson = {
+	/**
+	 * read consistency
+	 *
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.CommitmentType commitment = 1;
+	 */
+	commitment?: CommitmentTypeJson
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.GetSlotHeightRequest.
+ * Use `create(GetSlotHeightRequestSchema)` to create a new message.
+ */
+export const GetSlotHeightRequestSchema: GenMessage<
+	GetSlotHeightRequest,
+	{ jsonType: GetSlotHeightRequestJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 28)
+
+/**
+ * Message header counts.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.MessageHeader
+ */
+export type MessageHeader = Message<'capabilities.blockchain.solana.v1alpha.MessageHeader'> & {
+	/**
+	 * signer count
+	 *
+	 * @generated from field: uint32 num_required_signatures = 1;
+	 */
+	numRequiredSignatures: number
+
+	/**
+	 * trailing signed RO
+	 *
+	 * @generated from field: uint32 num_readonly_signed_accounts = 2;
+	 */
+	numReadonlySignedAccounts: number
+
+	/**
+	 * trailing unsigned RO
+	 *
+	 * @generated from field: uint32 num_readonly_unsigned_accounts = 3;
+	 */
+	numReadonlyUnsignedAccounts: number
+}
+
+/**
+ * Message header counts.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.MessageHeader
+ */
+export type MessageHeaderJson = {
+	/**
+	 * signer count
+	 *
+	 * @generated from field: uint32 num_required_signatures = 1;
+	 */
+	numRequiredSignatures?: number
+
+	/**
+	 * trailing signed RO
+	 *
+	 * @generated from field: uint32 num_readonly_signed_accounts = 2;
+	 */
+	numReadonlySignedAccounts?: number
+
+	/**
+	 * trailing unsigned RO
+	 *
+	 * @generated from field: uint32 num_readonly_unsigned_accounts = 3;
+	 */
+	numReadonlyUnsignedAccounts?: number
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.MessageHeader.
+ * Use `create(MessageHeaderSchema)` to create a new message.
+ */
+export const MessageHeaderSchema: GenMessage<MessageHeader, { jsonType: MessageHeaderJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 29)
+
+/**
+ * Parsed message (no address tables).
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.ParsedMessage
+ */
+export type ParsedMessage = Message<'capabilities.blockchain.solana.v1alpha.ParsedMessage'> & {
+	/**
+	 * 32-byte Hash
+	 *
+	 * @generated from field: bytes recent_blockhash = 1;
+	 */
+	recentBlockhash: Uint8Array
+
+	/**
+	 * list of 32-byte Pubkeys
+	 *
+	 * @generated from field: repeated bytes account_keys = 2;
+	 */
+	accountKeys: Uint8Array[]
+
+	/**
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.MessageHeader header = 3;
+	 */
+	header?: MessageHeader
+
+	/**
+	 * @generated from field: repeated capabilities.blockchain.solana.v1alpha.CompiledInstruction instructions = 4;
+	 */
+	instructions: CompiledInstruction[]
+}
+
+/**
+ * Parsed message (no address tables).
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.ParsedMessage
+ */
+export type ParsedMessageJson = {
+	/**
+	 * 32-byte Hash
+	 *
+	 * @generated from field: bytes recent_blockhash = 1;
+	 */
+	recentBlockhash?: string
+
+	/**
+	 * list of 32-byte Pubkeys
+	 *
+	 * @generated from field: repeated bytes account_keys = 2;
+	 */
+	accountKeys?: string[]
+
+	/**
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.MessageHeader header = 3;
+	 */
+	header?: MessageHeaderJson
+
+	/**
+	 * @generated from field: repeated capabilities.blockchain.solana.v1alpha.CompiledInstruction instructions = 4;
+	 */
+	instructions?: CompiledInstructionJson[]
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.ParsedMessage.
+ * Use `create(ParsedMessageSchema)` to create a new message.
+ */
+export const ParsedMessageSchema: GenMessage<ParsedMessage, { jsonType: ParsedMessageJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 30)
+
+/**
+ * Parsed transaction (signatures + message).
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.ParsedTransaction
+ */
+export type ParsedTransaction =
+	Message<'capabilities.blockchain.solana.v1alpha.ParsedTransaction'> & {
+		/**
+		 * 64-byte signatures
+		 *
+		 * @generated from field: repeated bytes signatures = 1;
+		 */
+		signatures: Uint8Array[]
+
+		/**
+		 * @generated from field: capabilities.blockchain.solana.v1alpha.ParsedMessage message = 2;
+		 */
+		message?: ParsedMessage
+	}
+
+/**
+ * Parsed transaction (signatures + message).
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.ParsedTransaction
+ */
+export type ParsedTransactionJson = {
+	/**
+	 * 64-byte signatures
+	 *
+	 * @generated from field: repeated bytes signatures = 1;
+	 */
+	signatures?: string[]
+
+	/**
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.ParsedMessage message = 2;
+	 */
+	message?: ParsedMessageJson
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.ParsedTransaction.
+ * Use `create(ParsedTransactionSchema)` to create a new message.
+ */
+export const ParsedTransactionSchema: GenMessage<
+	ParsedTransaction,
+	{ jsonType: ParsedTransactionJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 31)
+
+/**
+ * Token amount (UI-friendly).
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.UiTokenAmount
+ */
+export type UiTokenAmount = Message<'capabilities.blockchain.solana.v1alpha.UiTokenAmount'> & {
+	/**
+	 * raw integer string
+	 *
+	 * @generated from field: string amount = 1;
+	 */
+	amount: string
+
+	/**
+	 * mint decimals
+	 *
+	 * @generated from field: uint32 decimals = 2;
+	 */
+	decimals: number
+
+	/**
+	 * amount / 10^decimals
+	 *
+	 * @generated from field: string ui_amount_string = 4;
+	 */
+	uiAmountString: string
+}
+
+/**
+ * Token amount (UI-friendly).
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.UiTokenAmount
+ */
+export type UiTokenAmountJson = {
+	/**
+	 * raw integer string
+	 *
+	 * @generated from field: string amount = 1;
+	 */
+	amount?: string
+
+	/**
+	 * mint decimals
+	 *
+	 * @generated from field: uint32 decimals = 2;
+	 */
+	decimals?: number
+
+	/**
+	 * amount / 10^decimals
+	 *
+	 * @generated from field: string ui_amount_string = 4;
+	 */
+	uiAmountString?: string
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.UiTokenAmount.
+ * Use `create(UiTokenAmountSchema)` to create a new message.
+ */
+export const UiTokenAmountSchema: GenMessage<UiTokenAmount, { jsonType: UiTokenAmountJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 32)
+
+/**
+ * SPL token balance entry.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.TokenBalance
+ */
+export type TokenBalance = Message<'capabilities.blockchain.solana.v1alpha.TokenBalance'> & {
+	/**
+	 * index in account_keys
+	 *
+	 * @generated from field: uint32 account_index = 1;
+	 */
+	accountIndex: number
+
+	/**
+	 * 32-byte owner (optional)
+	 *
+	 * @generated from field: optional bytes owner = 2;
+	 */
+	owner?: Uint8Array
+
+	/**
+	 * 32-byte token program (optional)
+	 *
+	 * @generated from field: optional bytes program_id = 3;
+	 */
+	programId?: Uint8Array
+
+	/**
+	 * 32-byte mint
+	 *
+	 * @generated from field: bytes mint = 4;
+	 */
+	mint: Uint8Array
+
+	/**
+	 * formatted amounts
+	 *
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.UiTokenAmount ui = 5;
+	 */
+	ui?: UiTokenAmount
+}
+
+/**
+ * SPL token balance entry.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.TokenBalance
+ */
+export type TokenBalanceJson = {
+	/**
+	 * index in account_keys
+	 *
+	 * @generated from field: uint32 account_index = 1;
+	 */
+	accountIndex?: number
+
+	/**
+	 * 32-byte owner (optional)
+	 *
+	 * @generated from field: optional bytes owner = 2;
+	 */
+	owner?: string
+
+	/**
+	 * 32-byte token program (optional)
+	 *
+	 * @generated from field: optional bytes program_id = 3;
+	 */
+	programId?: string
+
+	/**
+	 * 32-byte mint
+	 *
+	 * @generated from field: bytes mint = 4;
+	 */
+	mint?: string
+
+	/**
+	 * formatted amounts
+	 *
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.UiTokenAmount ui = 5;
+	 */
+	ui?: UiTokenAmountJson
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.TokenBalance.
+ * Use `create(TokenBalanceSchema)` to create a new message.
+ */
+export const TokenBalanceSchema: GenMessage<TokenBalance, { jsonType: TokenBalanceJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 33)
+
+/**
+ * Inner instruction list at a given outer instruction index.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.InnerInstruction
+ */
+export type InnerInstruction =
+	Message<'capabilities.blockchain.solana.v1alpha.InnerInstruction'> & {
+		/**
+		 * outer ix index
+		 *
+		 * @generated from field: uint32 index = 1;
+		 */
+		index: number
+
+		/**
+		 * invoked ixs
+		 *
+		 * @generated from field: repeated capabilities.blockchain.solana.v1alpha.CompiledInstruction instructions = 2;
+		 */
+		instructions: CompiledInstruction[]
+	}
+
+/**
+ * Inner instruction list at a given outer instruction index.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.InnerInstruction
+ */
+export type InnerInstructionJson = {
+	/**
+	 * outer ix index
+	 *
+	 * @generated from field: uint32 index = 1;
+	 */
+	index?: number
+
+	/**
+	 * invoked ixs
+	 *
+	 * @generated from field: repeated capabilities.blockchain.solana.v1alpha.CompiledInstruction instructions = 2;
+	 */
+	instructions?: CompiledInstructionJson[]
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.InnerInstruction.
+ * Use `create(InnerInstructionSchema)` to create a new message.
+ */
+export const InnerInstructionSchema: GenMessage<
+	InnerInstruction,
+	{ jsonType: InnerInstructionJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 34)
+
+/**
+ * Address table lookups expanded by loader.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.LoadedAddresses
+ */
+export type LoadedAddresses = Message<'capabilities.blockchain.solana.v1alpha.LoadedAddresses'> & {
+	/**
+	 * 32-byte Pubkeys
+	 *
+	 * @generated from field: repeated bytes readonly = 1;
+	 */
+	readonly: Uint8Array[]
+
+	/**
+	 * 32-byte Pubkeys
+	 *
+	 * @generated from field: repeated bytes writable = 2;
+	 */
+	writable: Uint8Array[]
+}
+
+/**
+ * Address table lookups expanded by loader.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.LoadedAddresses
+ */
+export type LoadedAddressesJson = {
+	/**
+	 * 32-byte Pubkeys
+	 *
+	 * @generated from field: repeated bytes readonly = 1;
+	 */
+	readonly?: string[]
+
+	/**
+	 * 32-byte Pubkeys
+	 *
+	 * @generated from field: repeated bytes writable = 2;
+	 */
+	writable?: string[]
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.LoadedAddresses.
+ * Use `create(LoadedAddressesSchema)` to create a new message.
+ */
+export const LoadedAddressesSchema: GenMessage<LoadedAddresses, { jsonType: LoadedAddressesJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 35)
+
+/**
+ * Compiled (program) instruction.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.CompiledInstruction
+ */
+export type CompiledInstruction =
+	Message<'capabilities.blockchain.solana.v1alpha.CompiledInstruction'> & {
+		/**
+		 * index into account_keys
+		 *
+		 * @generated from field: uint32 program_id_index = 1;
+		 */
+		programIdIndex: number
+
+		/**
+		 * indices into account_keys
+		 *
+		 * @generated from field: repeated uint32 accounts = 2;
+		 */
+		accounts: number[]
+
+		/**
+		 * program input bytes
+		 *
+		 * @generated from field: bytes data = 3;
+		 */
+		data: Uint8Array
+
+		/**
+		 * if recorded by node
+		 *
+		 * @generated from field: uint32 stack_height = 4;
+		 */
+		stackHeight: number
+	}
+
+/**
+ * Compiled (program) instruction.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.CompiledInstruction
+ */
+export type CompiledInstructionJson = {
+	/**
+	 * index into account_keys
+	 *
+	 * @generated from field: uint32 program_id_index = 1;
+	 */
+	programIdIndex?: number
+
+	/**
+	 * indices into account_keys
+	 *
+	 * @generated from field: repeated uint32 accounts = 2;
+	 */
+	accounts?: number[]
+
+	/**
+	 * program input bytes
+	 *
+	 * @generated from field: bytes data = 3;
+	 */
+	data?: string
+
+	/**
+	 * if recorded by node
+	 *
+	 * @generated from field: uint32 stack_height = 4;
+	 */
+	stackHeight?: number
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.CompiledInstruction.
+ * Use `create(CompiledInstructionSchema)` to create a new message.
+ */
+export const CompiledInstructionSchema: GenMessage<
+	CompiledInstruction,
+	{ jsonType: CompiledInstructionJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 36)
+
+/**
+ * Raw bytes with encoding tag.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.Data
+ */
+export type Data = Message<'capabilities.blockchain.solana.v1alpha.Data'> & {
+	/**
+	 * raw bytes
+	 *
+	 * @generated from field: bytes content = 1;
+	 */
+	content: Uint8Array
+
+	/**
+	 * how it was encoded originally
+	 *
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.EncodingType encoding = 2;
+	 */
+	encoding: EncodingType
+}
+
+/**
+ * Raw bytes with encoding tag.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.Data
+ */
+export type DataJson = {
+	/**
+	 * raw bytes
+	 *
+	 * @generated from field: bytes content = 1;
+	 */
+	content?: string
+
+	/**
+	 * how it was encoded originally
+	 *
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.EncodingType encoding = 2;
+	 */
+	encoding?: EncodingTypeJson
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.Data.
+ * Use `create(DataSchema)` to create a new message.
+ */
+export const DataSchema: GenMessage<Data, { jsonType: DataJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 37)
+
+/**
+ * Program return data.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.ReturnData
+ */
+export type ReturnData = Message<'capabilities.blockchain.solana.v1alpha.ReturnData'> & {
+	/**
+	 * 32-byte Pubkey
+	 *
+	 * @generated from field: bytes program_id = 1;
+	 */
+	programId: Uint8Array
+
+	/**
+	 * raw return bytes
+	 *
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.Data data = 2;
+	 */
+	data?: Data
+}
+
+/**
+ * Program return data.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.ReturnData
+ */
+export type ReturnDataJson = {
+	/**
+	 * 32-byte Pubkey
+	 *
+	 * @generated from field: bytes program_id = 1;
+	 */
+	programId?: string
+
+	/**
+	 * raw return bytes
+	 *
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.Data data = 2;
+	 */
+	data?: DataJson
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.ReturnData.
+ * Use `create(ReturnDataSchema)` to create a new message.
+ */
+export const ReturnDataSchema: GenMessage<ReturnData, { jsonType: ReturnDataJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 38)
+
+/**
+ * Transaction execution metadata.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.TransactionMeta
+ */
+export type TransactionMeta = Message<'capabilities.blockchain.solana.v1alpha.TransactionMeta'> & {
+	/**
+	 * error JSON (empty on success)
+	 *
+	 * @generated from field: string err_json = 1;
+	 */
+	errJson: string
+
+	/**
+	 * lamports
+	 *
+	 * @generated from field: uint64 fee = 2 [jstype = JS_NORMAL];
+	 */
+	fee: bigint
+
+	/**
+	 * lamports per account
+	 *
+	 * @generated from field: repeated uint64 pre_balances = 3 [jstype = JS_NORMAL];
+	 */
+	preBalances: bigint[]
+
+	/**
+	 * lamports per account
+	 *
+	 * @generated from field: repeated uint64 post_balances = 4 [jstype = JS_NORMAL];
+	 */
+	postBalances: bigint[]
+
+	/**
+	 * runtime logs
+	 *
+	 * @generated from field: repeated string log_messages = 5;
+	 */
+	logMessages: string[]
+
+	/**
+	 * @generated from field: repeated capabilities.blockchain.solana.v1alpha.TokenBalance pre_token_balances = 6;
+	 */
+	preTokenBalances: TokenBalance[]
+
+	/**
+	 * @generated from field: repeated capabilities.blockchain.solana.v1alpha.TokenBalance post_token_balances = 7;
+	 */
+	postTokenBalances: TokenBalance[]
+
+	/**
+	 * @generated from field: repeated capabilities.blockchain.solana.v1alpha.InnerInstruction inner_instructions = 8;
+	 */
+	innerInstructions: InnerInstruction[]
+
+	/**
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.LoadedAddresses loaded_addresses = 9;
+	 */
+	loadedAddresses?: LoadedAddresses
+
+	/**
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.ReturnData return_data = 10;
+	 */
+	returnData?: ReturnData
+
+	/**
+	 * CUs
+	 *
+	 * @generated from field: optional uint64 compute_units_consumed = 11 [jstype = JS_NORMAL];
+	 */
+	computeUnitsConsumed?: bigint
+}
+
+/**
+ * Transaction execution metadata.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.TransactionMeta
+ */
+export type TransactionMetaJson = {
+	/**
+	 * error JSON (empty on success)
+	 *
+	 * @generated from field: string err_json = 1;
+	 */
+	errJson?: string
+
+	/**
+	 * lamports
+	 *
+	 * @generated from field: uint64 fee = 2 [jstype = JS_NORMAL];
+	 */
+	fee?: string
+
+	/**
+	 * lamports per account
+	 *
+	 * @generated from field: repeated uint64 pre_balances = 3 [jstype = JS_NORMAL];
+	 */
+	preBalances?: string[]
+
+	/**
+	 * lamports per account
+	 *
+	 * @generated from field: repeated uint64 post_balances = 4 [jstype = JS_NORMAL];
+	 */
+	postBalances?: string[]
+
+	/**
+	 * runtime logs
+	 *
+	 * @generated from field: repeated string log_messages = 5;
+	 */
+	logMessages?: string[]
+
+	/**
+	 * @generated from field: repeated capabilities.blockchain.solana.v1alpha.TokenBalance pre_token_balances = 6;
+	 */
+	preTokenBalances?: TokenBalanceJson[]
+
+	/**
+	 * @generated from field: repeated capabilities.blockchain.solana.v1alpha.TokenBalance post_token_balances = 7;
+	 */
+	postTokenBalances?: TokenBalanceJson[]
+
+	/**
+	 * @generated from field: repeated capabilities.blockchain.solana.v1alpha.InnerInstruction inner_instructions = 8;
+	 */
+	innerInstructions?: InnerInstructionJson[]
+
+	/**
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.LoadedAddresses loaded_addresses = 9;
+	 */
+	loadedAddresses?: LoadedAddressesJson
+
+	/**
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.ReturnData return_data = 10;
+	 */
+	returnData?: ReturnDataJson
+
+	/**
+	 * CUs
+	 *
+	 * @generated from field: optional uint64 compute_units_consumed = 11 [jstype = JS_NORMAL];
+	 */
+	computeUnitsConsumed?: string
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.TransactionMeta.
+ * Use `create(TransactionMetaSchema)` to create a new message.
+ */
+export const TransactionMetaSchema: GenMessage<TransactionMeta, { jsonType: TransactionMetaJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 39)
+
+/**
+ * Transaction envelope: raw bytes or parsed struct.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.TransactionEnvelope
+ */
+export type TransactionEnvelope =
+	Message<'capabilities.blockchain.solana.v1alpha.TransactionEnvelope'> & {
+		/**
+		 * @generated from oneof capabilities.blockchain.solana.v1alpha.TransactionEnvelope.transaction
+		 */
+		transaction:
+			| {
+					/**
+					 * raw tx bytes (for RAW/base64)
+					 *
+					 * @generated from field: bytes raw = 1;
+					 */
+					value: Uint8Array
+					case: 'raw'
+			  }
+			| {
+					/**
+					 * parsed tx (for JSON_PARSED)
+					 *
+					 * @generated from field: capabilities.blockchain.solana.v1alpha.ParsedTransaction parsed = 2;
+					 */
+					value: ParsedTransaction
+					case: 'parsed'
+			  }
+			| { case: undefined; value?: undefined }
+	}
+
+/**
+ * Transaction envelope: raw bytes or parsed struct.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.TransactionEnvelope
+ */
+export type TransactionEnvelopeJson = {
+	/**
+	 * raw tx bytes (for RAW/base64)
+	 *
+	 * @generated from field: bytes raw = 1;
+	 */
+	raw?: string
+
+	/**
+	 * parsed tx (for JSON_PARSED)
+	 *
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.ParsedTransaction parsed = 2;
+	 */
+	parsed?: ParsedTransactionJson
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.TransactionEnvelope.
+ * Use `create(TransactionEnvelopeSchema)` to create a new message.
+ */
+export const TransactionEnvelopeSchema: GenMessage<
+	TransactionEnvelope,
+	{ jsonType: TransactionEnvelopeJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 40)
+
+/**
+ * GetTransaction reply.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetTransactionReply
+ */
+export type GetTransactionReply =
+	Message<'capabilities.blockchain.solana.v1alpha.GetTransactionReply'> & {
+		/**
+		 * processed slot
+		 *
+		 * @generated from field: uint64 slot = 1 [jstype = JS_NORMAL];
+		 */
+		slot: bigint
+
+		/**
+		 * unix seconds
+		 *
+		 * @generated from field: optional int64 block_time = 2 [jstype = JS_NORMAL];
+		 */
+		blockTime?: bigint
+
+		/**
+		 * tx bytes or parsed
+		 *
+		 * @generated from field: optional capabilities.blockchain.solana.v1alpha.TransactionEnvelope transaction = 3;
+		 */
+		transaction?: TransactionEnvelope
+
+		/**
+		 * may be omitted by node
+		 *
+		 * @generated from field: optional capabilities.blockchain.solana.v1alpha.TransactionMeta meta = 4;
+		 */
+		meta?: TransactionMeta
+	}
+
+/**
+ * GetTransaction reply.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetTransactionReply
+ */
+export type GetTransactionReplyJson = {
+	/**
+	 * processed slot
+	 *
+	 * @generated from field: uint64 slot = 1 [jstype = JS_NORMAL];
+	 */
+	slot?: string
+
+	/**
+	 * unix seconds
+	 *
+	 * @generated from field: optional int64 block_time = 2 [jstype = JS_NORMAL];
+	 */
+	blockTime?: string
+
+	/**
+	 * tx bytes or parsed
+	 *
+	 * @generated from field: optional capabilities.blockchain.solana.v1alpha.TransactionEnvelope transaction = 3;
+	 */
+	transaction?: TransactionEnvelopeJson
+
+	/**
+	 * may be omitted by node
+	 *
+	 * @generated from field: optional capabilities.blockchain.solana.v1alpha.TransactionMeta meta = 4;
+	 */
+	meta?: TransactionMetaJson
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.GetTransactionReply.
+ * Use `create(GetTransactionReplySchema)` to create a new message.
+ */
+export const GetTransactionReplySchema: GenMessage<
+	GetTransactionReply,
+	{ jsonType: GetTransactionReplyJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 41)
+
+/**
+ * GetTransaction request.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetTransactionRequest
+ */
+export type GetTransactionRequest =
+	Message<'capabilities.blockchain.solana.v1alpha.GetTransactionRequest'> & {
+		/**
+		 * 64-byte signature
+		 *
+		 * @generated from field: bytes signature = 1;
+		 */
+		signature: Uint8Array
+	}
+
+/**
+ * GetTransaction request.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.GetTransactionRequest
+ */
+export type GetTransactionRequestJson = {
+	/**
+	 * 64-byte signature
+	 *
+	 * @generated from field: bytes signature = 1;
+	 */
+	signature?: string
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.GetTransactionRequest.
+ * Use `create(GetTransactionRequestSchema)` to create a new message.
+ */
+export const GetTransactionRequestSchema: GenMessage<
+	GetTransactionRequest,
+	{ jsonType: GetTransactionRequestJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 42)
+
+/**
+ * Simulation options.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.SimulateTXOpts
+ */
+export type SimulateTXOpts = Message<'capabilities.blockchain.solana.v1alpha.SimulateTXOpts'> & {
+	/**
+	 * verify sigs
+	 *
+	 * @generated from field: bool sig_verify = 1;
+	 */
+	sigVerify: boolean
+
+	/**
+	 * read consistency
+	 *
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.CommitmentType commitment = 2;
+	 */
+	commitment: CommitmentType
+
+	/**
+	 * refresh blockhash
+	 *
+	 * @generated from field: bool replace_recent_blockhash = 3;
+	 */
+	replaceRecentBlockhash: boolean
+
+	/**
+	 * return accounts
+	 *
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.SimulateTransactionAccountsOpts accounts = 4;
+	 */
+	accounts?: SimulateTransactionAccountsOpts
+}
+
+/**
+ * Simulation options.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.SimulateTXOpts
+ */
+export type SimulateTXOptsJson = {
+	/**
+	 * verify sigs
+	 *
+	 * @generated from field: bool sig_verify = 1;
+	 */
+	sigVerify?: boolean
+
+	/**
+	 * read consistency
+	 *
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.CommitmentType commitment = 2;
+	 */
+	commitment?: CommitmentTypeJson
+
+	/**
+	 * refresh blockhash
+	 *
+	 * @generated from field: bool replace_recent_blockhash = 3;
+	 */
+	replaceRecentBlockhash?: boolean
+
+	/**
+	 * return accounts
+	 *
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.SimulateTransactionAccountsOpts accounts = 4;
+	 */
+	accounts?: SimulateTransactionAccountsOptsJson
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.SimulateTXOpts.
+ * Use `create(SimulateTXOptsSchema)` to create a new message.
+ */
+export const SimulateTXOptsSchema: GenMessage<SimulateTXOpts, { jsonType: SimulateTXOptsJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 43)
+
+/**
+ * Simulation result.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.SimulateTXReply
+ */
+export type SimulateTXReply = Message<'capabilities.blockchain.solana.v1alpha.SimulateTXReply'> & {
+	/**
+	 * empty on success
+	 *
+	 * @generated from field: string err = 1;
+	 */
+	err: string
+
+	/**
+	 * runtime logs
+	 *
+	 * @generated from field: repeated string logs = 2;
+	 */
+	logs: string[]
+
+	/**
+	 * returned accounts
+	 *
+	 * @generated from field: repeated capabilities.blockchain.solana.v1alpha.Account accounts = 3;
+	 */
+	accounts: Account[]
+
+	/**
+	 * CUs
+	 *
+	 * @generated from field: uint64 units_consumed = 4 [jstype = JS_NORMAL];
+	 */
+	unitsConsumed: bigint
+}
+
+/**
+ * Simulation result.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.SimulateTXReply
+ */
+export type SimulateTXReplyJson = {
+	/**
+	 * empty on success
+	 *
+	 * @generated from field: string err = 1;
+	 */
+	err?: string
+
+	/**
+	 * runtime logs
+	 *
+	 * @generated from field: repeated string logs = 2;
+	 */
+	logs?: string[]
+
+	/**
+	 * returned accounts
+	 *
+	 * @generated from field: repeated capabilities.blockchain.solana.v1alpha.Account accounts = 3;
+	 */
+	accounts?: AccountJson[]
+
+	/**
+	 * CUs
+	 *
+	 * @generated from field: uint64 units_consumed = 4 [jstype = JS_NORMAL];
+	 */
+	unitsConsumed?: string
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.SimulateTXReply.
+ * Use `create(SimulateTXReplySchema)` to create a new message.
+ */
+export const SimulateTXReplySchema: GenMessage<SimulateTXReply, { jsonType: SimulateTXReplyJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 44)
+
+/**
+ * Simulation request.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.SimulateTXRequest
+ */
+export type SimulateTXRequest =
+	Message<'capabilities.blockchain.solana.v1alpha.SimulateTXRequest'> & {
+		/**
+		 * 32-byte program id (target)
+		 *
+		 * @generated from field: bytes receiver = 1;
+		 */
+		receiver: Uint8Array
+
+		/**
+		 * base64/base58 tx
+		 *
+		 * @generated from field: string encoded_transaction = 2;
+		 */
+		encodedTransaction: string
+
+		/**
+		 * @generated from field: capabilities.blockchain.solana.v1alpha.SimulateTXOpts opts = 3;
+		 */
+		opts?: SimulateTXOpts
+	}
+
+/**
+ * Simulation request.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.SimulateTXRequest
+ */
+export type SimulateTXRequestJson = {
+	/**
+	 * 32-byte program id (target)
+	 *
+	 * @generated from field: bytes receiver = 1;
+	 */
+	receiver?: string
+
+	/**
+	 * base64/base58 tx
+	 *
+	 * @generated from field: string encoded_transaction = 2;
+	 */
+	encodedTransaction?: string
+
+	/**
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.SimulateTXOpts opts = 3;
+	 */
+	opts?: SimulateTXOptsJson
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.SimulateTXRequest.
+ * Use `create(SimulateTXRequestSchema)` to create a new message.
+ */
+export const SimulateTXRequestSchema: GenMessage<
+	SimulateTXRequest,
+	{ jsonType: SimulateTXRequestJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 45)
+
+/**
+ * Accounts to return during simulation.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.SimulateTransactionAccountsOpts
+ */
+export type SimulateTransactionAccountsOpts =
+	Message<'capabilities.blockchain.solana.v1alpha.SimulateTransactionAccountsOpts'> & {
+		/**
+		 * account data encoding
+		 *
+		 * @generated from field: capabilities.blockchain.solana.v1alpha.EncodingType encoding = 1;
+		 */
+		encoding: EncodingType
+
+		/**
+		 * 32-byte Pubkeys
+		 *
+		 * @generated from field: repeated bytes addresses = 2;
+		 */
+		addresses: Uint8Array[]
+	}
+
+/**
+ * Accounts to return during simulation.
+ *
+ * @generated from message capabilities.blockchain.solana.v1alpha.SimulateTransactionAccountsOpts
+ */
+export type SimulateTransactionAccountsOptsJson = {
+	/**
+	 * account data encoding
+	 *
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.EncodingType encoding = 1;
+	 */
+	encoding?: EncodingTypeJson
+
+	/**
+	 * 32-byte Pubkeys
+	 *
+	 * @generated from field: repeated bytes addresses = 2;
+	 */
+	addresses?: string[]
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.SimulateTransactionAccountsOpts.
+ * Use `create(SimulateTransactionAccountsOptsSchema)` to create a new message.
+ */
+export const SimulateTransactionAccountsOptsSchema: GenMessage<
+	SimulateTransactionAccountsOpts,
+	{ jsonType: SimulateTransactionAccountsOptsJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 46)
+
+/**
+ * @generated from message capabilities.blockchain.solana.v1alpha.ValueComparator
+ */
+export type ValueComparator = Message<'capabilities.blockchain.solana.v1alpha.ValueComparator'> & {
+	/**
+	 * @generated from field: bytes value = 1;
+	 */
+	value: Uint8Array
+
+	/**
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.ComparisonOperator operator = 2;
+	 */
+	operator: ComparisonOperator
+}
+
+/**
+ * @generated from message capabilities.blockchain.solana.v1alpha.ValueComparator
+ */
+export type ValueComparatorJson = {
+	/**
+	 * @generated from field: bytes value = 1;
+	 */
+	value?: string
+
+	/**
+	 * @generated from field: capabilities.blockchain.solana.v1alpha.ComparisonOperator operator = 2;
+	 */
+	operator?: ComparisonOperatorJson
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.ValueComparator.
+ * Use `create(ValueComparatorSchema)` to create a new message.
+ */
+export const ValueComparatorSchema: GenMessage<ValueComparator, { jsonType: ValueComparatorJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 47)
+
+/**
+ * @generated from message capabilities.blockchain.solana.v1alpha.SubkeyConfig
+ */
+export type SubkeyConfig = Message<'capabilities.blockchain.solana.v1alpha.SubkeyConfig'> & {
+	/**
+	 * @generated from field: repeated string path = 1;
+	 */
+	path: string[]
+
+	/**
+	 * @generated from field: repeated capabilities.blockchain.solana.v1alpha.ValueComparator comparers = 2;
+	 */
+	comparers: ValueComparator[]
+}
+
+/**
+ * @generated from message capabilities.blockchain.solana.v1alpha.SubkeyConfig
+ */
+export type SubkeyConfigJson = {
+	/**
+	 * @generated from field: repeated string path = 1;
+	 */
+	path?: string[]
+
+	/**
+	 * @generated from field: repeated capabilities.blockchain.solana.v1alpha.ValueComparator comparers = 2;
+	 */
+	comparers?: ValueComparatorJson[]
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.SubkeyConfig.
+ * Use `create(SubkeyConfigSchema)` to create a new message.
+ */
+export const SubkeyConfigSchema: GenMessage<SubkeyConfig, { jsonType: SubkeyConfigJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 48)
+
+/**
+ * @generated from message capabilities.blockchain.solana.v1alpha.CPIFilterConfig
+ */
+export type CPIFilterConfig = Message<'capabilities.blockchain.solana.v1alpha.CPIFilterConfig'> & {
+	/**
+	 * @generated from field: bytes dest_address = 1;
+	 */
+	destAddress: Uint8Array
+
+	/**
+	 * @generated from field: bytes method_name = 2;
+	 */
+	methodName: Uint8Array
+}
+
+/**
+ * @generated from message capabilities.blockchain.solana.v1alpha.CPIFilterConfig
+ */
+export type CPIFilterConfigJson = {
+	/**
+	 * @generated from field: bytes dest_address = 1;
+	 */
+	destAddress?: string
+
+	/**
+	 * @generated from field: bytes method_name = 2;
+	 */
+	methodName?: string
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.CPIFilterConfig.
+ * Use `create(CPIFilterConfigSchema)` to create a new message.
+ */
+export const CPIFilterConfigSchema: GenMessage<CPIFilterConfig, { jsonType: CPIFilterConfigJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 49)
+
+/**
+ * @generated from message capabilities.blockchain.solana.v1alpha.FilterLogTriggerRequest
+ */
+export type FilterLogTriggerRequest =
+	Message<'capabilities.blockchain.solana.v1alpha.FilterLogTriggerRequest'> & {
+		/**
+		 * @generated from field: string name = 1;
+		 */
+		name: string
+
+		/**
+		 * Solana PublicKey (32 bytes)
+		 *
+		 * @generated from field: bytes address = 2;
+		 */
+		address: Uint8Array
+
+		/**
+		 * @generated from field: string event_name = 3;
+		 */
+		eventName: string
+
+		/**
+		 * @generated from field: bytes contract_idl_json = 4;
+		 */
+		contractIdlJson: Uint8Array
+
+		/**
+		 * @generated from field: repeated capabilities.blockchain.solana.v1alpha.SubkeyConfig subkeys = 5;
+		 */
+		subkeys: SubkeyConfig[]
+
+		/**
+		 * @generated from field: optional capabilities.blockchain.solana.v1alpha.CPIFilterConfig cpi_filter_config = 6;
+		 */
+		cpiFilterConfig?: CPIFilterConfig
+	}
+
+/**
+ * @generated from message capabilities.blockchain.solana.v1alpha.FilterLogTriggerRequest
+ */
+export type FilterLogTriggerRequestJson = {
+	/**
+	 * @generated from field: string name = 1;
+	 */
+	name?: string
+
+	/**
+	 * Solana PublicKey (32 bytes)
+	 *
+	 * @generated from field: bytes address = 2;
+	 */
+	address?: string
+
+	/**
+	 * @generated from field: string event_name = 3;
+	 */
+	eventName?: string
+
+	/**
+	 * @generated from field: bytes contract_idl_json = 4;
+	 */
+	contractIdlJson?: string
+
+	/**
+	 * @generated from field: repeated capabilities.blockchain.solana.v1alpha.SubkeyConfig subkeys = 5;
+	 */
+	subkeys?: SubkeyConfigJson[]
+
+	/**
+	 * @generated from field: optional capabilities.blockchain.solana.v1alpha.CPIFilterConfig cpi_filter_config = 6;
+	 */
+	cpiFilterConfig?: CPIFilterConfigJson
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.FilterLogTriggerRequest.
+ * Use `create(FilterLogTriggerRequestSchema)` to create a new message.
+ */
+export const FilterLogTriggerRequestSchema: GenMessage<
+	FilterLogTriggerRequest,
+	{ jsonType: FilterLogTriggerRequestJson }
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 50)
+
+/**
+ * @generated from message capabilities.blockchain.solana.v1alpha.Log
+ */
+export type Log = Message<'capabilities.blockchain.solana.v1alpha.Log'> & {
+	/**
+	 * Chain identifier
+	 *
+	 * @generated from field: string chain_id = 1;
+	 */
+	chainId: string
+
+	/**
+	 * Index of the log within the block
+	 *
+	 * @generated from field: int64 log_index = 2 [jstype = JS_NORMAL];
+	 */
+	logIndex: bigint
+
+	/**
+	 * 32-byte block hash
+	 *
+	 * @generated from field: bytes block_hash = 3;
+	 */
+	blockHash: Uint8Array
+
+	/**
+	 * Block/slot number
+	 *
+	 * @generated from field: int64 block_number = 4 [jstype = JS_NORMAL];
+	 */
+	blockNumber: bigint
+
+	/**
+	 * Unix timestamp of the block
+	 *
+	 * @generated from field: uint64 block_timestamp = 5 [jstype = JS_NORMAL];
+	 */
+	blockTimestamp: bigint
+
+	/**
+	 * 32-byte program PublicKey
+	 *
+	 * @generated from field: bytes address = 6;
+	 */
+	address: Uint8Array
+
+	/**
+	 * 8-byte event signature
+	 *
+	 * @generated from field: bytes event_sig = 7;
+	 */
+	eventSig: Uint8Array
+
+	/**
+	 * 64-byte transaction signature
+	 *
+	 * @generated from field: bytes tx_hash = 8;
+	 */
+	txHash: Uint8Array
+
+	/**
+	 * Decoded event data
+	 *
+	 * @generated from field: bytes data = 9;
+	 */
+	data: Uint8Array
+
+	/**
+	 * Sequence number for ordering
+	 *
+	 * @generated from field: int64 sequence_num = 10 [jstype = JS_NORMAL];
+	 */
+	sequenceNum: bigint
+
+	/**
+	 * Error message if log processing failed
+	 *
+	 * @generated from field: optional string error = 11;
+	 */
+	error?: string
+}
+
+/**
+ * @generated from message capabilities.blockchain.solana.v1alpha.Log
+ */
+export type LogJson = {
+	/**
+	 * Chain identifier
+	 *
+	 * @generated from field: string chain_id = 1;
+	 */
+	chainId?: string
+
+	/**
+	 * Index of the log within the block
+	 *
+	 * @generated from field: int64 log_index = 2 [jstype = JS_NORMAL];
+	 */
+	logIndex?: string
+
+	/**
+	 * 32-byte block hash
+	 *
+	 * @generated from field: bytes block_hash = 3;
+	 */
+	blockHash?: string
+
+	/**
+	 * Block/slot number
+	 *
+	 * @generated from field: int64 block_number = 4 [jstype = JS_NORMAL];
+	 */
+	blockNumber?: string
+
+	/**
+	 * Unix timestamp of the block
+	 *
+	 * @generated from field: uint64 block_timestamp = 5 [jstype = JS_NORMAL];
+	 */
+	blockTimestamp?: string
+
+	/**
+	 * 32-byte program PublicKey
+	 *
+	 * @generated from field: bytes address = 6;
+	 */
+	address?: string
+
+	/**
+	 * 8-byte event signature
+	 *
+	 * @generated from field: bytes event_sig = 7;
+	 */
+	eventSig?: string
+
+	/**
+	 * 64-byte transaction signature
+	 *
+	 * @generated from field: bytes tx_hash = 8;
+	 */
+	txHash?: string
+
+	/**
+	 * Decoded event data
+	 *
+	 * @generated from field: bytes data = 9;
+	 */
+	data?: string
+
+	/**
+	 * Sequence number for ordering
+	 *
+	 * @generated from field: int64 sequence_num = 10 [jstype = JS_NORMAL];
+	 */
+	sequenceNum?: string
+
+	/**
+	 * Error message if log processing failed
+	 *
+	 * @generated from field: optional string error = 11;
+	 */
+	error?: string
+}
+
+/**
+ * Describes the message capabilities.blockchain.solana.v1alpha.Log.
+ * Use `create(LogSchema)` to create a new message.
+ */
+export const LogSchema: GenMessage<Log, { jsonType: LogJson }> =
+	/*@__PURE__*/
+	messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 51)
 
 /**
  * All metas are non-signers.
@@ -103,7 +3125,7 @@ export type AccountMetaJson = {
  */
 export const AccountMetaSchema: GenMessage<AccountMeta, { jsonType: AccountMetaJson }> =
 	/*@__PURE__*/
-	messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 1)
+	messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 52)
 
 /**
  * @generated from message capabilities.blockchain.solana.v1alpha.WriteReportRequest
@@ -171,7 +3193,7 @@ export type WriteReportRequestJson = {
 export const WriteReportRequestSchema: GenMessage<
 	WriteReportRequest,
 	{ jsonType: WriteReportRequestJson }
-> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 2)
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 53)
 
 /**
  * @generated from message capabilities.blockchain.solana.v1alpha.WriteReportReply
@@ -241,7 +3263,171 @@ export type WriteReportReplyJson = {
 export const WriteReportReplySchema: GenMessage<
 	WriteReportReply,
 	{ jsonType: WriteReportReplyJson }
-> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 3)
+> = /*@__PURE__*/ messageDesc(file_capabilities_blockchain_solana_v1alpha_client, 54)
+
+/**
+ * Account/tx data encodings.
+ *
+ * @generated from enum capabilities.blockchain.solana.v1alpha.EncodingType
+ */
+export enum EncodingType {
+	/**
+	 * @generated from enum value: ENCODING_TYPE_NONE = 0;
+	 */
+	NONE = 0,
+
+	/**
+	 * for data <129 bytes
+	 *
+	 * @generated from enum value: ENCODING_TYPE_BASE58 = 1;
+	 */
+	BASE58 = 1,
+
+	/**
+	 * any size
+	 *
+	 * @generated from enum value: ENCODING_TYPE_BASE64 = 2;
+	 */
+	BASE64 = 2,
+
+	/**
+	 * zstd-compressed, base64-wrapped
+	 *
+	 * @generated from enum value: ENCODING_TYPE_BASE64_ZSTD = 3;
+	 */
+	BASE64_ZSTD = 3,
+
+	/**
+	 * program parsers; fallback to base64 if unknown
+	 *
+	 * @generated from enum value: ENCODING_TYPE_JSON_PARSED = 4;
+	 */
+	JSON_PARSED = 4,
+
+	/**
+	 * raw JSON (rare; prefer JSON_PARSED)
+	 *
+	 * @generated from enum value: ENCODING_TYPE_JSON = 5;
+	 */
+	JSON = 5,
+}
+
+/**
+ * Account/tx data encodings.
+ *
+ * @generated from enum capabilities.blockchain.solana.v1alpha.EncodingType
+ */
+export type EncodingTypeJson =
+	| 'ENCODING_TYPE_NONE'
+	| 'ENCODING_TYPE_BASE58'
+	| 'ENCODING_TYPE_BASE64'
+	| 'ENCODING_TYPE_BASE64_ZSTD'
+	| 'ENCODING_TYPE_JSON_PARSED'
+	| 'ENCODING_TYPE_JSON'
+
+/**
+ * Describes the enum capabilities.blockchain.solana.v1alpha.EncodingType.
+ */
+export const EncodingTypeSchema: GenEnum<EncodingType, EncodingTypeJson> =
+	/*@__PURE__*/
+	enumDesc(file_capabilities_blockchain_solana_v1alpha_client, 0)
+
+/**
+ * Read consistency of queried state.
+ *
+ * @generated from enum capabilities.blockchain.solana.v1alpha.CommitmentType
+ */
+export enum CommitmentType {
+	/**
+	 * @generated from enum value: COMMITMENT_TYPE_NONE = 0;
+	 */
+	NONE = 0,
+
+	/**
+	 * cluster-finalized
+	 *
+	 * @generated from enum value: COMMITMENT_TYPE_FINALIZED = 1;
+	 */
+	FINALIZED = 1,
+
+	/**
+	 * voted by supermajority
+	 *
+	 * @generated from enum value: COMMITMENT_TYPE_CONFIRMED = 2;
+	 */
+	CONFIRMED = 2,
+
+	/**
+	 * node’s latest
+	 *
+	 * @generated from enum value: COMMITMENT_TYPE_PROCESSED = 3;
+	 */
+	PROCESSED = 3,
+}
+
+/**
+ * Read consistency of queried state.
+ *
+ * @generated from enum capabilities.blockchain.solana.v1alpha.CommitmentType
+ */
+export type CommitmentTypeJson =
+	| 'COMMITMENT_TYPE_NONE'
+	| 'COMMITMENT_TYPE_FINALIZED'
+	| 'COMMITMENT_TYPE_CONFIRMED'
+	| 'COMMITMENT_TYPE_PROCESSED'
+
+/**
+ * Describes the enum capabilities.blockchain.solana.v1alpha.CommitmentType.
+ */
+export const CommitmentTypeSchema: GenEnum<CommitmentType, CommitmentTypeJson> =
+	/*@__PURE__*/
+	enumDesc(file_capabilities_blockchain_solana_v1alpha_client, 1)
+
+/**
+ * Cluster confirmation status of a tx/signature.
+ *
+ * @generated from enum capabilities.blockchain.solana.v1alpha.ConfirmationStatusType
+ */
+export enum ConfirmationStatusType {
+	/**
+	 * @generated from enum value: CONFIRMATION_STATUS_TYPE_NONE = 0;
+	 */
+	NONE = 0,
+
+	/**
+	 * @generated from enum value: CONFIRMATION_STATUS_TYPE_PROCESSED = 1;
+	 */
+	PROCESSED = 1,
+
+	/**
+	 * @generated from enum value: CONFIRMATION_STATUS_TYPE_CONFIRMED = 2;
+	 */
+	CONFIRMED = 2,
+
+	/**
+	 * @generated from enum value: CONFIRMATION_STATUS_TYPE_FINALIZED = 3;
+	 */
+	FINALIZED = 3,
+}
+
+/**
+ * Cluster confirmation status of a tx/signature.
+ *
+ * @generated from enum capabilities.blockchain.solana.v1alpha.ConfirmationStatusType
+ */
+export type ConfirmationStatusTypeJson =
+	| 'CONFIRMATION_STATUS_TYPE_NONE'
+	| 'CONFIRMATION_STATUS_TYPE_PROCESSED'
+	| 'CONFIRMATION_STATUS_TYPE_CONFIRMED'
+	| 'CONFIRMATION_STATUS_TYPE_FINALIZED'
+
+/**
+ * Describes the enum capabilities.blockchain.solana.v1alpha.ConfirmationStatusType.
+ */
+export const ConfirmationStatusTypeSchema: GenEnum<
+	ConfirmationStatusType,
+	ConfirmationStatusTypeJson
+> = /*@__PURE__*/ enumDesc(file_capabilities_blockchain_solana_v1alpha_client, 2)
 
 /**
  * Transaction execution status returned by submitters/simulations.
@@ -283,7 +3469,60 @@ export type TxStatusJson = 'TX_STATUS_FATAL' | 'TX_STATUS_ABORTED' | 'TX_STATUS_
  */
 export const TxStatusSchema: GenEnum<TxStatus, TxStatusJson> =
 	/*@__PURE__*/
-	enumDesc(file_capabilities_blockchain_solana_v1alpha_client, 0)
+	enumDesc(file_capabilities_blockchain_solana_v1alpha_client, 3)
+
+/**
+ * @generated from enum capabilities.blockchain.solana.v1alpha.ComparisonOperator
+ */
+export enum ComparisonOperator {
+	/**
+	 * @generated from enum value: COMPARISON_OPERATOR_EQ = 0;
+	 */
+	EQ = 0,
+
+	/**
+	 * @generated from enum value: COMPARISON_OPERATOR_NEQ = 1;
+	 */
+	NEQ = 1,
+
+	/**
+	 * @generated from enum value: COMPARISON_OPERATOR_GT = 2;
+	 */
+	GT = 2,
+
+	/**
+	 * @generated from enum value: COMPARISON_OPERATOR_LT = 3;
+	 */
+	LT = 3,
+
+	/**
+	 * @generated from enum value: COMPARISON_OPERATOR_GTE = 4;
+	 */
+	GTE = 4,
+
+	/**
+	 * @generated from enum value: COMPARISON_OPERATOR_LTE = 5;
+	 */
+	LTE = 5,
+}
+
+/**
+ * @generated from enum capabilities.blockchain.solana.v1alpha.ComparisonOperator
+ */
+export type ComparisonOperatorJson =
+	| 'COMPARISON_OPERATOR_EQ'
+	| 'COMPARISON_OPERATOR_NEQ'
+	| 'COMPARISON_OPERATOR_GT'
+	| 'COMPARISON_OPERATOR_LT'
+	| 'COMPARISON_OPERATOR_GTE'
+	| 'COMPARISON_OPERATOR_LTE'
+
+/**
+ * Describes the enum capabilities.blockchain.solana.v1alpha.ComparisonOperator.
+ */
+export const ComparisonOperatorSchema: GenEnum<ComparisonOperator, ComparisonOperatorJson> =
+	/*@__PURE__*/
+	enumDesc(file_capabilities_blockchain_solana_v1alpha_client, 4)
 
 /**
  * @generated from enum capabilities.blockchain.solana.v1alpha.ReceiverContractExecutionStatus
@@ -313,12 +3552,92 @@ export type ReceiverContractExecutionStatusJson =
 export const ReceiverContractExecutionStatusSchema: GenEnum<
 	ReceiverContractExecutionStatus,
 	ReceiverContractExecutionStatusJson
-> = /*@__PURE__*/ enumDesc(file_capabilities_blockchain_solana_v1alpha_client, 1)
+> = /*@__PURE__*/ enumDesc(file_capabilities_blockchain_solana_v1alpha_client, 5)
 
 /**
  * @generated from service capabilities.blockchain.solana.v1alpha.Client
  */
 export const Client: GenService<{
+	/**
+	 * @generated from rpc capabilities.blockchain.solana.v1alpha.Client.GetAccountInfoWithOpts
+	 */
+	getAccountInfoWithOpts: {
+		methodKind: 'unary'
+		input: typeof GetAccountInfoWithOptsRequestSchema
+		output: typeof GetAccountInfoWithOptsReplySchema
+	}
+	/**
+	 * @generated from rpc capabilities.blockchain.solana.v1alpha.Client.GetBalance
+	 */
+	getBalance: {
+		methodKind: 'unary'
+		input: typeof GetBalanceRequestSchema
+		output: typeof GetBalanceReplySchema
+	}
+	/**
+	 * @generated from rpc capabilities.blockchain.solana.v1alpha.Client.GetBlock
+	 */
+	getBlock: {
+		methodKind: 'unary'
+		input: typeof GetBlockRequestSchema
+		output: typeof GetBlockReplySchema
+	}
+	/**
+	 * @generated from rpc capabilities.blockchain.solana.v1alpha.Client.GetFeeForMessage
+	 */
+	getFeeForMessage: {
+		methodKind: 'unary'
+		input: typeof GetFeeForMessageRequestSchema
+		output: typeof GetFeeForMessageReplySchema
+	}
+	/**
+	 * @generated from rpc capabilities.blockchain.solana.v1alpha.Client.GetMultipleAccountsWithOpts
+	 */
+	getMultipleAccountsWithOpts: {
+		methodKind: 'unary'
+		input: typeof GetMultipleAccountsWithOptsRequestSchema
+		output: typeof GetMultipleAccountsWithOptsReplySchema
+	}
+	/**
+	 * @generated from rpc capabilities.blockchain.solana.v1alpha.Client.GetProgramAccounts
+	 */
+	getProgramAccounts: {
+		methodKind: 'unary'
+		input: typeof GetProgramAccountsRequestSchema
+		output: typeof GetProgramAccountsReplySchema
+	}
+	/**
+	 * @generated from rpc capabilities.blockchain.solana.v1alpha.Client.GetSignatureStatuses
+	 */
+	getSignatureStatuses: {
+		methodKind: 'unary'
+		input: typeof GetSignatureStatusesRequestSchema
+		output: typeof GetSignatureStatusesReplySchema
+	}
+	/**
+	 * @generated from rpc capabilities.blockchain.solana.v1alpha.Client.GetSlotHeight
+	 */
+	getSlotHeight: {
+		methodKind: 'unary'
+		input: typeof GetSlotHeightRequestSchema
+		output: typeof GetSlotHeightReplySchema
+	}
+	/**
+	 * @generated from rpc capabilities.blockchain.solana.v1alpha.Client.GetTransaction
+	 */
+	getTransaction: {
+		methodKind: 'unary'
+		input: typeof GetTransactionRequestSchema
+		output: typeof GetTransactionReplySchema
+	}
+	/**
+	 * @generated from rpc capabilities.blockchain.solana.v1alpha.Client.LogTrigger
+	 */
+	logTrigger: {
+		methodKind: 'server_streaming'
+		input: typeof FilterLogTriggerRequestSchema
+		output: typeof LogSchema
+	}
 	/**
 	 * @generated from rpc capabilities.blockchain.solana.v1alpha.Client.WriteReport
 	 */
