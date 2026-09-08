@@ -352,13 +352,18 @@ export function test(title: string, fn: () => void | Promise<void>): void {
 }
 
 /**
- * Creates a test runtime. This must be called from within a test in this package.
+ * Shared setup for the test runtimes: registry with the default consensus capability, writer, state
+ * and helpers. Extracted so that the DON and TEE factories below cannot drift apart.
  */
-export function newTestRuntime<T = unknown>(
+function createTestRuntimeParts(
 	secrets?: Secrets | null,
 	options: NewTestRuntimeOptions = {},
-	config: T | undefined = undefined,
-): TestRuntime<T> {
+): {
+	helpers: RuntimeHelpers
+	maxResponseSize: bigint
+	testWriter: TestWriter
+	state: TestRuntimeState
+} {
 	const secretsMap = secrets ?? new Map<string, Map<string, string>>()
 	const testWriter = new TestWriter()
 	const registry = registryStorage.getStore() ?? new Registry()
@@ -400,7 +405,32 @@ export function newTestRuntime<T = unknown>(
 	const maxResponseSize = BigInt(configuredMaxResponseSize)
 	const helpers = createTestRuntimeHelpers(registry, secretsMap, testWriter, state, maxResponseSize)
 
+	return { helpers, maxResponseSize, testWriter, state }
+}
+
+/**
+ * Creates a test runtime. This must be called from within a test in this package.
+ */
+export function newTestRuntime<T = unknown>(
+	secrets?: Secrets | null,
+	options: NewTestRuntimeOptions = {},
+	config: T | undefined = undefined,
+): TestRuntime<T> {
+	const { helpers, maxResponseSize, testWriter, state } = createTestRuntimeParts(secrets, options)
 	return new TestRuntime(helpers, maxResponseSize, testWriter, state, config)
+}
+
+/**
+ * Creates a TEE test runtime, for unit testing handlers registered with `cre.handlerInTee`.
+ * This must be called from within a test in this package.
+ */
+export function newTestTEERuntime<T = unknown>(
+	secrets?: Secrets | null,
+	options: NewTestRuntimeOptions = {},
+	config: T | undefined = undefined,
+): TestTeeRuntime<T> {
+	const { helpers, maxResponseSize, testWriter, state } = createTestRuntimeParts(secrets, options)
+	return new TestTeeRuntime(helpers, maxResponseSize, testWriter, state, config ?? ({} as T))
 }
 
 /**
@@ -428,7 +458,7 @@ export class TestRuntime<T> extends RuntimeImpl<T> {
 }
 
 /**
- * TestTeeRuntime is a TeeRuntime implementation for unit tests. Extends TeeRuntimeImpl; construct via newTestTEERuntime.
+ * TestTeeRuntime is a TeeRuntime implementation for unit tests. Extends TeeRuntimeImpl; construct via newTestTEERuntime().
  * Adds getLogs() and setTimeProvider(). Registry is accessed via getTestCapabilityHandler when inside testWithRuntime.
  */
 export class TestTeeRuntime<T> extends TeeRuntimeImpl<T> {
