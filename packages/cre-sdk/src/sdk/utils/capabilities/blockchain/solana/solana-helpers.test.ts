@@ -1,10 +1,13 @@
 import { describe, expect, test } from 'bun:test'
 import { sha256 } from '@noble/hashes/sha2.js'
 import {
+	anchorCPILogTriggerConfig,
 	calculateAccountsHash,
 	encodeBorshVecU32,
 	encodeForwarderReport,
 	prepareSolanaReportRequest,
+	prepareSubkeyFloatValue,
+	prepareSubkeyValue,
 	SOLANA_DEFAULT_REPORT_ENCODER,
 	solanaAccountMeta,
 	solanaAccountMetasToJson,
@@ -171,5 +174,74 @@ describe('solanaAddressToBytes / solanaAccountMeta', () => {
 		const key = sequentialKey(0)
 		const json = solanaAccountMetasToJson([solanaAccountMeta(key, true)])
 		expect(json).toEqual([{ publicKey: Buffer.from(key).toString('base64'), isWritable: true }])
+	})
+})
+
+describe('prepareSubkeyValue', () => {
+	// Cases mirror Go bindings common_test.go TestPrepareSubkeyValue.
+	test('string encodes as UTF-8 bytes', () => {
+		expect(prepareSubkeyValue('hello')).toEqual(new TextEncoder().encode('hello'))
+	})
+
+	test('bytes pass through as-is', () => {
+		const input = new Uint8Array([1, 2, 3])
+		expect(prepareSubkeyValue(input)).toBe(input)
+	})
+
+	test('bigint encodes as big-endian u64', () => {
+		expect(bytesToHex(prepareSubkeyValue(1000n))).toBe('00000000000003e8')
+	})
+
+	test("negative bigint encodes as two's complement", () => {
+		expect(bytesToHex(prepareSubkeyValue(-1n))).toBe('ffffffffffffffff')
+	})
+
+	test('small integer number widens to 8 bytes', () => {
+		expect(bytesToHex(prepareSubkeyValue(5))).toBe('0000000000000005')
+	})
+
+	test('non-integer number throws, pointing at the float encoder', () => {
+		expect(() => prepareSubkeyValue(1.5)).toThrow('prepareSubkeyFloatValue')
+	})
+})
+
+describe('prepareSubkeyFloatValue', () => {
+	// Vectors mirror Go bindings EncodeIndexedValue float encoding:
+	// positive → float64bits + 2^63, otherwise 2^63 - float64bits (mod 2^64).
+	test('positive float', () => {
+		// float64bits(1.5) = 0x3ff8000000000000; + 2^63
+		expect(bytesToHex(prepareSubkeyFloatValue(1.5))).toBe('bff8000000000000')
+	})
+
+	test('negative float', () => {
+		// 2^63 - float64bits(-1.5) mod 2^64
+		expect(bytesToHex(prepareSubkeyFloatValue(-1.5))).toBe('c008000000000000')
+	})
+
+	test('zero maps to the sign bit', () => {
+		expect(bytesToHex(prepareSubkeyFloatValue(0))).toBe('8000000000000000')
+	})
+
+	test('encoding preserves ordering among same-sign values', () => {
+		const positives = [0.5, 1.5, 2.5, 100].map((v) => bytesToHex(prepareSubkeyFloatValue(v)))
+		expect([...positives].sort()).toEqual(positives)
+		const negatives = [-100, -2.5, -1.5, -0.5].map((v) => bytesToHex(prepareSubkeyFloatValue(v)))
+		expect([...negatives].sort()).toEqual(negatives)
+	})
+})
+
+describe('anchorCPILogTriggerConfig', () => {
+	// Mirrors Go bindings common_test.go TestAnchorCPILogTriggerConfig.
+	test('targets the program itself with the anchor:event method', () => {
+		const programId = sequentialKey(0)
+		const cfg = anchorCPILogTriggerConfig(programId)
+		expect(cfg.destAddress).toBe(Buffer.from(programId).toString('base64'))
+		expect(cfg.methodName).toBe(Buffer.from('anchor:event').toString('base64'))
+	})
+
+	test('accepts a base58 program id', () => {
+		const base58 = 'ECL8142j2YQAvs9R9geSsRnkVH2wLEi7soJCRyJ74cfL'
+		const cfg = anchorCPILogTriggerConfig(base58)
+		expect(cfg.destAddress).toBe(Buffer.from(solanaAddressToBytes(base58)).toString('base64'))
 	})
 })
