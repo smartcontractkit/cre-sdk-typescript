@@ -63,7 +63,7 @@
     },
     "packages/cre-sdk": {
       "name": "@chainlink/cre-sdk",
-      "version": "1.19.1",
+      "version": "1.20.0",
       "bin": {
         "cre-compile": "bin/cre-compile.ts",
       },
@@ -82,7 +82,7 @@
         "@biomejs/biome": "2.3.14",
         "@bufbuild/buf": "1.56.0",
         "@types/bun": "1.3.8",
-        "chain-selectors": "https://github.com/smartcontractkit/chain-selectors.git#dc9eee67db05b73636ed22c41a2e891026e72843",
+        "chain-selectors": "https://github.com/smartcontractkit/chain-selectors.git#425da86147b75ee0fdd0d95d840a0966b837056b",
         "fast-glob": "3.3.3",
         "ts-proto": "2.7.5",
         "typescript": "5.9.3",
@@ -91,7 +91,7 @@
     },
     "packages/cre-sdk-examples": {
       "name": "@chainlink/cre-sdk-examples",
-      "version": "1.19.1",
+      "version": "1.20.0",
       "dependencies": {
         "@bufbuild/protobuf": "2.6.3",
         "@chainlink/cre-sdk": "workspace:*",
@@ -237,7 +237,7 @@
 
     "case-anything": ["case-anything@2.1.13", "", {}, "sha512-zlOQ80VrQ2Ue+ymH5OuM/DlDq64mEm+B9UTdHULv5osUMD6HalNTblf2b1u/m6QecjsnOkBpqVZ+XPwIVsy7Ng=="],
 
-    "chain-selectors": ["chain-selectors@github:smartcontractkit/chain-selectors#dc9eee6", {}, "smartcontractkit-chain-selectors-dc9eee6", "sha512-LapthRTXAnliJGSx3DS8MGyns6dRWmEqel7sYW1AWBC1m5Oy7r7qNgPwtKk/n93T4+gSoZH4y7cPZSUA/O7t8g=="],
+    "chain-selectors": ["chain-selectors@github:smartcontractkit/chain-selectors#425da86", {}, "smartcontractkit-chain-selectors-425da86"],
 
     "chalk": ["chalk@5.6.2", "", {}, "sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA=="],
 
