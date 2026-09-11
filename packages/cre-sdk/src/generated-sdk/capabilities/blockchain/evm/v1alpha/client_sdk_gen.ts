@@ -176,6 +176,7 @@ export class ClientCapability {
 		'polygon-mainnet': 4051577828743386545n,
 		'polygon-testnet-amoy': 16281711391670634445n,
 		'private-testnet-andesite': 6915682381028791124n,
+		'private-testnet-basalt': 18362000170840307455n,
 		'private-testnet-pumice': 1564738277398880633n,
 		'private-testnet-quartzite': 4175996748267305081n,
 		'private-testnet-rhyolite': 604447335222770945n,
