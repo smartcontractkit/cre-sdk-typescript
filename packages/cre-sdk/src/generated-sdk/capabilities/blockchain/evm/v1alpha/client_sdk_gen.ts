@@ -148,6 +148,7 @@ export class ClientCapability {
 		'ethereum-mainnet-worldchain-1': 2049429975587534727n,
 		'ethereum-mainnet-xlayer-1': 3016212468291539606n,
 		'ethereum-mainnet-zksync-1': 1562403441176082196n,
+		'ethereum-testnet-hoodi': 10380998176179737091n,
 		'ethereum-testnet-sepolia': 16015286601757825753n,
 		'ethereum-testnet-sepolia-arbitrum-1': 3478487238524512106n,
 		'ethereum-testnet-sepolia-base-1': 10344971235874465080n,
