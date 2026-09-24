@@ -13,6 +13,14 @@
 			"types": "./dist/sdk/types/restricted-apis.d.ts",
 			"import": "./dist/sdk/types/restricted-apis.js"
 		},
+		"./restricted-node-modules": {
+			"types": "./dist/sdk/types/restricted-node-modules.d.ts",
+			"import": "./dist/sdk/types/restricted-node-modules.js"
+		},
+		"./unrestricted": {
+			"types": "./dist/index-unrestricted.d.ts",
+			"import": "./dist/index-unrestricted.js"
+		},
 		"./pb": {
 			"types": "./dist/pb.d.ts",
 			"import": "./dist/pb.js"

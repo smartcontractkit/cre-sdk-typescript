@@ -68,6 +68,8 @@ If you need to compile despite TypeScript errors, pass `--skip-type-checks`:
 bun x cre-compile src/workflow.ts dist/workflow.wasm --skip-type-checks
 ```
 
+These restrictions apply to every file in a TypeScript project that imports `@chainlink/cre-sdk`. If your project also typechecks Node.js tooling (deploy scripts, config generators, tests), you can disable the type restrictions via the `@chainlink/cre-sdk/unrestricted` entry — see [Disabling Type Restrictions](https://github.com/smartcontractkit/cre-sdk-typescript#disabling-type-restrictions-monorepos) in the repository README. Runtime enforcement during `cre compile` is unaffected by that opt-out.
+
 ## Getting Started
 
 We recommend you consult the [getting started docs](https://docs.chain.link/cre/getting-started/cli-installation) and install the CRE CLI.
