@@ -112,6 +112,18 @@ const buildTypes = async () => {
 	const unrestrictedJs = join(packageRoot, 'dist/index-unrestricted.js')
 	await writeFile(unrestrictedJs, "export * from './index.js'\n")
 	console.log('✅ Wrote dist/index-unrestricted.js re-export wrapper')
+
+	// JS targets for the types-only restriction subpath exports. These are
+	// generated here rather than as same-named .ts stubs in src/sdk/types: a
+	// .ts file sharing a name with a restriction .d.ts shadows it in the
+	// SDK's own build program (tsconfig.build.json includes src/sdk/**/*),
+	// which would remove the build-time restriction guard for SDK source.
+	// See build-program-restrictions.test.ts.
+	for (const typeName of ['restricted-apis', 'restricted-node-modules']) {
+		const typeJs = join(destDir, `${typeName}.js`)
+		await writeFile(typeJs, 'export {}\n')
+		console.log(`✅ Wrote ${typeName}.js subpath target`)
+	}
 }
 
 export const main = buildTypes
