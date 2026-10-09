@@ -63,7 +63,7 @@
     },
     "packages/cre-sdk": {
       "name": "@chainlink/cre-sdk",
-      "version": "1.22.0",
+      "version": "1.23.0",
       "bin": {
         "cre-compile": "bin/cre-compile.ts",
       },
@@ -91,7 +91,7 @@
     },
     "packages/cre-sdk-examples": {
       "name": "@chainlink/cre-sdk-examples",
-      "version": "1.22.0",
+      "version": "1.23.0",
       "dependencies": {
         "@bufbuild/protobuf": "2.6.3",
         "@chainlink/cre-sdk": "workspace:*",
