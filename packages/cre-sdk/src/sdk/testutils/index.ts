@@ -9,6 +9,7 @@ export {
 	getTestCapabilityHandler,
 	type NewTestRuntimeOptions,
 	newTestRuntime,
+	newTestTEERuntime,
 	REPORT_METADATA_HEADER_LENGTH,
 	RESPONSE_BUFFER_TOO_SMALL,
 	registerTestCapability,
