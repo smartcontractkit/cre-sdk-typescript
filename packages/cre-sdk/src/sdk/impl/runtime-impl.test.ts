@@ -937,6 +937,38 @@ describe('test getSecret', () => {
 		)
 	})
 
+	test('getSecret errors report the default namespace sent to the host', () => {
+		const secretRequest = { id: 'test-secret' }
+		const normalizedSecretRequest = create(SecretRequestSchema, {
+			id: 'test-secret',
+			namespace: 'main',
+		})
+		const helpers = createRuntimeHelpersMock({
+			getSecrets: mock(() => undefined),
+			awaitSecrets: mock(() => {
+				return create(AwaitSecretsResponseSchema, {
+					responses: {
+						1: create(SecretResponsesSchema, {
+							responses: [
+								create(SecretResponseSchema, {
+									response: {
+										case: 'error',
+										value: { id: 'test-secret', error: 'secret not found' },
+									},
+								}),
+							],
+						}),
+					},
+				})
+			}),
+		})
+
+		const runtime = new RuntimeImpl<unknown>({}, 1, helpers, anyMaxSize)
+		expect(() => runtime.getSecret(secretRequest).result()).toThrow(
+			new SecretsError(normalizedSecretRequest, 'test-secret: secret not found'),
+		)
+	})
+
 	test('awaitSecrets returns unknown response case', () => {
 		const secretRequest = create(SecretRequestSchema, {
 			id: 'test-secret',
