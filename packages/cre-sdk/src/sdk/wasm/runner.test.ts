@@ -14,6 +14,7 @@ import {
 	type ExecutionResult,
 	ExecutionResultSchema,
 	GetSecretsRequestSchema,
+	Mode,
 	RequirementsSchema,
 	type Restrictions,
 	SecretResponseSchema,
@@ -103,6 +104,7 @@ const proxyHostBindings = {
 		return mockHostBindings.getWasiArgs()
 	},
 	switchModes: mock(() => {}),
+	setRandomMode: mock((_mode: Mode) => {}),
 	log: (message: string) => {
 		throw new Error('log called unexpectedly in test')
 	},
@@ -646,6 +648,43 @@ describe('handlerInTee', () => {
 			]
 		})
 		expect(callbackInvoked).toBe(true)
+	})
+
+	test('tee handler uses node-mode randomness and restores it afterwards', async () => {
+		mockHostBindings.sendResponse = mock(() => 0)
+		proxyHostBindings.setRandomMode.mockClear()
+		const runner = await getTestRunner(anyExecuteRequest)
+		let callsDuringHandler: Mode[][] = []
+		await runner.run(async () => [
+			handlerInTee(basicTrigger.trigger({ name: 'foo', number: 10 }), () => {
+				callsDuringHandler = proxyHostBindings.setRandomMode.mock.calls.map((c) => [...c])
+				return 0
+			}, [{ tee: 'nitro', regions: ['us-west-2'] }]),
+		])
+		expect(callsDuringHandler).toEqual([[Mode.NODE]])
+		expect(proxyHostBindings.setRandomMode.mock.calls).toEqual([[Mode.NODE], [Mode.UNSPECIFIED]])
+	})
+
+	test('tee handler restores randomness mode when handler throws', async () => {
+		mockHostBindings.sendResponse = mock(() => 0)
+		proxyHostBindings.setRandomMode.mockClear()
+		const runner = await getTestRunner(anyExecuteRequest)
+		await runner.run(async () => [
+			handlerInTee(basicTrigger.trigger({ name: 'foo', number: 10 }), () => {
+				throw new Error('boom')
+			}, [{ tee: 'nitro', regions: ['us-west-2'] }]),
+		])
+		expect(proxyHostBindings.setRandomMode.mock.calls).toEqual([[Mode.NODE], [Mode.UNSPECIFIED]])
+	})
+
+	test('regular handler does not change randomness mode', async () => {
+		mockHostBindings.sendResponse = mock(() => 0)
+		proxyHostBindings.setRandomMode.mockClear()
+		const runner = await getTestRunner(anyExecuteRequest)
+		await runner.run(async () => [
+			cre.handler(basicTrigger.trigger({ name: 'foo', number: 10 }), () => 0),
+		])
+		expect(proxyHostBindings.setRandomMode).not.toHaveBeenCalled()
 	})
 })
 
