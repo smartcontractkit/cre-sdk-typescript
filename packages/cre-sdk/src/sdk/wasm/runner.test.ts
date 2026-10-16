@@ -256,6 +256,58 @@ describe('runner', () => {
 			}
 		})
 
+		test('runs when the host leaves config empty on a preHook request (regression for #314)', async () => {
+			// Before the fix, `newRunnerHelper` ran `configHandler` on every phase, so a preHook
+			// request with no `config` bytes threw "Failed to parse configuration: Unexpected end
+			// of JSON input" before the hook was dispatched. The host leaves config empty on
+			// preHook; the SDK now short-circuits parsing for that phase and the hook executes.
+			const emptyConfigPreHook = create(ExecuteRequestSchema, {
+				request: {
+					case: 'preHook',
+					value: create(TriggerSchema, {
+						id: 0n,
+						payload: anyPack(
+							OutputsSchema,
+							create(OutputsSchema, { coolOutput: 'hi' }),
+						),
+					}),
+				},
+				maxResponseSize: anyMaxResponseSize,
+				// intentionally no `config` — mirrors the real host payload on preHook
+			})
+
+			var sentResponse: ExecutionResult | null = null
+			mockHostBindings.sendResponse = mock((input) => {
+				sentResponse = fromBinary(ExecutionResultSchema, input)
+				return 0
+			})
+
+			setupArgs(emptyConfigPreHook)
+			const runner = await Runner.newRunner<string>({
+				// A permissive parser so the test fails on the real regression (configHandler
+				// being called on preHook at all), not on parser-side strictness.
+				configParser: (b) => Buffer.from(b).toString(),
+			})
+			await runner.run(async (_: string, __: SecretsProvider) => {
+				return [
+					cre.handler(basicTrigger.trigger({ name: 'foo', number: 10 }), () => 10, {
+						preHook: () => ({
+							capabilities: {
+								restrictions: [],
+								maxTotalCalls: 1,
+								type: 'CAPABILITY_RESTRICTION_TYPE_CLOSED',
+							},
+						}),
+					}),
+				]
+			})
+			expect(sentResponse).toBeDefined()
+			const result = sentResponse as unknown as ExecutionResult
+			expect(result.result.case).toBe('restrictions')
+			const restrictions = result.result.value as Restrictions
+			expect(restrictions.capabilities?.maxTotalCalls).toBe(1)
+		})
+
 		test('returns error when no preHook is registered', async () => {
 			var sentResponse: ExecutionResult | null = null
 			mockHostBindings.sendResponse = mock((input) => {
