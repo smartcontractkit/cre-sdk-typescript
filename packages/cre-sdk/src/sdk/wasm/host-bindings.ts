@@ -4,6 +4,7 @@ import { z } from 'zod'
 // Zod schema for validating global host functions
 export const globalHostBindingsSchema = z.object({
 	switchModes: z.function().args(z.nativeEnum(Mode)).returns(z.void()),
+	setRandomMode: z.function().args(z.nativeEnum(Mode)).returns(z.void()),
 	log: z.function().args(z.string()).returns(z.void()),
 	sendResponse: z
 		.function()

@@ -17,6 +17,9 @@ use std::thread;
 use std::time::Duration;
 
 static CURRENT_MODE: Mutex<i32> = Mutex::new(0);
+// When non-zero, Math.random draws from this mode's generator instead of CURRENT_MODE's.
+// Used by TEE handlers, which run in DON mode but must use node-mode randomness.
+static RANDOM_MODE_OVERRIDE: Mutex<i32> = Mutex::new(0);
 static RANDOM_GENERATORS: OnceLock<Mutex<HashMap<i32, ChaCha8Rng>>> = OnceLock::new();
 const MAX_RESPONSE_LEN_BYTES: i32 = 64 * 1024 * 1024;
 
@@ -251,6 +254,16 @@ pub fn modify_runtime(runtime: Runtime) -> Runtime {
 
         extend_wasm_exports(
             &ctx,
+            "setRandomMode",
+            Func::from(|mode: i32| {
+                *RANDOM_MODE_OVERRIDE
+                    .lock()
+                    .expect("failed to lock RANDOM_MODE_OVERRIDE mutex in setRandomMode") = mode;
+            }),
+        );
+
+        extend_wasm_exports(
+            &ctx,
             "versionV2",
             Func::from(|| {
                 unsafe { version_v2_typescript() };
@@ -268,9 +281,16 @@ pub fn modify_runtime(runtime: Runtime) -> Runtime {
             .set(
                 "random",
                 Func::from(|| {
-                    let current_mode = *CURRENT_MODE
+                    let override_mode = *RANDOM_MODE_OVERRIDE
                         .lock()
-                        .expect("failed to lock CURRENT_MODE mutex in Math.random");
+                        .expect("failed to lock RANDOM_MODE_OVERRIDE mutex in Math.random");
+                    let current_mode = if override_mode != 0 {
+                        override_mode
+                    } else {
+                        *CURRENT_MODE
+                            .lock()
+                            .expect("failed to lock CURRENT_MODE mutex in Math.random")
+                    };
                     let mut generators = RANDOM_GENERATORS
                         .get()
                         .expect("RANDOM_GENERATORS not initialized")

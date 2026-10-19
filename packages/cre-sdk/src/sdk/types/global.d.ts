@@ -59,6 +59,12 @@ declare global {
 	function switchModes(mode: 0 | 1 | 2): void
 
 	/**
+	 * Overrides which mode's random generator Math.random uses, independent of the current mode.
+	 * @param mode - The mode whose randomness to use (0 = follow current mode, 1 = DON, 2 = NODE)
+	 */
+	function setRandomMode(mode: 0 | 1 | 2): void
+
+	/**
 	 * Indicates this is a V2 SDK workflow
 	 */
 	function versionV2(): void
