@@ -15,6 +15,7 @@ import {
 	__testOnlyRunWithRegistry,
 	getTestCapabilityHandler,
 	newTestRuntime,
+	newTestTEERuntime,
 	REPORT_METADATA_HEADER_LENGTH,
 	RESPONSE_BUFFER_TOO_SMALL,
 	registerTestCapability,
@@ -320,5 +321,34 @@ describe('test wrapper', () => {
 			}),
 		).rejects.toThrow('intentional failure')
 		expect(__testOnlyRegistryStore()).toBeUndefined()
+	})
+})
+
+describe('newTestTEERuntime', () => {
+	test('returns a TeeRuntime with the secrets provider a TEE handler needs', () => {
+		const secrets = new Map([['main', new Map([['API_TOKEN', 'shh']])]])
+		const rt = newTestTEERuntime(secrets)
+		expect(rt.getSecret({ id: 'API_TOKEN' }).result().value).toBe('shh')
+	})
+
+	test('usingTheDons returns a DON runtime for the non-confidential leg', () => {
+		const rt = newTestTEERuntime()
+		const don = rt.usingTheDons()
+		expect(typeof don.report).toBe('function')
+		expect(typeof don.runInNodeMode).toBe('function')
+	})
+
+	test('config is passed through, and defaults to an empty object', () => {
+		expect(newTestTEERuntime(null, {}, { threshold: 7 }).config).toEqual({ threshold: 7 })
+		expect(newTestTEERuntime().config).toEqual({})
+	})
+
+	test('getLogs and setTimeProvider behave as they do on the DON test runtime', () => {
+		const rt = newTestTEERuntime()
+		const fixed = 999888777666
+		rt.setTimeProvider(() => fixed)
+		expect(rt.now().getTime()).toBe(fixed)
+		rt.log('from inside the enclave')
+		expect(rt.getLogs()).toContain('from inside the enclave')
 	})
 })
