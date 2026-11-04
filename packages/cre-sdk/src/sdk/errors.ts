@@ -92,3 +92,16 @@ export class RawReportTooShortError extends Error {
 		this.name = 'RawReportTooShortError'
 	}
 }
+
+export class InvalidSigningAlgoError extends Error {
+	constructor(
+		public readonly encoder: string,
+		public readonly expected: string,
+		public readonly got: string,
+	) {
+		super(
+			`signing algorithm does not match encoder: encoder ${JSON.stringify(encoder)} signs with ${JSON.stringify(expected)}, got ${JSON.stringify(got)}`,
+		)
+		this.name = 'InvalidSigningAlgoError'
+	}
+}

@@ -162,9 +162,20 @@ export declare class RawReportTooShortError extends Error {
     readonly got: number;
     constructor(need: number, got: number);
 }
-import { type ReportResponse, type ReportResponseJson } from '@cre/generated/sdk/v1alpha/sdk_pb';
+export declare class InvalidSigningAlgoError extends Error {
+    readonly encoder: string;
+    readonly expected: string;
+    readonly got: string;
+    constructor(encoder: string, expected: string, got: string);
+}
+import { type ReportRequest, type ReportRequestJson, type ReportResponse, type ReportResponseJson } from '@cre/generated/sdk/v1alpha/sdk_pb';
 import { type Environment, type Zone } from './don-info';
 import type { BaseRuntime } from './runtime';
+/**
+ * Checks that the request's signingAlgo matches the algorithm used by the key bundle for its
+ * encoderName. An empty signingAlgo and encoders not listed in ENCODER_SIGNING_ALGOS are not checked.
+ */
+export declare function validateReportRequest(request: ReportRequest | ReportRequestJson): void;
 export type ReportParseConfig = {
     acceptedZones?: Zone[];
     acceptedEnvironments?: Environment[];
