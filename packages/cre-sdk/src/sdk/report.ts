@@ -19,6 +19,7 @@ import {
 	RawReportTooShortError,
 	RecoverSignerError,
 	UnknownSignerError,
+	UnsupportedEncoderError,
 	WrongSignatureCountError,
 } from './errors'
 import { type DonInfo, donInfoCache } from './report-internals'
@@ -385,6 +386,21 @@ export type ReportParseConfig = {
 	acceptedZones?: Zone[]
 	acceptedEnvironments?: Environment[]
 	skipSignatureVerification?: boolean
+	/**
+	 * Encoder name the report was generated with (`ReportRequest.encoderName`).
+	 * Defaults to `"evm"`. Only EVM reports can currently be parsed and verified;
+	 * any other value throws `UnsupportedEncoderError`.
+	 */
+	encoder?: string
+}
+
+export const EVM_REPORT_ENCODER = 'evm'
+
+function validateEncoder(encoder: string | undefined): void {
+	if (encoder === undefined || encoder === '' || encoder.toLowerCase() === EVM_REPORT_ENCODER) {
+		return
+	}
+	throw new UnsupportedEncoderError(encoder)
 }
 
 function mergeReportParseConfig(
@@ -501,6 +517,8 @@ export class Report {
 		reportContext: Uint8Array,
 		config?: ReportParseConfig,
 	): Promise<Report> {
+		validateEncoder(config?.encoder)
+
 		const configDigest =
 			reportContext.length >= 32 ? reportContext.slice(0, 32) : new Uint8Array(32)
 		const seqNr =
