@@ -6,12 +6,14 @@ import { hexToBytes } from 'viem'
 import {
 	DuplicateSignerError,
 	type Environment,
+	InvalidSigningAlgoError,
 	ParseSignatureError,
 	productionEnvironment,
 	RawReportTooShortError,
 	RecoverSignerError,
 	Report,
 	UnknownSignerError,
+	validateReportRequest,
 	WrongSignatureCountError,
 	zoneFromEnvironment,
 } from '.'
@@ -597,4 +599,27 @@ describe('Report Parse', () => {
 		expect(allMessages).toContain(`invalid registry address`)
 		expect(allMessages).toContain(invalidAddress)
 	})
+})
+
+describe('validateReportRequest', () => {
+	const cases: { encoderName: string; signingAlgo: string; valid: boolean }[] = [
+		{ encoderName: 'evm', signingAlgo: 'ecdsa', valid: true },
+		{ encoderName: 'EVM', signingAlgo: 'ECDSA', valid: true },
+		{ encoderName: 'evm', signingAlgo: '', valid: true },
+		{ encoderName: 'evm', signingAlgo: 'ed25519', valid: false },
+		{ encoderName: 'solana', signingAlgo: 'ecdsa', valid: true },
+		{ encoderName: 'solana', signingAlgo: 'ed25519', valid: false },
+		{ encoderName: 'my-encoder', signingAlgo: 'my-signer', valid: true },
+	]
+
+	for (const { encoderName, signingAlgo, valid } of cases) {
+		test(`${encoderName}/${signingAlgo}`, () => {
+			const run = () => validateReportRequest({ encoderName, signingAlgo })
+			if (valid) {
+				expect(run).not.toThrow()
+			} else {
+				expect(run).toThrow(InvalidSigningAlgoError)
+			}
+		})
+	}
 })

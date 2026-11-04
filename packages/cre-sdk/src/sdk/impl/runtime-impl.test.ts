@@ -62,6 +62,7 @@ import {
 import {
 	CapabilityRuntimeError,
 	DonModeError,
+	InvalidSigningAlgoError,
 	NodeModeError,
 	SecretsBatchError,
 	SecretsError,
@@ -1592,6 +1593,23 @@ describe('TeeRuntimeImpl', () => {
 		const actualResult = teeRuntime.reportFromDon(reportInput).result()
 
 		expect(actualResult).toEqual(expectedResult)
+	})
+
+	test('report with mismatched signingAlgo throws without calling consensus', () => {
+		const consensusReport = mock(() => ({ result: () => undefined }))
+		// biome-ignore lint/suspicious/noExplicitAny: Mock assignment requires any
+		;(ConsensusCapability.prototype as any).report = consensusReport
+
+		const reportInput = create(ReportRequestSchema, {
+			encodedPayload: new Uint8Array([1, 2, 3]),
+			encoderName: 'evm',
+			signingAlgo: 'ed25519',
+		})
+
+		const runtimeImpl = new RuntimeImpl<unknown>({}, 1, createRuntimeHelpersMock(), anyMaxSize)
+
+		expect(() => runtimeImpl.report(reportInput)).toThrow(InvalidSigningAlgoError)
+		expect(consensusReport).not.toHaveBeenCalled()
 	})
 
 	test('usingTheDons delegates to RuntimeImpl', () => {

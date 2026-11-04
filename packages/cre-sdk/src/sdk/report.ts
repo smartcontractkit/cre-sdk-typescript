@@ -5,6 +5,8 @@ import {
 	AttributedSignatureSchema,
 	AwaitCapabilitiesRequestSchema,
 	CapabilityRequestSchema,
+	type ReportRequest,
+	type ReportRequestJson,
 	type ReportResponse,
 	type ReportResponseJson,
 	ReportResponseSchema,
@@ -14,6 +16,7 @@ import { concatHex, getAddress, hexToBytes, keccak256, recoverAddress, toHex } f
 import { type Environment, productionEnvironment, type Zone } from './don-info'
 import {
 	DuplicateSignerError,
+	InvalidSigningAlgoError,
 	NullReportError,
 	ParseSignatureError,
 	RawReportTooShortError,
@@ -379,6 +382,30 @@ async function verifySigs(
 	}
 
 	report.sigs = accepted
+}
+
+/**
+ * Maps each public encoder to the signing algorithm of the key bundle it selects.
+ * Consensus picks the key bundle from encoderName alone, so a mismatched signingAlgo
+ * would otherwise be silently ignored.
+ */
+const ENCODER_SIGNING_ALGOS: Record<string, string> = {
+	evm: 'ecdsa',
+	solana: 'ecdsa',
+}
+
+/**
+ * Checks that the request's signingAlgo matches the algorithm used by the key bundle for its
+ * encoderName. An empty signingAlgo and encoders not listed in ENCODER_SIGNING_ALGOS are not checked.
+ */
+export function validateReportRequest(request: ReportRequest | ReportRequestJson): void {
+	const encoder = request.encoderName ?? ''
+	const signingAlgo = request.signingAlgo ?? ''
+	const expected = ENCODER_SIGNING_ALGOS[encoder.toLowerCase()]
+	if (expected === undefined || signingAlgo === '' || signingAlgo.toLowerCase() === expected) {
+		return
+	}
+	throw new InvalidSigningAlgoError(encoder, expected, signingAlgo)
 }
 
 export type ReportParseConfig = {

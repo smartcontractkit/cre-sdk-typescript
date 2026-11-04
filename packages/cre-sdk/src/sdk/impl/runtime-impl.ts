@@ -33,7 +33,7 @@ import type {
 	Runtime,
 	TeeRuntime,
 } from '@cre/sdk'
-import type { Report } from '@cre/sdk/report'
+import { type Report, validateReportRequest } from '@cre/sdk/report'
 import {
 	type ConsensusAggregation,
 	type CreSerializable,
@@ -512,6 +512,7 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 	 * Generates a report via consensus mechanism.
 	 */
 	report(input: ReportRequest | ReportRequestJson): { result: () => Report } {
+		validateReportRequest(input)
 		const consensus = new ConsensusCapability()
 		// Cast to native overload signature - the impl dispatches on $typeName.
 		const call = consensus.report(this, input as ReportRequest)
