@@ -1,6 +1,7 @@
-import { create, fromJson } from '@bufbuild/protobuf'
+import { create, fromBinary, fromJson } from '@bufbuild/protobuf'
 import { BinaryReader, WireType } from '@bufbuild/protobuf/wire'
 import { AnySchema } from '@bufbuild/protobuf/wkt'
+import { type CapabilityConfig, CapabilityConfigSchema } from '@cre/generated/internal/registry_pb'
 import {
 	AttributedSignatureSchema,
 	AwaitCapabilitiesRequestSchema,
@@ -9,8 +10,20 @@ import {
 	type ReportResponseJson,
 	ReportResponseSchema,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import type { Address } from 'viem'
-import { concatHex, getAddress, hexToBytes, keccak256, recoverAddress, toHex } from 'viem'
+import type { Address, Hex } from 'viem'
+import {
+	concatHex,
+	decodeFunctionResult,
+	encodeFunctionData,
+	getAddress,
+	hexToBytes,
+	keccak256,
+	recoverAddress,
+	sha256,
+	slice,
+	toHex,
+} from 'viem'
+import { capabilitiesRegistryAbi } from './capabilities-registry-abi'
 import { type Environment, productionEnvironment, type Zone } from './don-info'
 import {
 	DuplicateSignerError,
@@ -24,9 +37,6 @@ import {
 } from './errors'
 import { type DonInfo, donInfoCache } from './report-internals'
 import type { BaseRuntime } from './runtime'
-
-const GET_DON_SELECTOR = new Uint8Array([0x23, 0x53, 0x74, 0x05])
-const GET_NODES_BY_P2P_IDS_SELECTOR = new Uint8Array([0x05, 0xa5, 0x19, 0x66])
 
 function cacheKey(env: Environment, donID: number): string {
 	return `${env.chainSelector.toString()}:${donID}`
@@ -53,30 +63,6 @@ function decodeRegistryAddress(registryAddress: string): Uint8Array {
 		throw new Error(`invalid registry address ${JSON.stringify(registryAddress)}`)
 	}
 	return hexToBytes(`0x${hex}`)
-}
-
-function padUint256(v: bigint | number): Uint8Array {
-	const n = typeof v === 'bigint' ? v : BigInt(v)
-	const b = new Uint8Array(32)
-	const view = new DataView(b.buffer)
-	view.setBigUint64(24, n, false)
-	return b
-}
-
-function bytesToBigIntBE(word: Uint8Array): bigint {
-	let x = 0n
-	for (let i = 0; i < word.length; i++) {
-		x = (x << 8n) | BigInt(word[i])
-	}
-	return x
-}
-
-function readUint256AsInt(word: Uint8Array): number {
-	const b = bytesToBigIntBE(word)
-	if (b > BigInt(Number.MAX_SAFE_INTEGER)) {
-		throw new Error('ABI uint256 value too large for Number')
-	}
-	return Number(b)
 }
 
 function protoVarint(v: number | bigint): number[] {
@@ -180,43 +166,16 @@ function callContract(
 	return decodeCallContractReplyData((response.value as { value: Uint8Array }).value)
 }
 
-function encodeGetDONCalldata(donID: number): Uint8Array {
-	const padded = new Uint8Array(32)
-	const view = new DataView(padded.buffer)
-	view.setUint32(28, donID >>> 0, false)
-	const out = new Uint8Array(4 + 32)
-	out.set(GET_DON_SELECTOR, 0)
-	out.set(padded, 4)
-	return out
+// callRegistry sends ABI-encoded call data to the capabilities registry via the EVM capability
+// and returns the ABI-encoded result.
+function callRegistry(
+	runtime: BaseRuntime<unknown>,
+	capID: string,
+	registryAddr: Uint8Array,
+	callData: Hex,
+): Hex {
+	return toHex(callContract(runtime, capID, registryAddr, hexToBytes(callData)))
 }
-
-function concatBytes(parts: readonly Uint8Array[]): Uint8Array {
-	const total = parts.reduce((n, p) => n + p.length, 0)
-	const r = new Uint8Array(total)
-	let o = 0
-	for (const p of parts) {
-		r.set(p, o)
-		o += p.length
-	}
-	return r
-}
-
-function encodeGetNodesByP2PIdsCalldata(p2pIds: Uint8Array[]): Uint8Array {
-	const chunks: Uint8Array[] = [
-		GET_NODES_BY_P2P_IDS_SELECTOR,
-		padUint256(32),
-		padUint256(p2pIds.length),
-	]
-	for (const id of p2pIds) {
-		if (id.length !== 32) {
-			throw new Error('p2p id must be 32 bytes')
-		}
-		chunks.push(new Uint8Array(id))
-	}
-	return concatBytes(chunks)
-}
-
-const NODE_TUPLE_HEAD_SIZE = 288
 
 function fetchDONInfo(runtime: BaseRuntime<unknown>, env: Environment, donID: number): DonInfo {
 	const key = cacheKey(env, donID)
@@ -228,82 +187,175 @@ function fetchDONInfo(runtime: BaseRuntime<unknown>, env: Environment, donID: nu
 	const registryAddr = decodeRegistryAddress(env.registryAddress)
 	const capID = `evm:ChainSelector:${env.chainSelector.toString()}@1.0.0`
 
-	const getDONABI = callContract(runtime, capID, registryAddr, encodeGetDONCalldata(donID))
+	const don = decodeFunctionResult({
+		abi: capabilitiesRegistryAbi,
+		functionName: 'getDON',
+		data: callRegistry(
+			runtime,
+			capID,
+			registryAddr,
+			encodeFunctionData({ abi: capabilitiesRegistryAbi, functionName: 'getDON', args: [donID] }),
+		),
+	})
+	const f = don.f
 
-	if (getDONABI.length < 224) {
-		throw new Error(`getDON ABI response too short: ${getDONABI.length} bytes`)
-	}
-
-	const f = readUint256AsInt(getDONABI.subarray(96, 128))
-
-	const tupleStart = 32
-	const nodeP2PIdsPtr = readUint256AsInt(getDONABI.subarray(192, 224))
-	const nodeCountOff = tupleStart + nodeP2PIdsPtr
-	if (nodeCountOff + 32 > getDONABI.length) {
-		throw new Error('getDON ABI: nodeP2PIds pointer out of range')
-	}
-	const nodeCount = readUint256AsInt(getDONABI.subarray(nodeCountOff, nodeCountOff + 32))
-	if (nodeCountOff + 32 + nodeCount * 32 > getDONABI.length) {
-		throw new Error('getDON ABI: nodeP2PIds data out of range')
-	}
-
-	const nodeP2PIds: Uint8Array[] = []
-	for (let i = 0; i < nodeCount; i++) {
-		const start = nodeCountOff + 32 + i * 32
-		nodeP2PIds.push(getDONABI.subarray(start, start + 32))
-	}
-
-	if (nodeCount === 0) {
+	if (don.nodeP2PIds.length === 0) {
 		const info: DonInfo = { f, signers: new Map() }
 		donInfoCache.set(key, info)
 		return info
 	}
 
-	const getNodesABI = callContract(
-		runtime,
-		capID,
-		registryAddr,
-		encodeGetNodesByP2PIdsCalldata(nodeP2PIds),
-	)
-
-	if (getNodesABI.length < 64) {
-		throw new Error(`getNodesByP2PIds ABI response too short: ${getNodesABI.length} bytes`)
-	}
-
-	const outerPtr = readUint256AsInt(getNodesABI.subarray(0, 32))
-	if (outerPtr + 32 > getNodesABI.length) {
-		throw new Error('getNodesByP2PIds ABI: outer pointer out of range')
-	}
-	const returnedCount = readUint256AsInt(getNodesABI.subarray(outerPtr, outerPtr + 32))
+	const nodes = decodeFunctionResult({
+		abi: capabilitiesRegistryAbi,
+		functionName: 'getNodesByP2PIds',
+		data: callRegistry(
+			runtime,
+			capID,
+			registryAddr,
+			encodeFunctionData({
+				abi: capabilitiesRegistryAbi,
+				functionName: 'getNodesByP2PIds',
+				args: [don.nodeP2PIds],
+			}),
+		),
+	})
 
 	const signers = new Map<Address, number>()
-	for (let i = 0; i < returnedCount; i++) {
-		const elemPtrOff = outerPtr + 32 + i * 32
-		if (elemPtrOff + 32 > getNodesABI.length) {
-			break
-		}
-		const elemPtr = readUint256AsInt(getNodesABI.subarray(elemPtrOff, elemPtrOff + 32))
-		const tupleBase = outerPtr + 32 + elemPtr
-		if (tupleBase + NODE_TUPLE_HEAD_SIZE > getNodesABI.length) {
-			break
-		}
-		const nodeOperatorId = Number(
-			bytesToBigIntBE(getNodesABI.subarray(tupleBase, tupleBase + 32)) & 0xffffffffn,
-		)
-		const signerSlot = tupleBase + 3 * 32
-		const addrBytes = getNodesABI.subarray(signerSlot, signerSlot + 20)
-		const addr = getAddress(toHex(addrBytes))
-		signers.set(addr, nodeOperatorId)
+	for (const node of nodes) {
+		// The signer is an address left-aligned in a bytes32.
+		signers.set(getAddress(slice(node.signer, 0, 20)), node.nodeOperatorId)
 	}
 
 	const info: DonInfo = { f, signers }
+	try {
+		info.solanaSigners = solanaSignersFromDON(don.capabilityConfigurations, signers)
+	} catch (err) {
+		info.solanaSignersError = err instanceof Error ? err : new Error(String(err))
+	}
 	donInfoCache.set(key, info)
 	return info
+}
+
+// signersFor returns the authorized signers for reports produced by the given encoder.
+function signersFor(info: DonInfo, encoder: ReportEncoder): Map<Address, number> {
+	if (encoder !== SOLANA_REPORT_ENCODER) {
+		return info.signers
+	}
+	if (info.solanaSignersError !== undefined) {
+		throw info.solanaSignersError
+	}
+	return info.solanaSigners ?? new Map()
+}
+
+// CONSENSUS_CAPABILITY_PREFIX identifies the consensus capability in a DON's capabilityConfigurations.
+const CONSENSUS_CAPABILITY_PREFIX = 'consensus@'
+// DEFAULT_OCR3_CONFIG_KEY is the OCR instance name used by single-instance capabilities.
+const DEFAULT_OCR3_CONFIG_KEY = '__default__'
+// Chain type identifiers used in multichain onchain public keys (see corekeys.ChainType.Type).
+const CHAIN_TYPE_EVM = 1
+const CHAIN_TYPE_SOLANA = 2
+
+type CapabilityConfiguration = { capabilityId: string; config: Hex }
+
+// solanaSignersFromDON maps each Solana signer in the consensus capability's OCR3 config to its node operator.
+// Every OCR3 signer is a multichain key containing the node's EVM and Solana keys; the EVM key is matched against
+// the registry's node signers so that only signers belonging to the DON's nodes are accepted.
+function solanaSignersFromDON(
+	capabilityConfigurations: readonly CapabilityConfiguration[],
+	evmSigners: Map<Address, number>,
+): Map<Address, number> {
+	const solanaSigners = new Map<Address, number>()
+	for (const ocrSigner of consensusOCR3Signers(capabilityConfigurations)) {
+		const keys = parseMultichainPublicKey(ocrSigner)
+		const evmKey = keys.get(CHAIN_TYPE_EVM)
+		const solanaKey = keys.get(CHAIN_TYPE_SOLANA)
+		if (evmKey?.length !== 20 || solanaKey?.length !== 20) {
+			continue
+		}
+
+		const nodeOperatorId = evmSigners.get(getAddress(toHex(evmKey)))
+		if (nodeOperatorId === undefined) {
+			continue
+		}
+		solanaSigners.set(getAddress(toHex(solanaKey)), nodeOperatorId)
+	}
+
+	if (solanaSigners.size === 0) {
+		throw new Error('consensus OCR3 config has no solana signers')
+	}
+	return solanaSigners
+}
+
+// consensusOCR3Signers returns the signers of the consensus capability's default OCR3 config.
+function consensusOCR3Signers(
+	capabilityConfigurations: readonly CapabilityConfiguration[],
+): Uint8Array[] {
+	const consensus = capabilityConfigurations.find((c) =>
+		c.capabilityId.startsWith(CONSENSUS_CAPABILITY_PREFIX),
+	)
+	if (consensus === undefined) {
+		throw new Error('consensus capability is not configured on the DON')
+	}
+
+	let config: CapabilityConfig
+	try {
+		config = fromBinary(CapabilityConfigSchema, hexToBytes(consensus.config))
+	} catch (err) {
+		const msg = err instanceof Error ? err.message : String(err)
+		throw new Error(`malformed consensus capability config: ${msg}`)
+	}
+
+	const ocr3Config = config.ocr3Configs[DEFAULT_OCR3_CONFIG_KEY]
+	if (ocr3Config === undefined) {
+		throw new Error(`consensus capability config has no "${DEFAULT_OCR3_CONFIG_KEY}" OCR3 config`)
+	}
+	return ocr3Config.signers
+}
+
+// parseMultichainPublicKey splits an OCR3 multichain onchain public key into its per-chain keys.
+// Encoding: repeated [chainType uint8][length uint16 little-endian][key].
+function parseMultichainPublicKey(data: Uint8Array): Map<number, Uint8Array> {
+	const keys = new Map<number, Uint8Array>()
+	let offset = 0
+	while (offset < data.length) {
+		if (data.length - offset < 3) {
+			throw new Error('malformed multichain public key: truncated header')
+		}
+		const chainType = data[offset]
+		const length = data[offset + 1] | (data[offset + 2] << 8)
+		const start = offset + 3
+		if (data.length - start < length) {
+			throw new Error('malformed multichain public key: truncated key')
+		}
+		keys.set(chainType, data.subarray(start, start + length))
+		offset = start + length
+	}
+	return keys
 }
 
 function computeReportHash(rawReport: Uint8Array, reportContext: Uint8Array): `0x${string}` {
 	const innerHash = keccak256(toHex(rawReport))
 	return keccak256(concatHex([innerHash, toHex(reportContext)]))
+}
+
+// solanaReportHash matches the Solana keyring and forwarder program:
+// sha256(uint8(len(rawReport)) || rawReport || reportContext). The length prefix is a single, truncated byte.
+function solanaReportHash(rawReport: Uint8Array, reportContext: Uint8Array): `0x${string}` {
+	return sha256(
+		concatHex([
+			toHex(rawReport.length & 0xff, { size: 1 }),
+			toHex(rawReport),
+			toHex(reportContext),
+		]),
+	)
+}
+
+// hashReport returns the digest the encoder's key bundle signs.
+function hashReport(encoder: ReportEncoder, report: ReportResponse): `0x${string}` {
+	if (encoder === SOLANA_REPORT_ENCODER) {
+		return solanaReportHash(report.rawReport, report.reportContext)
+	}
+	return computeReportHash(report.rawReport, report.reportContext)
 }
 
 function addressKeyNo0x(addr: `0x${string}`): string {
@@ -314,6 +366,7 @@ async function verifySigs(
 	report: ReportResponse,
 	f: number,
 	signers: Map<string, number>,
+	reportHash: `0x${string}`,
 ): Promise<void> {
 	const required = f + 1
 	const sigs = report.sigs
@@ -321,7 +374,6 @@ async function verifySigs(
 		throw new WrongSignatureCountError()
 	}
 
-	const reportHash = computeReportHash(report.rawReport, report.reportContext)
 	const seen = new Set<string>()
 	const accepted: typeof sigs = []
 	const skipErrs: Error[] = []
@@ -388,31 +440,47 @@ export type ReportParseConfig = {
 	skipSignatureVerification?: boolean
 	/**
 	 * Encoder name the report was generated with (`ReportRequest.encoderName`).
-	 * Defaults to `"evm"`. Only EVM reports can currently be parsed and verified;
+	 * Defaults to `"evm"`. Only `"evm"` and `"solana"` reports can currently be parsed and verified;
 	 * any other value throws `UnsupportedEncoderError`.
 	 */
 	encoder?: string
 }
 
+/** Encoder name for reports signed with the EVM (ECDSA secp256k1) key bundle. */
 export const EVM_REPORT_ENCODER = 'evm'
+/** Encoder name for reports signed with the Solana (ECDSA secp256k1) key bundle. */
+export const SOLANA_REPORT_ENCODER = 'solana'
 
-function validateEncoder(encoder: string | undefined): void {
-	if (encoder === undefined || encoder === '' || encoder.toLowerCase() === EVM_REPORT_ENCODER) {
-		return
+type ReportEncoder = typeof EVM_REPORT_ENCODER | typeof SOLANA_REPORT_ENCODER
+
+// resolveEncoder returns the normalized encoder name, defaulting to EVM_REPORT_ENCODER.
+function resolveEncoder(encoder: string | undefined): ReportEncoder {
+	switch (encoder?.toLowerCase()) {
+		case undefined:
+		case '':
+		case EVM_REPORT_ENCODER:
+			return EVM_REPORT_ENCODER
+		case SOLANA_REPORT_ENCODER:
+			return SOLANA_REPORT_ENCODER
+		default:
+			throw new UnsupportedEncoderError(encoder as string)
 	}
-	throw new UnsupportedEncoderError(encoder)
 }
 
 function mergeReportParseConfig(
 	overrides?: ReportParseConfig,
 ): Required<
-	Pick<ReportParseConfig, 'acceptedZones' | 'acceptedEnvironments' | 'skipSignatureVerification'>
+	Pick<
+		ReportParseConfig,
+		'acceptedZones' | 'acceptedEnvironments' | 'skipSignatureVerification' | 'encoder'
+	>
 > {
 	return {
 		acceptedZones: overrides?.acceptedZones ?? [],
 		acceptedEnvironments:
 			overrides !== undefined ? (overrides.acceptedEnvironments ?? []) : [productionEnvironment()],
 		skipSignatureVerification: overrides?.skipSignatureVerification ?? false,
+		encoder: resolveEncoder(overrides?.encoder),
 	}
 }
 
@@ -517,7 +585,7 @@ export class Report {
 		reportContext: Uint8Array,
 		config?: ReportParseConfig,
 	): Promise<Report> {
-		validateEncoder(config?.encoder)
+		resolveEncoder(config?.encoder)
 
 		const configDigest =
 			reportContext.length >= 32 ? reportContext.slice(0, 32) : new Uint8Array(32)
@@ -561,10 +629,11 @@ export class Report {
 		config: Required<
 			Pick<
 				ReportParseConfig,
-				'acceptedZones' | 'acceptedEnvironments' | 'skipSignatureVerification'
+				'acceptedZones' | 'acceptedEnvironments' | 'skipSignatureVerification' | 'encoder'
 			>
 		>,
 	): Promise<void> {
+		const encoder = resolveEncoder(config.encoder)
 		const donId = this.donId()
 		const candidates: Environment[] = []
 		for (const z of config.acceptedZones) {
@@ -578,6 +647,7 @@ export class Report {
 			throw new Error(`DON ID ${donId} is not in accepted zones`)
 		}
 
+		const reportHash = hashReport(encoder, this.report)
 		const fetchFailures: Error[] = []
 		let lastVerifyErr: Error | null = null
 
@@ -595,8 +665,21 @@ export class Report {
 				continue
 			}
 
+			let signers: Map<Address, number>
 			try {
-				await verifySigs(this.report, info.f, normalizeDonSigners(info.signers))
+				signers = signersFor(info, encoder)
+			} catch (err) {
+				const msg = err instanceof Error ? err.message : String(err)
+				fetchFailures.push(
+					new Error(
+						`no ${encoder} signers for DON ${donId} on chain ${env.chainSelector} contract ${env.registryAddress}: ${msg}`,
+					),
+				)
+				continue
+			}
+
+			try {
+				await verifySigs(this.report, info.f, normalizeDonSigners(signers), reportHash)
 				return
 			} catch (err) {
 				lastVerifyErr = err instanceof Error ? err : new Error(String(err))
