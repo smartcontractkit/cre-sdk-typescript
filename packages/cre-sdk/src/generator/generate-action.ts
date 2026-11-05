@@ -150,12 +150,8 @@ export function generateActionMethod(
     }`
 	}
 
-	// For DON mode: emit tee + basic overload declarations, then the implementation with its name.
-	// nameAndPublicSigs is designed for Node mode's dispatcher pattern and must not be reused here.
-	const donOverloads = teeEnabled
-		? `${methodName}${teeSig}\n  ${methodName}${basicSig}\n  `
-		: `${methodName}${callSig}\n  `
-
+	// DON mode: the public declaration, then the implementation with its name.
 	return `
-  ${donOverloads}${methodName}${callSigAndBody}`
+  ${methodName}${callSig}
+  ${methodName}${callSigAndBody}`
 }

@@ -3,13 +3,10 @@
  */
 
 import {
-<<<<<<< HEAD
 	ClientCapability as AptosClient,
 	ClientRestrictor as AptosRestrictor,
 } from '@cre/generated-sdk/capabilities/blockchain/aptos/v1alpha/client_sdk_gen'
 import {
-=======
->>>>>>> 9f5ca49f9dca08ef354d29cc95da3b3cbc18d64a
 	ClientCapability as EVMClient,
 	ClientRestrictor as EVMRestrictor,
 } from '@cre/generated-sdk/capabilities/blockchain/evm/v1alpha/client_sdk_gen'
@@ -18,13 +15,10 @@ import {
 	ClientRestrictor as SolanaRestrictor,
 } from '@cre/generated-sdk/capabilities/blockchain/solana/v1alpha/client_sdk_gen'
 import {
-<<<<<<< HEAD
 	ClientCapability as StellarClient,
 	ClientRestrictor as StellarRestrictor,
 } from '@cre/generated-sdk/capabilities/blockchain/stellar/v1alpha/client_sdk_gen'
 import {
-=======
->>>>>>> 9f5ca49f9dca08ef354d29cc95da3b3cbc18d64a
 	ClientCapability as ConfidentialHTTPClient,
 	ClientRestrictor as ConfidentialHTTPRestrictor,
 } from '@cre/generated-sdk/capabilities/networking/confidentialhttp/v1alpha/client_sdk_gen'
@@ -74,7 +68,6 @@ export {
 export type { Payload as HTTPPayload } from '@cre/generated/capabilities/networking/http/v1alpha/trigger_pb'
 export type { Payload as CronPayload } from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
 export { TeeType } from '@cre/generated/sdk/v1alpha/sdk_pb'
-<<<<<<< HEAD
 // Aptos Capability
 export {
 	ClientCapability as AptosClient,
@@ -83,8 +76,6 @@ export {
 	type WriteCreReportRequestJson as AptosWriteCreReportRequestJson,
 } from '@cre/generated-sdk/capabilities/blockchain/aptos/v1alpha/client_sdk_gen'
 
-=======
->>>>>>> 9f5ca49f9dca08ef354d29cc95da3b3cbc18d64a
 // EVM Capability
 export {
 	ClientCapability as EVMClient,
@@ -117,27 +108,15 @@ export {
 	ClientRestrictor as HTTPClientRestrictor,
 	type SendRequester as HTTPSendRequester,
 } from '@cre/generated-sdk/capabilities/networking/http/v1alpha/client_sdk_gen'
-<<<<<<< HEAD
-
-=======
->>>>>>> 9f5ca49f9dca08ef354d29cc95da3b3cbc18d64a
 export {
 	HTTPCapability,
 	HTTPRestrictor,
 } from '@cre/generated-sdk/capabilities/networking/http/v1alpha/http_sdk_gen'
-<<<<<<< HEAD
-
-=======
->>>>>>> 9f5ca49f9dca08ef354d29cc95da3b3cbc18d64a
 // CRON Capability
 export {
 	CronCapability,
 	CronRestrictor,
 } from '@cre/generated-sdk/capabilities/scheduler/cron/v1/cron_sdk_gen'
-<<<<<<< HEAD
-
-=======
->>>>>>> 9f5ca49f9dca08ef354d29cc95da3b3cbc18d64a
 // Runtime
 export type { NodeRuntime, Runtime, TeeRuntime } from '@cre/sdk/runtime'
 export type {
@@ -173,14 +152,6 @@ export const cre = {
 		SolanaRestrictor,
 		AptosRestrictor,
 		StellarRestrictor,
-	},
-	restrictors: {
-		CronRestrictor,
-		HTTPRestrictor,
-		ConfidentialHTTPRestrictor,
-		HTTPClientRestrictor,
-		EVMRestrictor,
-		SolanaRestrictor,
 	},
 	handler,
 	handlerInTee,

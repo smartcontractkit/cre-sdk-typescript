@@ -14,10 +14,7 @@ import {
 	type ExecutionResult,
 	ExecutionResultSchema,
 	GetSecretsRequestSchema,
-<<<<<<< HEAD
-=======
 	Mode,
->>>>>>> 9f5ca49f9dca08ef354d29cc95da3b3cbc18d64a
 	RequirementsSchema,
 	type Restrictions,
 	SecretResponseSchema,
@@ -655,8 +652,6 @@ describe('handlerInTee', () => {
 		})
 		expect(callbackInvoked).toBe(true)
 	})
-<<<<<<< HEAD
-=======
 
 	test('tee handler uses node-mode randomness', async () => {
 		mockHostBindings.sendResponse = mock(() => 0)
@@ -681,7 +676,6 @@ describe('handlerInTee', () => {
 		])
 		expect(proxyHostBindings.setRandomMode).not.toHaveBeenCalled()
 	})
->>>>>>> 9f5ca49f9dca08ef354d29cc95da3b3cbc18d64a
 })
 
 function setupArgs(request: ExecuteRequest, preCheck?: () => void) {

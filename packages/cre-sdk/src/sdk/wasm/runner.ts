@@ -4,10 +4,7 @@ import {
 	ExecuteRequestSchema,
 	type ExecutionResult,
 	ExecutionResultSchema,
-<<<<<<< HEAD
-=======
 	Mode,
->>>>>>> 9f5ca49f9dca08ef354d29cc95da3b3cbc18d64a
 	RestrictionsSchema,
 	type SecretRequest,
 	type SecretRequestJson,
@@ -150,10 +147,6 @@ class RunnerBase<TConfig> {
 			const adapted = entry.trigger.adapt(decoded)
 
 			// If the handler has requirements (e.g. TEE), use TeeRuntime; otherwise use the default runtime.
-<<<<<<< HEAD
-			const handlerRuntime =
-				entry.requirements != null ? new TeeRuntime(this.config, 0, req.maxResponseSize) : runtime
-=======
 			const isTee = entry.requirements != null
 			const handlerRuntime = isTee ? new TeeRuntime(this.config, 0, req.maxResponseSize) : runtime
 
@@ -162,7 +155,6 @@ class RunnerBase<TConfig> {
 			if (isTee) {
 				hostBindings.setRandomMode(Mode.NODE)
 			}
->>>>>>> 9f5ca49f9dca08ef354d29cc95da3b3cbc18d64a
 
 			try {
 				const result = await entry.fn(handlerRuntime as any, adapted)
@@ -265,13 +257,8 @@ class RunnerBase<TConfig> {
 			id: entry.trigger.capabilityId(),
 			method: entry.trigger.method(),
 			payload: entry.trigger.configAsAny(),
-<<<<<<< HEAD
 			requirements: entry.requirements,
 			preHook: !!entry.hooks?.preHook,
-=======
-			preHook: !!entry.hooks?.preHook,
-			requirements: entry.requirements,
->>>>>>> 9f5ca49f9dca08ef354d29cc95da3b3cbc18d64a
 		}))
 
 		const subscriptionRequest = create(TriggerSubscriptionRequestSchema, {
