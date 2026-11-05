@@ -175,12 +175,15 @@ export type ReportParseConfig = {
     skipSignatureVerification?: boolean;
     /**
      * Encoder name the report was generated with (`ReportRequest.encoderName`).
-     * Defaults to `"evm"`. Only EVM reports can currently be parsed and verified;
+     * Defaults to `"evm"`. Only `"evm"` and `"solana"` reports can currently be parsed and verified;
      * any other value throws `UnsupportedEncoderError`.
      */
     encoder?: string;
 };
+/** Encoder name for reports signed with the EVM (ECDSA secp256k1) key bundle. */
 export declare const EVM_REPORT_ENCODER = "evm";
+/** Encoder name for reports signed with the Solana (ECDSA secp256k1) key bundle. */
+export declare const SOLANA_REPORT_ENCODER = "solana";
 export declare const REPORT_METADATA_HEADER_LENGTH = 109;
 export type ReportMetadataHeader = {
     version: number;
