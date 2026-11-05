@@ -9,12 +9,14 @@ export {
 	getTestCapabilityHandler,
 	type NewTestRuntimeOptions,
 	newTestRuntime,
+	newTestTEERuntime,
 	REPORT_METADATA_HEADER_LENGTH,
 	RESPONSE_BUFFER_TOO_SMALL,
 	registerTestCapability,
 	type Secrets,
 	TestRuntime,
 	type TestRuntimeState,
+	TestTeeRuntime,
 	test,
 } from '../testutils/test-runtime'
 export { TestWriter } from '../testutils/test-writer'
