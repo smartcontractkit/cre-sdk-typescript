@@ -9,8 +9,19 @@ import {
 	type ReportResponseJson,
 	ReportResponseSchema,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
-import type { Address } from 'viem'
-import { concatHex, getAddress, hexToBytes, keccak256, recoverAddress, toHex } from 'viem'
+import type { Address, Hex } from 'viem'
+import {
+	concatHex,
+	decodeFunctionResult,
+	encodeFunctionData,
+	getAddress,
+	hexToBytes,
+	keccak256,
+	recoverAddress,
+	slice,
+	toHex,
+} from 'viem'
+import { capabilitiesRegistryAbi } from './capabilities-registry-abi'
 import { type Environment, productionEnvironment, type Zone } from './don-info'
 import {
 	DuplicateSignerError,
@@ -24,9 +35,6 @@ import {
 } from './errors'
 import { type DonInfo, donInfoCache } from './report-internals'
 import type { BaseRuntime } from './runtime'
-
-const GET_DON_SELECTOR = new Uint8Array([0x23, 0x53, 0x74, 0x05])
-const GET_NODES_BY_P2P_IDS_SELECTOR = new Uint8Array([0x05, 0xa5, 0x19, 0x66])
 
 function cacheKey(env: Environment, donID: number): string {
 	return `${env.chainSelector.toString()}:${donID}`
@@ -53,30 +61,6 @@ function decodeRegistryAddress(registryAddress: string): Uint8Array {
 		throw new Error(`invalid registry address ${JSON.stringify(registryAddress)}`)
 	}
 	return hexToBytes(`0x${hex}`)
-}
-
-function padUint256(v: bigint | number): Uint8Array {
-	const n = typeof v === 'bigint' ? v : BigInt(v)
-	const b = new Uint8Array(32)
-	const view = new DataView(b.buffer)
-	view.setBigUint64(24, n, false)
-	return b
-}
-
-function bytesToBigIntBE(word: Uint8Array): bigint {
-	let x = 0n
-	for (let i = 0; i < word.length; i++) {
-		x = (x << 8n) | BigInt(word[i])
-	}
-	return x
-}
-
-function readUint256AsInt(word: Uint8Array): number {
-	const b = bytesToBigIntBE(word)
-	if (b > BigInt(Number.MAX_SAFE_INTEGER)) {
-		throw new Error('ABI uint256 value too large for Number')
-	}
-	return Number(b)
 }
 
 function protoVarint(v: number | bigint): number[] {
@@ -180,43 +164,16 @@ function callContract(
 	return decodeCallContractReplyData((response.value as { value: Uint8Array }).value)
 }
 
-function encodeGetDONCalldata(donID: number): Uint8Array {
-	const padded = new Uint8Array(32)
-	const view = new DataView(padded.buffer)
-	view.setUint32(28, donID >>> 0, false)
-	const out = new Uint8Array(4 + 32)
-	out.set(GET_DON_SELECTOR, 0)
-	out.set(padded, 4)
-	return out
+// callRegistry sends ABI-encoded call data to the capabilities registry via the EVM capability
+// and returns the ABI-encoded result.
+function callRegistry(
+	runtime: BaseRuntime<unknown>,
+	capID: string,
+	registryAddr: Uint8Array,
+	callData: Hex,
+): Hex {
+	return toHex(callContract(runtime, capID, registryAddr, hexToBytes(callData)))
 }
-
-function concatBytes(parts: readonly Uint8Array[]): Uint8Array {
-	const total = parts.reduce((n, p) => n + p.length, 0)
-	const r = new Uint8Array(total)
-	let o = 0
-	for (const p of parts) {
-		r.set(p, o)
-		o += p.length
-	}
-	return r
-}
-
-function encodeGetNodesByP2PIdsCalldata(p2pIds: Uint8Array[]): Uint8Array {
-	const chunks: Uint8Array[] = [
-		GET_NODES_BY_P2P_IDS_SELECTOR,
-		padUint256(32),
-		padUint256(p2pIds.length),
-	]
-	for (const id of p2pIds) {
-		if (id.length !== 32) {
-			throw new Error('p2p id must be 32 bytes')
-		}
-		chunks.push(new Uint8Array(id))
-	}
-	return concatBytes(chunks)
-}
-
-const NODE_TUPLE_HEAD_SIZE = 288
 
 function fetchDONInfo(runtime: BaseRuntime<unknown>, env: Environment, donID: number): DonInfo {
 	const key = cacheKey(env, donID)
@@ -228,72 +185,43 @@ function fetchDONInfo(runtime: BaseRuntime<unknown>, env: Environment, donID: nu
 	const registryAddr = decodeRegistryAddress(env.registryAddress)
 	const capID = `evm:ChainSelector:${env.chainSelector.toString()}@1.0.0`
 
-	const getDONABI = callContract(runtime, capID, registryAddr, encodeGetDONCalldata(donID))
+	const don = decodeFunctionResult({
+		abi: capabilitiesRegistryAbi,
+		functionName: 'getDON',
+		data: callRegistry(
+			runtime,
+			capID,
+			registryAddr,
+			encodeFunctionData({ abi: capabilitiesRegistryAbi, functionName: 'getDON', args: [donID] }),
+		),
+	})
+	const f = don.f
 
-	if (getDONABI.length < 224) {
-		throw new Error(`getDON ABI response too short: ${getDONABI.length} bytes`)
-	}
-
-	const f = readUint256AsInt(getDONABI.subarray(96, 128))
-
-	const tupleStart = 32
-	const nodeP2PIdsPtr = readUint256AsInt(getDONABI.subarray(192, 224))
-	const nodeCountOff = tupleStart + nodeP2PIdsPtr
-	if (nodeCountOff + 32 > getDONABI.length) {
-		throw new Error('getDON ABI: nodeP2PIds pointer out of range')
-	}
-	const nodeCount = readUint256AsInt(getDONABI.subarray(nodeCountOff, nodeCountOff + 32))
-	if (nodeCountOff + 32 + nodeCount * 32 > getDONABI.length) {
-		throw new Error('getDON ABI: nodeP2PIds data out of range')
-	}
-
-	const nodeP2PIds: Uint8Array[] = []
-	for (let i = 0; i < nodeCount; i++) {
-		const start = nodeCountOff + 32 + i * 32
-		nodeP2PIds.push(getDONABI.subarray(start, start + 32))
-	}
-
-	if (nodeCount === 0) {
+	if (don.nodeP2PIds.length === 0) {
 		const info: DonInfo = { f, signers: new Map() }
 		donInfoCache.set(key, info)
 		return info
 	}
 
-	const getNodesABI = callContract(
-		runtime,
-		capID,
-		registryAddr,
-		encodeGetNodesByP2PIdsCalldata(nodeP2PIds),
-	)
-
-	if (getNodesABI.length < 64) {
-		throw new Error(`getNodesByP2PIds ABI response too short: ${getNodesABI.length} bytes`)
-	}
-
-	const outerPtr = readUint256AsInt(getNodesABI.subarray(0, 32))
-	if (outerPtr + 32 > getNodesABI.length) {
-		throw new Error('getNodesByP2PIds ABI: outer pointer out of range')
-	}
-	const returnedCount = readUint256AsInt(getNodesABI.subarray(outerPtr, outerPtr + 32))
+	const nodes = decodeFunctionResult({
+		abi: capabilitiesRegistryAbi,
+		functionName: 'getNodesByP2PIds',
+		data: callRegistry(
+			runtime,
+			capID,
+			registryAddr,
+			encodeFunctionData({
+				abi: capabilitiesRegistryAbi,
+				functionName: 'getNodesByP2PIds',
+				args: [don.nodeP2PIds],
+			}),
+		),
+	})
 
 	const signers = new Map<Address, number>()
-	for (let i = 0; i < returnedCount; i++) {
-		const elemPtrOff = outerPtr + 32 + i * 32
-		if (elemPtrOff + 32 > getNodesABI.length) {
-			break
-		}
-		const elemPtr = readUint256AsInt(getNodesABI.subarray(elemPtrOff, elemPtrOff + 32))
-		const tupleBase = outerPtr + 32 + elemPtr
-		if (tupleBase + NODE_TUPLE_HEAD_SIZE > getNodesABI.length) {
-			break
-		}
-		const nodeOperatorId = Number(
-			bytesToBigIntBE(getNodesABI.subarray(tupleBase, tupleBase + 32)) & 0xffffffffn,
-		)
-		const signerSlot = tupleBase + 3 * 32
-		const addrBytes = getNodesABI.subarray(signerSlot, signerSlot + 20)
-		const addr = getAddress(toHex(addrBytes))
-		signers.set(addr, nodeOperatorId)
+	for (const node of nodes) {
+		// The signer is an address left-aligned in a bytes32.
+		signers.set(getAddress(slice(node.signer, 0, 20)), node.nodeOperatorId)
 	}
 
 	const info: DonInfo = { f, signers }
