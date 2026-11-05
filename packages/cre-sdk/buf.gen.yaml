@@ -38,6 +38,8 @@ inputs:
       - ../../submodules/chainlink-protos/workflows/workflows/v2/workflow_user_metric.proto
       - ../../submodules/chainlink-protos/workflows/workflows/v2/cre_info.proto
       - ../../submodules/chainlink-protos/workflows/workflows/v2/workflow_key.proto
+  # Trimmed copies of protos the SDK decodes internally (e.g. capabilities registry configs).
+  - directory: proto
 
 plugins:
   # Modern @bufbuild/protoc-gen-es plugin

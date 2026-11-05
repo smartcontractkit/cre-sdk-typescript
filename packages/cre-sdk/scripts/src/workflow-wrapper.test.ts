@@ -53,6 +53,60 @@ export async function main() {
 			expect(result).toContain('main().catch(sendErrorResponse)')
 		})
 
+		test('does not inject into a trailing type-only import (would be erased at compile time)', () => {
+			const input = `import { handler, Runner } from '@chainlink/cre-sdk'
+import type { SolanaDecodedLog } from '@chainlink/cre-sdk'
+
+export async function main() {
+  const runner = await Runner.newRunner()
+}`
+			const result = wrapWorkflowCode(input, 'test.ts')
+
+			expect(result).toContain('Runner, sendErrorResponse')
+			expect(result).toContain("import type { SolanaDecodedLog } from '@chainlink/cre-sdk'")
+			expect(result).not.toContain('SolanaDecodedLog, sendErrorResponse')
+			expect(result).toContain('main().catch(sendErrorResponse)')
+		})
+
+		test('adds standalone import when only a type-only @chainlink/cre-sdk import exists', () => {
+			const input = `import type { Runtime } from '@chainlink/cre-sdk'
+
+export async function main() {
+  console.log('hello')
+}`
+			const result = wrapWorkflowCode(input, 'test.ts')
+
+			expect(result).toContain("import { sendErrorResponse } from '@chainlink/cre-sdk'")
+			expect(result).toContain("import type { Runtime } from '@chainlink/cre-sdk'")
+			expect(result).not.toContain('Runtime, sendErrorResponse')
+			expect(result).toContain('main().catch(sendErrorResponse)')
+		})
+
+		test('adds standalone import when only a namespace @chainlink/cre-sdk import exists', () => {
+			const input = `import * as cre from '@chainlink/cre-sdk'
+
+export async function main() {
+  console.log('hello')
+}`
+			const result = wrapWorkflowCode(input, 'test.ts')
+
+			expect(result).toContain("import { sendErrorResponse } from '@chainlink/cre-sdk'")
+			expect(result).toContain('main().catch(sendErrorResponse)')
+		})
+
+		test('does not duplicate sendErrorResponse when it is imported in an earlier declaration', () => {
+			const input = `import { sendErrorResponse } from '@chainlink/cre-sdk'
+import { Runner } from '@chainlink/cre-sdk'
+
+export async function main() {
+  const runner = await Runner.newRunner()
+}`
+			const result = wrapWorkflowCode(input, 'test.ts')
+
+			expect(result.match(/sendErrorResponse/g)?.length).toBe(2)
+			expect(result).toContain('main().catch(sendErrorResponse)')
+		})
+
 		test('adds import after existing imports from other modules', () => {
 			const input = `import { something } from 'other-module'
 import { another } from 'another-module'

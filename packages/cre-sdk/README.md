@@ -68,6 +68,8 @@ If you need to compile despite TypeScript errors, pass `--skip-type-checks`:
 bun x cre-compile src/workflow.ts dist/workflow.wasm --skip-type-checks
 ```
 
+These restrictions apply to every file in a TypeScript project that imports `@chainlink/cre-sdk`. If your project also typechecks Node.js tooling (deploy scripts, config generators, tests), you can disable the type restrictions via the `@chainlink/cre-sdk/unrestricted` entry — see [Disabling Type Restrictions](https://github.com/smartcontractkit/cre-sdk-typescript#disabling-type-restrictions-monorepos) in the repository README. Runtime enforcement during `cre compile` is unaffected by that opt-out.
+
 ## Getting Started
 
 We recommend you consult the [getting started docs](https://docs.chain.link/cre/getting-started/cli-installation) and install the CRE CLI.
@@ -122,6 +124,12 @@ CRE supports two execution modes:
 Use `runtime.runInNodeMode()` to execute functions that require individual node processing, such as fetching data from different sources for consensus aggregation.
 
 The SDK wires runtime safety internally; you can call `main()` directly as shown in the examples.
+
+### Confidential Workflows
+
+A Confidential Workflow is a CRE workflow that designates part of its logic to run inside a secure [enclave](https://docs.chain.link/cre/key-terms#enclave)—a running instance of a [Trusted Execution Environment (TEE)](https://docs.chain.link/cre/key-terms#tee-trusted-execution-environment), a hardware-isolated environment designed to keep the indicated data it processes confidential from the machine's own operator during execution and node operators.
+
+Secrets fetched inside the enclave such as Vault DON secrets, HTTP response payloads, and intermediate computation data remain confidential throughout workflow execution. They also provide DON consensus-based verification of enclave attestations, helping ensure the integrity of confidential workflow execution. You decide what stays inside the enclave and what crosses back out to the Workflow DON for consensus-verified execution, such as generating a report to submit onchain.
 
 ## Available Capabilities
 
@@ -470,6 +478,7 @@ See the [star-wars example](https://github.com/smartcontractkit/cre-sdk-typescri
 
 - `Runner.newRunner<T>(options?)`: Create a new workflow runner
 - `cre.handler(trigger, handler)`: Create a trigger-handler pair
+- `cre.handlerInTee(trigger, handler, tees)`: Registers a handler whose callback runs inside a TEE.
 - `runtime.runInNodeMode(fn, aggregator)`: Execute function in node mode with consensus
 
 ### Capabilities

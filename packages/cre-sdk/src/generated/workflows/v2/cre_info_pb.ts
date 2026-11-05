@@ -12,7 +12,7 @@ import { fileDesc, messageDesc } from '@bufbuild/protobuf/codegenv2'
 export const file_workflows_v2_cre_info: GenFile =
 	/*@__PURE__*/
 	fileDesc(
-		'Cht3b3JrZmxvd3MvdjIvY3JlX2luZm8ucHJvdG8SDHdvcmtmbG93cy52MiKMAgoHQ3JlSW5mbxINCgVkb25JRBgBIAEoBRIMCgRkb25GGAIgASgFEgwKBGRvbk4YAyABKAUSDQoFcDJwSUQYBCABKAkSHwoXd29ya2Zsb3dSZWdpc3RyeUFkZHJlc3MYBSABKAkSHwoXd29ya2Zsb3dSZWdpc3RyeVZlcnNpb24YBiABKAkSHQoVd29ya2Zsb3dSZWdpc3RyeUNoYWluGAcgASgJEhUKDWVuZ2luZVZlcnNpb24YCCABKAkSIwobY2FwYWJpbGl0aWVzUmVnaXN0cnlWZXJzaW9uGAkgASgJEhIKCmRvblZlcnNpb24YCiABKAkSFgoOd29ya2Zsb3dTb3VyY2UYCyABKAlCrwEKEGNvbS53b3JrZmxvd3MudjJCDENyZUluZm9Qcm90b1ABWjxnaXRodWIuY29tL3NtYXJ0Y29udHJhY3RraXQvY2hhaW5saW5rLXByb3Rvcy93b3JrZmxvd3MvZ28vdjKiAgNXWFiqAgxXb3JrZmxvd3MuVjLKAgxXb3JrZmxvd3NcVjLiAhhXb3JrZmxvd3NcVjJcR1BCTWV0YWRhdGHqAg1Xb3JrZmxvd3M6OlYyYgZwcm90bzM',
+		'Cht3b3JrZmxvd3MvdjIvY3JlX2luZm8ucHJvdG8SDHdvcmtmbG93cy52MiK3AgoHQ3JlSW5mbxINCgVkb25JRBgBIAEoBRIMCgRkb25GGAIgASgFEgwKBGRvbk4YAyABKAUSDQoFcDJwSUQYBCABKAkSHwoXd29ya2Zsb3dSZWdpc3RyeUFkZHJlc3MYBSABKAkSHwoXd29ya2Zsb3dSZWdpc3RyeVZlcnNpb24YBiABKAkSHQoVd29ya2Zsb3dSZWdpc3RyeUNoYWluGAcgASgJEhUKDWVuZ2luZVZlcnNpb24YCCABKAkSIwobY2FwYWJpbGl0aWVzUmVnaXN0cnlWZXJzaW9uGAkgASgJEhIKCmRvblZlcnNpb24YCiABKAkSFgoOd29ya2Zsb3dTb3VyY2UYCyABKAkSEgoKc2hhcmRJbmRleBgMIAEoDRIVCg13b3JrZmxvd0RvbklEGA0gASgFQq8BChBjb20ud29ya2Zsb3dzLnYyQgxDcmVJbmZvUHJvdG9QAVo8Z2l0aHViLmNvbS9zbWFydGNvbnRyYWN0a2l0L2NoYWlubGluay1wcm90b3Mvd29ya2Zsb3dzL2dvL3YyogIDV1hYqgIMV29ya2Zsb3dzLlYyygIMV29ya2Zsb3dzXFYy4gIYV29ya2Zsb3dzXFYyXEdQQk1ldGFkYXRh6gINV29ya2Zsb3dzOjpWMmIGcHJvdG8z',
 	)
 
 /**
@@ -79,6 +79,20 @@ export type CreInfo = Message<'workflows.v2.CreInfo'> & {
 	 * @generated from field: string workflowSource = 11;
 	 */
 	workflowSource: string
+
+	/**
+	 * shardIndex is the shard the emitting node belongs to.
+	 *
+	 * @generated from field: uint32 shardIndex = 12;
+	 */
+	shardIndex: number
+
+	/**
+	 * workflowDonID is the workflow DON the event's execution belongs to.
+	 *
+	 * @generated from field: int32 workflowDonID = 13;
+	 */
+	workflowDonID: number
 }
 
 /**
@@ -145,6 +159,20 @@ export type CreInfoJson = {
 	 * @generated from field: string workflowSource = 11;
 	 */
 	workflowSource?: string
+
+	/**
+	 * shardIndex is the shard the emitting node belongs to.
+	 *
+	 * @generated from field: uint32 shardIndex = 12;
+	 */
+	shardIndex?: number
+
+	/**
+	 * workflowDonID is the workflow DON the event's execution belongs to.
+	 *
+	 * @generated from field: int32 workflowDonID = 13;
+	 */
+	workflowDonID?: number
 }
 
 /**

@@ -16,7 +16,7 @@ import { file_values_v1_values } from '../../values/v1/values_pb'
 export const file_sdk_v1alpha_sdk: GenFile =
 	/*@__PURE__*/
 	fileDesc(
-		'ChVzZGsvdjFhbHBoYS9zZGsucHJvdG8SC3Nkay52MWFscGhhIrQBChVTaW1wbGVDb25zZW5zdXNJbnB1dHMSIQoFdmFsdWUYASABKAsyEC52YWx1ZXMudjEuVmFsdWVIABIPCgVlcnJvchgCIAEoCUgAEjUKC2Rlc2NyaXB0b3JzGAMgASgLMiAuc2RrLnYxYWxwaGEuQ29uc2Vuc3VzRGVzY3JpcHRvchIhCgdkZWZhdWx0GAQgASgLMhAudmFsdWVzLnYxLlZhbHVlQg0KC29ic2VydmF0aW9uIpABCglGaWVsZHNNYXASMgoGZmllbGRzGAEgAygLMiIuc2RrLnYxYWxwaGEuRmllbGRzTWFwLkZpZWxkc0VudHJ5Gk8KC0ZpZWxkc0VudHJ5EgsKA2tleRgBIAEoCRIvCgV2YWx1ZRgCIAEoCzIgLnNkay52MWFscGhhLkNvbnNlbnN1c0Rlc2NyaXB0b3I6AjgBIoYBChNDb25zZW5zdXNEZXNjcmlwdG9yEjMKC2FnZ3JlZ2F0aW9uGAEgASgOMhwuc2RrLnYxYWxwaGEuQWdncmVnYXRpb25UeXBlSAASLAoKZmllbGRzX21hcBgCIAEoCzIWLnNkay52MWFscGhhLkZpZWxkc01hcEgAQgwKCmRlc2NyaXB0b3IiagoNUmVwb3J0UmVxdWVzdBIXCg9lbmNvZGVkX3BheWxvYWQYASABKAwSFAoMZW5jb2Rlcl9uYW1lGAIgASgJEhQKDHNpZ25pbmdfYWxnbxgDIAEoCRIUCgxoYXNoaW5nX2FsZ28YBCABKAkilwEKDlJlcG9ydFJlc3BvbnNlEhUKDWNvbmZpZ19kaWdlc3QYASABKAwSEgoGc2VxX25yGAIgASgEQgIwABIWCg5yZXBvcnRfY29udGV4dBgDIAEoDBISCgpyYXdfcmVwb3J0GAQgASgMEi4KBHNpZ3MYBSADKAsyIC5zZGsudjFhbHBoYS5BdHRyaWJ1dGVkU2lnbmF0dXJlIjsKE0F0dHJpYnV0ZWRTaWduYXR1cmUSEQoJc2lnbmF0dXJlGAEgASgMEhEKCXNpZ25lcl9pZBgCIAEoDSJrChFDYXBhYmlsaXR5UmVxdWVzdBIKCgJpZBgBIAEoCRIlCgdwYXlsb2FkGAIgASgLMhQuZ29vZ2xlLnByb3RvYnVmLkFueRIOCgZtZXRob2QYAyABKAkSEwoLY2FsbGJhY2tfaWQYBCABKAUiWgoSQ2FwYWJpbGl0eVJlc3BvbnNlEicKB3BheWxvYWQYASABKAsyFC5nb29nbGUucHJvdG9idWYuQW55SAASDwoFZXJyb3IYAiABKAlIAEIKCghyZXNwb25zZSKbAQoTVHJpZ2dlclN1YnNjcmlwdGlvbhIKCgJpZBgBIAEoCRIlCgdwYXlsb2FkGAIgASgLMhQuZ29vZ2xlLnByb3RvYnVmLkFueRIOCgZtZXRob2QYAyABKAkSLwoMcmVxdWlyZW1lbnRzGAQgASgLMhkuc2RrLnYxYWxwaGEuUmVxdWlyZW1lbnRzEhAKCHByZV9ob29rGAUgASgIIkgKEVRlZVR5cGVBbmRSZWdpb25zEiIKBHR5cGUYASABKA4yFC5zZGsudjFhbHBoYS5UZWVUeXBlEg8KB3JlZ2lvbnMYAyADKAkiVQoaVHJpZ2dlclN1YnNjcmlwdGlvblJlcXVlc3QSNwoNc3Vic2NyaXB0aW9ucxgBIAMoCzIgLnNkay52MWFscGhhLlRyaWdnZXJTdWJzY3JpcHRpb24iQAoHVHJpZ2dlchIOCgJpZBgBIAEoBEICMAASJQoHcGF5bG9hZBgCIAEoCzIULmdvb2dsZS5wcm90b2J1Zi5BbnkiGgoHUmVnaW9ucxIPCgdyZWdpb25zGAEgAygJIlIKElRlZVR5cGVzQW5kUmVnaW9ucxI8ChR0ZWVfdHlwZV9hbmRfcmVnaW9ucxgBIAMoCzIeLnNkay52MWFscGhhLlRlZVR5cGVBbmRSZWdpb25zInwKA1RlZRIrCgthbnlfcmVnaW9ucxgBIAEoCzIULnNkay52MWFscGhhLlJlZ2lvbnNIABJAChV0ZWVfdHlwZXNfYW5kX3JlZ2lvbnMYAiABKAsyHy5zZGsudjFhbHBoYS5UZWVUeXBlc0FuZFJlZ2lvbnNIAEIGCgRpdGVtIi0KDFJlcXVpcmVtZW50cxIdCgN0ZWUYASABKAsyEC5zZGsudjFhbHBoYS5UZWUiJwoYQXdhaXRDYXBhYmlsaXRpZXNSZXF1ZXN0EgsKA2lkcxgBIAMoBSK4AQoZQXdhaXRDYXBhYmlsaXRpZXNSZXNwb25zZRJICglyZXNwb25zZXMYASADKAsyNS5zZGsudjFhbHBoYS5Bd2FpdENhcGFiaWxpdGllc1Jlc3BvbnNlLlJlc3BvbnNlc0VudHJ5GlEKDlJlc3BvbnNlc0VudHJ5EgsKA2tleRgBIAEoBRIuCgV2YWx1ZRgCIAEoCzIfLnNkay52MWFscGhhLkNhcGFiaWxpdHlSZXNwb25zZToCOAEi5AEKDkV4ZWN1dGVSZXF1ZXN0Eg4KBmNvbmZpZxgBIAEoDBIrCglzdWJzY3JpYmUYAiABKAsyFi5nb29nbGUucHJvdG9idWYuRW1wdHlIABInCgd0cmlnZ2VyGAMgASgLMhQuc2RrLnYxYWxwaGEuVHJpZ2dlckgAEigKCHByZV9ob29rGAUgASgLMhQuc2RrLnYxYWxwaGEuVHJpZ2dlckgAEh0KEW1heF9yZXNwb25zZV9zaXplGAQgASgEQgIwABIYChBzdXNwZW5kX29uX2F3YWl0GAYgASgIQgkKB3JlcXVlc3QizAEKD0V4ZWN1dGlvblJlc3VsdBIhCgV2YWx1ZRgBIAEoCzIQLnZhbHVlcy52MS5WYWx1ZUgAEg8KBWVycm9yGAIgASgJSAASSAoVdHJpZ2dlcl9zdWJzY3JpcHRpb25zGAMgASgLMicuc2RrLnYxYWxwaGEuVHJpZ2dlclN1YnNjcmlwdGlvblJlcXVlc3RIABIxCgxyZXN0cmljdGlvbnMYBCABKAsyGS5zZGsudjFhbHBoYS5SZXN0cmljdGlvbnNIAEIICgZyZXN1bHQiVgoRR2V0U2VjcmV0c1JlcXVlc3QSLAoIcmVxdWVzdHMYASADKAsyGi5zZGsudjFhbHBoYS5TZWNyZXRSZXF1ZXN0EhMKC2NhbGxiYWNrX2lkGAIgASgFIiIKE0F3YWl0U2VjcmV0c1JlcXVlc3QSCwoDaWRzGAEgAygFIqsBChRBd2FpdFNlY3JldHNSZXNwb25zZRJDCglyZXNwb25zZXMYASADKAsyMC5zZGsudjFhbHBoYS5Bd2FpdFNlY3JldHNSZXNwb25zZS5SZXNwb25zZXNFbnRyeRpOCg5SZXNwb25zZXNFbnRyeRILCgNrZXkYASABKAUSKwoFdmFsdWUYAiABKAsyHC5zZGsudjFhbHBoYS5TZWNyZXRSZXNwb25zZXM6AjgBIi4KDVNlY3JldFJlcXVlc3QSCgoCaWQYASABKAkSEQoJbmFtZXNwYWNlGAIgASgJIkUKBlNlY3JldBIKCgJpZBgBIAEoCRIRCgluYW1lc3BhY2UYAiABKAkSDQoFb3duZXIYAyABKAkSDQoFdmFsdWUYBCABKAkiSgoLU2VjcmV0RXJyb3ISCgoCaWQYASABKAkSEQoJbmFtZXNwYWNlGAIgASgJEg0KBW93bmVyGAMgASgJEg0KBWVycm9yGAQgASgJIm4KDlNlY3JldFJlc3BvbnNlEiUKBnNlY3JldBgBIAEoCzITLnNkay52MWFscGhhLlNlY3JldEgAEikKBWVycm9yGAIgASgLMhguc2RrLnYxYWxwaGEuU2VjcmV0RXJyb3JIAEIKCghyZXNwb25zZSJBCg9TZWNyZXRSZXNwb25zZXMSLgoJcmVzcG9uc2VzGAEgAygLMhsuc2RrLnYxYWxwaGEuU2VjcmV0UmVzcG9uc2UiQgoRTWV0aG9kUmVzdHJpY3Rpb24SCgoCaWQYASABKAkSDgoGbWV0aG9kGAIgASgJEhEKCW1heF9jYWxscxgDIAEoDSJYChVDYXBhYmlsaXR5UmVzdHJpY3Rpb24SMAoGbWV0aG9kGAEgASgLMh4uc2RrLnYxYWxwaGEuTWV0aG9kUmVzdHJpY3Rpb25IAEINCgtyZXN0cmljdGlvbiKhAQoWQ2FwYWJpbGl0eVJlc3RyaWN0aW9ucxI4CgxyZXN0cmljdGlvbnMYASADKAsyIi5zZGsudjFhbHBoYS5DYXBhYmlsaXR5UmVzdHJpY3Rpb24SFwoPbWF4X3RvdGFsX2NhbGxzGAIgASgNEjQKBHR5cGUYAyABKA4yJi5zZGsudjFhbHBoYS5DYXBhYmlsaXR5UmVzdHJpY3Rpb25UeXBlIlEKF1NlY3JldFByZWZpeFJlc3RyaWN0aW9uEg4KBnByZWZpeBgBIAEoCRIRCgluYW1lc3BhY2UYAiABKAkSEwoLbWF4X3NlY3JldHMYAyABKA0ikAEKEVNlY3JldFJlc3RyaWN0aW9uEisKDGV4YWN0X3NlY3JldBgBIAEoCzITLnNkay52MWFscGhhLlNlY3JldEgAEj8KD3ByZWZpeGVkX3NlY3JldBgCIAEoCzIkLnNkay52MWFscGhhLlNlY3JldFByZWZpeFJlc3RyaWN0aW9uSABCDQoLcmVzdHJpY3Rpb24iXwoSU2VjcmV0c1Jlc3RyaXRpb25zEjQKDHJlc3RyaWN0aW9ucxgBIAMoCzIeLnNkay52MWFscGhhLlNlY3JldFJlc3RyaWN0aW9uEhMKC21heF9zZWNyZXRzGAIgASgNInsKDFJlc3RyaWN0aW9ucxIwCgdzZWNyZXRzGAEgASgLMh8uc2RrLnYxYWxwaGEuU2VjcmV0c1Jlc3RyaXRpb25zEjkKDGNhcGFiaWxpdGllcxgCIAEoCzIjLnNkay52MWFscGhhLkNhcGFiaWxpdHlSZXN0cmljdGlvbnMq3QEKD0FnZ3JlZ2F0aW9uVHlwZRIgChxBR0dSRUdBVElPTl9UWVBFX1VOU1BFQ0lGSUVEEAASGwoXQUdHUkVHQVRJT05fVFlQRV9NRURJQU4QARIeChpBR0dSRUdBVElPTl9UWVBFX0lERU5USUNBTBACEiIKHkFHR1JFR0FUSU9OX1RZUEVfQ09NTU9OX1BSRUZJWBADEiIKHkFHR1JFR0FUSU9OX1RZUEVfQ09NTU9OX1NVRkZJWBAEEiMKH0FHR1JFR0FUSU9OX1RZUEVfRlJFUVVFTkNZX0xJU1QQBSo5CgRNb2RlEhQKEE1PREVfVU5TUEVDSUZJRUQQABIMCghNT0RFX0RPThABEg0KCU1PREVfTk9ERRACKjsKB1RlZVR5cGUSGAoUVEVFX1RZUEVfVU5TUEVDSUZJRUQQABIWChJURUVfVFlQRV9BV1NfTklUUk8QASppChlDYXBhYmlsaXR5UmVzdHJpY3Rpb25UeXBlEiYKIkNBUEFCSUxJVFlfUkVTVFJJQ1RJT05fVFlQRV9DTE9TRUQQABIkCiBDQVBBQklMSVRZX1JFU1RSSUNUSU9OX1RZUEVfT1BFThABQmgKD2NvbS5zZGsudjFhbHBoYUIIU2RrUHJvdG9QAaICA1NYWKoCC1Nkay5WMWFscGhhygILU2RrXFYxYWxwaGHiAhdTZGtcVjFhbHBoYVxHUEJNZXRhZGF0YeoCDFNkazo6VjFhbHBoYWIGcHJvdG8z',
+		'ChVzZGsvdjFhbHBoYS9zZGsucHJvdG8SC3Nkay52MWFscGhhIrQBChVTaW1wbGVDb25zZW5zdXNJbnB1dHMSIQoFdmFsdWUYASABKAsyEC52YWx1ZXMudjEuVmFsdWVIABIPCgVlcnJvchgCIAEoCUgAEjUKC2Rlc2NyaXB0b3JzGAMgASgLMiAuc2RrLnYxYWxwaGEuQ29uc2Vuc3VzRGVzY3JpcHRvchIhCgdkZWZhdWx0GAQgASgLMhAudmFsdWVzLnYxLlZhbHVlQg0KC29ic2VydmF0aW9uIpABCglGaWVsZHNNYXASMgoGZmllbGRzGAEgAygLMiIuc2RrLnYxYWxwaGEuRmllbGRzTWFwLkZpZWxkc0VudHJ5Gk8KC0ZpZWxkc0VudHJ5EgsKA2tleRgBIAEoCRIvCgV2YWx1ZRgCIAEoCzIgLnNkay52MWFscGhhLkNvbnNlbnN1c0Rlc2NyaXB0b3I6AjgBIoYBChNDb25zZW5zdXNEZXNjcmlwdG9yEjMKC2FnZ3JlZ2F0aW9uGAEgASgOMhwuc2RrLnYxYWxwaGEuQWdncmVnYXRpb25UeXBlSAASLAoKZmllbGRzX21hcBgCIAEoCzIWLnNkay52MWFscGhhLkZpZWxkc01hcEgAQgwKCmRlc2NyaXB0b3IiagoNUmVwb3J0UmVxdWVzdBIXCg9lbmNvZGVkX3BheWxvYWQYASABKAwSFAoMZW5jb2Rlcl9uYW1lGAIgASgJEhQKDHNpZ25pbmdfYWxnbxgDIAEoCRIUCgxoYXNoaW5nX2FsZ28YBCABKAkilwEKDlJlcG9ydFJlc3BvbnNlEhUKDWNvbmZpZ19kaWdlc3QYASABKAwSEgoGc2VxX25yGAIgASgEQgIwABIWCg5yZXBvcnRfY29udGV4dBgDIAEoDBISCgpyYXdfcmVwb3J0GAQgASgMEi4KBHNpZ3MYBSADKAsyIC5zZGsudjFhbHBoYS5BdHRyaWJ1dGVkU2lnbmF0dXJlIjsKE0F0dHJpYnV0ZWRTaWduYXR1cmUSEQoJc2lnbmF0dXJlGAEgASgMEhEKCXNpZ25lcl9pZBgCIAEoDSJrChFDYXBhYmlsaXR5UmVxdWVzdBIKCgJpZBgBIAEoCRIlCgdwYXlsb2FkGAIgASgLMhQuZ29vZ2xlLnByb3RvYnVmLkFueRIOCgZtZXRob2QYAyABKAkSEwoLY2FsbGJhY2tfaWQYBCABKAUiWgoSQ2FwYWJpbGl0eVJlc3BvbnNlEicKB3BheWxvYWQYASABKAsyFC5nb29nbGUucHJvdG9idWYuQW55SAASDwoFZXJyb3IYAiABKAlIAEIKCghyZXNwb25zZSKbAQoTVHJpZ2dlclN1YnNjcmlwdGlvbhIKCgJpZBgBIAEoCRIlCgdwYXlsb2FkGAIgASgLMhQuZ29vZ2xlLnByb3RvYnVmLkFueRIOCgZtZXRob2QYAyABKAkSLwoMcmVxdWlyZW1lbnRzGAQgASgLMhkuc2RrLnYxYWxwaGEuUmVxdWlyZW1lbnRzEhAKCHByZV9ob29rGAUgASgIIkgKEVRlZVR5cGVBbmRSZWdpb25zEiIKBHR5cGUYASABKA4yFC5zZGsudjFhbHBoYS5UZWVUeXBlEg8KB3JlZ2lvbnMYAyADKAkiVQoaVHJpZ2dlclN1YnNjcmlwdGlvblJlcXVlc3QSNwoNc3Vic2NyaXB0aW9ucxgBIAMoCzIgLnNkay52MWFscGhhLlRyaWdnZXJTdWJzY3JpcHRpb24iQAoHVHJpZ2dlchIOCgJpZBgBIAEoBEICMAASJQoHcGF5bG9hZBgCIAEoCzIULmdvb2dsZS5wcm90b2J1Zi5BbnkiGgoHUmVnaW9ucxIPCgdyZWdpb25zGAEgAygJIlIKElRlZVR5cGVzQW5kUmVnaW9ucxI8ChR0ZWVfdHlwZV9hbmRfcmVnaW9ucxgBIAMoCzIeLnNkay52MWFscGhhLlRlZVR5cGVBbmRSZWdpb25zInwKA1RlZRIrCgthbnlfcmVnaW9ucxgBIAEoCzIULnNkay52MWFscGhhLlJlZ2lvbnNIABJAChV0ZWVfdHlwZXNfYW5kX3JlZ2lvbnMYAiABKAsyHy5zZGsudjFhbHBoYS5UZWVUeXBlc0FuZFJlZ2lvbnNIAEIGCgRpdGVtIi0KDFJlcXVpcmVtZW50cxIdCgN0ZWUYASABKAsyEC5zZGsudjFhbHBoYS5UZWUiJwoYQXdhaXRDYXBhYmlsaXRpZXNSZXF1ZXN0EgsKA2lkcxgBIAMoBSK4AQoZQXdhaXRDYXBhYmlsaXRpZXNSZXNwb25zZRJICglyZXNwb25zZXMYASADKAsyNS5zZGsudjFhbHBoYS5Bd2FpdENhcGFiaWxpdGllc1Jlc3BvbnNlLlJlc3BvbnNlc0VudHJ5GlEKDlJlc3BvbnNlc0VudHJ5EgsKA2tleRgBIAEoBRIuCgV2YWx1ZRgCIAEoCzIfLnNkay52MWFscGhhLkNhcGFiaWxpdHlSZXNwb25zZToCOAEifQoZV29ya2Zsb3dFeGVjdXRpb25NZXRhZGF0YRITCgt3b3JrZmxvd19pZBgBIAEoCRIUCgxleGVjdXRpb25faWQYAiABKAkSFgoOd29ya2Zsb3dfb3duZXIYAyABKAkSDgoGZG9uX2lkGAQgASgNEg0KBWRvbl9mGAUgASgNIqgCCg5FeGVjdXRlUmVxdWVzdBIOCgZjb25maWcYASABKAwSKwoJc3Vic2NyaWJlGAIgASgLMhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5SAASJwoHdHJpZ2dlchgDIAEoCzIULnNkay52MWFscGhhLlRyaWdnZXJIABIoCghwcmVfaG9vaxgFIAEoCzIULnNkay52MWFscGhhLlRyaWdnZXJIABIdChFtYXhfcmVzcG9uc2Vfc2l6ZRgEIAEoBEICMAASGAoQc3VzcGVuZF9vbl9hd2FpdBgGIAEoCBJCChJleGVjdXRpb25fbWV0YWRhdGEYByABKAsyJi5zZGsudjFhbHBoYS5Xb3JrZmxvd0V4ZWN1dGlvbk1ldGFkYXRhQgkKB3JlcXVlc3QiigIKD0V4ZWN1dGlvblJlc3VsdBIhCgV2YWx1ZRgBIAEoCzIQLnZhbHVlcy52MS5WYWx1ZUgAEg8KBWVycm9yGAIgASgJSAASSAoVdHJpZ2dlcl9zdWJzY3JpcHRpb25zGAMgASgLMicuc2RrLnYxYWxwaGEuVHJpZ2dlclN1YnNjcmlwdGlvblJlcXVlc3RIABIxCgxyZXN0cmljdGlvbnMYBCABKAsyGS5zZGsudjFhbHBoYS5SZXN0cmljdGlvbnNIABIkChNjb21wdXRlX2R1cmF0aW9uX21zGAUgASgDQgIwAEgBiAEBQggKBnJlc3VsdEIWChRfY29tcHV0ZV9kdXJhdGlvbl9tcyJWChFHZXRTZWNyZXRzUmVxdWVzdBIsCghyZXF1ZXN0cxgBIAMoCzIaLnNkay52MWFscGhhLlNlY3JldFJlcXVlc3QSEwoLY2FsbGJhY2tfaWQYAiABKAUiIgoTQXdhaXRTZWNyZXRzUmVxdWVzdBILCgNpZHMYASADKAUiqwEKFEF3YWl0U2VjcmV0c1Jlc3BvbnNlEkMKCXJlc3BvbnNlcxgBIAMoCzIwLnNkay52MWFscGhhLkF3YWl0U2VjcmV0c1Jlc3BvbnNlLlJlc3BvbnNlc0VudHJ5Gk4KDlJlc3BvbnNlc0VudHJ5EgsKA2tleRgBIAEoBRIrCgV2YWx1ZRgCIAEoCzIcLnNkay52MWFscGhhLlNlY3JldFJlc3BvbnNlczoCOAEiLgoNU2VjcmV0UmVxdWVzdBIKCgJpZBgBIAEoCRIRCgluYW1lc3BhY2UYAiABKAkiRQoGU2VjcmV0EgoKAmlkGAEgASgJEhEKCW5hbWVzcGFjZRgCIAEoCRINCgVvd25lchgDIAEoCRINCgV2YWx1ZRgEIAEoCSJKCgtTZWNyZXRFcnJvchIKCgJpZBgBIAEoCRIRCgluYW1lc3BhY2UYAiABKAkSDQoFb3duZXIYAyABKAkSDQoFZXJyb3IYBCABKAkibgoOU2VjcmV0UmVzcG9uc2USJQoGc2VjcmV0GAEgASgLMhMuc2RrLnYxYWxwaGEuU2VjcmV0SAASKQoFZXJyb3IYAiABKAsyGC5zZGsudjFhbHBoYS5TZWNyZXRFcnJvckgAQgoKCHJlc3BvbnNlIkEKD1NlY3JldFJlc3BvbnNlcxIuCglyZXNwb25zZXMYASADKAsyGy5zZGsudjFhbHBoYS5TZWNyZXRSZXNwb25zZSJCChFNZXRob2RSZXN0cmljdGlvbhIKCgJpZBgBIAEoCRIOCgZtZXRob2QYAiABKAkSEQoJbWF4X2NhbGxzGAMgASgNIlgKFUNhcGFiaWxpdHlSZXN0cmljdGlvbhIwCgZtZXRob2QYASABKAsyHi5zZGsudjFhbHBoYS5NZXRob2RSZXN0cmljdGlvbkgAQg0KC3Jlc3RyaWN0aW9uIqEBChZDYXBhYmlsaXR5UmVzdHJpY3Rpb25zEjgKDHJlc3RyaWN0aW9ucxgBIAMoCzIiLnNkay52MWFscGhhLkNhcGFiaWxpdHlSZXN0cmljdGlvbhIXCg9tYXhfdG90YWxfY2FsbHMYAiABKA0SNAoEdHlwZRgDIAEoDjImLnNkay52MWFscGhhLkNhcGFiaWxpdHlSZXN0cmljdGlvblR5cGUiUQoXU2VjcmV0UHJlZml4UmVzdHJpY3Rpb24SDgoGcHJlZml4GAEgASgJEhEKCW5hbWVzcGFjZRgCIAEoCRITCgttYXhfc2VjcmV0cxgDIAEoDSKQAQoRU2VjcmV0UmVzdHJpY3Rpb24SKwoMZXhhY3Rfc2VjcmV0GAEgASgLMhMuc2RrLnYxYWxwaGEuU2VjcmV0SAASPwoPcHJlZml4ZWRfc2VjcmV0GAIgASgLMiQuc2RrLnYxYWxwaGEuU2VjcmV0UHJlZml4UmVzdHJpY3Rpb25IAEINCgtyZXN0cmljdGlvbiJfChJTZWNyZXRzUmVzdHJpdGlvbnMSNAoMcmVzdHJpY3Rpb25zGAEgAygLMh4uc2RrLnYxYWxwaGEuU2VjcmV0UmVzdHJpY3Rpb24SEwoLbWF4X3NlY3JldHMYAiABKA0iewoMUmVzdHJpY3Rpb25zEjAKB3NlY3JldHMYASABKAsyHy5zZGsudjFhbHBoYS5TZWNyZXRzUmVzdHJpdGlvbnMSOQoMY2FwYWJpbGl0aWVzGAIgASgLMiMuc2RrLnYxYWxwaGEuQ2FwYWJpbGl0eVJlc3RyaWN0aW9ucyrdAQoPQWdncmVnYXRpb25UeXBlEiAKHEFHR1JFR0FUSU9OX1RZUEVfVU5TUEVDSUZJRUQQABIbChdBR0dSRUdBVElPTl9UWVBFX01FRElBThABEh4KGkFHR1JFR0FUSU9OX1RZUEVfSURFTlRJQ0FMEAISIgoeQUdHUkVHQVRJT05fVFlQRV9DT01NT05fUFJFRklYEAMSIgoeQUdHUkVHQVRJT05fVFlQRV9DT01NT05fU1VGRklYEAQSIwofQUdHUkVHQVRJT05fVFlQRV9GUkVRVUVOQ1lfTElTVBAFKjkKBE1vZGUSFAoQTU9ERV9VTlNQRUNJRklFRBAAEgwKCE1PREVfRE9OEAESDQoJTU9ERV9OT0RFEAIqOwoHVGVlVHlwZRIYChRURUVfVFlQRV9VTlNQRUNJRklFRBAAEhYKElRFRV9UWVBFX0FXU19OSVRSTxABKmkKGUNhcGFiaWxpdHlSZXN0cmljdGlvblR5cGUSJgoiQ0FQQUJJTElUWV9SRVNUUklDVElPTl9UWVBFX0NMT1NFRBAAEiQKIENBUEFCSUxJVFlfUkVTVFJJQ1RJT05fVFlQRV9PUEVOEAFCaAoPY29tLnNkay52MWFscGhhQghTZGtQcm90b1ABogIDU1hYqgILU2RrLlYxYWxwaGHKAgtTZGtcVjFhbHBoYeICF1Nka1xWMWFscGhhXEdQQk1ldGFkYXRh6gIMU2RrOjpWMWFscGhhYgZwcm90bzM',
 		[file_google_protobuf_any, file_google_protobuf_empty, file_values_v1_values],
 	)
 
@@ -810,6 +810,91 @@ export const AwaitCapabilitiesResponseSchema: GenMessage<
 > = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 17)
 
 /**
+ * WorkflowExecutionMetadata describes execution and its DON snapshot.
+ *
+ * @generated from message sdk.v1alpha.WorkflowExecutionMetadata
+ */
+export type WorkflowExecutionMetadata = Message<'sdk.v1alpha.WorkflowExecutionMetadata'> & {
+	/**
+	 * 32-byte lowercase hex id w/o a 0x prefix.
+	 *
+	 * @generated from field: string workflow_id = 1;
+	 */
+	workflowId: string
+
+	/**
+	 * Empty for subscribe; otherwise the engine-generated execution identifier.
+	 *
+	 * @generated from field: string execution_id = 2;
+	 */
+	executionId: string
+
+	/**
+	 * 20-byte lowercase hex owner w/o a 0x prefix.
+	 *
+	 * @generated from field: string workflow_owner = 3;
+	 */
+	workflowOwner: string
+
+	/**
+	 * @generated from field: uint32 don_id = 4;
+	 */
+	donId: number
+
+	/**
+	 * @generated from field: uint32 don_f = 5;
+	 */
+	donF: number
+}
+
+/**
+ * WorkflowExecutionMetadata describes execution and its DON snapshot.
+ *
+ * @generated from message sdk.v1alpha.WorkflowExecutionMetadata
+ */
+export type WorkflowExecutionMetadataJson = {
+	/**
+	 * 32-byte lowercase hex id w/o a 0x prefix.
+	 *
+	 * @generated from field: string workflow_id = 1;
+	 */
+	workflowId?: string
+
+	/**
+	 * Empty for subscribe; otherwise the engine-generated execution identifier.
+	 *
+	 * @generated from field: string execution_id = 2;
+	 */
+	executionId?: string
+
+	/**
+	 * 20-byte lowercase hex owner w/o a 0x prefix.
+	 *
+	 * @generated from field: string workflow_owner = 3;
+	 */
+	workflowOwner?: string
+
+	/**
+	 * @generated from field: uint32 don_id = 4;
+	 */
+	donId?: number
+
+	/**
+	 * @generated from field: uint32 don_f = 5;
+	 */
+	donF?: number
+}
+
+/**
+ * Describes the message sdk.v1alpha.WorkflowExecutionMetadata.
+ * Use `create(WorkflowExecutionMetadataSchema)` to create a new message.
+ */
+export const WorkflowExecutionMetadataSchema: GenMessage<
+	WorkflowExecutionMetadata,
+	{ jsonType: WorkflowExecutionMetadataJson }
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 18)
+
+/**
  * @generated from message sdk.v1alpha.ExecuteRequest
  */
 export type ExecuteRequest = Message<'sdk.v1alpha.ExecuteRequest'> & {
@@ -854,6 +939,11 @@ export type ExecuteRequest = Message<'sdk.v1alpha.ExecuteRequest'> & {
 	 * @generated from field: bool suspend_on_await = 6;
 	 */
 	suspendOnAwait: boolean
+
+	/**
+	 * @generated from field: sdk.v1alpha.WorkflowExecutionMetadata execution_metadata = 7;
+	 */
+	executionMetadata?: WorkflowExecutionMetadata
 }
 
 /**
@@ -889,6 +979,11 @@ export type ExecuteRequestJson = {
 	 * @generated from field: bool suspend_on_await = 6;
 	 */
 	suspendOnAwait?: boolean
+
+	/**
+	 * @generated from field: sdk.v1alpha.WorkflowExecutionMetadata execution_metadata = 7;
+	 */
+	executionMetadata?: WorkflowExecutionMetadataJson
 }
 
 /**
@@ -897,7 +992,7 @@ export type ExecuteRequestJson = {
  */
 export const ExecuteRequestSchema: GenMessage<ExecuteRequest, { jsonType: ExecuteRequestJson }> =
 	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 18)
+	messageDesc(file_sdk_v1alpha_sdk, 19)
 
 /**
  * @generated from message sdk.v1alpha.ExecutionResult
@@ -936,6 +1031,18 @@ export type ExecutionResult = Message<'sdk.v1alpha.ExecutionResult'> & {
 				case: 'restrictions'
 		  }
 		| { case: undefined; value?: undefined }
+
+	/**
+	 * compute_duration_ms is the wall-clock duration of the workflow run in
+	 * milliseconds, as measured by the module that executed it: the guest run
+	 * for the WASM host, the enclave-reported duration for confidential
+	 * workflows. The host sets it after the run and the engine meters it as
+	 * compute (cre:workflow:compute). Presence distinguishes an unavailable
+	 * measurement from a measured zero.
+	 *
+	 * @generated from field: optional int64 compute_duration_ms = 5 [jstype = JS_NORMAL];
+	 */
+	computeDurationMs?: bigint
 }
 
 /**
@@ -961,6 +1068,18 @@ export type ExecutionResultJson = {
 	 * @generated from field: sdk.v1alpha.Restrictions restrictions = 4;
 	 */
 	restrictions?: RestrictionsJson
+
+	/**
+	 * compute_duration_ms is the wall-clock duration of the workflow run in
+	 * milliseconds, as measured by the module that executed it: the guest run
+	 * for the WASM host, the enclave-reported duration for confidential
+	 * workflows. The host sets it after the run and the engine meters it as
+	 * compute (cre:workflow:compute). Presence distinguishes an unavailable
+	 * measurement from a measured zero.
+	 *
+	 * @generated from field: optional int64 compute_duration_ms = 5 [jstype = JS_NORMAL];
+	 */
+	computeDurationMs?: string
 }
 
 /**
@@ -969,7 +1088,7 @@ export type ExecutionResultJson = {
  */
 export const ExecutionResultSchema: GenMessage<ExecutionResult, { jsonType: ExecutionResultJson }> =
 	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 19)
+	messageDesc(file_sdk_v1alpha_sdk, 20)
 
 /**
  * @generated from message sdk.v1alpha.GetSecretsRequest
@@ -1008,7 +1127,7 @@ export type GetSecretsRequestJson = {
 export const GetSecretsRequestSchema: GenMessage<
 	GetSecretsRequest,
 	{ jsonType: GetSecretsRequestJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 20)
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 21)
 
 /**
  * @generated from message sdk.v1alpha.AwaitSecretsRequest
@@ -1037,7 +1156,7 @@ export type AwaitSecretsRequestJson = {
 export const AwaitSecretsRequestSchema: GenMessage<
 	AwaitSecretsRequest,
 	{ jsonType: AwaitSecretsRequestJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 21)
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 22)
 
 /**
  * @generated from message sdk.v1alpha.AwaitSecretsResponse
@@ -1066,7 +1185,7 @@ export type AwaitSecretsResponseJson = {
 export const AwaitSecretsResponseSchema: GenMessage<
 	AwaitSecretsResponse,
 	{ jsonType: AwaitSecretsResponseJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 22)
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 23)
 
 /**
  * @generated from message sdk.v1alpha.SecretRequest
@@ -1104,7 +1223,7 @@ export type SecretRequestJson = {
  */
 export const SecretRequestSchema: GenMessage<SecretRequest, { jsonType: SecretRequestJson }> =
 	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 23)
+	messageDesc(file_sdk_v1alpha_sdk, 24)
 
 /**
  * @generated from message sdk.v1alpha.Secret
@@ -1162,7 +1281,7 @@ export type SecretJson = {
  */
 export const SecretSchema: GenMessage<Secret, { jsonType: SecretJson }> =
 	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 24)
+	messageDesc(file_sdk_v1alpha_sdk, 25)
 
 /**
  * @generated from message sdk.v1alpha.SecretError
@@ -1220,7 +1339,7 @@ export type SecretErrorJson = {
  */
 export const SecretErrorSchema: GenMessage<SecretError, { jsonType: SecretErrorJson }> =
 	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 25)
+	messageDesc(file_sdk_v1alpha_sdk, 26)
 
 /**
  * @generated from message sdk.v1alpha.SecretResponse
@@ -1268,7 +1387,7 @@ export type SecretResponseJson = {
  */
 export const SecretResponseSchema: GenMessage<SecretResponse, { jsonType: SecretResponseJson }> =
 	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 26)
+	messageDesc(file_sdk_v1alpha_sdk, 27)
 
 /**
  * @generated from message sdk.v1alpha.SecretResponses
@@ -1296,7 +1415,7 @@ export type SecretResponsesJson = {
  */
 export const SecretResponsesSchema: GenMessage<SecretResponses, { jsonType: SecretResponsesJson }> =
 	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 27)
+	messageDesc(file_sdk_v1alpha_sdk, 28)
 
 /**
  * @generated from message sdk.v1alpha.MethodRestriction
@@ -1345,7 +1464,7 @@ export type MethodRestrictionJson = {
 export const MethodRestrictionSchema: GenMessage<
 	MethodRestriction,
 	{ jsonType: MethodRestrictionJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 28)
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 29)
 
 /**
  * @generated from message sdk.v1alpha.CapabilityRestriction
@@ -1382,7 +1501,7 @@ export type CapabilityRestrictionJson = {
 export const CapabilityRestrictionSchema: GenMessage<
 	CapabilityRestriction,
 	{ jsonType: CapabilityRestrictionJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 29)
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 30)
 
 /**
  * @generated from message sdk.v1alpha.CapabilityRestrictions
@@ -1431,7 +1550,7 @@ export type CapabilityRestrictionsJson = {
 export const CapabilityRestrictionsSchema: GenMessage<
 	CapabilityRestrictions,
 	{ jsonType: CapabilityRestrictionsJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 30)
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 31)
 
 /**
  * @generated from message sdk.v1alpha.SecretPrefixRestriction
@@ -1480,7 +1599,7 @@ export type SecretPrefixRestrictionJson = {
 export const SecretPrefixRestrictionSchema: GenMessage<
 	SecretPrefixRestriction,
 	{ jsonType: SecretPrefixRestrictionJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 31)
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 32)
 
 /**
  * @generated from message sdk.v1alpha.SecretRestriction
@@ -1529,7 +1648,7 @@ export type SecretRestrictionJson = {
 export const SecretRestrictionSchema: GenMessage<
 	SecretRestriction,
 	{ jsonType: SecretRestrictionJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 32)
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 33)
 
 /**
  * @generated from message sdk.v1alpha.SecretsRestritions
@@ -1568,7 +1687,7 @@ export type SecretsRestritionsJson = {
 export const SecretsRestritionsSchema: GenMessage<
 	SecretsRestritions,
 	{ jsonType: SecretsRestritionsJson }
-> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 33)
+> = /*@__PURE__*/ messageDesc(file_sdk_v1alpha_sdk, 34)
 
 /**
  * @generated from message sdk.v1alpha.Restrictions
@@ -1606,7 +1725,7 @@ export type RestrictionsJson = {
  */
 export const RestrictionsSchema: GenMessage<Restrictions, { jsonType: RestrictionsJson }> =
 	/*@__PURE__*/
-	messageDesc(file_sdk_v1alpha_sdk, 34)
+	messageDesc(file_sdk_v1alpha_sdk, 35)
 
 /**
  * @generated from enum sdk.v1alpha.AggregationType

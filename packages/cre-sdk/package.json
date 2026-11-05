@@ -1,6 +1,6 @@
 {
 	"name": "@chainlink/cre-sdk",
-	"version": "1.22.0",
+	"version": "1.23.0",
 	"type": "module",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -12,6 +12,14 @@
 		"./restricted-apis": {
 			"types": "./dist/sdk/types/restricted-apis.d.ts",
 			"import": "./dist/sdk/types/restricted-apis.js"
+		},
+		"./restricted-node-modules": {
+			"types": "./dist/sdk/types/restricted-node-modules.d.ts",
+			"import": "./dist/sdk/types/restricted-node-modules.js"
+		},
+		"./unrestricted": {
+			"types": "./dist/index-unrestricted.d.ts",
+			"import": "./dist/index-unrestricted.js"
 		},
 		"./pb": {
 			"types": "./dist/pb.d.ts",
@@ -67,7 +75,7 @@
 		"@solana/addresses": "6.10.0",
 		"@solana/codecs": "6.10.0",
 		"@standard-schema/spec": "1.0.0",
-		"viem": "2.34.0",
+		"viem": "^2.54.2",
 		"zod": "3.25.76"
 	},
 	"devDependencies": {

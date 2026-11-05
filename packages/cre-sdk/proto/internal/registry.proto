@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+// Wire-compatible subset of chainlink-common pkg/capabilities/pb/registry.proto, containing only the fields
+// needed to read a DON's OCR3 signers from the capabilities registry. Field numbers must match the original.
+package cre.sdk.internal.registry;
+
+message OCR3Config {
+  repeated bytes signers = 1;
+}
+
+message CapabilityConfig {
+  map<string, OCR3Config> ocr3_configs = 9;
+}

@@ -92,3 +92,12 @@ export class RawReportTooShortError extends Error {
 		this.name = 'RawReportTooShortError'
 	}
 }
+
+export class UnsupportedEncoderError extends Error {
+	constructor(public readonly encoder: string) {
+		super(
+			`unsupported report encoder ${JSON.stringify(encoder)}: only "evm" and "solana" reports can be parsed and verified`,
+		)
+		this.name = 'UnsupportedEncoderError'
+	}
+}

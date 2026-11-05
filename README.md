@@ -227,6 +227,43 @@ $ cre compile src/bad-workflow.ts --skip-type-checks
 
 Under the hood, the SDK's `cre-compile` binary (`bin/cre-compile.ts`) parses the flag and passes it through the compilation pipeline. The flag controls whether `assertWorkflowTypecheck()` runs, while `assertWorkflowRuntimeCompatibility()` always executes regardless. The CRE CLI invokes this binary, so the flag semantics are identical whether you run `cre compile --skip-type-checks` or call the SDK's compilation API directly.
 
+### Disabling Type Restrictions (Monorepos)
+
+Importing `@chainlink/cre-sdk` applies the type restrictions to **every file in your TypeScript project**, not just workflow files. That's the right default for a workflow-only project, but it breaks projects that typecheck the workflow alongside Node.js tooling (deploy scripts, config generators, tests).
+
+If that's your setup, use the **`@chainlink/cre-sdk/unrestricted`** entry. It's the same code and the same API; only the type restrictions are removed.
+
+**Option 1 — import the subpath.** All SDK imports in the project must use it (a single import of `@chainlink/cre-sdk` turns the restrictions back on everywhere):
+
+```typescript
+import { Runner } from '@chainlink/cre-sdk/unrestricted'
+```
+
+**Option 2 — redirect via tsconfig `paths`.** No source changes needed. Use the extensionless path so it resolves correctly for both the type checker and the runtime:
+
+```jsonc
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@chainlink/cre-sdk": ["./node_modules/@chainlink/cre-sdk/dist/index-unrestricted"]
+    }
+  }
+}
+```
+
+**Turning restrictions back on for workflow-only projects.** A `tsconfig.json` that covers only workflow sources can re-enable them via the `types` entry:
+
+```jsonc
+{
+  "compilerOptions": {
+    "types": ["@chainlink/cre-sdk/restricted-apis", "@chainlink/cre-sdk/restricted-node-modules"]
+  }
+}
+```
+
+Compilation is unaffected either way: `cre compile` always rejects restricted Node.js modules and unavailable globals in workflows. Opting out only removes the editor and type-check warnings.
+
 ## Contributing & Development
 
 This monorepo uses:

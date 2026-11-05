@@ -12,6 +12,7 @@ import {
 	RecoverSignerError,
 	Report,
 	UnknownSignerError,
+	UnsupportedEncoderError,
 	WrongSignatureCountError,
 	zoneFromEnvironment,
 } from '.'
@@ -596,5 +597,54 @@ describe('Report Parse', () => {
 					: String(err)
 		expect(allMessages).toContain(`invalid registry address`)
 		expect(allMessages).toContain(invalidAddress)
+	})
+
+	describe('evm encoder is accepted', () => {
+		for (const encoder of ['evm', 'EVM']) {
+			test(encoder, async () => {
+				setupDonSettingRead(productionEnvironmentReplay)
+				const runtime = newTestRuntime()
+				const config = { acceptedEnvironments: [productionEnvironment()], encoder }
+				const report = await Report.parse(runtime, rawReport, reportSigs, reportContext, config)
+				expect(report).not.toBeNull()
+			})
+		}
+	})
+
+	describe('unsupported encoder returns an error without reading from chain', () => {
+		for (const encoder of ['aptos', 'stellar', 'ton']) {
+			for (const skipSignatureVerification of [false, true]) {
+				test(`${encoder}/skipSignatureVerification=${skipSignatureVerification}`, async () => {
+					const mock = setupDonSettingRead(productionEnvironmentReplay)
+					const runtime = newTestRuntime()
+					const config = {
+						acceptedEnvironments: [productionEnvironment()],
+						skipSignatureVerification,
+						encoder,
+					}
+					await expect(
+						Report.parse(runtime, rawReport, reportSigs, reportContext, config),
+					).rejects.toThrow(UnsupportedEncoderError)
+					expect(mock.actualCalls).toBe(0)
+				})
+			}
+		}
+	})
+
+	test('solana encoder fails without a consensus OCR3 config while evm keeps working', async () => {
+		// productionEnvironmentReplay was recorded before DON 1 published its consensus OCR3 config on the registry,
+		// so solana verification must fail with a clear error while EVM verification keeps working.
+		setupDonSettingRead(productionEnvironmentReplay)
+		const runtime = newTestRuntime()
+
+		await expect(
+			Report.parse(runtime, rawReport, reportSigs, reportContext, {
+				acceptedEnvironments: [productionEnvironment()],
+				encoder: 'solana',
+			}),
+		).rejects.toThrow('no solana signers for DON 1')
+
+		const report = await Report.parse(runtime, rawReport, reportSigs, reportContext)
+		expect(report).toBeDefined()
 	})
 })

@@ -127,23 +127,33 @@ export function wrapWorkflowCode(sourceCode: string, filePath: string): string {
 	// If we need to add sendErrorResponse import
 	const nextSourceFile = ts.createSourceFile(filePath, result, ts.ScriptTarget.Latest, true)
 	let hasSendErrorResponseImport = false
+	// Only a value (non type-only) import with named bindings can receive the
+	// injected `sendErrorResponse`: `import type { ... }` declarations and
+	// `type ...` specifiers are erased at compile time, and namespace/default
+	// imports have no named-import list to extend. If no suitable declaration
+	// exists, fall through to adding a standalone value import below.
 	let creSdkImportDeclaration: ts.ImportDeclaration | null = null
 
 	for (const statement of nextSourceFile.statements) {
 		// Check for @chainlink/cre-sdk import
-		if (ts.isImportDeclaration(statement)) {
-			const moduleSpecifier = statement.moduleSpecifier
-			if (ts.isStringLiteral(moduleSpecifier) && moduleSpecifier.text === '@chainlink/cre-sdk') {
-				creSdkImportDeclaration = statement
-				if (
-					statement.importClause?.namedBindings &&
-					ts.isNamedImports(statement.importClause.namedBindings)
-				) {
-					hasSendErrorResponseImport = statement.importClause.namedBindings.elements.some(
-						(element) => element.name.text === 'sendErrorResponse',
-					)
-				}
-			}
+		if (!ts.isImportDeclaration(statement)) {
+			continue
+		}
+		const moduleSpecifier = statement.moduleSpecifier
+		if (!ts.isStringLiteral(moduleSpecifier) || moduleSpecifier.text !== '@chainlink/cre-sdk') {
+			continue
+		}
+		if (statement.importClause?.isTypeOnly) {
+			continue
+		}
+		if (
+			statement.importClause?.namedBindings &&
+			ts.isNamedImports(statement.importClause.namedBindings)
+		) {
+			creSdkImportDeclaration = statement
+			hasSendErrorResponseImport ||= statement.importClause.namedBindings.elements.some(
+				(element) => !element.isTypeOnly && element.name.text === 'sendErrorResponse',
+			)
 		}
 	}
 

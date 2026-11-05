@@ -11,6 +11,7 @@ exports[`JS host bindings contract 1`] = `
   "log",
   "now",
   "sendResponse",
+  "setRandomMode",
   "sleep",
   "switchModes",
   "versionV2",
