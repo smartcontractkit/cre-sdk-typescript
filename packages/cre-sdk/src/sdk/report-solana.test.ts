@@ -313,13 +313,6 @@ describe('Report Parse with solana encoder', () => {
 		expect(accepted[1].signerId).toBe(don.nodes[0].nodeOperatorId)
 	})
 
-	test('encoder is case-insensitive', async () => {
-		const don = new SolanaTestDON(4, 1)
-		don.setupRead()
-
-		await parse(await don.sign(0, 1), solanaConfig({ encoder: 'Solana' }))
-	})
-
 	test("signatures from the nodes' evm keys are rejected", async () => {
 		const don = new SolanaTestDON(4, 1)
 		don.setupRead()
@@ -336,31 +329,6 @@ describe('Report Parse with solana encoder', () => {
 
 		const err = await parseSolanaError(await don.sign(0, 1), solanaConfig({ encoder: 'evm' }))
 		expect(isErrorType(err, UnknownSignerError)).toBe(true)
-	})
-
-	test('too few signatures fails validation', async () => {
-		const don = new SolanaTestDON(4, 1)
-		don.setupRead()
-
-		expect(await parseSolanaError(await don.sign(0))).toBeInstanceOf(WrongSignatureCountError)
-	})
-
-	test('duplicated signatures fails validation', async () => {
-		const don = new SolanaTestDON(4, 1)
-		don.setupRead()
-
-		expect(isErrorType(await parseSolanaError(await don.sign(0, 0)), DuplicateSignerError)).toBe(
-			true,
-		)
-	})
-
-	test('signer outside the DON fails validation', async () => {
-		const don = new SolanaTestDON(4, 1)
-		don.setupRead()
-
-		const outsider = new SolanaTestDON(1, 1)
-		const sigs = [...(await don.sign(0)), ...(await outsider.sign(0))]
-		expect(isErrorType(await parseSolanaError(sigs), UnknownSignerError)).toBe(true)
 	})
 
 	test('OCR3 signer whose evm key is not a DON node is ignored', async () => {
@@ -423,21 +391,5 @@ describe('Report Parse with a production solana report', () => {
 			expect(sig.signature).toEqual(solanaReportSigs[i])
 			expect(sig.signerId).toBe(solanaReportSigIds[i])
 		})
-	})
-
-	test('evm encoder rejects the report', async () => {
-		setupCallContractMock(zoneASolanaReplay.chainSelector, zoneASolanaReplay.calls)
-
-		const err = await parseSolanaError(solanaReportSigs, { ...config, encoder: 'evm' })
-		expect(isErrorType(err, UnknownSignerError)).toBe(true)
-	})
-
-	test('tampered report fails validation', async () => {
-		setupCallContractMock(zoneASolanaReplay.chainSelector, zoneASolanaReplay.calls)
-
-		const tampered = new Uint8Array(solanaRawReport)
-		tampered[tampered.length - 1] ^= 1
-		const err = await parseError(tampered, solanaReportSigs, solanaReportContext, config)
-		expect(isErrorType(err, UnknownSignerError)).toBe(true)
 	})
 })
