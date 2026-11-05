@@ -39,14 +39,6 @@ export class ClientCapability {
 	static readonly CAPABILITY_VERSION = '1.0.0-alpha'
 
 	sendRequest<TInput>(
-		runtime: TeeRuntime<unknown>,
-		input: CapabilityInput<TInput, Request, RequestJson>,
-	): { result: () => Response }
-	sendRequest<TInput>(
-		runtime: NodeRuntime<unknown>,
-		input: CapabilityInput<TInput, Request, RequestJson>,
-	): { result: () => Response }
-	sendRequest<TInput>(
 		runtime: NodeRuntime<unknown> | TeeRuntime<unknown>,
 		input: CapabilityInput<TInput, Request, RequestJson>,
 	): { result: () => Response }
