@@ -31,6 +31,8 @@ inputs:
       - ../../submodules/chainlink-protos/cre/sdk/v1alpha
       - ../../submodules/chainlink-protos/cre/tools/generator/v1alpha
       - ../../submodules/chainlink-protos/cre/values/v1
+  # Trimmed copies of protos the SDK decodes internally (e.g. capabilities registry configs).
+  - directory: proto
 
 plugins:
   # Modern @bufbuild/protoc-gen-es plugin

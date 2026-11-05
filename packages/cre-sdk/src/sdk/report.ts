@@ -1,6 +1,7 @@
-import { create, fromJson } from '@bufbuild/protobuf'
+import { create, fromBinary, fromJson } from '@bufbuild/protobuf'
 import { BinaryReader, WireType } from '@bufbuild/protobuf/wire'
 import { AnySchema } from '@bufbuild/protobuf/wkt'
+import { type CapabilityConfig, CapabilityConfigSchema } from '@cre/generated/internal/registry_pb'
 import {
 	AttributedSignatureSchema,
 	AwaitCapabilitiesRequestSchema,
@@ -18,6 +19,7 @@ import {
 	hexToBytes,
 	keccak256,
 	recoverAddress,
+	sha256,
 	slice,
 	toHex,
 } from 'viem'
@@ -225,13 +227,135 @@ function fetchDONInfo(runtime: BaseRuntime<unknown>, env: Environment, donID: nu
 	}
 
 	const info: DonInfo = { f, signers }
+	try {
+		info.solanaSigners = solanaSignersFromDON(don.capabilityConfigurations, signers)
+	} catch (err) {
+		info.solanaSignersError = err instanceof Error ? err : new Error(String(err))
+	}
 	donInfoCache.set(key, info)
 	return info
+}
+
+// signersFor returns the authorized signers for reports produced by the given encoder.
+function signersFor(info: DonInfo, encoder: ReportEncoder): Map<Address, number> {
+	if (encoder !== SOLANA_REPORT_ENCODER) {
+		return info.signers
+	}
+	if (info.solanaSignersError !== undefined) {
+		throw info.solanaSignersError
+	}
+	return info.solanaSigners ?? new Map()
+}
+
+// CONSENSUS_CAPABILITY_PREFIX identifies the consensus capability in a DON's capabilityConfigurations.
+const CONSENSUS_CAPABILITY_PREFIX = 'consensus@'
+// DEFAULT_OCR3_CONFIG_KEY is the OCR instance name used by single-instance capabilities.
+const DEFAULT_OCR3_CONFIG_KEY = '__default__'
+// Chain type identifiers used in multichain onchain public keys (see corekeys.ChainType.Type).
+const CHAIN_TYPE_EVM = 1
+const CHAIN_TYPE_SOLANA = 2
+
+type CapabilityConfiguration = { capabilityId: string; config: Hex }
+
+// solanaSignersFromDON maps each Solana signer in the consensus capability's OCR3 config to its node operator.
+// Every OCR3 signer is a multichain key containing the node's EVM and Solana keys; the EVM key is matched against
+// the registry's node signers so that only signers belonging to the DON's nodes are accepted.
+function solanaSignersFromDON(
+	capabilityConfigurations: readonly CapabilityConfiguration[],
+	evmSigners: Map<Address, number>,
+): Map<Address, number> {
+	const solanaSigners = new Map<Address, number>()
+	for (const ocrSigner of consensusOCR3Signers(capabilityConfigurations)) {
+		const keys = parseMultichainPublicKey(ocrSigner)
+		const evmKey = keys.get(CHAIN_TYPE_EVM)
+		const solanaKey = keys.get(CHAIN_TYPE_SOLANA)
+		if (evmKey?.length !== 20 || solanaKey?.length !== 20) {
+			continue
+		}
+
+		const nodeOperatorId = evmSigners.get(getAddress(toHex(evmKey)))
+		if (nodeOperatorId === undefined) {
+			continue
+		}
+		solanaSigners.set(getAddress(toHex(solanaKey)), nodeOperatorId)
+	}
+
+	if (solanaSigners.size === 0) {
+		throw new Error('consensus OCR3 config has no solana signers')
+	}
+	return solanaSigners
+}
+
+// consensusOCR3Signers returns the signers of the consensus capability's default OCR3 config.
+function consensusOCR3Signers(
+	capabilityConfigurations: readonly CapabilityConfiguration[],
+): Uint8Array[] {
+	const consensus = capabilityConfigurations.find((c) =>
+		c.capabilityId.startsWith(CONSENSUS_CAPABILITY_PREFIX),
+	)
+	if (consensus === undefined) {
+		throw new Error('consensus capability is not configured on the DON')
+	}
+
+	let config: CapabilityConfig
+	try {
+		config = fromBinary(CapabilityConfigSchema, hexToBytes(consensus.config))
+	} catch (err) {
+		const msg = err instanceof Error ? err.message : String(err)
+		throw new Error(`malformed consensus capability config: ${msg}`)
+	}
+
+	const ocr3Config = config.ocr3Configs[DEFAULT_OCR3_CONFIG_KEY]
+	if (ocr3Config === undefined) {
+		throw new Error(`consensus capability config has no "${DEFAULT_OCR3_CONFIG_KEY}" OCR3 config`)
+	}
+	return ocr3Config.signers
+}
+
+// parseMultichainPublicKey splits an OCR3 multichain onchain public key into its per-chain keys.
+// Encoding: repeated [chainType uint8][length uint16 little-endian][key].
+function parseMultichainPublicKey(data: Uint8Array): Map<number, Uint8Array> {
+	const keys = new Map<number, Uint8Array>()
+	let offset = 0
+	while (offset < data.length) {
+		if (data.length - offset < 3) {
+			throw new Error('malformed multichain public key: truncated header')
+		}
+		const chainType = data[offset]
+		const length = data[offset + 1] | (data[offset + 2] << 8)
+		const start = offset + 3
+		if (data.length - start < length) {
+			throw new Error('malformed multichain public key: truncated key')
+		}
+		keys.set(chainType, data.subarray(start, start + length))
+		offset = start + length
+	}
+	return keys
 }
 
 function computeReportHash(rawReport: Uint8Array, reportContext: Uint8Array): `0x${string}` {
 	const innerHash = keccak256(toHex(rawReport))
 	return keccak256(concatHex([innerHash, toHex(reportContext)]))
+}
+
+// solanaReportHash matches the Solana keyring and forwarder program:
+// sha256(uint8(len(rawReport)) || rawReport || reportContext). The length prefix is a single, truncated byte.
+function solanaReportHash(rawReport: Uint8Array, reportContext: Uint8Array): `0x${string}` {
+	return sha256(
+		concatHex([
+			toHex(rawReport.length & 0xff, { size: 1 }),
+			toHex(rawReport),
+			toHex(reportContext),
+		]),
+	)
+}
+
+// hashReport returns the digest the encoder's key bundle signs.
+function hashReport(encoder: ReportEncoder, report: ReportResponse): `0x${string}` {
+	if (encoder === SOLANA_REPORT_ENCODER) {
+		return solanaReportHash(report.rawReport, report.reportContext)
+	}
+	return computeReportHash(report.rawReport, report.reportContext)
 }
 
 function addressKeyNo0x(addr: `0x${string}`): string {
@@ -242,6 +366,7 @@ async function verifySigs(
 	report: ReportResponse,
 	f: number,
 	signers: Map<string, number>,
+	reportHash: `0x${string}`,
 ): Promise<void> {
 	const required = f + 1
 	const sigs = report.sigs
@@ -249,7 +374,6 @@ async function verifySigs(
 		throw new WrongSignatureCountError()
 	}
 
-	const reportHash = computeReportHash(report.rawReport, report.reportContext)
 	const seen = new Set<string>()
 	const accepted: typeof sigs = []
 	const skipErrs: Error[] = []
@@ -316,31 +440,47 @@ export type ReportParseConfig = {
 	skipSignatureVerification?: boolean
 	/**
 	 * Encoder name the report was generated with (`ReportRequest.encoderName`).
-	 * Defaults to `"evm"`. Only EVM reports can currently be parsed and verified;
+	 * Defaults to `"evm"`. Only `"evm"` and `"solana"` reports can currently be parsed and verified;
 	 * any other value throws `UnsupportedEncoderError`.
 	 */
 	encoder?: string
 }
 
+/** Encoder name for reports signed with the EVM (ECDSA secp256k1) key bundle. */
 export const EVM_REPORT_ENCODER = 'evm'
+/** Encoder name for reports signed with the Solana (ECDSA secp256k1) key bundle. */
+export const SOLANA_REPORT_ENCODER = 'solana'
 
-function validateEncoder(encoder: string | undefined): void {
-	if (encoder === undefined || encoder === '' || encoder.toLowerCase() === EVM_REPORT_ENCODER) {
-		return
+type ReportEncoder = typeof EVM_REPORT_ENCODER | typeof SOLANA_REPORT_ENCODER
+
+// resolveEncoder returns the normalized encoder name, defaulting to EVM_REPORT_ENCODER.
+function resolveEncoder(encoder: string | undefined): ReportEncoder {
+	switch (encoder?.toLowerCase()) {
+		case undefined:
+		case '':
+		case EVM_REPORT_ENCODER:
+			return EVM_REPORT_ENCODER
+		case SOLANA_REPORT_ENCODER:
+			return SOLANA_REPORT_ENCODER
+		default:
+			throw new UnsupportedEncoderError(encoder as string)
 	}
-	throw new UnsupportedEncoderError(encoder)
 }
 
 function mergeReportParseConfig(
 	overrides?: ReportParseConfig,
 ): Required<
-	Pick<ReportParseConfig, 'acceptedZones' | 'acceptedEnvironments' | 'skipSignatureVerification'>
+	Pick<
+		ReportParseConfig,
+		'acceptedZones' | 'acceptedEnvironments' | 'skipSignatureVerification' | 'encoder'
+	>
 > {
 	return {
 		acceptedZones: overrides?.acceptedZones ?? [],
 		acceptedEnvironments:
 			overrides !== undefined ? (overrides.acceptedEnvironments ?? []) : [productionEnvironment()],
 		skipSignatureVerification: overrides?.skipSignatureVerification ?? false,
+		encoder: resolveEncoder(overrides?.encoder),
 	}
 }
 
@@ -445,7 +585,7 @@ export class Report {
 		reportContext: Uint8Array,
 		config?: ReportParseConfig,
 	): Promise<Report> {
-		validateEncoder(config?.encoder)
+		resolveEncoder(config?.encoder)
 
 		const configDigest =
 			reportContext.length >= 32 ? reportContext.slice(0, 32) : new Uint8Array(32)
@@ -489,10 +629,11 @@ export class Report {
 		config: Required<
 			Pick<
 				ReportParseConfig,
-				'acceptedZones' | 'acceptedEnvironments' | 'skipSignatureVerification'
+				'acceptedZones' | 'acceptedEnvironments' | 'skipSignatureVerification' | 'encoder'
 			>
 		>,
 	): Promise<void> {
+		const encoder = resolveEncoder(config.encoder)
 		const donId = this.donId()
 		const candidates: Environment[] = []
 		for (const z of config.acceptedZones) {
@@ -506,6 +647,7 @@ export class Report {
 			throw new Error(`DON ID ${donId} is not in accepted zones`)
 		}
 
+		const reportHash = hashReport(encoder, this.report)
 		const fetchFailures: Error[] = []
 		let lastVerifyErr: Error | null = null
 
@@ -523,8 +665,21 @@ export class Report {
 				continue
 			}
 
+			let signers: Map<Address, number>
 			try {
-				await verifySigs(this.report, info.f, normalizeDonSigners(info.signers))
+				signers = signersFor(info, encoder)
+			} catch (err) {
+				const msg = err instanceof Error ? err.message : String(err)
+				fetchFailures.push(
+					new Error(
+						`no ${encoder} signers for DON ${donId} on chain ${env.chainSelector} contract ${env.registryAddress}: ${msg}`,
+					),
+				)
+				continue
+			}
+
+			try {
+				await verifySigs(this.report, info.f, normalizeDonSigners(signers), reportHash)
 				return
 			} catch (err) {
 				lastVerifyErr = err instanceof Error ? err : new Error(String(err))

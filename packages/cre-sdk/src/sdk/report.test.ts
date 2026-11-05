@@ -611,8 +611,8 @@ describe('Report Parse', () => {
 		}
 	})
 
-	describe('non-evm encoder returns an error without reading from chain', () => {
-		for (const encoder of ['aptos', 'solana', 'stellar']) {
+	describe('unsupported encoder returns an error without reading from chain', () => {
+		for (const encoder of ['aptos', 'stellar', 'ton']) {
 			for (const skipSignatureVerification of [false, true]) {
 				test(`${encoder}/skipSignatureVerification=${skipSignatureVerification}`, async () => {
 					const mock = setupDonSettingRead(productionEnvironmentReplay)
@@ -629,5 +629,22 @@ describe('Report Parse', () => {
 				})
 			}
 		}
+	})
+
+	test('solana encoder fails without a consensus OCR3 config while evm keeps working', async () => {
+		// productionEnvironmentReplay was recorded before DON 1 published its consensus OCR3 config on the registry,
+		// so solana verification must fail with a clear error while EVM verification keeps working.
+		setupDonSettingRead(productionEnvironmentReplay)
+		const runtime = newTestRuntime()
+
+		await expect(
+			Report.parse(runtime, rawReport, reportSigs, reportContext, {
+				acceptedEnvironments: [productionEnvironment()],
+				encoder: 'solana',
+			}),
+		).rejects.toThrow('no solana signers for DON 1')
+
+		const report = await Report.parse(runtime, rawReport, reportSigs, reportContext)
+		expect(report).toBeDefined()
 	})
 })
