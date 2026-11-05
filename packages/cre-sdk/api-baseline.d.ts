@@ -91,6 +91,26 @@ export interface TeeRuntime<C> extends BaseRuntime<C>, SecretsProvider {
 	usingTheDons(): Runtime<C>;
 }
 /**
+ * Runtime for Tee mode execution.
+ */
+export interface TeeRuntime<C> extends BaseRuntime<C>, SecretsProvider {
+    /**
+     * Generates a report from the DON.
+     * Data requestsed throught this method will be routed outside of the TEE.
+     *
+     * @param input - Report request to generate a report from the DON
+     * @returns Report generated from the DON
+     */
+    reportFromDon(input: ReportRequest | ReportRequestJson): {
+        result: () => Report;
+    };
+    /**
+     * Returns the runtime that makes requests to the CRE DONs.
+     * Requests made through this runtime will therefore be routed outside of the TEE
+     */
+    usingTheDons(): Runtime<C>;
+}
+/**
  * Runtime for DON mode execution.
  */
 export interface Runtime<C> extends BaseRuntime<C>, SecretsProvider {
@@ -249,18 +269,25 @@ export declare class RawReportTooShortError extends Error {
 	readonly got: number;
 	constructor(need: number, got: number);
 }
-
-import type {
-	ReportResponse,
-	ReportResponseJson,
-} from "@cre/generated/sdk/v1alpha/sdk_pb";
-import type { Environment, Zone } from "./don-info";
-import type { BaseRuntime } from "./runtime";
+export declare class UnsupportedEncoderError extends Error {
+    readonly encoder: string;
+    constructor(encoder: string);
+}
+import { type ReportResponse, type ReportResponseJson } from '@cre/generated/sdk/v1alpha/sdk_pb';
+import { type Environment, type Zone } from './don-info';
+import type { BaseRuntime } from './runtime';
 export type ReportParseConfig = {
-	acceptedZones?: Zone[];
-	acceptedEnvironments?: Environment[];
-	skipSignatureVerification?: boolean;
+    acceptedZones?: Zone[];
+    acceptedEnvironments?: Environment[];
+    skipSignatureVerification?: boolean;
+    /**
+     * Encoder name the report was generated with (`ReportRequest.encoderName`).
+     * Defaults to `"evm"`. Only EVM reports can currently be parsed and verified;
+     * any other value throws `UnsupportedEncoderError`.
+     */
+    encoder?: string;
 };
+export declare const EVM_REPORT_ENCODER = "evm";
 export declare const REPORT_METADATA_HEADER_LENGTH = 109;
 export type ReportMetadataHeader = {
 	version: number;

@@ -849,11 +849,6 @@ export type ExecuteRequest = Message<'sdk.v1alpha.ExecuteRequest'> & {
 	 * @generated from field: uint64 max_response_size = 4 [jstype = JS_NORMAL];
 	 */
 	maxResponseSize: bigint
-
-	/**
-	 * @generated from field: bool suspend_on_await = 6;
-	 */
-	suspendOnAwait: boolean
 }
 
 /**
@@ -884,11 +879,6 @@ export type ExecuteRequestJson = {
 	 * @generated from field: uint64 max_response_size = 4 [jstype = JS_NORMAL];
 	 */
 	maxResponseSize?: string
-
-	/**
-	 * @generated from field: bool suspend_on_await = 6;
-	 */
-	suspendOnAwait?: boolean
 }
 
 /**

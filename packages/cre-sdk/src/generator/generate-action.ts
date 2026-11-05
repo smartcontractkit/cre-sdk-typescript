@@ -50,6 +50,10 @@ export function generateActionMethod(
 	//     when the user lifts the request object into a variable.
 	const basicSig = `<TInput>(runtime: ${modePrefix}Runtime<unknown>, input: CapabilityInput<TInput, ${nativeInputType}, ${jsonInputType}>): {result: () => ${outputType}}`
 
+	// A TEE-enabled capability takes a single union-typed signature rather than one
+	// overload per runtime. The union accepts each runtime individually AND a
+	// union-typed variable; separate overloads reject the latter, since overload
+	// resolution does not distribute over a union argument.
 	const callSig = teeEnabled
 		? basicSig.replace(
 				`${modePrefix}Runtime<unknown>`,
@@ -57,16 +61,10 @@ export function generateActionMethod(
 			)
 		: basicSig
 
-	const teeSig = basicSig.replace(`${modePrefix}Runtime<unknown>`, `TeeRuntime<unknown>`)
+	const nameAndPublicSigs = `${methodName}${callSig}`
 
-	var nameAndPublicSigs = teeEnabled
-		? `${methodName}${teeSig}\n${methodName}${basicSig};\n${methodName}${callSig};`
-		: `${methodName}${callSig};`
-
-	// Internal impl signature - widest, accepts either form (and either runtime when TEE is enabled).
-	const implSig = `(runtime: ${modePrefix}Runtime<unknown>${
-		teeEnabled ? ' | TeeRuntime<unknown>' : ''
-	}, input: ${nativeInputType} | ${jsonInputType}): {result: () => ${outputType}}`
+	// Internal impl signature - widest, accepts either form.
+	const implSig = `(runtime: ${modePrefix}Runtime<unknown>${teeEnabled ? ' | TeeRuntime<unknown>' : ''}, input: ${nativeInputType} | ${jsonInputType}): {result: () => ${outputType}}`
 	const callSigAndBody = `${implSig} {
     // Handle input conversion - unwrap if it's a wrapped type, convert from JSON if needed
     let payload: ${method.input.name}

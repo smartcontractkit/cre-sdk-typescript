@@ -422,6 +422,33 @@ export class TestRuntime<T> extends RuntimeImpl<T> {
 		config: T | undefined = undefined,
 	) {
 		super(config ?? ({} as T), 0, helpers, maxResponseSize)
+<<<<<<< HEAD
+=======
+	}
+
+	getLogs(): string[] {
+		return this.testWriter.getLogs()
+	}
+
+	setTimeProvider(timeProvider: () => number): void {
+		this.state.timeProvider = timeProvider
+	}
+}
+
+/**
+ * TestTeeRuntime is a TeeRuntime implementation for unit tests. Extends TeeRuntimeImpl; construct via newTestTEERuntime.
+ * Adds getLogs() and setTimeProvider(). Registry is accessed via getTestCapabilityHandler when inside testWithRuntime.
+ */
+export class TestTeeRuntime<T> extends TeeRuntimeImpl<T> {
+	constructor(
+		helpers: RuntimeHelpers,
+		maxResponseSize: bigint,
+		private readonly testWriter: TestWriter,
+		private readonly state: TestRuntimeState,
+		config: T,
+	) {
+		super(config, 0, helpers, maxResponseSize)
+>>>>>>> 9f5ca49f9dca08ef354d29cc95da3b3cbc18d64a
 	}
 
 	getLogs(): string[] {

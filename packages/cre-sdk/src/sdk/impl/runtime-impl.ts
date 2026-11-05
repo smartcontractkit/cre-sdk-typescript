@@ -558,14 +558,23 @@ export class TeeRuntimeImpl<C> implements TeeRuntime<C> {
 	) {
 		this.runtime = new RuntimeImpl(config, nextCallId, helpers, maxResponseSize)
 	}
+<<<<<<< HEAD
 	getSecret(request: SecretRequest | SecretRequestJson): { result: () => Secret } {
 		return this.runtime.getSecret(request)
 	}
+=======
+>>>>>>> 9f5ca49f9dca08ef354d29cc95da3b3cbc18d64a
 	getSecrets(requests: Array<SecretRequest | SecretRequestJson>): {
 		result: () => Record<string, Secret>
 	} {
 		return this.runtime.getSecrets(requests)
 	}
+<<<<<<< HEAD
+=======
+	getSecret(request: SecretRequest | SecretRequestJson): { result: () => Secret } {
+		return this.runtime.getSecret(request)
+	}
+>>>>>>> 9f5ca49f9dca08ef354d29cc95da3b3cbc18d64a
 	now(): Date {
 		return this.runtime.now()
 	}
@@ -574,6 +583,7 @@ export class TeeRuntimeImpl<C> implements TeeRuntime<C> {
 		this.runtime.log(message)
 	}
 
+<<<<<<< HEAD
 	emitMetric(
 		name: string,
 		value: number,
@@ -583,6 +593,8 @@ export class TeeRuntimeImpl<C> implements TeeRuntime<C> {
 		return this.runtime.emitMetric(name, value, type, labels)
 	}
 
+=======
+>>>>>>> 9f5ca49f9dca08ef354d29cc95da3b3cbc18d64a
 	callCapability<I extends Message, O extends Message>({
 		capabilityId,
 		method,
