@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { createExtensionAccessor } from './validate-extension'
 
 const greetSchema = z.object({
-	greet: z.function().args().returns(z.string()),
+	greet: z.function().input([], z.unknown()).output(z.string()),
 })
 
 describe('createExtensionAccessor', () => {
@@ -18,6 +18,16 @@ describe('createExtensionAccessor', () => {
 
 		const accessor = createExtensionAccessor('testExt', greetSchema)
 		expect(accessor().greet()).toBe('hello')
+	})
+
+	test('accepts a parse-only validator without depending on Zod internals', () => {
+		;(globalThis as Record<string, unknown>).testExt = { greet: () => 'portable' }
+		const accessor = createExtensionAccessor('testExt', {
+			parse(input: unknown) {
+				return greetSchema.parse(input)
+			},
+		})
+		expect(accessor().greet()).toBe('portable')
 	})
 
 	test('caches the validated result across calls', () => {

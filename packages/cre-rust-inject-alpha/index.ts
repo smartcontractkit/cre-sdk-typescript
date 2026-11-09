@@ -2,7 +2,7 @@ import { createExtensionAccessor } from '@chainlink/cre-sdk-javy-plugin/runtime/
 import { z } from 'zod'
 
 const rustAlphaSchema = z.object({
-	greet: z.function().args().returns(z.string()),
+	greet: z.function().input([], z.unknown()).output(z.string()),
 })
 
 export type RustAlpha = z.infer<typeof rustAlphaSchema>

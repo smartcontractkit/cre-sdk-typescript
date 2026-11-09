@@ -13,6 +13,6 @@
 		"@chainlink/cre-sdk": "workspace:*",
 		"@chainlink/cre-sdk-javy-plugin": "workspace:*",
 		"@chainlink/cre-rust-inject-alpha": "workspace:*",
-		"zod": "3.25.76"
+		"zod": "4.6.7"
 	}
 }

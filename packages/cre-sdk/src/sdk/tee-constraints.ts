@@ -27,17 +27,17 @@ const nitroRegionSchema = z.enum(NITRO_REGIONS, {
 const nitroBindingSchema = z
 	.object({
 		tee: z.literal('nitro'),
-		regions: z.array(nitroRegionSchema).nonempty().optional(),
+		regions: z.tuple([nitroRegionSchema]).rest(nitroRegionSchema).optional(),
 	})
 	.strict()
 
 const teeBindingSchema = z.discriminatedUnion('tee', [nitroBindingSchema])
 
-const oneOfTeesSchema = z.array(teeBindingSchema).nonempty()
+const oneOfTeesSchema = z.tuple([teeBindingSchema]).rest(teeBindingSchema)
 
 const anyTeeConstraintSchema = z
 	.object({
-		regions: z.array(regionSchema).nonempty().optional(),
+		regions: z.tuple([regionSchema]).rest(regionSchema).optional(),
 	})
 	.strict()
 

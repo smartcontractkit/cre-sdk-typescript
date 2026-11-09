@@ -1,35 +1,39 @@
 import { Mode } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { z } from 'zod'
 
-// Zod schema for validating global host functions
+// Keep validation errors as classic ZodError instances, as with Zod 3.
+// Zod 4's function validator throws the core error type on invocation instead.
+function hostFunction<Input extends z.ZodTuple, Output extends z.ZodType>(
+	input: Input,
+	output: Output,
+) {
+	return z
+		.custom<(...parameters: z.output<Input>) => z.input<Output>>(
+			(value) => typeof value === 'function',
+		)
+		.transform(
+			(implementation) =>
+				function (this: unknown, ...parameters: z.input<Input>) {
+					return output.parse(Reflect.apply(implementation, this, input.parse(parameters)))
+				},
+		)
+}
+
+const bytes = () => z.union([z.instanceof(Uint8Array), z.custom<Uint8Array<ArrayBufferLike>>()])
+
 export const globalHostBindingsSchema = z.object({
-	switchModes: z.function().args(z.nativeEnum(Mode)).returns(z.void()),
-	setRandomMode: z.function().args(z.nativeEnum(Mode)).returns(z.void()),
-	log: z.function().args(z.string()).returns(z.void()),
-	sendResponse: z
-		.function()
-		.args(z.union([z.instanceof(Uint8Array), z.custom<Uint8Array<ArrayBufferLike>>()]))
-		.returns(z.number()),
-	versionV2: z.function().args().returns(z.void()),
-	callCapability: z
-		.function()
-		.args(z.union([z.instanceof(Uint8Array), z.custom<Uint8Array<ArrayBufferLike>>()]))
-		.returns(z.number()),
-	awaitCapabilities: z
-		.function()
-		.args(z.union([z.instanceof(Uint8Array), z.custom<Uint8Array<ArrayBufferLike>>()]), z.number())
-		.returns(z.union([z.instanceof(Uint8Array), z.custom<Uint8Array<ArrayBufferLike>>()])),
-	getSecrets: z
-		.function()
-		.args(z.union([z.instanceof(Uint8Array), z.custom<Uint8Array<ArrayBufferLike>>()]), z.number())
-		.returns(z.any()),
-	awaitSecrets: z
-		.function()
-		.args(z.union([z.instanceof(Uint8Array), z.custom<Uint8Array<ArrayBufferLike>>()]), z.number())
-		.returns(z.union([z.instanceof(Uint8Array), z.custom<Uint8Array<ArrayBufferLike>>()])),
-	getWasiArgs: z.function().args().returns(z.string()),
-	now: z.function().args().returns(z.number()),
-	sleep: z.function().args(z.number()).returns(z.void()),
+	switchModes: hostFunction(z.tuple([z.enum(Mode)]).rest(z.unknown()), z.void()),
+	setRandomMode: hostFunction(z.tuple([z.enum(Mode)]).rest(z.unknown()), z.void()),
+	log: hostFunction(z.tuple([z.string()]).rest(z.unknown()), z.void()),
+	sendResponse: hostFunction(z.tuple([bytes()]).rest(z.unknown()), z.number()),
+	versionV2: hostFunction(z.tuple([]).rest(z.unknown()), z.void()),
+	callCapability: hostFunction(z.tuple([bytes()]).rest(z.unknown()), z.number()),
+	awaitCapabilities: hostFunction(z.tuple([bytes(), z.number()]).rest(z.unknown()), bytes()),
+	getSecrets: hostFunction(z.tuple([bytes(), z.number()]).rest(z.unknown()), z.any()),
+	awaitSecrets: hostFunction(z.tuple([bytes(), z.number()]).rest(z.unknown()), bytes()),
+	getWasiArgs: hostFunction(z.tuple([]).rest(z.unknown()), z.string()),
+	now: hostFunction(z.tuple([]).rest(z.unknown()), z.number()),
+	sleep: hostFunction(z.tuple([z.number()]).rest(z.unknown()), z.void()),
 })
 
 type GlobalHostBindingsMap = z.infer<typeof globalHostBindingsSchema>
