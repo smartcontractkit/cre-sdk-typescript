@@ -2,6 +2,8 @@ syntax = "proto3";
 
 // Wire-compatible subset of chainlink-common pkg/capabilities/pb/registry.proto, containing only the fields
 // needed to read a DON's OCR3 signers from the capabilities registry. Field numbers must match the original.
+// The file name differs from the original to match cre-sdk-go, where the protobuf registry requires globally unique
+// file paths and the original registers as "registry.proto".
 package cre.sdk.internal.registry;
 
 message OCR3Config {
