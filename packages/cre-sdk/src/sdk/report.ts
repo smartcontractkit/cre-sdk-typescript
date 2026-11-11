@@ -1,7 +1,7 @@
 import { create, fromBinary, fromJson } from '@bufbuild/protobuf'
 import { BinaryReader, WireType } from '@bufbuild/protobuf/wire'
 import { AnySchema } from '@bufbuild/protobuf/wkt'
-import { type CapabilityConfig, CapabilityConfigSchema } from '@cre/generated/internal/registry_pb'
+import { type CapabilityConfig, CapabilityConfigSchema } from '@cre/generated/internal/cre_sdk_registry_pb'
 import {
 	AttributedSignatureSchema,
 	AwaitCapabilitiesRequestSchema,
