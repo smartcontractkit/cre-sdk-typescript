@@ -37,6 +37,7 @@ import {
 import type { Value as ProtoValue } from '@cre/generated/values/v1/values_pb'
 import { ValueSchema } from '@cre/generated/values/v1/values_pb'
 import type { WorkflowUserMetric } from '@cre/generated/workflows/v2/workflow_user_metric_pb'
+import type { WorkflowExecutionMetadata } from '../execution-metadata'
 import type { RuntimeHelpers } from '../impl/runtime-impl'
 import { RuntimeImpl, TeeRuntimeImpl } from '../impl/runtime-impl'
 import { TestWriter } from './test-writer'
@@ -339,6 +340,7 @@ function createTestRuntimeHelpers(
 }
 
 export interface NewTestRuntimeOptions {
+	executionMetadata?: WorkflowExecutionMetadata
 	timeProvider?: () => number
 	maxResponseSize?: number
 }
@@ -406,7 +408,14 @@ export function newTestRuntime<T = unknown>(
 	const maxResponseSize = BigInt(configuredMaxResponseSize)
 	const helpers = createTestRuntimeHelpers(registry, secretsMap, testWriter, state, maxResponseSize)
 
-	return new TestRuntime(helpers, maxResponseSize, testWriter, state, config)
+	return new TestRuntime(
+		helpers,
+		maxResponseSize,
+		testWriter,
+		state,
+		config,
+		options.executionMetadata,
+	)
 }
 
 /**
@@ -420,8 +429,9 @@ export class TestRuntime<T> extends RuntimeImpl<T> {
 		private readonly testWriter: TestWriter,
 		private readonly state: TestRuntimeState,
 		config: T | undefined = undefined,
+		executionMeta?: WorkflowExecutionMetadata,
 	) {
-		super(config ?? ({} as T), 0, helpers, maxResponseSize)
+		super(config ?? ({} as T), 0, helpers, maxResponseSize, executionMeta)
 	}
 
 	getLogs(): string[] {
@@ -444,8 +454,9 @@ export class TestTeeRuntime<T> extends TeeRuntimeImpl<T> {
 		private readonly testWriter: TestWriter,
 		private readonly state: TestRuntimeState,
 		config: T,
+		executionMeta?: WorkflowExecutionMetadata,
 	) {
-		super(config, 0, helpers, maxResponseSize)
+		super(config, 0, helpers, maxResponseSize, executionMeta)
 	}
 
 	getLogs(): string[] {

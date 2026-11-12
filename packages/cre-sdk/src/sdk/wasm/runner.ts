@@ -12,6 +12,7 @@ import {
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import { type ConfigHandlerParams, configHandler } from '@cre/sdk/utils/config'
 import type { SecretsProvider, Workflow } from '@cre/sdk/workflow'
+import type { WorkflowExecutionMetadata } from '../execution-metadata'
 import { Value } from '../utils'
 import { hostBindings } from './host-bindings'
 import { Runtime, TeeRuntime } from './runtime'
@@ -64,7 +65,12 @@ class RunnerBase<TConfig> {
 			secretsProvider: SecretsProvider,
 		) => Promise<Workflow<TConfig>> | Workflow<TConfig>,
 	) {
-		const runtime = new Runtime(this.config, 0, this.request.maxResponseSize)
+		const runtime = new Runtime(
+			this.config,
+			0,
+			this.request.maxResponseSize,
+			executionMetadataFromRequest(this.request),
+		)
 
 		let result: Promise<ExecutionResult> | ExecutionResult
 		try {
@@ -148,7 +154,9 @@ class RunnerBase<TConfig> {
 
 			// If the handler has requirements (e.g. TEE), use TeeRuntime; otherwise use the default runtime.
 			const isTee = entry.requirements != null
-			const handlerRuntime = isTee ? new TeeRuntime(this.config, 0, req.maxResponseSize) : runtime
+			const handlerRuntime = isTee
+				? new TeeRuntime(this.config, 0, req.maxResponseSize, executionMetadataFromRequest(req))
+				: runtime
 
 			// TEE is a single instance, no need to use the deterministic seed.
 			// Using the TEE's seed allows us to use a cryptographic random.
@@ -283,5 +291,16 @@ export class Runner<TConfig> extends RunnerBase<TConfig> {
 			(config, request) => new Runner(config, request),
 			configHandlerParams,
 		)
+	}
+}
+
+function executionMetadataFromRequest(request: ExecuteRequest): WorkflowExecutionMetadata {
+	const metadata = request.executionMetadata
+	return {
+		workflowID: metadata?.workflowId ?? '',
+		executionID: metadata?.executionId ?? '',
+		workflowOwner: metadata?.workflowOwner ?? '',
+		donID: metadata?.donId ?? 0,
+		donF: metadata?.donF ?? 0,
 	}
 }
