@@ -311,6 +311,8 @@ You, the developer, must declare config files in config.json files, co-located w
 
 Use Zod schemas for type-safe configuration.
 
+The SDK uses Zod 4.6.7. When upgrading a workflow from Zod 3, update its direct Zod dependency and migrate any Zod-specific APIs using the [Zod 4 migration guide](https://zod.dev/v4/changelog). Rust extension schemas use `.input(...).output(...)` for function validation; the extension accessor accepts synchronous validators exposing `parse(input)`.
+
 Here's an example of zod usage for the config specified in `../cre-sdk-examples/src/workflows/on-chain/config.json`
 
 ```typescript
