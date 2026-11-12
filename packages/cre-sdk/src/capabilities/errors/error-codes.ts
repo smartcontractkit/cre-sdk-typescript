@@ -69,6 +69,9 @@ export const LimitExceeded = 101
 /** Not enough observations to enable the operation to complete. */
 export const InsufficientObservations = 102
 
+/** Consensus failed because f+1 or more nodes reported an error observation. */
+export const ObservationErrors = 103
+
 const errorCodeToString = new Map<number, string>([
 	[Canceled, 'Canceled'],
 	[Unknown, 'Unknown'],
@@ -89,6 +92,7 @@ const errorCodeToString = new Map<number, string>([
 	[ConsensusFailed, 'ConsensusFailed'],
 	[LimitExceeded, 'LimitExceeded'],
 	[InsufficientObservations, 'InsufficientObservations'],
+	[ObservationErrors, 'ObservationErrors'],
 ])
 
 const stringToErrorCode = new Map<string, number>(
