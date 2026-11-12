@@ -12,6 +12,7 @@ export * from '../capabilities/errors';
 export * from './cre';
 export * from './don-info';
 export * from './errors';
+export * from './execution-metadata';
 export * from './report';
 export type * from './runtime';
 export * from './runtime';
@@ -92,6 +93,24 @@ export interface Runtime<C> extends BaseRuntime<C>, SecretsProvider {
         result: () => Report;
     };
 }
+import type { BaseRuntime } from './runtime';
+/** Execution metadata supplied by the host for this invocation. */
+export type WorkflowExecutionMetadata = {
+    /** 32-byte lowercase hex without a 0x prefix. */
+    readonly workflowID: string;
+    /** Host-generated execution ID; empty during subscription. */
+    readonly executionID: string;
+    /** 20-byte lowercase hex without a 0x prefix. */
+    readonly workflowOwner: string;
+    readonly donID: number;
+    /** Fault tolerance setting. Zero is valid. */
+    readonly donF: number;
+};
+/** Optional extension implemented by runtimes that expose execution metadata. */
+export interface ExecutionMetadataProvider {
+    executionMetadata(): WorkflowExecutionMetadata;
+}
+export declare function executionMetadata<C>(runtime: BaseRuntime<C>): WorkflowExecutionMetadata;
 import type { Message } from '@bufbuild/protobuf';
 import type { Requirements, RestrictionsJson, Secret, SecretRequest, SecretRequestJson } from '@cre/generated/sdk/v1alpha/sdk_pb';
 import type { Runtime, TeeRuntime } from '@cre/sdk/runtime';

@@ -14,6 +14,7 @@ import {
 	GetSecretsRequestSchema,
 	type Mode,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
+import type { WorkflowExecutionMetadata } from '../execution-metadata'
 import {
 	NodeRuntimeImpl,
 	type RuntimeHelpers,
@@ -23,20 +24,35 @@ import {
 import { hostBindings } from './host-bindings'
 
 export class Runtime<C> extends RuntimeImpl<C> {
-	constructor(config: C, nextCallId: number, maxResponseSize: bigint) {
-		super(config, nextCallId, WasmRuntimeHelpers.getInstance(), maxResponseSize)
+	constructor(
+		config: C,
+		nextCallId: number,
+		maxResponseSize: bigint,
+		executionMeta?: WorkflowExecutionMetadata,
+	) {
+		super(config, nextCallId, WasmRuntimeHelpers.getInstance(), maxResponseSize, executionMeta)
 	}
 }
 
 export class NodeRuntime<C> extends NodeRuntimeImpl<C> {
-	constructor(config: C, nextCallId: number, maxResponseSize: bigint) {
-		super(config, nextCallId, WasmRuntimeHelpers.getInstance(), maxResponseSize)
+	constructor(
+		config: C,
+		nextCallId: number,
+		maxResponseSize: bigint,
+		executionMeta?: WorkflowExecutionMetadata,
+	) {
+		super(config, nextCallId, WasmRuntimeHelpers.getInstance(), maxResponseSize, executionMeta)
 	}
 }
 
 export class TeeRuntime<C> extends TeeRuntimeImpl<C> {
-	constructor(config: C, nextCallId: number, maxResponseSize: bigint) {
-		super(config, nextCallId, WasmRuntimeHelpers.getInstance(), maxResponseSize)
+	constructor(
+		config: C,
+		nextCallId: number,
+		maxResponseSize: bigint,
+		executionMeta?: WorkflowExecutionMetadata,
+	) {
+		super(config, nextCallId, WasmRuntimeHelpers.getInstance(), maxResponseSize, executionMeta)
 	}
 }
 

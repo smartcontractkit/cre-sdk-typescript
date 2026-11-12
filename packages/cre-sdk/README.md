@@ -125,6 +125,24 @@ Use `runtime.runInNodeMode()` to execute functions that require individual node 
 
 The SDK wires runtime safety internally; you can call `main()` directly as shown in the examples.
 
+### Workflow Execution Metadata
+
+Use `executionMetadata(runtime)` to read the workflow execution meta in runtime. The returned `WorkflowExecutionMetadata` contains `workflowID`, `executionID`,
+`workflowOwner`, `donID`, and `donF`. IDs are lowercase hex without `0x`. Metadata is available in DON, Node, and TEE trigger callbacks. Subscription requests have
+an empty execution ID. The host generates execution IDs. Do not cache this data across executions. This API adds no cross-node version pinning. 
+
+```ts
+import { executionMetadata, type Runtime } from '@chainlink/cre-sdk'
+
+function readWorkflowID(runtime: Runtime<unknown>): string {
+  const metadata = executionMetadata(runtime)
+  if (metadata.workflowID === '') {
+    throw new Error('Workflow execution metadata is unavailable from this host')
+  }
+  return `0x${metadata.workflowID}`
+}
+```
+
 ### Confidential Workflows
 
 A Confidential Workflow is a CRE workflow that designates part of its logic to run inside a secure [enclave](https://docs.chain.link/cre/key-terms#enclave)—a running instance of a [Trusted Execution Environment (TEE)](https://docs.chain.link/cre/key-terms#tee-trusted-execution-environment), a hardware-isolated environment designed to keep the indicated data it processes confidential from the machine's own operator during execution and node operators.

@@ -7,8 +7,9 @@ import { test as bunTest, describe, expect } from 'bun:test'
 import { create } from '@bufbuild/protobuf'
 import { AnySchema } from '@bufbuild/protobuf/wkt'
 import { BasicActionCapability } from '@cre/generated-sdk/capabilities/internal/basicaction/v1/basicaction_sdk_gen'
-import { consensusMedianAggregation } from '@cre/sdk/utils'
+import { consensusIdenticalAggregation, consensusMedianAggregation } from '@cre/sdk/utils'
 import { CapabilityRuntimeError, SecretsBatchError, SecretsError } from '../errors'
+import { executionMetadata, type WorkflowExecutionMetadata } from '../execution-metadata'
 import { BasicTestActionMock } from '../test/generated/capabilities/internal/basicaction/v1/basic_test_action_mock_gen'
 import {
 	__testOnlyRegistryStore,
@@ -320,5 +321,49 @@ describe('test wrapper', () => {
 			}),
 		).rejects.toThrow('intentional failure')
 		expect(__testOnlyRegistryStore()).toBeUndefined()
+	})
+})
+
+describe('test runtime execution metadata', () => {
+	const fixtureDonID = 17
+	const zeroFaultTolerance = 0
+	const expectedMetadata: WorkflowExecutionMetadata = {
+		workflowID: '0020350fb4f89856a031268826d6e9b9340996637aa27859baa7b07db58bb020',
+		executionID: '9f38bdece8892b3452c401a7a2d5a170f078ab9b2c98c591e24028ce94b33ed2',
+		workflowOwner: '5366890c26e8737b89d9084b4c632f7de73d1674',
+		donID: fixtureDonID,
+		donF: zeroFaultTolerance,
+	}
+
+	test('does not leak configured metadata to another test runtime', () => {
+		const expectedEmptyMetadata: WorkflowExecutionMetadata = {
+			workflowID: '',
+			executionID: '',
+			workflowOwner: '',
+			donID: 0,
+			donF: 0,
+		}
+		const configured = newTestRuntime(null, { executionMetadata: { ...expectedMetadata } })
+		const unconfigured = newTestRuntime()
+
+		expect(executionMetadata(configured)).toEqual(expectedMetadata)
+		expect(executionMetadata(unconfigured)).toEqual(expectedEmptyMetadata)
+	})
+
+	test('passes configured metadata to Node mode', () => {
+		// Setup.
+		const runtime = newTestRuntime(null, { executionMetadata: { ...expectedMetadata } })
+
+		// Execute and aggregate.
+		const result = runtime
+			.runInNodeMode(
+				executionMetadata,
+				consensusIdenticalAggregation<WorkflowExecutionMetadata>(),
+			)()
+			.result()
+
+		// Verify.
+		expect(executionMetadata(runtime)).toEqual(expectedMetadata)
+		expect(result).toEqual(expectedMetadata)
 	})
 })
