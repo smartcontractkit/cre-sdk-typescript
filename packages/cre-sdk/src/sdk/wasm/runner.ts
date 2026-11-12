@@ -28,7 +28,18 @@ class RunnerBase<TConfig> {
 	): Promise<TRunner> {
 		hostBindings.versionV2()
 		const request = RunnerBase.getRequest()
-		const config = await configHandler<TConfig, TIntermediateConfig>(request, configHandlerParams)
+		// preHook requests arrive with an empty `config` byte array — the host does not populate
+		// a workflow config on that phase. Running `configHandler` through the default JSON
+		// parser against empty bytes throws "Failed to parse configuration: Unexpected end of
+		// JSON input" before the hook ever runs, which is both wrong and misdirects diagnosis
+		// to the user's config file. Short-circuit the parse when the phase is preHook AND the
+		// config bytes are empty; a preHook that was given a config, and every subscribe or
+		// trigger request, keeps the strict parse. See issue #314.
+		const skipConfigParse =
+			request.request.case === 'preHook' && request.config.length === 0
+		const config = skipConfigParse
+			? (undefined as unknown as TConfig)
+			: await configHandler<TConfig, TIntermediateConfig>(request, configHandlerParams)
 		return newRunner(config, request)
 	}
 
