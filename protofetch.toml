@@ -1,0 +1,15 @@
+name = "cre-sdk"
+description = "Protos the SDK generates from that the capabilities repo owns, fetched with protofetch"
+proto_out_dir = ".deps"
+
+# The cron capability owns its protos in the capabilities repo: its development protos, which tag fields and
+# methods with the feature they belong to, are at the root of its protos directory; its releases, which never
+# change, are in the production directory at their versioned path. The capabilities-development branch generates
+# from the development protos; main, from the releases.
+#
+# The feature protos the development protos import are in the libs: no content root fetches them at the path they
+# are imported by, so they are fetched at the root of what is fetched and staged at it.
+[capabilities]
+url = "github.com/smartcontractkit/capabilities"
+revision = "9777ffcac0b966d2488cb1e63e155da8b98bd8d6"
+content_roots = ["/scheduler/cron/protos", "/libs/capability/feature"]
