@@ -30,10 +30,7 @@ import {
 	HTTPCapability,
 	HTTPRestrictor,
 } from '@cre/generated-sdk/capabilities/networking/http/v1alpha/http_sdk_gen'
-import {
-	CronCapability,
-	CronRestrictor,
-} from '@cre/generated-sdk/capabilities/scheduler/cron/v1/cron_sdk_gen'
+import { CronCapability, CronRestrictor } from '@cre/generated-sdk/cron_sdk_gen'
 import { prepareRuntime } from '@cre/sdk/utils/prepare-runtime'
 import { handler, handlerInTee } from '@cre/sdk/workflow'
 
@@ -66,8 +63,8 @@ export {
 	type ScValJson as StellarScValJson,
 } from '@cre/generated/capabilities/blockchain/stellar/v1alpha/scval_pb'
 export type { Payload as HTTPPayload } from '@cre/generated/capabilities/networking/http/v1alpha/trigger_pb'
-export type { Payload as CronPayload } from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
 export { TeeType } from '@cre/generated/sdk/v1alpha/sdk_pb'
+export type { Payload as CronPayload } from '@cre/generated/trigger_pb'
 // Aptos Capability
 export {
 	ClientCapability as AptosClient,
@@ -113,10 +110,7 @@ export {
 	HTTPRestrictor,
 } from '@cre/generated-sdk/capabilities/networking/http/v1alpha/http_sdk_gen'
 // CRON Capability
-export {
-	CronCapability,
-	CronRestrictor,
-} from '@cre/generated-sdk/capabilities/scheduler/cron/v1/cron_sdk_gen'
+export { CronCapability, CronRestrictor } from '@cre/generated-sdk/cron_sdk_gen'
 // Runtime
 export type { NodeRuntime, Runtime, TeeRuntime } from '@cre/sdk/runtime'
 export type {
