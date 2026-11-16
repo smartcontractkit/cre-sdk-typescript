@@ -52,6 +52,13 @@ import type { ExecutionMetadataProvider, WorkflowExecutionMetadata } from '../ex
 
 const DEFAULT_SECRET_NAMESPACE = 'main'
 
+function normalizeSecretRequest(request: SecretRequest | SecretRequestJson): SecretRequest {
+	return create(SecretRequestSchema, {
+		id: request.id,
+		namespace: request.namespace || DEFAULT_SECRET_NAMESPACE,
+	})
+}
+
 /**
  * Base implementation shared by DON and Node runtimes.
  *
@@ -398,17 +405,7 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 		}
 
 		// Normalize requests (accept both protobuf and JSON formats)
-		const normalizedRequests = requests.map((request) =>
-			(request as unknown as { $typeName?: string }).$typeName
-				? create(SecretRequestSchema, {
-						id: (request as SecretRequest).id,
-						namespace: (request as SecretRequest).namespace || DEFAULT_SECRET_NAMESPACE,
-					})
-				: create(SecretRequestSchema, {
-						id: request.id,
-						namespace: request.namespace || DEFAULT_SECRET_NAMESPACE,
-					}),
-		)
+		const normalizedRequests = requests.map(normalizeSecretRequest)
 		if (normalizedRequests.length === 0) {
 			return {
 				result: () => ({}),
@@ -459,9 +456,7 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 	getSecret(request: SecretRequest | SecretRequestJson): {
 		result: () => Secret
 	} {
-		const secretRequest = (request as unknown as { $typeName?: string }).$typeName
-			? (request as SecretRequest)
-			: create(SecretRequestSchema, request)
+		const secretRequest = normalizeSecretRequest(request)
 
 		const getSecretsCall = this.getSecrets([secretRequest])
 		return {
