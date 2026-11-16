@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, mock, test } from 'bun:test'
-import { create, fromBinary, toBinary } from '@bufbuild/protobuf'
+import { clone, create, fromBinary, toBinary } from '@bufbuild/protobuf'
 import { anyPack, anyUnpack, EmptySchema } from '@bufbuild/protobuf/wkt'
 import {
 	ConfigSchema,
@@ -24,12 +24,15 @@ import {
 	type Trigger,
 	TriggerSchema,
 	type TriggerSubscriptionRequest,
+	WorkflowExecutionMetadataSchema,
 } from '@cre/generated/sdk/v1alpha/sdk_pb'
 import type { Value as ProtoValue } from '@cre/generated/values/v1/values_pb'
 import { BasicActionRestrictor } from '@cre/generated-sdk/capabilities/internal/basicaction/v1/basicaction_sdk_gen'
 import { BasicCapability as BasicTriggerCapability } from '@cre/generated-sdk/capabilities/internal/basictrigger/v1/basic_sdk_gen'
 import { cre } from '@cre/sdk/cre'
 import { handlerInTee } from '@cre/sdk/workflow'
+import { executionMetadata, type WorkflowExecutionMetadata } from '../execution-metadata'
+import type { Runtime } from '../runtime'
 import { Value } from '../utils'
 import type { SecretsProvider } from '../workflow'
 import { Runner } from './runner'
@@ -696,3 +699,141 @@ function getTestRunner(request: ExecuteRequest): Promise<Runner<string>> {
 		},
 	})
 }
+
+describe('runner execution metadata', () => {
+	const fixtureDonID = 17
+	const nextDonID = 19
+	const fixtureFaultTolerance = 3
+	const zeroFaultTolerance = 0
+	const triggerNumber = 10
+	const successfulResponseStatus = 0
+	const expectedResponseCount = 1
+	const nextExecutionID = 'e48ddcb9c9fdca45b68f7d37d1dc8bcb29df3777b3ece2f01c14d54872d44f01'
+	const expectedMetadata: WorkflowExecutionMetadata = {
+		workflowID: '0020350fb4f89856a031268826d6e9b9340996637aa27859baa7b07db58bb020',
+		executionID: '9f38bdece8892b3452c401a7a2d5a170f078ab9b2c98c591e24028ce94b33ed2',
+		workflowOwner: '5366890c26e8737b89d9084b4c632f7de73d1674',
+		donID: fixtureDonID,
+		donF: fixtureFaultTolerance,
+	}
+	const expectedEmptyMetadata: WorkflowExecutionMetadata = {
+		workflowID: '',
+		executionID: '',
+		workflowOwner: '',
+		donID: 0,
+		donF: 0,
+	}
+	const expectedPartialMetadata = {
+		...expectedEmptyMetadata,
+		workflowID: expectedMetadata.workflowID,
+	}
+	const expectedWithoutExecutionID = { ...expectedMetadata, executionID: '' }
+	const expectedMetadataWithZeroF = { ...expectedMetadata, donF: zeroFaultTolerance }
+	const expectedNextMetadata = {
+		...expectedMetadata,
+		executionID: nextExecutionID,
+		donID: nextDonID,
+		donF: zeroFaultTolerance,
+	}
+
+	const wireMetadata = {
+		workflowId: expectedMetadata.workflowID,
+		executionId: expectedMetadata.executionID,
+		workflowOwner: expectedMetadata.workflowOwner,
+		donId: expectedMetadata.donID,
+		donF: expectedMetadata.donF,
+	}
+
+	for (const mode of ['DON', 'TEE'] as const) {
+		test.each([
+			{ name: 'absent', input: undefined, expected: expectedEmptyMetadata },
+			{ name: 'empty message', input: {}, expected: expectedEmptyMetadata },
+			{ name: 'populated', input: wireMetadata, expected: expectedMetadata },
+			{
+				name: 'partial message',
+				input: { workflowId: expectedMetadata.workflowID },
+				expected: expectedPartialMetadata,
+			},
+			{
+				name: 'empty execution ID',
+				input: { ...wireMetadata, executionId: '' },
+				expected: expectedWithoutExecutionID,
+			},
+			{
+				name: 'zero F',
+				input: { ...wireMetadata, donF: zeroFaultTolerance },
+				expected: expectedMetadataWithZeroF,
+			},
+		])(`${mode} receives $name metadata through request decoding`, async (tc) => {
+			// Setup. Other host operations throw through the existing bindings.
+			const request = clone(ExecuteRequestSchema, anyExecuteRequest)
+			request.executionMetadata =
+				tc.input === undefined ? undefined : create(WorkflowExecutionMetadataSchema, tc.input)
+			const responses: ExecutionResult[] = []
+			mockHostBindings.sendResponse = mock((bytes) => {
+				responses.push(fromBinary(ExecutionResultSchema, bytes))
+				return successfulResponseStatus
+			})
+			const trigger = basicTrigger.trigger({ name: 'metadata', number: triggerNumber })
+			const entry =
+				mode === 'TEE'
+					? handlerInTee(trigger, executionMetadata<string>, [
+							{ tee: 'nitro', regions: ['us-west-2'] },
+						])
+					: cre.handler(trigger, executionMetadata<string>)
+			const runner = await getTestRunner(request)
+
+			// Execute.
+			await runner.run(() => [entry])
+
+			// Verify outside the callback, whose errors the runner catches.
+			expect(responses).toHaveLength(expectedResponseCount)
+			const [response] = responses
+			expect(response.result.case).toBe('value')
+			const value = Value.wrap(response.result.value as ProtoValue)
+			expect(value.unwrap()).toEqual(tc.expected)
+		})
+	}
+
+	test.each([
+		{ name: 'absent metadata', input: undefined, expected: expectedEmptyMetadata },
+		{ name: 'empty metadata', input: {}, expected: expectedEmptyMetadata },
+		{
+			name: 'a new execution and DON snapshot',
+			input: {
+				...wireMetadata,
+				executionId: nextExecutionID,
+				donId: nextDonID,
+				donF: zeroFaultTolerance,
+			},
+			expected: expectedNextMetadata,
+		},
+	])('does not retain previous values for $name', async (tc) => {
+		// Setup fresh requests for both invocations.
+		const expectedInvocations = [expectedMetadata, tc.expected]
+		const first = clone(ExecuteRequestSchema, anyExecuteRequest)
+		first.executionMetadata = create(WorkflowExecutionMetadataSchema, wireMetadata)
+		const next = clone(ExecuteRequestSchema, anyExecuteRequest)
+		next.executionMetadata =
+			tc.input === undefined ? undefined : create(WorkflowExecutionMetadataSchema, tc.input)
+		const seen: WorkflowExecutionMetadata[] = []
+		mockHostBindings.sendResponse = mock(() => successfulResponseStatus)
+		const workflow = () => [
+			cre.handler(
+				basicTrigger.trigger({ name: 'metadata', number: triggerNumber }),
+				(runtime: Runtime<string>) => {
+					const metadata = executionMetadata(runtime)
+					seen.push(metadata)
+					return metadata
+				},
+			),
+		]
+
+		// Execute.
+		await (await getTestRunner(first)).run(workflow)
+		await (await getTestRunner(next)).run(workflow)
+
+		// Verify.
+		expect(seen).toEqual(expectedInvocations)
+	})
+})

@@ -4,16 +4,32 @@ import {
 	fromOriginString,
 	fromVisibilityString,
 	isCapabilityExecutionError,
+	OriginSystem,
 	OriginUser,
 	VisibilityPublic,
 } from './error'
 import {
 	DeadlineExceeded,
+	errorCodeToStringValue,
 	fromErrorCodeString,
+	ObservationErrors,
 	Unknown,
 	UnrecognisedErrorCode,
 } from './error-codes'
 import { deserializeErrorFromString } from './error-serialization'
+
+test('deserializes the host observation-errors code', () => {
+	const message = 'consensus failed: at least f+1 observations contain errors'
+	const wireError = `Public:System:ObservationErrors:${message}`
+
+	const result = deserializeErrorFromString(wireError)
+
+	expect(result).toEqual(
+		new CapabilityExecutionError(message, VisibilityPublic, OriginSystem, ObservationErrors),
+	)
+	expect(errorCodeToStringValue(ObservationErrors)).toBe('ObservationErrors')
+	expect(fromErrorCodeString('ObservationErrors')).toBe(103)
+})
 
 function requireCapabilityError(err: unknown): CapabilityExecutionError {
 	expect(isCapabilityExecutionError(err)).toBe(true)
