@@ -1,12 +1,13 @@
-import type { z } from 'zod'
-
 /**
  * Creates a lazy-validated accessor for a Rust extension registered on globalThis.
  *
  * Library authors call this with the globalThis key and a zod schema.
  * The returned function validates on first access and caches the result.
  */
-export function createExtensionAccessor<T>(name: string, schema: z.ZodType<T>): () => T {
+export function createExtensionAccessor<T>(
+	name: string,
+	schema: { parse(input: unknown): T },
+): () => T {
 	let cached: T | null = null
 	return () => {
 		if (!cached) {
