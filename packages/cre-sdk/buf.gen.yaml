@@ -28,7 +28,6 @@ inputs:
       - ../../submodules/chainlink-protos/cre/capabilities/internal/nodeaction/v1
       - ../../submodules/chainlink-protos/cre/capabilities/networking/confidentialhttp/v1alpha
       - ../../submodules/chainlink-protos/cre/capabilities/networking/http/v1alpha
-      - ../../submodules/chainlink-protos/cre/capabilities/scheduler/cron/v1
       - ../../submodules/chainlink-protos/cre/sdk/v1alpha
       - ../../submodules/chainlink-protos/cre/tools/generator/v1alpha
       - ../../submodules/chainlink-protos/cre/values/v1
@@ -38,6 +37,14 @@ inputs:
       - ../../submodules/chainlink-protos/workflows/workflows/v2/workflow_user_metric.proto
       - ../../submodules/chainlink-protos/workflows/workflows/v2/cre_info.proto
       - ../../submodules/chainlink-protos/workflows/workflows/v2/workflow_key.proto
+  # The cron capability owns its protos in the capabilities repo, which protofetch fetches at the revision
+  # protofetch.lock pins: this branch, capabilities-development, generates from its development protos at the root
+  # of what is fetched, which tag fields and methods with the feature they belong to, and the feature protos they
+  # import; main, from its releases in the production directory, at their versioned path, which never change.
+  - directory: ../../.deps
+    paths:
+      - ../../.deps/trigger.proto
+      - ../../.deps/capability/feature/feature.proto
   # Trimmed copies of protos the SDK decodes internally (e.g. capabilities registry configs).
   - directory: proto
 
