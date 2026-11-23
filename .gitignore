@@ -182,3 +182,4 @@ plugins/javy_chainlink_sdk/target/
 pkg
 
 .turbo
+.deps/

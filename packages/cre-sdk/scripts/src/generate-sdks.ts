@@ -11,7 +11,7 @@ import { file_capabilities_internal_nodeaction_v1_node_action } from '@cre/gener
 import { file_capabilities_networking_confidentialhttp_v1alpha_client } from '@cre/generated/capabilities/networking/confidentialhttp/v1alpha/client_pb'
 import { file_capabilities_networking_http_v1alpha_client } from '@cre/generated/capabilities/networking/http/v1alpha/client_pb'
 import { file_capabilities_networking_http_v1alpha_trigger } from '@cre/generated/capabilities/networking/http/v1alpha/trigger_pb'
-import { file_capabilities_scheduler_cron_v1_trigger } from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
+import { file_trigger } from '@cre/generated/trigger_pb'
 import {
 	type GeneratedMockExport,
 	generateMocks,
@@ -91,10 +91,8 @@ export const main = () => {
 		...generateMocks(file_capabilities_networking_http_v1alpha_trigger, TEST_GENERATED_DIR),
 	)
 
-	generateSdk(file_capabilities_scheduler_cron_v1_trigger, './src/generated-sdk')
-	allMockExports.push(
-		...generateMocks(file_capabilities_scheduler_cron_v1_trigger, TEST_GENERATED_DIR),
-	)
+	generateSdk(file_trigger, './src/generated-sdk')
+	allMockExports.push(...generateMocks(file_trigger, TEST_GENERATED_DIR))
 
 	generateSdk(file_capabilities_networking_confidentialhttp_v1alpha_client, './src/generated-sdk')
 	allMockExports.push(

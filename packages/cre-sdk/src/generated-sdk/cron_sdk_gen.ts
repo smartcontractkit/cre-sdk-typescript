@@ -4,11 +4,9 @@ import {
 	type Config,
 	type ConfigJson,
 	ConfigSchema,
-	type LegacyPayload,
-	LegacyPayloadSchema,
 	type Payload,
 	PayloadSchema,
-} from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'
+} from '@cre/generated/trigger_pb'
 import type { Trigger } from '@cre/sdk/utils/triggers/trigger-interface'
 import type { NoExcess } from '@cre/sdk/utils/types/no-excess'
 
