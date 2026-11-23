@@ -132,6 +132,7 @@ export class ClientCapability {
 		'avalanche-testnet-fuji': 14767482510784806043n,
 		'binance_smart_chain-mainnet': 11344663589394136015n,
 		'binance_smart_chain-testnet': 13264668187771770619n,
+		'bitcoin-testnet-sepolia-bob-1': 5535534526963509396n,
 		'celo-mainnet': 1346049177634351622n,
 		'celo-sepolia': 3761762704474186180n,
 		'cronos-testnet': 2995292832068775165n,
