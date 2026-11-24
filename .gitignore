@@ -182,3 +182,6 @@ plugins/javy_chainlink_sdk/target/
 pkg
 
 .turbo
+
+# Protos fetched by protofetch, from the commits in protofetch.lock
+.deps/
