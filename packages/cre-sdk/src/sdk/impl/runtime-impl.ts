@@ -48,6 +48,7 @@ import {
 	SecretsBatchError,
 	SecretsError,
 } from '../errors'
+import type { ExecutionMetadataProvider, WorkflowExecutionMetadata } from '../execution-metadata'
 
 const DEFAULT_SECRET_NAMESPACE = 'main'
 
@@ -59,7 +60,8 @@ const DEFAULT_SECRET_NAMESPACE = 'main'
  * - Node mode: IDs decrement (-1, -2, -3...)
  * This prevents collisions when both modes are active.
  */
-export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
+export class BaseRuntimeImpl<C> implements BaseRuntime<C>, ExecutionMetadataProvider {
+	private readonly executionMeta: WorkflowExecutionMetadata
 	/**
 	 * When set, prevents operations that aren't allowed in current mode.
 	 * - Set in DON mode when code tries to use NodeRuntime
@@ -73,7 +75,20 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 		protected helpers: RuntimeHelpers,
 		protected maxResponseSize: bigint,
 		private mode: Mode,
-	) {}
+		executionMeta?: WorkflowExecutionMetadata,
+	) {
+		this.executionMeta = {
+			workflowID: executionMeta?.workflowID ?? '',
+			executionID: executionMeta?.executionID ?? '',
+			workflowOwner: executionMeta?.workflowOwner ?? '',
+			donID: executionMeta?.donID ?? 0,
+			donF: executionMeta?.donF ?? 0,
+		}
+	}
+
+	executionMetadata(): WorkflowExecutionMetadata {
+		return { ...this.executionMeta }
+	}
 
 	/**
 	 * Calls a capability and returns a lazy result.
@@ -228,9 +243,15 @@ export class BaseRuntimeImpl<C> implements BaseRuntime<C> {
 export class NodeRuntimeImpl<C> extends BaseRuntimeImpl<C> implements NodeRuntime<C> {
 	_isNodeRuntime: true = true
 
-	constructor(config: C, nextCallId: number, helpers: RuntimeHelpers, maxResponseSize: bigint) {
+	constructor(
+		config: C,
+		nextCallId: number,
+		helpers: RuntimeHelpers,
+		maxResponseSize: bigint,
+		executionMeta?: WorkflowExecutionMetadata,
+	) {
 		helpers.switchModes(Mode.NODE)
-		super(config, nextCallId, helpers, maxResponseSize, Mode.NODE)
+		super(config, nextCallId, helpers, maxResponseSize, Mode.NODE, executionMeta)
 	}
 }
 
@@ -241,9 +262,15 @@ export class NodeRuntimeImpl<C> extends BaseRuntimeImpl<C> implements NodeRuntim
 export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 	private nextNodeCallId: number = -1
 
-	constructor(config: C, nextCallId: number, helpers: RuntimeHelpers, maxResponseSize: bigint) {
+	constructor(
+		config: C,
+		nextCallId: number,
+		helpers: RuntimeHelpers,
+		maxResponseSize: bigint,
+		executionMeta?: WorkflowExecutionMetadata,
+	) {
 		helpers.switchModes(Mode.DON)
-		super(config, nextCallId, helpers, maxResponseSize, Mode.DON)
+		super(config, nextCallId, helpers, maxResponseSize, Mode.DON, executionMeta)
 	}
 
 	/**
@@ -270,6 +297,7 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 				this.nextNodeCallId,
 				this.helpers,
 				this.maxResponseSize,
+				this.executionMetadata(),
 			)
 
 			// Step 2: Prepare consensus input with config
@@ -521,15 +549,20 @@ export class RuntimeImpl<C> extends BaseRuntimeImpl<C> implements Runtime<C> {
 	}
 }
 
-export class TeeRuntimeImpl<C> implements TeeRuntime<C> {
+export class TeeRuntimeImpl<C> implements TeeRuntime<C>, ExecutionMetadataProvider {
 	private readonly runtime: RuntimeImpl<C>
 	constructor(
 		public config: C,
 		public nextCallId: number,
 		helpers: RuntimeHelpers,
 		maxResponseSize: bigint,
+		executionMeta?: WorkflowExecutionMetadata,
 	) {
-		this.runtime = new RuntimeImpl(config, nextCallId, helpers, maxResponseSize)
+		this.runtime = new RuntimeImpl(config, nextCallId, helpers, maxResponseSize, executionMeta)
+	}
+
+	executionMetadata(): WorkflowExecutionMetadata {
+		return this.runtime.executionMetadata()
 	}
 	getSecrets(requests: Array<SecretRequest | SecretRequestJson>): {
 		result: () => Record<string, Secret>

@@ -66,8 +66,9 @@ import {
 	SecretsBatchError,
 	SecretsError,
 } from '../errors'
+import { executionMetadata, type WorkflowExecutionMetadata } from '../execution-metadata'
 import { RESPONSE_BUFFER_TOO_SMALL } from '../testutils/test-runtime'
-import { type RuntimeHelpers, RuntimeImpl, TeeRuntimeImpl } from './runtime-impl'
+import { NodeRuntimeImpl, type RuntimeHelpers, RuntimeImpl, TeeRuntimeImpl } from './runtime-impl'
 
 // Helper function to create a RuntimeHelpers mock with error-throwing defaults
 function createRuntimeHelpersMock(overrides: Partial<RuntimeHelpers> = {}): RuntimeHelpers {
@@ -1629,5 +1630,90 @@ describe('TeeRuntimeImpl', () => {
 			.result()
 
 		expect(actualResult).toEqual(expectedResult)
+	})
+})
+
+describe('runtime execution metadata', () => {
+	const initialCallID = 0
+	const fixtureDonID = 17
+	const fixtureFaultTolerance = 3
+	const zeroFaultTolerance = 0
+	const expectedMetadata: WorkflowExecutionMetadata = {
+		workflowID: '0020350fb4f89856a031268826d6e9b9340996637aa27859baa7b07db58bb020',
+		executionID: '9f38bdece8892b3452c401a7a2d5a170f078ab9b2c98c591e24028ce94b33ed2',
+		workflowOwner: '5366890c26e8737b89d9084b4c632f7de73d1674',
+		donID: fixtureDonID,
+		donF: fixtureFaultTolerance,
+	}
+	const expectedEmptyMetadata: WorkflowExecutionMetadata = {
+		workflowID: '',
+		executionID: '',
+		workflowOwner: '',
+		donID: 0,
+		donF: 0,
+	}
+	const runtimes = [
+		{ name: 'DON', Runtime: RuntimeImpl },
+		{ name: 'Node', Runtime: NodeRuntimeImpl },
+		{ name: 'TEE', Runtime: TeeRuntimeImpl },
+	]
+
+	test.each(runtimes)('$name copies metadata on construction', ({ Runtime }) => {
+		const source = { ...expectedMetadata }
+		const runtime = new Runtime({}, initialCallID, createRuntimeHelpersMock(), anyMaxSize, source)
+
+		// Mutate all source fields.
+		Object.assign(source, expectedEmptyMetadata)
+
+		expect(runtime.executionMetadata()).toEqual(expectedMetadata)
+	})
+
+	test.each(runtimes)('$name returns independent copies', ({ Runtime }) => {
+		const runtime = new Runtime({}, initialCallID, createRuntimeHelpersMock(), anyMaxSize, {
+			...expectedMetadata,
+		})
+
+		// Mutate the returned object as JavaScript callers can.
+		const first = runtime.executionMetadata()
+		Object.assign(first, expectedEmptyMetadata)
+
+		expect(runtime.executionMetadata()).toEqual(expectedMetadata)
+	})
+
+	test.each(runtimes)('$name reads metadata without host calls', ({ Runtime }) => {
+		const expectedModeSwitchCount = 1
+		const helpers = createRuntimeHelpersMock()
+		const runtime = new Runtime({}, initialCallID, helpers, anyMaxSize, { ...expectedMetadata })
+
+		// Repeated reads must not call capabilities or change modes.
+		expect(runtime.executionMetadata()).toEqual(expectedMetadata)
+		expect(runtime.executionMetadata()).toEqual(expectedMetadata)
+
+		expect(helpers.call).not.toHaveBeenCalled()
+		expect(helpers.await).not.toHaveBeenCalled()
+		expect(helpers.getSecrets).not.toHaveBeenCalled()
+		expect(helpers.awaitSecrets).not.toHaveBeenCalled()
+		expect(helpers.now).not.toHaveBeenCalled()
+		expect(helpers.log).not.toHaveBeenCalled()
+		expect(helpers.sleep).not.toHaveBeenCalled()
+		expect(helpers.switchModes).toHaveBeenCalledTimes(expectedModeSwitchCount)
+	})
+
+	test.each(runtimes)('$name defaults to zero metadata with the existing constructor', ({
+		Runtime,
+	}) => {
+		const runtime = new Runtime({}, initialCallID, createRuntimeHelpersMock(), anyMaxSize)
+
+		expect(runtime.executionMetadata()).toEqual(expectedEmptyMetadata)
+	})
+
+	test('TEE and usingTheDons expose the same snapshot with zero F', () => {
+		const expectedMetadataWithZeroF = { ...expectedMetadata, donF: zeroFaultTolerance }
+		const runtime = new TeeRuntimeImpl({}, initialCallID, createRuntimeHelpersMock(), anyMaxSize, {
+			...expectedMetadataWithZeroF,
+		})
+
+		expect(runtime.executionMetadata()).toEqual(expectedMetadataWithZeroF)
+		expect(executionMetadata(runtime.usingTheDons())).toEqual(expectedMetadataWithZeroF)
 	})
 })

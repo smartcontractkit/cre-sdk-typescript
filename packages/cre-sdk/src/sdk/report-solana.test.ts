@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect } from 'bun:test'
 import { create, toBinary } from '@bufbuild/protobuf'
 import { AnySchema } from '@bufbuild/protobuf/wkt'
-import { CapabilityConfigSchema } from '@cre/generated/internal/registry_pb'
+import { CapabilityConfigSchema } from '@cre/generated/internal/cre_sdk_registry_pb'
 import { newTestRuntime, registerTestCapability, test } from '@cre/sdk/test'
 import {
 	type Address,

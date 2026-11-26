@@ -4,8 +4,6 @@ import {
 	type Config,
 	type ConfigJson,
 	ConfigSchema,
-	type LegacyPayload,
-	LegacyPayloadSchema,
 	type Payload,
 	PayloadSchema,
 } from '@cre/generated/capabilities/scheduler/cron/v1/trigger_pb'

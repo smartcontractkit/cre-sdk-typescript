@@ -57,14 +57,15 @@
 		"format": "biome format --write ${BIOME_PATHS:-.}",
 		"full-checks": "bun generate:sdk && bun run build && bun typecheck && bun check && bun test && bun test:standard",
 		"generate:chain-selectors": "bun scripts/run.ts generate-chain-selectors && BIOME_PATHS=\"src/generated\" bun check",
-		"generate:proto": "bun x @bufbuild/buf generate && BIOME_PATHS=\"src/generated\" bun check",
+		"fetch:protos": "../../scripts/fetch-protos.sh",
+		"generate:proto": "bun run fetch:protos && bun x @bufbuild/buf generate && BIOME_PATHS=\"src/generated\" bun check",
 		"generate:sdk": "bun generate:proto && bun generate:chain-selectors && bun scripts/run generate-sdks && BIOME_PATHS=\"src/generated src/generated-sdk src/sdk/test/generated\" bun check",
 		"lint": "biome lint --write",
 		"prepublishOnly": "bun typecheck && bun check && bun test && bun test:standard",
 		"test": "bun test",
 		"test:standard": "./scripts/run-standard-tests.sh",
 		"typecheck": "tsc -p tsconfig.json --noEmit",
-		"update-api-baseline": "bun run compile:build && cat dist/index.d.ts dist/pb.d.ts dist/sdk/index.d.ts dist/sdk/runtime.d.ts dist/sdk/workflow.d.ts dist/sdk/errors.d.ts dist/sdk/report.d.ts dist/sdk/test/index.d.ts > api-baseline.d.ts"
+		"update-api-baseline": "bun run compile:build && cat dist/index.d.ts dist/pb.d.ts dist/sdk/index.d.ts dist/sdk/runtime.d.ts dist/sdk/execution-metadata.d.ts dist/sdk/workflow.d.ts dist/sdk/errors.d.ts dist/sdk/report.d.ts dist/sdk/test/index.d.ts > api-baseline.d.ts"
 	},
 	"dependencies": {
 		"@bufbuild/protobuf": "2.6.3",
